@@ -107,7 +107,7 @@ fromInlineNodes = map fromInlineNode
 fromBlockContent :: BlockContent -> [Node]
 fromBlockContent (BlockBlocks  b   ) = fromBlockNodes b
 fromBlockContent (BlockInlines b   ) = fromInlineNodes b
-fromBlockContent (BlockVerbatim s t) = [NodeText s $ commonIndentStrip t]
+fromBlockContent (BlockVerbatim s t) = [NodeText s t]
 fromBlockContent BlockNil            = []
 
 -- TODO: document that this defaults to a `p` paragraph.
@@ -169,6 +169,9 @@ fromSecNodes = go . groupSecNodes
 -- lines? If so, might want to fix that.
 -- TODO: should document the blank line behaviour.
 -- TODO: test this function
+
+-- TODO: should this even be done in Intermediate? it sort of throws
+-- off the source positioning... People can always call this on their
 commonIndentStrip :: Text -> Text
 commonIndentStrip txt =
   correctNewline
