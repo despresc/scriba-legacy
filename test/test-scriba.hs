@@ -8,10 +8,10 @@ import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
 
 
-testDoc :: FilePath -> Expectation
-testDoc fp = do
+testParse :: FilePath -> Expectation
+testParse fp = do
   let sml = "./test/tests/" <> fp <> ".sml"
-      int = "./test/tests/" <> fp <> ".internal"
+      int = "./test/tests/" <> fp <> ".parse"
   tSml      <- T.readFile sml
   tInternal <- readFile int
   let ea   = SP.parseDoc' (T.pack $ fp <> ".sml") tSml
@@ -25,8 +25,8 @@ testDoc fp = do
 main :: IO ()
 main = hspec $ do
   describe "scriba" $ do
-    it "parses the README example" $ testDoc "bayes"
-    it "parses a verbatim block" $ testDoc "block-verbatim"
+    it "parses the README example" $ testParse "bayes"
+    it "parses a verbatim block" $ testParse "block-verbatim"
 
 
 
