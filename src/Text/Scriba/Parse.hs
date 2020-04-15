@@ -233,7 +233,7 @@ pInlineVerbText =
 
 -- | A block verbatim is a sequence of text ending with @\n`}@.
 pBlockVerbText :: Parser Text
-pBlockVerbText = pVerbText <* "\n`"
+pBlockVerbText = pVerbText <* "\n"
  where
   pVerbText     = fmap T.concat $ MP.many $ pInsig <|> pNewlineInsig
   pInsig        = MP.takeWhile1P Nothing (/= '\n')

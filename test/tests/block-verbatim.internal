@@ -1,0 +1,23 @@
+Doc
+(Attrs { getAttrs = fromList [] })
+[ SecBlock
+    (BlockBlock
+      (Element
+        { srcPos  = SourcePos { sourceName   = "block-verbatim.sml"
+                              , sourceLine   = Pos 1
+                              , sourceColumn = Pos 1
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = BlockVerbatim
+          (SourcePos { sourceName   = "block-verbatim.sml"
+                     , sourceLine   = Pos 1
+                     , sourceColumn = Pos 7
+                     }
+          )
+          "   Code with varied space\n      Written in a bizarre form\n  It strips off the least"
+        }
+      )
+    )
+]
