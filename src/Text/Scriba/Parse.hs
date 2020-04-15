@@ -34,6 +34,9 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
 
 - Go through the documentation. Add module documentation.
 
+- Add a double-backtick verbatim block form that strips indent? Or is
+  that redundant?
+
 -}
 
 -- * Document syntax
@@ -317,12 +320,10 @@ pInlineElement :: Parser (SourcePos -> InlineElement)
 pInlineElement = pBraced $ pElement pSpace (MP.optional pElemTy) pInlineContent
 
 pInlineContent :: Parser InlineContent
-pInlineContent =
-  MP.option InlineNil
-    $   pInlineSeqBody
-    <|> pInlineVerbBody
+pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
  where
-  pInlineSeqBody = fmap InlineSequence $ pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
+  pInlineSeqBody = fmap InlineSequence $ pInlineBodyStart >> MP.many
+    (pInlineNodeWith pInlineText)
   pInlineVerbBody = do
     src <- MP.getSourcePos
     -- TODO: better label?
@@ -370,11 +371,11 @@ pBlockVerbContent = do
 
 pBlockUnparContent :: Parser BlockContent
 pBlockUnparContent = BlockInlines <$> pSeq
- where
+  where
    -- TODO: reduce duplication with pInlineContent. This is defined
    -- here because we we need block verbatim content to overrule an
    -- inline verbatim content interpretation.
-   pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
+        pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
 
 -- ** Section elements
 
