@@ -1,15 +1,17 @@
 Doc
 (Attrs { getAttrs = fromList [] })
-[ SecHeader
-  1
-  (SourcePos { sourceName   = "bayes.sml"
-             , sourceLine   = Pos 1
-             , sourceColumn = Pos 1
-             }
+[ SecHeaderNode
+  (SecHeader
+    1
+    (SourcePos { sourceName   = "bayes.sml"
+               , sourceLine   = Pos 1
+               , sourceColumn = Pos 1
+               }
+    )
+    (Just "mainMatter")
+    (Attrs { getAttrs = fromList [] })
+    []
   )
-  (Just "mainMatter")
-  (Attrs { getAttrs = fromList [] })
-  []
 , SecBlock
   (BlockBlock
     (Element
@@ -113,56 +115,58 @@ Doc
       }
     )
   )
-, SecHeader
-  2
-  (SourcePos { sourceName   = "bayes.sml"
-             , sourceLine   = Pos 10
-             , sourceColumn = Pos 1
-             }
-  )
-  (Just "section")
-  (Attrs
-    { getAttrs = fromList
-                   [ ( "fullTitle"
-                     , ( SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 10
-                                   , sourceColumn = Pos 23
-                                   }
-                       , Attrs { getAttrs = fromList [] }
-                       , []
-                       , InlineSequence
-                         [ InlineText
-                             (SourcePos { sourceName   = "bayes.sml"
-                                        , sourceLine   = Pos 10
-                                        , sourceColumn = Pos 34
-                                        }
-                             )
-                             "Section I"
-                         ]
+, SecHeaderNode
+  (SecHeader
+    2
+    (SourcePos { sourceName   = "bayes.sml"
+               , sourceLine   = Pos 10
+               , sourceColumn = Pos 1
+               }
+    )
+    (Just "section")
+    (Attrs
+      { getAttrs = fromList
+                     [ ( "fullTitle"
+                       , ( SourcePos { sourceName   = "bayes.sml"
+                                     , sourceLine   = Pos 10
+                                     , sourceColumn = Pos 23
+                                     }
+                         , Attrs { getAttrs = fromList [] }
+                         , []
+                         , InlineSequence
+                           [ InlineText
+                               (SourcePos { sourceName   = "bayes.sml"
+                                          , sourceLine   = Pos 10
+                                          , sourceColumn = Pos 34
+                                          }
+                               )
+                               "Section I"
+                           ]
+                         )
                        )
-                     )
-                   , ( "number"
-                     , ( SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 10
-                                   , sourceColumn = Pos 12
-                                   }
-                       , Attrs { getAttrs = fromList [] }
-                       , []
-                       , InlineSequence
-                         [ InlineText
-                             (SourcePos { sourceName   = "bayes.sml"
-                                        , sourceLine   = Pos 10
-                                        , sourceColumn = Pos 20
-                                        }
-                             )
-                             "I"
-                         ]
+                     , ( "number"
+                       , ( SourcePos { sourceName   = "bayes.sml"
+                                     , sourceLine   = Pos 10
+                                     , sourceColumn = Pos 12
+                                     }
+                         , Attrs { getAttrs = fromList [] }
+                         , []
+                         , InlineSequence
+                           [ InlineText
+                               (SourcePos { sourceName   = "bayes.sml"
+                                          , sourceLine   = Pos 10
+                                          , sourceColumn = Pos 20
+                                          }
+                               )
+                               "I"
+                           ]
+                         )
                        )
-                     )
-                   ]
-    }
+                     ]
+      }
+    )
+    []
   )
-  []
 , SecBlock
   (BlockBlock
     (Element

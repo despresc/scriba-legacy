@@ -65,13 +65,17 @@ data Element t c = Element
 
 -- | A section node is either a section header or a block.
 data SecNode
-  = SecHeader Int SourcePos (Maybe Text) Attrs [InlineNode]
+  = SecHeaderNode SecHeader
   | SecBlock BlockNode
   deriving (Eq, Ord, Show, Read)
+
+data SecHeader = SecHeader Int SourcePos (Maybe Text) Attrs [InlineNode]
+ deriving (Eq, Ord, Show, Read)
 
 -- | A block node is either a block element or a paragraph.
 data BlockNode
   = BlockBlock BlockElement
+  -- TODO: implement paragraph header syntax?
   | BlockPar SourcePos [InlineNode]
   deriving (Eq, Ord, Show, Read)
 
@@ -84,8 +88,7 @@ type BlockElement = Element (Maybe Text) BlockContent
 data BlockContent
   = BlockBlocks [BlockNode]
   | BlockInlines [InlineNode]
-  | BlockVerbatim Text
-  | BlockInlineVerbatim Text
+  | BlockVerbatim SourcePos Text
   | BlockNil
   deriving (Eq, Ord, Show, Read)
 
@@ -100,7 +103,7 @@ type InlineElement = Element (Maybe Text) InlineContent
 
 data InlineContent
   = InlineSequence [InlineNode]
-  | InlineVerbatim Text
+  | InlineVerbatim SourcePos Text
   | InlineNil
   deriving (Eq, Ord, Show, Read)
 
@@ -316,12 +319,14 @@ pInlineElement = pBraced $ pElement pSpace (MP.optional pElemTy) pInlineContent
 pInlineContent :: Parser InlineContent
 pInlineContent =
   MP.option InlineNil
-    $   InlineSequence
-    <$> pInlineSeqBody
-    <|> InlineVerbatim
-    <$> (MP.between "`" "`" pInlineVerbText) -- TODO: better label?
+    $   pInlineSeqBody
+    <|> pInlineVerbBody
  where
-  pInlineSeqBody = pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
+  pInlineSeqBody = fmap InlineSequence $ pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
+  pInlineVerbBody = do
+    src <- MP.getSourcePos
+    -- TODO: better label?
+    InlineVerbatim src <$> MP.between "`" "`" pInlineVerbText
 
 -- ** Block elements
 
@@ -353,23 +358,23 @@ pBlockParContent = do
   pSpace
   BlockBlocks <$> MP.many (pBlockNode <* pSpace)
 
-
 -- | Parses verbatim block content
 pBlockVerbContent :: Parser BlockContent
 pBlockVerbContent = do
+  src <- MP.getSourcePos
   void "`" -- TODO: label?
   pBlankLine
   t <- pBlockVerbText
   void "`"
-  pure $ BlockVerbatim t
+  pure $ BlockVerbatim src t
 
 pBlockUnparContent :: Parser BlockContent
-pBlockUnparContent = fromInline <$> pInlineContent
+pBlockUnparContent = BlockInlines <$> pSeq
  where
-  fromInline (InlineSequence x) = BlockInlines x
-  fromInline (InlineVerbatim x) = BlockInlineVerbatim x
-  -- Shouldn't come up
-  fromInline InlineNil          = BlockNil
+   -- TODO: reduce duplication with pInlineContent. This is defined
+   -- here because we we need block verbatim content to overrule an
+   -- inline verbatim content interpretation.
+   pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
 
 -- ** Section elements
 
@@ -380,7 +385,7 @@ pSecContent = MP.many $ pSecNode <* pSpace
 pSecNode :: Parser SecNode
 pSecNode = do
   src <- MP.getSourcePos
-  f   <- pSecHeader <|> (SecBlock .) <$> pSecBlock
+  f   <- (SecHeaderNode .) <$> pSecHeader <|> (SecBlock .) <$> pSecBlock
   pure $ f src
 
 pSecBlock :: Parser (SourcePos -> BlockNode)
@@ -390,7 +395,7 @@ pSecBlock = ((BlockBlock .) <$> pBlockElement) <|> pPar
 
 -- | A section header is a sequence of one or more number signs, then
 -- an element type and attributes.
-pSecHeader :: Parser (SourcePos -> SecNode)
+pSecHeader :: Parser (SourcePos -> SecHeader)
 pSecHeader = do
   n <- pNumberRun
   let toHeader (Element s t at ar ()) = SecHeader n s t at ar
@@ -424,7 +429,3 @@ parseDoc = parseWith pDoc
 
 parseDoc' :: Text -> Text -> Either Text Doc
 parseDoc' = parseWith' pDoc
-
--- TODO: temporary
-parseTest :: Show a => Parser a -> Text -> IO ()
-parseTest = MP.parseTest

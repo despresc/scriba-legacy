@@ -20,8 +20,10 @@ common base
 library
   import: base
   hs-source-dirs: src
-  build-depends: megaparsec, text, containers
+  build-depends: megaparsec, text, containers, mtl
   exposed-modules:
+    Text.Scriba.Intermediate
+    Text.Scriba.Markup
     Text.Scriba.Parse
 
 test-suite scriba-test
