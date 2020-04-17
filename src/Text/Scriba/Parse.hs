@@ -42,7 +42,7 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
 -- * Document syntax
 
 -- | A document has metadata and sectional content.
-data Doc = Doc Attrs [SecNode]
+data Doc = Doc SourcePos Attrs [SecNode]
   deriving (Eq, Ord, Show, Read)
 
 -- | Attributes are the same as a list of typed inline elements with
@@ -414,7 +414,9 @@ pSecHeader = do
 -- ** Full document
 
 pDoc :: Parser Doc
-pDoc = (Doc <$> pure mempty <*> pSecContent) <* MP.eof
+pDoc = do
+  src <- MP.getSourcePos
+  (Doc src <$> pure mempty <*> pSecContent) <* MP.eof
 
 -- * Running parsers
 

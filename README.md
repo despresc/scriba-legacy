@@ -1,8 +1,7 @@
 # Scriba
 
 A new extensible markup language, together with an intermediate format
-and publishing tools suitable for new and historical documents. The
-emphasis is on scientific material.
+and publishing tools suitable for new and historical documents.
 
 ## Syntax reference
 
@@ -45,3 +44,23 @@ the value of the thing expected upon {reg{old|it's}{new|its}} happening.}
 increase nor abate the probability of the rest.}
 }}
 ```
+
+## Language features
+
+Currently the following elements are defined:
+
+`p`
+: Paragraphs. Can also be defined implicitly in paragraphed
+  blocks. They contain paragraph blocks and inline elements.
+
+`emph`
+: Emphasized text.
+
+`math`
+: An inline mathematical formula or other simple construct. By default
+  its content is written in TeX syntax.
+
+`physPage`
+: A marker indicating that a physical page break occurred at or near
+  the marker. Its content should be a page locator (only text at the
+  moment).

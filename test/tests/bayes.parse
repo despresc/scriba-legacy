@@ -1,4 +1,9 @@
 Doc
+(SourcePos { sourceName   = "bayes.sml"
+           , sourceLine   = Pos 1
+           , sourceColumn = Pos 1
+           }
+)
 (Attrs { getAttrs = fromList [] })
 [ SecHeaderNode
   (SecHeader

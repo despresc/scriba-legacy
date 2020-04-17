@@ -37,10 +37,13 @@ import           Text.Megaparsec                ( SourcePos )
   the source presentation in the Meta, then this should become
   unnecessary, since we can just do that conversion later.
 
+- Some of these might be better as (a -> Element).
+
 -}
 
 data SourcePresentation
-  = AsBlock
+  = AsDoc
+  | AsBlock
   | AsInline
   | AsSection Int
   deriving (Eq, Ord, Show, Read)
@@ -50,8 +53,6 @@ data Meta = Meta
   { loc :: SourcePos
   , sourcePres :: SourcePresentation
   , metaAttrs :: Attrs
-  -- Anonymous forms are allowed in source, so each argument is a list
-  -- of nodes.
   , metaArgs  :: [Node]
   } deriving (Eq, Ord, Show, Read)
 
@@ -161,6 +162,12 @@ fromGroupedSecNodes [] = []
 fromSecNodes :: [P.SecNode] -> [Node]
 fromSecNodes = go . groupSecNodes
   where go (blks, nodes) = fromBlockNodes blks <> fromGroupedSecNodes nodes
+
+-- * Document conversion
+
+fromDoc :: P.Doc -> Node
+fromDoc (P.Doc sp a n) =
+  nodeElement (Just "scriba") (Meta sp AsDoc (fromAttrs a) []) $ fromSecNodes n
 
 -- * Helpers
 
