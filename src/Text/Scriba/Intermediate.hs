@@ -193,7 +193,8 @@ commonIndentStrip txt =
     -- This assumes t is not null
   getIndent = T.length . T.takeWhile (== ' ')
   findFirstInhabited (t : ts) | not (T.null t) = Just (getIndent t, ts)
-  findFirstInhabited _                         = Nothing
+                              | otherwise      = findFirstInhabited ts
+  findFirstInhabited _ = Nothing
   mminLen n t | not (T.null t) = min n $ getIndent t
   mminLen n _                  = n
   getIndents l = case findFirstInhabited l of
