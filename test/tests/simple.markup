@@ -1,4 +1,5 @@
 Doc
+[]
 [ Paragraph
     [ ParInline (Str "A ")
     , ParInline (Emph [Str "simple"])
@@ -11,3 +12,4 @@ Doc
     , ParInline (Str ".")
     ]
 ]
+[]

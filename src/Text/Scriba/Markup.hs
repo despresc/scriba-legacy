@@ -29,7 +29,8 @@ import qualified Data.Text                     as T
 
 -}
 
-data Doc = Doc [Paragraph]
+-- | A document with front matter, main matter, and end matter.
+data Doc = Doc [Paragraph] [Paragraph] [Paragraph]
   deriving (Eq, Ord, Show, Read)
 
 data Paragraph = Paragraph [ParContent]
@@ -123,8 +124,23 @@ pMath _ = throwScribaError "no math parse"
 -- * Document parsing
 
 pDoc :: Element -> Scriba Doc
-pDoc (Element (Just "scriba") _ n) = Doc <$> traverse (asNode pParagraph) n
-pDoc _                             = throwScribaError "no scriba parse"
+pDoc (Element (Just "scriba") _ n) = pExplicitMatter n <|> pBare n
+ where
+  -- TODO: this really shows the need for more advanced parsing
+  -- facilities!
+  pMatter ty (Element (Just t) _ nodes) | ty == t =
+    traverse (asNode pParagraph) nodes
+  pMatter ty _ = throwScribaError $ "no " <> ty <> " parse"
+  pExplicitMatter [f, m, e] = do
+    f' <- asNode (pMatter "frontMatter") f
+    m' <- asNode (pMatter "mainMatter") m
+    e' <- asNode (pMatter "backMatter") e
+    pure $ Doc f' m' e'
+  pExplicitMatter _ = throwScribaError "no explicit matter parse"
+  pBare nodes = do
+    nodes' <- traverse (asNode pParagraph) nodes
+    pure $ Doc [] nodes' []
+pDoc _ = throwScribaError "no scriba parse"
 
 -- * Running parsers
 
