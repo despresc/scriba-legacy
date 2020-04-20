@@ -57,6 +57,7 @@ data Meta = Meta
   } deriving (Eq, Ord, Show, Read)
 
 type Attr = (Meta, [Node])
+
 type Attrs = Map Text Attr
 
 data Element = Element
@@ -66,12 +67,12 @@ data Element = Element
   } deriving (Eq, Ord, Show, Read)
 
 data Node
-  = NodeElement Element
+  = NodeElem Element
   | NodeText SourcePos Text
   deriving (Eq, Ord, Show, Read)
 
 nodeElement :: Maybe Text -> Meta -> [Node] -> Node
-nodeElement t m = NodeElement . Element t m
+nodeElement t m = NodeElem . Element t m
 
 -- * Meta conversion
 
@@ -91,13 +92,20 @@ fromInlineContent (InlineSequence i    ) = fromInlineNodes i
 fromInlineContent (InlineVerbatim src t) = [NodeText src t]
 fromInlineContent InlineNil              = []
 
-fromInlineElement :: InlineElement -> Element
+
+fromInlineElement :: InlineElement -> Node
+-- TODO: warn on inline verbatim with arguments?
+-- TODO: should the source position of an expanded anonymous inline
+-- verbatim be the position of the brace, or the position of the
+-- interior? It's the interior for now.
+fromInlineElement (P.Element _ Nothing _ _ (InlineVerbatim s t)) = NodeText s t
 fromInlineElement (P.Element s t at ar c) =
-  Element t (Meta s AsInline (fromAttrs at) (fromInlineNodes ar))
+  NodeElem
+    $ Element t (Meta s AsInline (fromAttrs at) (fromInlineNodes ar))
     $ fromInlineContent c
 
 fromInlineNode :: InlineNode -> Node
-fromInlineNode (InlineBraced e) = NodeElement $ fromInlineElement e
+fromInlineNode (InlineBraced e) = fromInlineElement e
 fromInlineNode (InlineText s t) = NodeText s t
 
 fromInlineNodes :: [InlineNode] -> [Node]
@@ -113,7 +121,7 @@ fromBlockContent BlockNil            = []
 
 -- TODO: document that this defaults to a `p` paragraph.
 fromBlockNode :: P.BlockNode -> Node
-fromBlockNode (P.BlockBlock b) = NodeElement $ fromBlockElement b
+fromBlockNode (P.BlockBlock b) = NodeElem $ fromBlockElement b
 fromBlockNode (P.BlockPar sp i) =
   nodeElement (Just "p") (Meta sp AsBlock mempty mempty) $ fromInlineNodes i
 
@@ -145,15 +153,15 @@ fromGroupedSecNodes :: [(P.SecHeader, [P.BlockNode])] -> [Node]
 fromGroupedSecNodes ((sh@(P.SecHeader lvl _ _ _ _), preblks) : nodes) =
   let (secContent, nodes') = getSections lvl nodes
       secs                 = fromGroupedSecNodes nodes'
-  in  NodeElement (fromSecHeader sh preblks secContent) : secs
+  in  NodeElem (fromSecHeader sh preblks secContent) : secs
  where
   -- TODO: reduce duplication with this, the where, and fromSecNodes
   getSections ambient shs
     | (ssh@(P.SecHeader n _ _ _ _), b) : rest <- shs
     , n > ambient
     = let (subsecContent, rest') = getSections n rest
-          subsec = NodeElement $ fromSecHeader ssh b subsecContent
-          (secContent, rest'') = getSections ambient rest'
+          subsec                 = NodeElem $ fromSecHeader ssh b subsecContent
+          (secContent, rest'')   = getSections ambient rest'
       in  (subsec : secContent, rest'')
     | otherwise
     = ([], shs)

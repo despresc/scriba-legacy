@@ -34,8 +34,7 @@ testMarkup fp = do
   let ea = do
         a <- SP.parseDoc' (T.pack $ fp <> ".sml") tSml
         let a' = SI.fromDoc a
-            toText (SM.Error t) = t
-            toText _            = ""
+            toText = T.pack . show
         either (Left . toText) Right $ SM.parseDoc a'
       -- TODO: safe read, I suppose?
       good = read tInternal
