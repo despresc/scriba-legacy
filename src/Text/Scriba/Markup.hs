@@ -11,10 +11,7 @@ import           Control.Applicative            ( (<|>)
                                                 , Alternative
                                                 , empty
                                                 )
-import           Control.Monad                  ( MonadPlus
-                                                , guard
-                                                , void
-                                                )
+import           Control.Monad                  ( MonadPlus )
 import           Control.Monad.Except           ( Except
                                                 , MonadError(..)
                                                 )
@@ -31,8 +28,6 @@ import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Text.Megaparsec                ( SourcePos
-                                                , option
-                                                , optional
                                                 , many
                                                 , some
                                                 )
@@ -52,6 +47,9 @@ import           Text.Megaparsec                ( SourcePos
   the output comes from a parsed sml document, but maybe we don't want
   to rely on that.
 
+- Page mark (physPage) might need to be some kind of locator term, or
+  at least some kind of parsed value (to support, e.g., linking to
+  page images).
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -81,7 +79,6 @@ data Inline
   = Str Text
   | Emph [Inline]
   | Math Text
-  -- TODO: page mark should be some kind of locator?
   | PageMark Text
   deriving (Eq, Ord, Show, Read)
 
@@ -195,8 +192,7 @@ elemPos = meta $ do
 
 whileParsing :: Maybe SourcePos -> Text -> Scriba s a -> Scriba s a
 whileParsing sp t = (`catchError` go)
-  where
-    go e = throwError $ WhileParsing sp t e
+  where go e = throwError $ WhileParsing sp t e
 
 -- TODO: Not very nice to have to call this manually. Maybe combine with matchTy?
 whileParsingElem :: Text -> Scriba Element a -> Scriba Element a
@@ -245,11 +241,11 @@ content act = liftScriba $ \(Element mty met con) -> do
 -- TODO: improve the error
 allContent :: Scriba [Node] a -> Scriba Element a
 allContent p = content $ do
-  a <- p
+  a  <- p
   ns <- inspect
   case ns of
-    [] -> pure a
-    n:_ -> throwError $ Msg $ T.pack $ show n
+    []    -> pure a
+    n : _ -> throwError $ Msg $ T.pack $ show n
 
 meta :: Scriba Meta a -> Scriba Element a
 meta act = liftScriba $ \(Element mty met con) -> do
@@ -366,7 +362,7 @@ pSection = do
 
 pSectionContent :: ([Paragraph] -> [Section] -> a) -> Scriba [Node] a
 pSectionContent con = do
-  pre <- manyOf $ asNode pParagraph
+  pre  <- manyOf $ asNode pParagraph
   subs <- manyOf $ asNode pSection
   pure $ con pre subs
 
