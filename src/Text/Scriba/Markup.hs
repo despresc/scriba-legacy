@@ -50,6 +50,36 @@ import           Text.Megaparsec                ( SourcePos
 - Page mark (physPage) might need to be some kind of locator term, or
   at least some kind of parsed value (to support, e.g., linking to
   page images).
+
+- for formal blocks: these have some kind of preamble thing, body
+  thing, ending thing, and type. Would encompass amsthm-style
+  environments, among other things. later could have templating,
+  numbering, etc. Need to decide what is allowed in each position, of
+  course.
+
+- related: formal blocks might be used for "discussion", "note", or
+  "proof". These discussion-type blocks are often discussions of
+  particular things (theorem-like blocks, other sections, other books
+  or things in other books if we have linking). We could have some
+  kind of "relates to #thing" property, but we would have to decide
+  how that gets rendered - maybe we use a title template to have "(of
+  Theorem 7.4)" appended to "Proof" in the title of a formal block?
+
+- simple local imports (more or less parsed textual inclusion to split
+  up a document into multiple files). Would probably need a "main" or
+  "index" document.
+
+- document linker. This can manifest in a few ways:
+
+  - cross-document linking. Each volume of an encyclopedia or
+    collected works could be digitized separately, then linked
+    together into a big composite document. Would allow checked
+    inter-document links (see discussion related to formal blocks)
+
+  - composite documents. Sort of the above: combine multiple articles
+    into a single custom journal issue, take a document and annotate
+    it with your commentary, that sort of thing.
+
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -312,6 +342,10 @@ asNode _ (NodeText sp _) =
     <> " when an element was expected"
 -}
 
+-- * Element parsers
+
+-- ** Paragraph parsing
+
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
   _ <- ty $ match (== Just "p")
@@ -320,6 +354,8 @@ pParagraph = do
 
 pParContent :: Scriba Node ParContent
 pParContent = ParInline <$> pInline
+
+-- ** Inline parsing
 
 pInline :: Scriba Node Inline
 pInline = asNode (pEmph <|> pPageMark <|> pMath) <|> pText
@@ -346,6 +382,8 @@ pMath = do
   ts <- whileParsingElem "math" $ allContent $ manyOf $ snd <$> text
   pure $ Math $ T.concat ts
 
+-- ** Section parsing
+
 -- For now, all things presented as sections become sections.
 
 -- TODO: do the expectations actually work out here?
@@ -366,7 +404,7 @@ pSectionContent con = do
   subs <- manyOf $ asNode pSection
   pure $ con pre subs
 
--- * Document parsing
+-- ** Document parsing
 
 -- TODO: have a pSectionNamed :: Text -> Scriba Element Section to
 -- deal with special sections, like the matter?
