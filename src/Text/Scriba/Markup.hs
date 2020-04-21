@@ -403,8 +403,9 @@ pBlock = asNode $ FormalBlockBlock <$> pFormalBlock <|> ParBlock <$> pParagraph
 -- TODO: For rendering, consider whether the title or conclusion
 -- should be inserted inside the body! E.g. if the first block in the
 -- FormalBlock is a paragraph, perhaps we should put that in the
--- paragraph? Might not be necessary with the "display: run-in"
--- property.
+-- paragraph? Might not be necessary with something like the "display:
+-- inline" property on the first paragraph (or first paragraph after
+-- the title).
 
 -- TODO: In the body parser I formerly had a single allContent $
 -- ... invocation, with the choice inside. That didn't work, because
