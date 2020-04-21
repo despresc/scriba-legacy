@@ -20,9 +20,11 @@ import           Control.Monad.State.Strict     ( StateT
                                                 )
 import qualified Control.Monad.State.Strict    as S
 import qualified Control.Monad.Except          as E
+import           Data.Functor.Compose           ( Compose(..) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
                                                 )
+import qualified Data.Map.Strict               as M
 import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
@@ -80,6 +82,9 @@ import           Text.Megaparsec                ( SourcePos
     into a single custom journal issue, take a document and annotate
     it with your commentary, that sort of thing.
 
+- should some of these types become parametric? to resuse blocks
+  elsewhere with different content restrictions.
+
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -91,19 +96,36 @@ data Doc = Doc Section Section Section
 
 -- TODO: maybe preamble isn't the correct name?
 data Section = Section
-  { secPreamble :: [Paragraph]
+  { secPreamble :: [Block]
   , secChildren :: [Section]
   } deriving (Eq, Ord, Show, Read)
 
 emptySection :: Section
 emptySection = Section [] []
 
+data Block
+  = FormalBlockBlock FormalBlock
+  | ParBlock Paragraph
+  deriving (Eq, Ord, Show, Read)
+
 data Paragraph = Paragraph [ParContent]
   deriving (Eq, Ord, Show, Read)
 
+-- Not sure if there should be anything here other than Inline,
+-- honestly. There could simply be some types of inline with a
+-- "display" property (math, notably).
 data ParContent
   = ParInline Inline
   deriving (Eq, Ord, Show, Read)
+
+-- Might want a formal inline too.
+data FormalBlock = FormalBlock
+  { fbType :: Maybe Text
+  , fbTitle :: [Inline]
+  , fbContent :: [Block]
+  , fbConclusion :: [Inline]
+  } deriving (Eq, Ord, Show, Read)
+
 
 data Inline
   = Str Text
@@ -269,6 +291,11 @@ content act = liftScriba $ \(Element mty met con) -> do
   pure (Element mty met con', a)
 
 -- TODO: improve the error
+-- TODO: instead of allContent . manyOf we could instead have a
+-- combinator that traverses the content, which should preserve
+-- expectations. Right now if we fail to parse a block we simply get
+-- this "unexpected element" error instead of what we should get,
+-- which is a "failed to parse" error.
 allContent :: Scriba [Node] a -> Scriba Element a
 allContent p = content $ do
   a  <- p
@@ -281,6 +308,23 @@ meta :: Scriba Meta a -> Scriba Element a
 meta act = liftScriba $ \(Element mty met con) -> do
   (met', a) <- runScriba act met
   pure (Element mty met' con, a)
+
+attrs :: Scriba Attrs a -> Scriba Meta a
+attrs act = liftScriba $ \(Meta sp srcpres mat mar) -> do
+  (mat', a) <- runScriba act mat
+  pure (Meta sp srcpres mat' mar, a)
+
+-- TODO: little odd to be reconstituting an element here. Maybe an
+-- element body type? Also an infix combinator might be welcome.
+attr :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
+attr k act = liftScriba $ fmap flop . getCompose . M.alterF go k
+ where
+  go Nothing       = Compose $ Right (Nothing, Nothing)
+  go (Just (m, n)) = case runScriba act $ Element (Just k) m n of
+    Left  e                    -> Compose $ Left e
+    Right (Element _ m' n', a) -> Compose $ Right (Just a, Just (m', n'))
+  flop (x, y) = (y, x)
+
 
 ty :: Scriba (Maybe Text) a -> Scriba Element a
 ty act = liftScriba $ \(Element mty met con) -> do
@@ -316,6 +360,7 @@ matchTy t = do
     else expectsGotAt [t] sp $ fromMaybe "untyped element" mty
 
 -- TODO: have one that just returns the text?
+-- And maybe a "symbol" one that strips leading and trailing whitespace
 text :: Scriba Node (SourcePos, Text)
 text = liftScriba $ \n -> case n of
   NodeText sp t -> pure (n, (sp, t))
@@ -344,11 +389,46 @@ asNode _ (NodeText sp _) =
 
 -- * Element parsers
 
--- ** Paragraph parsing
+-- ** BlockParsing
+
+pBlock :: Scriba Node Block
+pBlock = asNode $ FormalBlockBlock <$> pFormalBlock <|> ParBlock <$> pParagraph
+
+-- TODO: no formal block type validation
+-- TODO: sort of a hack allowing simple inline content: we just wrap
+-- bare content in a paragraph. Might want a Plain-type block after
+-- all?  Some kind of reusable thing that signals that the content of
+-- a block can be bare.
+
+-- TODO: For rendering, consider whether the title or conclusion
+-- should be inserted inside the body! E.g. if the first block in the
+-- FormalBlock is a paragraph, perhaps we should put that in the
+-- paragraph? Might not be necessary with the "display: run-in"
+-- property.
+
+-- TODO: In the body parser I formerly had a single allContent $
+-- ... invocation, with the choice inside. That didn't work, because
+-- the manyOf can always succeed. Maybe I can preserve the behaviour
+-- by having the first one be a someOf?
+pFormalBlock :: Scriba Element FormalBlock
+pFormalBlock = do
+  matchTy "formalBlock"
+  whileParsingElem "formalBlock" $ do
+    (mty, title, concl) <- meta $ attrs $ do
+      mty   <- attr "type" $ allContent $ one text
+      title <- attr "title" $ allContent $ manyOf pInline
+      concl <- attr "conclusion" $ allContent $ manyOf pInline
+      pure (mty, title, concl)
+    body <- allContent (manyOf pBlock)
+      <|> allContent ((: []) . ParBlock . Paragraph <$> manyOf pParContent)
+    pure $ FormalBlock (snd <$> mty)
+                       (fromMaybe [] title)
+                       body
+                       (fromMaybe [] concl)
 
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
-  _ <- ty $ match (== Just "p")
+  matchTy "p"
   c <- whileParsingElem "p" $ allContent $ manyOf pParContent
   pure $ Paragraph c
 
@@ -398,9 +478,9 @@ pSection = do
       AsSection _ -> pure ()
       _           -> empty
 
-pSectionContent :: ([Paragraph] -> [Section] -> a) -> Scriba [Node] a
+pSectionContent :: ([Block] -> [Section] -> a) -> Scriba [Node] a
 pSectionContent con = do
-  pre  <- manyOf $ asNode pParagraph
+  pre  <- manyOf $ pBlock
   subs <- manyOf $ asNode pSection
   pure $ con pre subs
 

@@ -2,19 +2,38 @@ Doc
 (Section { secPreamble = [], secChildren = [] })
 (Section
   { secPreamble =
-    [ Paragraph
-      [ ParInline (Str "A ")
-      , ParInline (Emph [Str "simple"])
-      , ParInline (Str " paragraph with a ")
-      , ParInline (PageMark "24")
-      , ParInline (Str " marker and some\nmath ")
-      , ParInline (Math "2+2=5")
-      , ParInline (Str " and a little more math ")
-      , ParInline (Math "5\215\&9=42")
-      , ParInline (Str ".")
-      ]
-    , Paragraph
-      [ParInline (Str "&"), ParInline (Str " some verbatim testing.")]
+    [ ParBlock
+      (Paragraph
+        [ ParInline (Str "A ")
+        , ParInline (Emph [Str "simple"])
+        , ParInline (Str " paragraph with a ")
+        , ParInline (PageMark "24")
+        , ParInline (Str " marker and some\nmath ")
+        , ParInline (Math "2+2=5")
+        , ParInline (Str " and a little more math ")
+        , ParInline (Math "5\215\&9=42")
+        , ParInline (Str ".")
+        ]
+      )
+    , ParBlock
+      (Paragraph
+        [ParInline (Str "&"), ParInline (Str " some verbatim testing.")]
+      )
+    , FormalBlockBlock
+      (FormalBlock
+        { fbType       = Just "theorem"
+        , fbTitle      = [Str "Theorem 5 (an interesting one)"]
+        , fbContent    =
+          [ ParBlock
+              (Paragraph
+                [ ParInline
+                    (Str "\nThe statement of an interesting theorem.\n")
+                ]
+              )
+          ]
+        , fbConclusion = [Str "QED"]
+        }
+      )
     ]
   , secChildren = []
   }
