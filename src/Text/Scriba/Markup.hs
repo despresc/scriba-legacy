@@ -92,6 +92,13 @@ import           Text.Megaparsec                ( SourcePos
   numbered thing we could put its type and number in parentheses after
   the link text).
 
+- the parsers need to be aware of failure while consuming input! I
+  don't think our current error discipline handles this very
+  well. E.g. if we have a document with a # frontMatter then our
+  parser ought to attempt to parse the document with an explicit
+  matter structure. What it should _not_ do, and what it currently
+  does, is fall back to parsing it with the implicit matter structure.
+
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -275,7 +282,8 @@ one act = liftScriba $ \ss -> case ss of
   [] -> throwError $ Msg "insufficient nodes"
 
 -- TODO: better error? Something like "unexpected element foo" or
--- "unexpected text"
+-- "unexpected text". Also might want this to consume whitespace or
+-- otherwise be whitespace-configurable.
 zero :: Scriba [s] ()
 zero = liftScriba $ \ss -> case ss of
   [] -> pure ([], ())
@@ -314,14 +322,17 @@ allContent p = content $ do
     []    -> pure a
     n : _ -> throwError $ Msg $ T.pack $ show n
 
--- TODO: do we need allContent anymore?
+-- TODO: monoid?
+remaining :: (Monoid (t s), Traversable t) => Scriba s a -> Scriba (t s) (t a)
+remaining p = liftScriba $ \ss -> do
+  let readScriba = fmap snd . runScriba p
+  as <- traverse readScriba ss
+  pure (mempty, as)
+
 -- TODO: we simply throw away the transformed nodes. Not sure if the
 -- version that keeps them would be useful.
 allContentOf :: Scriba Node a -> Scriba Element [a]
-allContentOf p = liftScriba $ \(Element mty met con) -> do
-  let readScriba = fmap snd . runScriba p
-  as <- traverse readScriba con
-  pure (Element mty met [], as)
+allContentOf = content . remaining
 
 meta :: Scriba Meta a -> Scriba Element a
 meta act = liftScriba $ \(Element mty met con) -> do
@@ -545,7 +556,7 @@ pCode = do
 pSection :: Scriba Element Section
 pSection = do
   matchTy "section" <|> presentedAsSection
-  whileParsingElem "section" $ allContent $ pSectionContent Section
+  whileParsingElem "section" $ content $ pSectionContent Section
  where
   presentedAsSection = meta $ do
     Meta _ pres _ _ <- inspect
@@ -553,29 +564,32 @@ pSection = do
       AsSection _ -> pure ()
       _           -> empty
 
--- TODO: write this and pSection in an allContentOf style
+-- implicitly parses the whole block content
 pSectionContent :: ([Block] -> [Section] -> a) -> Scriba [Node] a
 pSectionContent con = do
   pre  <- manyOf $ pBlock
-  subs <- manyOf $ asNode pSection
+  subs <- remaining $ asNode pSection
   pure $ con pre subs
 
 -- ** Document parsing
 
 -- TODO: have a pSectionNamed :: Text -> Scriba Element Section to
 -- deal with special sections, like the matter?
+-- TODO: deal with this allContent invocation (and any other
+-- troublesome ones).
 pDoc :: Scriba Element Doc
 pDoc = do
   matchTy "scriba"
-  whileParsingElem "scriba" $ allContent $ pExplicitMatter <|> pBare
+  whileParsingElem "scriba" $ content $ pExplicitMatter <|> pBare
  where
   pMatter t = asNode $ do
     matchTy t
-    whileParsingElem t $ allContent $ pSectionContent Section
+    whileParsingElem t $ content $ pSectionContent Section
   pExplicitMatter = do
     f <- one $ pMatter "frontMatter"
     m <- one $ pMatter "mainMatter"
     b <- one $ pMatter "endMatter"
+    zero
     pure $ Doc f m b
   pBare = do
     c <- pSectionContent Section
