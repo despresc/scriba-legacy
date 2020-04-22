@@ -124,7 +124,8 @@ data ParContent
   = ParInline Inline
   deriving (Eq, Ord, Show, Read)
 
--- Might want a formal inline too.
+-- Might want a formal inline too. Some kind of "inline result",
+-- anyway.
 data FormalBlock = FormalBlock
   { fbType :: Maybe Text
   , fbTitle :: [Inline]

@@ -310,6 +310,7 @@ pArgs sc = pElementArgsStart >> sc >> MP.many (pArgNode <* sc)
 -- | Parse an inline node with the given text node parser.
 pInlineNodeWith :: Parser Text -> Parser InlineNode
 pInlineNodeWith pText = do
+  void $ MP.many pComment
   src <- MP.getSourcePos
   eet <- MP.eitherP pInlineElement pText
   pure $ case eet of

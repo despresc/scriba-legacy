@@ -1,0 +1,614 @@
+Doc
+(SourcePos { sourceName   = "manual.sml"
+           , sourceLine   = Pos 1
+           , sourceColumn = Pos 1
+           }
+)
+(Attrs { getAttrs = fromList [] })
+[ SecBlock
+  (BlockPar
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 1
+               , sourceColumn = Pos 1
+               }
+    )
+    [ InlineBraced
+        (Element
+          { srcPos  = SourcePos { sourceName   = "manual.sml"
+                                , sourceLine   = Pos 1
+                                , sourceColumn = Pos 1
+                                }
+          , etype   = Just "scriba"
+          , attrs   = Attrs
+            { getAttrs = fromList
+              [ ( "title"
+                , ( SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 2
+                              , sourceColumn = Pos 3
+                              }
+                  , Attrs { getAttrs = fromList [] }
+                  , []
+                  , InlineSequence
+                    [ InlineText
+                        (SourcePos { sourceName   = "manual.sml"
+                                   , sourceLine   = Pos 2
+                                   , sourceColumn = Pos 10
+                                   }
+                        )
+                        "The scriba markup language and document system"
+                    ]
+                  )
+                )
+              , ( "type"
+                , ( SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 3
+                              , sourceColumn = Pos 3
+                              }
+                  , Attrs { getAttrs = fromList [] }
+                  , []
+                  , InlineSequence
+                    [ InlineText
+                        (SourcePos { sourceName   = "manual.sml"
+                                   , sourceLine   = Pos 3
+                                   , sourceColumn = Pos 9
+                                   }
+                        )
+                        "article"
+                    ]
+                  )
+                )
+              ]
+            }
+          , args    = []
+          , content = InlineNil
+          }
+        )
+    ]
+  )
+, SecBlock
+  (BlockPar
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 5
+               , sourceColumn = Pos 1
+               }
+    )
+    [ InlineText
+        (SourcePos { sourceName   = "manual.sml"
+                   , sourceLine   = Pos 5
+                   , sourceColumn = Pos 1
+                   }
+        )
+        "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications."
+    ]
+  )
+, SecHeaderNode
+  (SecHeader
+    1
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 12
+               , sourceColumn = Pos 1
+               }
+    )
+    Nothing
+    (Attrs
+      { getAttrs = fromList
+                     [ ( "title"
+                       , ( SourcePos { sourceName   = "manual.sml"
+                                     , sourceLine   = Pos 12
+                                     , sourceColumn = Pos 3
+                                     }
+                         , Attrs { getAttrs = fromList [] }
+                         , []
+                         , InlineSequence
+                           [ InlineText
+                               (SourcePos { sourceName   = "manual.sml"
+                                          , sourceLine   = Pos 12
+                                          , sourceColumn = Pos 10
+                                          }
+                               )
+                               "An introduction to the language"
+                           ]
+                         )
+                       )
+                     ]
+      }
+    )
+    []
+  )
+, SecHeaderNode
+  (SecHeader
+    2
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 14
+               , sourceColumn = Pos 1
+               }
+    )
+    Nothing
+    (Attrs
+      { getAttrs = fromList
+                     [ ( "title"
+                       , ( SourcePos { sourceName   = "manual.sml"
+                                     , sourceLine   = Pos 14
+                                     , sourceColumn = Pos 4
+                                     }
+                         , Attrs { getAttrs = fromList [] }
+                         , []
+                         , InlineSequence
+                           [ InlineText
+                               (SourcePos { sourceName   = "manual.sml"
+                                          , sourceLine   = Pos 14
+                                          , sourceColumn = Pos 11
+                                          }
+                               )
+                               "Paragraphs"
+                           ]
+                         )
+                       )
+                     ]
+      }
+    )
+    []
+  )
+, SecBlock
+  (BlockPar
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 16
+               , sourceColumn = Pos 1
+               }
+    )
+    [ InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 16
+                 , sourceColumn = Pos 1
+                 }
+      )
+      "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba contains "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 18
+                              , sourceColumn = Pos 41
+                              }
+        , etype   = Just "emph"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineSequence
+                      [ InlineText
+                          (SourcePos { sourceName   = "manual.sml"
+                                     , sourceLine   = Pos 18
+                                     , sourceColumn = Pos 47
+                                     }
+                          )
+                          "paragraph text"
+                      ]
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 18
+                 , sourceColumn = Pos 62
+                 }
+      )
+      " and\n"
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 19
+                              , sourceColumn = Pos 1
+                              }
+        , etype   = Just "emph"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineSequence
+                      [ InlineText
+                          (SourcePos { sourceName   = "manual.sml"
+                                     , sourceLine   = Pos 19
+                                     , sourceColumn = Pos 7
+                                     }
+                          )
+                          "elements"
+                      ]
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 19
+                 , sourceColumn = Pos 16
+                 }
+      )
+      ". Two sample paragraphs are given below:"
+    ]
+  )
+, SecBlock
+  (BlockBlock
+    (Element
+      { srcPos  = SourcePos { sourceName   = "manual.sml"
+                            , sourceLine   = Pos 21
+                            , sourceColumn = Pos 1
+                            }
+      , etype   = Just "codeBlock"
+      , attrs   = Attrs
+                    { getAttrs = fromList
+                                   [ ( "language"
+                                     , ( SourcePos { sourceName = "manual.sml"
+                                                   , sourceLine = Pos 21
+                                                   , sourceColumn = Pos 13
+                                                   }
+                                       , Attrs { getAttrs = fromList [] }
+                                       , []
+                                       , InlineSequence
+                                         [ InlineText
+                                             (SourcePos
+                                               { sourceName   = "manual.sml"
+                                               , sourceLine   = Pos 21
+                                               , sourceColumn = Pos 23
+                                               }
+                                             )
+                                             "scriba"
+                                         ]
+                                       )
+                                     )
+                                   ]
+                    }
+      , args    = []
+      , content = BlockVerbatim
+        (SourcePos { sourceName   = "manual.sml"
+                   , sourceLine   = Pos 21
+                   , sourceColumn = Pos 30
+                   }
+        )
+        "  There was nothing so very remarkable in that; nor did Alice think\n  it so very much out of the way to hear the Rabbit say to itself,\n  {q|Oh dear! Oh dear! I shall be late!} (when she thought it over\n  afterwards, it occurred to her that she ought to have wondered at\n  this, but at the time it all seemed quite natural); but when the\n  Rabbit actually {emph|took a watch out of its waistcoat-pocket},\n  and looked at it, and then hurried on, Alice started to her feet,\n  for it flashed across her mind that she had never before seen a\n  rabbit with either a waistcoat-pocket, or a watch to take out of\n  it, and burning with curiosity, she ran across the field after it,\n  and fortunately was just in time to see it pop down a large\n  rabbit-hole under the hedge.\n\n  In another moment down went Alice after it, never once considering\n  how in the world she was to get out again."
+      }
+    )
+  )
+, SecBlock
+  (BlockPar
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 39
+               , sourceColumn = Pos 1
+               }
+    )
+    [ InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 39
+                 , sourceColumn = Pos 1
+                 }
+      )
+      "Plain paragraph text is any span of unicode characters other than\n"
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 40
+                              , sourceColumn = Pos 1
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 40
+                                 , sourceColumn = Pos 6
+                                 }
+                      )
+                      "\\"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 40
+                 , sourceColumn = Pos 10
+                 }
+      )
+      ", "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 40
+                              , sourceColumn = Pos 12
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 40
+                                 , sourceColumn = Pos 17
+                                 }
+                      )
+                      "{"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 40
+                 , sourceColumn = Pos 21
+                 }
+      )
+      ", or "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 40
+                              , sourceColumn = Pos 26
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 40
+                                 , sourceColumn = Pos 31
+                                 }
+                      )
+                      "}"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 40
+                 , sourceColumn = Pos 35
+                 }
+      )
+      ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. The sequences\n"
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 43
+                              , sourceColumn = Pos 1
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 43
+                                 , sourceColumn = Pos 6
+                                 }
+                      )
+                      "\\\\"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 43
+                 , sourceColumn = Pos 11
+                 }
+      )
+      ", "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 43
+                              , sourceColumn = Pos 13
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 43
+                                 , sourceColumn = Pos 18
+                                 }
+                      )
+                      "\\{"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 43
+                 , sourceColumn = Pos 23
+                 }
+      )
+      ", and "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 43
+                              , sourceColumn = Pos 29
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 43
+                                 , sourceColumn = Pos 34
+                                 }
+                      )
+                      "\\}"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 43
+                 , sourceColumn = Pos 39
+                 }
+      )
+      " are used to represent those\nliteral characters, should you need them in text."
+    ]
+  )
+, SecBlock
+  (BlockPar
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 46
+               , sourceColumn = Pos 1
+               }
+    )
+    [ InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 46
+                 , sourceColumn = Pos 1
+                 }
+      )
+      "The other feature of paragraph markup is "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 46
+                              , sourceColumn = Pos 42
+                              }
+        , etype   = Just "emph"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineSequence
+                      [ InlineText
+                          (SourcePos { sourceName   = "manual.sml"
+                                     , sourceLine   = Pos 46
+                                     , sourceColumn = Pos 48
+                                     }
+                          )
+                          "inline elements"
+                      ]
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 46
+                 , sourceColumn = Pos 64
+                 }
+      )
+      ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 48
+                 , sourceColumn = Pos 64
+                 }
+      )
+      " Simple\nelements start with "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 49
+                              , sourceColumn = Pos 21
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 49
+                                 , sourceColumn = Pos 26
+                                 }
+                      )
+                      "{tag|"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 49
+                 , sourceColumn = Pos 34
+                 }
+      )
+      " and end with "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 49
+                              , sourceColumn = Pos 48
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 49
+                                 , sourceColumn = Pos 53
+                                 }
+                      )
+                      "}"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 49
+                 , sourceColumn = Pos 57
+                 }
+      )
+      ". The\nparagraphs above have a "
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 50
+                              , sourceColumn = Pos 25
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 50
+                                 , sourceColumn = Pos 30
+                                 }
+                      )
+                      "q"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 50
+                 , sourceColumn = Pos 34
+                 }
+      )
+      " element, representing quoted text\nand likely to be rendered between quotation marks, and a `"
+    , InlineBraced
+      (Element
+        { srcPos  = SourcePos { sourceName   = "manual.sml"
+                              , sourceLine   = Pos 51
+                              , sourceColumn = Pos 59
+                              }
+        , etype   = Just "code"
+        , attrs   = Attrs { getAttrs = fromList [] }
+        , args    = []
+        , content = InlineVerbatim
+                      (SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 51
+                                 , sourceColumn = Pos 64
+                                 }
+                      )
+                      "emph"
+        }
+      )
+    , InlineText
+      (SourcePos { sourceName   = "manual.sml"
+                 , sourceLine   = Pos 51
+                 , sourceColumn = Pos 71
+                 }
+      )
+      "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
+    ]
+  )
+, SecHeaderNode
+  (SecHeader
+    2
+    (SourcePos { sourceName   = "manual.sml"
+               , sourceLine   = Pos 55
+               , sourceColumn = Pos 1
+               }
+    )
+    Nothing
+    (Attrs
+      { getAttrs = fromList
+                     [ ( "title"
+                       , ( SourcePos { sourceName   = "manual.sml"
+                                     , sourceLine   = Pos 55
+                                     , sourceColumn = Pos 4
+                                     }
+                         , Attrs { getAttrs = fromList [] }
+                         , []
+                         , InlineSequence
+                           [ InlineText
+                               (SourcePos { sourceName   = "manual.sml"
+                                          , sourceLine   = Pos 55
+                                          , sourceColumn = Pos 11
+                                          }
+                               )
+                               "Sections"
+                           ]
+                         )
+                       )
+                     ]
+      }
+    )
+    []
+  )
+]

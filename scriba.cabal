@@ -30,4 +30,4 @@ test-suite scriba-test
   import: base
   type: exitcode-stdio-1.0
   main-is: test/test-scriba.hs
-  build-depends: hspec, text, scriba
+  build-depends: hspec, text, scriba, filepath
