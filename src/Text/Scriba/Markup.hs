@@ -314,6 +314,15 @@ allContent p = content $ do
     []    -> pure a
     n : _ -> throwError $ Msg $ T.pack $ show n
 
+-- TODO: do we need allContent anymore?
+-- TODO: we simply throw away the transformed nodes. Not sure if the
+-- version that keeps them would be useful.
+allContentOf :: Scriba Node a -> Scriba Element [a]
+allContentOf p = liftScriba $ \(Element mty met con) -> do
+  let readScriba = fmap snd . runScriba p
+  as <- traverse readScriba con
+  pure (Element mty met [], as)
+
 meta :: Scriba Meta a -> Scriba Element a
 meta act = liftScriba $ \(Element mty met con) -> do
   (met', a) <- runScriba act met
@@ -394,9 +403,9 @@ commonIndentStrip txt =
     . T.lines
     $ txt
  where
-    -- TODO: the list only needs to be traversed once, probably, with
-    -- time travel.
-    -- This assumes t is not null
+  -- TODO: the list only needs to be traversed once, probably, with
+  -- time travel.
+  -- This assumes t is not null
   getIndent = T.length . T.takeWhile (== ' ')
   findFirstInhabited (t : ts) | not (T.null t) = Just (getIndent t, ts)
                               | otherwise      = findFirstInhabited ts
@@ -437,7 +446,13 @@ asNode _ (NodeText sp _) =
 -- ** BlockParsing
 
 pBlock :: Scriba Node Block
-pBlock = asNode $ FormalBlockBlock <$> pFormalBlock <|> ParBlock <$> pParagraph <|> pCodeBlock
+pBlock =
+  asNode
+    $   FormalBlockBlock
+    <$> pFormalBlock
+    <|> ParBlock
+    <$> pParagraph
+    <|> pCodeBlock
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap
@@ -462,8 +477,8 @@ pFormalBlock = do
   whileParsingElem "formalBlock" $ do
     (mty, title, concl) <- meta $ attrs $ do
       mty   <- attr "type" $ allContent $ one text
-      title <- attr "title" $ allContent $ manyOf pInline
-      concl <- attr "conclusion" $ allContent $ manyOf pInline
+      title <- attr "title" $ allContentOf pInline
+      concl <- attr "conclusion" $ allContentOf pInline
       pure (mty, title, concl)
     body <- allContent (manyOf pBlock)
       <|> allContent ((: []) . ParBlock . Paragraph <$> manyOf pParContent)
@@ -483,7 +498,7 @@ pCodeBlock = do
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
   matchTy "p"
-  c <- whileParsingElem "p" $ allContent $ manyOf pParContent
+  c <- whileParsingElem "p" $ allContentOf pParContent
   pure $ Paragraph c
 
 pParContent :: Scriba Node ParContent
@@ -497,7 +512,7 @@ pInline = asNode (pEmph <|> pPageMark <|> pMath <|> pCode) <|> pText
 pEmph :: Scriba Element Inline
 pEmph = do
   matchTy "emph"
-  c <- whileParsingElem "emph" $ allContent $ manyOf pInline
+  c <- whileParsingElem "emph" $ allContentOf pInline
   pure $ Emph c
 
 -- TODO: well-formedness checking?
@@ -513,7 +528,7 @@ pText = Str . snd <$> text
 pMath :: Scriba Element Inline
 pMath = do
   matchTy "math"
-  ts <- whileParsingElem "math" $ allContent $ manyOf $ snd <$> text
+  ts <- whileParsingElem "math" $ allContentOf $ snd <$> text
   pure $ Math $ T.concat ts
 
 pCode :: Scriba Element Inline
@@ -538,6 +553,7 @@ pSection = do
       AsSection _ -> pure ()
       _           -> empty
 
+-- TODO: write this and pSection in an allContentOf style
 pSectionContent :: ([Block] -> [Section] -> a) -> Scriba [Node] a
 pSectionContent con = do
   pre  <- manyOf $ pBlock
