@@ -8,7 +8,7 @@ import qualified Text.Scriba.Markup            as SM
 
 import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
-import System.FilePath (takeFileName)
+import           System.FilePath                ( takeFileName )
 
 
 parsesAs :: FilePath -> FilePath -> Expectation
@@ -29,16 +29,13 @@ testParse fp = do
       int = "./test/tests/" <> fp <> ".parse"
   sml `parsesAs` int
 
--- TODO: duplication
-testMarkup :: FilePath -> Expectation
-testMarkup fp = do
-  let sml = "./test/tests/" <> fp <> ".sml"
-      int = "./test/tests/" <> fp <> ".markup"
+markedUpAs :: FilePath -> FilePath -> Expectation
+markedUpAs sml int = do
   tSml      <- T.readFile sml
   tInternal <- readFile int
   let ea = do
-        a <- SP.parseDoc' (T.pack $ fp <> ".sml") tSml
-        let a' = SI.fromDoc a
+        a <- SP.parseDoc' (T.pack $ takeFileName sml) tSml
+        let a'     = SI.fromDoc a
             toText = T.pack . show
         either (Left . toText) Right $ SM.parseDoc a'
       -- TODO: safe read, I suppose?
@@ -48,10 +45,22 @@ testMarkup fp = do
     Left  e -> error $ T.unpack e
     Right a -> a `shouldBe` good
 
+-- TODO: duplication
+testMarkup :: FilePath -> Expectation
+testMarkup fp = do
+  let sml = "./test/tests/" <> fp <> ".sml"
+      int = "./test/tests/" <> fp <> ".markup"
+  sml `markedUpAs` int
+
 main :: IO ()
 main = hspec $ do
   describe "scriba" $ do
     it "parses the README example" $ testParse "bayes"
     it "parses a verbatim block" $ testParse "block-verbatim"
     it "parses a simple example correctly" $ testMarkup "simple"
-    it "parses the manual" $ "./doc/manual.sml" `parsesAs` "./test/tests/manual.parse"
+    it "parses the manual"
+      $          "./doc/manual.sml"
+      `parsesAs` "./test/tests/manual.parse"
+    it "parses the manual correctly"
+      $            "./doc/manual.sml"
+      `markedUpAs` "./test/tests/manual.markup"

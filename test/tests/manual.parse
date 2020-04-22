@@ -4,68 +4,48 @@ Doc
            , sourceColumn = Pos 1
            }
 )
-(Attrs { getAttrs = fromList [] })
+(Attrs
+  { getAttrs = fromList
+                 [ ( "title"
+                   , ( SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 2
+                                 , sourceColumn = Pos 3
+                                 }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                       [ InlineText
+                           (SourcePos { sourceName   = "manual.sml"
+                                      , sourceLine   = Pos 2
+                                      , sourceColumn = Pos 10
+                                      }
+                           )
+                           "The scriba markup language and document system"
+                       ]
+                     )
+                   )
+                 , ( "type"
+                   , ( SourcePos { sourceName   = "manual.sml"
+                                 , sourceLine   = Pos 3
+                                 , sourceColumn = Pos 3
+                                 }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                       [ InlineText
+                           (SourcePos { sourceName   = "manual.sml"
+                                      , sourceLine   = Pos 3
+                                      , sourceColumn = Pos 9
+                                      }
+                           )
+                           "article"
+                       ]
+                     )
+                   )
+                 ]
+  }
+)
 [ SecBlock
-  (BlockPar
-    (SourcePos { sourceName   = "manual.sml"
-               , sourceLine   = Pos 1
-               , sourceColumn = Pos 1
-               }
-    )
-    [ InlineBraced
-        (Element
-          { srcPos  = SourcePos { sourceName   = "manual.sml"
-                                , sourceLine   = Pos 1
-                                , sourceColumn = Pos 1
-                                }
-          , etype   = Just "scriba"
-          , attrs   = Attrs
-            { getAttrs = fromList
-              [ ( "title"
-                , ( SourcePos { sourceName   = "manual.sml"
-                              , sourceLine   = Pos 2
-                              , sourceColumn = Pos 3
-                              }
-                  , Attrs { getAttrs = fromList [] }
-                  , []
-                  , InlineSequence
-                    [ InlineText
-                        (SourcePos { sourceName   = "manual.sml"
-                                   , sourceLine   = Pos 2
-                                   , sourceColumn = Pos 10
-                                   }
-                        )
-                        "The scriba markup language and document system"
-                    ]
-                  )
-                )
-              , ( "type"
-                , ( SourcePos { sourceName   = "manual.sml"
-                              , sourceLine   = Pos 3
-                              , sourceColumn = Pos 3
-                              }
-                  , Attrs { getAttrs = fromList [] }
-                  , []
-                  , InlineSequence
-                    [ InlineText
-                        (SourcePos { sourceName   = "manual.sml"
-                                   , sourceLine   = Pos 3
-                                   , sourceColumn = Pos 9
-                                   }
-                        )
-                        "article"
-                    ]
-                  )
-                )
-              ]
-            }
-          , args    = []
-          , content = InlineNil
-          }
-        )
-    ]
-  )
-, SecBlock
   (BlockPar
     (SourcePos { sourceName   = "manual.sml"
                , sourceLine   = Pos 5

@@ -20,6 +20,7 @@ import           Control.Monad.State.Strict     ( StateT
                                                 )
 import qualified Control.Monad.State.Strict    as S
 import qualified Control.Monad.Except          as E
+import           Data.Foldable                  ( foldl' )
 import           Data.Functor.Compose           ( Compose(..) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
@@ -111,6 +112,7 @@ emptySection = Section [] []
 
 data Block
   = FormalBlockBlock FormalBlock
+  | CodeBlock Text
   | ParBlock Paragraph
   deriving (Eq, Ord, Show, Read)
 
@@ -138,6 +140,7 @@ data Inline
   = Str Text
   | Emph [Inline]
   | Math Text
+  | Code Text
   | PageMark Text
   deriving (Eq, Ord, Show, Read)
 
@@ -374,6 +377,41 @@ text = liftScriba $ \n -> case n of
   NodeElem (Element _ (Meta sp _ _ _) _) ->
     expectsGotAt ["text node"] sp "element"
 
+-- TODO: no tab support yet. Should document.
+-- TODO: does this strip off a single trailing newline, by using
+-- lines? If so, might want to fix that.
+-- TODO: should document the blank line behaviour.
+-- TODO: test this function
+
+-- TODO: should this even be done in Intermediate? it sort of throws
+-- off the source positioning... People can always call this on their
+commonIndentStrip :: Text -> Text
+commonIndentStrip txt =
+  correctNewline
+    . T.intercalate "\n"
+    . stripIndents
+    . getIndents
+    . T.lines
+    $ txt
+ where
+    -- TODO: the list only needs to be traversed once, probably, with
+    -- time travel.
+    -- This assumes t is not null
+  getIndent = T.length . T.takeWhile (== ' ')
+  findFirstInhabited (t : ts) | not (T.null t) = Just (getIndent t, ts)
+                              | otherwise      = findFirstInhabited ts
+  findFirstInhabited _ = Nothing
+  mminLen n t | not (T.null t) = min n $ getIndent t
+  mminLen n _                  = n
+  getIndents l = case findFirstInhabited l of
+    Just (n, ts) -> (Just $ foldl' mminLen n ts, l)
+    Nothing      -> (Nothing, l)
+  stripIndents (Just n , l) = T.drop n <$> l
+  stripIndents (Nothing, l) = l
+  correctNewline | Just (_, '\n') <- T.unsnoc txt = flip T.snoc '\n'
+                 | otherwise                      = id
+
+
 {-
 throwScribaError :: MonadError ScribaError m => Text -> m a
 throwScribaError = throwError . Error
@@ -399,7 +437,7 @@ asNode _ (NodeText sp _) =
 -- ** BlockParsing
 
 pBlock :: Scriba Node Block
-pBlock = asNode $ FormalBlockBlock <$> pFormalBlock <|> ParBlock <$> pParagraph
+pBlock = asNode $ FormalBlockBlock <$> pFormalBlock <|> ParBlock <$> pParagraph <|> pCodeBlock
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap
@@ -434,6 +472,14 @@ pFormalBlock = do
                        body
                        (fromMaybe [] concl)
 
+-- TODO: no language attributes recognized. This is also a problem
+-- with the code inline.
+pCodeBlock :: Scriba Element Block
+pCodeBlock = do
+  matchTy "codeBlock"
+  t <- whileParsingElem "codeBlock" $ allContent $ one text
+  pure $ CodeBlock $ commonIndentStrip $ snd t
+
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
   matchTy "p"
@@ -446,7 +492,7 @@ pParContent = ParInline <$> pInline
 -- ** Inline parsing
 
 pInline :: Scriba Node Inline
-pInline = asNode (pEmph <|> pPageMark <|> pMath) <|> pText
+pInline = asNode (pEmph <|> pPageMark <|> pMath <|> pCode) <|> pText
 
 pEmph :: Scriba Element Inline
 pEmph = do
@@ -469,6 +515,12 @@ pMath = do
   matchTy "math"
   ts <- whileParsingElem "math" $ allContent $ manyOf $ snd <$> text
   pure $ Math $ T.concat ts
+
+pCode :: Scriba Element Inline
+pCode = do
+  matchTy "code"
+  t <- whileParsingElem "code" $ allContent $ one text
+  pure $ Code $ snd t
 
 -- ** Section parsing
 

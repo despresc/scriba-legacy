@@ -10,11 +10,9 @@ import           Text.Scriba.Parse              ( InlineContent(..)
                                                 )
 import qualified Text.Scriba.Parse             as P
 
-import           Data.Foldable                  ( foldl' )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
-import qualified Data.Text                     as T
 import           Text.Megaparsec                ( SourcePos )
 
 {- TODO:
@@ -176,39 +174,3 @@ fromSecNodes = go . groupSecNodes
 fromDoc :: P.Doc -> Node
 fromDoc (P.Doc sp a n) =
   nodeElement (Just "scriba") (Meta sp AsDoc (fromAttrs a) []) $ fromSecNodes n
-
--- * Helpers
-
--- TODO: no tab support yet. Should document.
--- TODO: does this strip off a single trailing newline, by using
--- lines? If so, might want to fix that.
--- TODO: should document the blank line behaviour.
--- TODO: test this function
-
--- TODO: should this even be done in Intermediate? it sort of throws
--- off the source positioning... People can always call this on their
-commonIndentStrip :: Text -> Text
-commonIndentStrip txt =
-  correctNewline
-    . T.intercalate "\n"
-    . stripIndents
-    . getIndents
-    . T.lines
-    $ txt
- where
-    -- TODO: the list only needs to be traversed once, probably, with
-    -- time travel.
-    -- This assumes t is not null
-  getIndent = T.length . T.takeWhile (== ' ')
-  findFirstInhabited (t : ts) | not (T.null t) = Just (getIndent t, ts)
-                              | otherwise      = findFirstInhabited ts
-  findFirstInhabited _ = Nothing
-  mminLen n t | not (T.null t) = min n $ getIndent t
-  mminLen n _                  = n
-  getIndents l = case findFirstInhabited l of
-    Just (n, ts) -> (Just $ foldl' mminLen n ts, l)
-    Nothing      -> (Nothing, l)
-  stripIndents (Just n , l) = T.drop n <$> l
-  stripIndents (Nothing, l) = l
-  correctNewline | Just (_, '\n') <- T.unsnoc txt = flip T.snoc '\n'
-                 | otherwise                      = id

@@ -418,10 +418,23 @@ pSecHeader = do
 
 -- ** Full document
 
+-- TODO: duplication, perhaps.
+pDocAttrs :: Parser Attrs
+pDocAttrs = pBraced $ do
+  pSpace
+  void $ "scriba"
+  pSpace
+  pAttrs pSpace
+
 pDoc :: Parser Doc
 pDoc = do
   src <- MP.getSourcePos
-  (Doc src <$> pure mempty <*> pSecContent) <* MP.eof
+  pSpace
+  at <- MP.option mempty pDocAttrs
+  pSpace
+  c <- pSecContent
+  MP.eof
+  pure $ Doc src at c
 
 -- * Running parsers
 
