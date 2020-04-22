@@ -85,6 +85,12 @@ import           Text.Megaparsec                ( SourcePos
 - should some of these types become parametric? to resuse blocks
   elsewhere with different content restrictions.
 
+- fallbacks and conditional rendering for the various output formats?
+  Say for internal links in non-hypertext formats. Though there we
+  might have some automatic fallback options (e.g. if we link to a
+  numbered thing we could put its type and number in parentheses after
+  the link text).
+
 -}
 
 -- | A document with front matter, main matter, and end matter.
