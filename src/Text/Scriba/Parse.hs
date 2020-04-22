@@ -37,6 +37,10 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
 - Add a double-backtick verbatim block form that strips indent? Or is
   that redundant?
 
+- Should comments be preserved? If we add a document formatter then
+  source comments should probably be left in-place instead of being
+  stripped out.
+
 -}
 
 -- * Document syntax
