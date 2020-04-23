@@ -20,11 +20,12 @@ common base
 library
   import: base
   hs-source-dirs: src
-  build-depends: megaparsec, text, containers, mtl
+  build-depends: megaparsec, text, containers, mtl, blaze-html
   exposed-modules:
     Text.Scriba.Intermediate
     Text.Scriba.Markup
     Text.Scriba.Parse
+    Text.Scriba.Render.Html
 
 test-suite scriba-test
   import: base

@@ -5,7 +5,9 @@ import           Test.Hspec
 import qualified Text.Scriba.Parse             as SP
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
+import qualified Text.Scriba.Render.Html       as SRH
 
+import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
 import           System.FilePath                ( takeFileName )
@@ -52,6 +54,23 @@ testMarkup fp = do
       int = "./test/tests/" <> fp <> ".markup"
   sml `markedUpAs` int
 
+-- TODO: really should create a readDoc :: Text -> Either
+-- ... function, in addition to the safe read
+rendersAsWith :: (SM.Doc -> Text) -> FilePath -> FilePath -> Expectation
+rendersAsWith f sml int = do
+  tSml <- T.readFile sml
+  good <- T.readFile int
+  let ea = do
+        a <- SP.parseDoc' (T.pack $ takeFileName sml) tSml
+        let a'     = SI.fromDoc a
+            toText = T.pack . show
+        either (Left . toText) Right $ SM.parseDoc a'
+  case ea of
+    -- TODO: something better here?
+    Left  e -> error $ T.unpack e
+    Right a -> f a <> "\n" `shouldBe` good
+
+-- TODO: one single test block for the manual?
 main :: IO ()
 main = hspec $ do
   describe "scriba" $ do
@@ -64,3 +83,6 @@ main = hspec $ do
     it "parses the manual correctly"
       $            "./doc/manual.sml"
       `markedUpAs` "./test/tests/manual.markup"
+    it "renders the manual to html" $ rendersAsWith SRH.renderStandalone
+                                                    "./doc/manual.sml"
+                                                    "./test/tests/manual.html"

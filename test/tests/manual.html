@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html><head><title>standalone</title></head><body><section class="scribaDoc"><section class="frontMatter"><section></section></section><section class="mainMatter"><section><p>Scriba is a plain text markup language emphasizing extensibility,
+clarity, and ease of use. It is also a compiler, taking source scriba
+documents and rendering them to multi-page HTML, EPUB, and TeX. The
+format includes flexible markup constructs designed to represent a
+range of historical scientific material, but these can be used equally
+well for new publications.</p><section><section><p>The bulk of your document will most likely be paragraphs, sequences of
+normal text and marked-up content representing a single idea in your
+writing. A paragraph in scriba contains <em>paragraph text</em> and
+<em>elements</em>. Two sample paragraphs are given below:</p><pre><code>There was nothing so very remarkable in that; nor did Alice think
+it so very much out of the way to hear the Rabbit say to itself,
+{q|Oh dear! Oh dear! I shall be late!} (when she thought it over
+afterwards, it occurred to her that she ought to have wondered at
+this, but at the time it all seemed quite natural); but when the
+Rabbit actually {emph|took a watch out of its waistcoat-pocket},
+and looked at it, and then hurried on, Alice started to her feet,
+for it flashed across her mind that she had never before seen a
+rabbit with either a waistcoat-pocket, or a watch to take out of
+it, and burning with curiosity, she ran across the field after it,
+and fortunately was just in time to see it pop down a large
+rabbit-hole under the hedge.
+
+In another moment down went Alice after it, never once considering
+how in the world she was to get out again.</code></pre><p>Plain paragraph text is any span of unicode characters other than
+<code>\</code>, <code>{</code>, or <code>}</code>, with the additional restriction
+that paragraph text cannot contain blank lines; like in the example
+above, these signal the end of the paragraph. The sequences
+<code>\\</code>, <code>\{</code>, and <code>\}</code> are used to represent those
+literal characters, should you need them in text.</p><p>The other feature of paragraph markup is <em>inline elements</em>, which
+are used to give further meaning to your text and to control scriba&#39;s
+many features. Simple
+elements start with <code>{tag|</code> and end with <code>}</code>. The
+paragraphs above have a <code>q</code> element, representing quoted text
+and likely to be rendered between quotation marks, and a `<code>emph</code>
+element, representing emphasized text and likely to be rendered in
+italic type.</p></section><section></section></section></section></section><section class="backMatter"><section></section></section></section></body></html>

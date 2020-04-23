@@ -99,6 +99,14 @@ import           Text.Megaparsec                ( SourcePos
   matter structure. What it should _not_ do, and what it currently
   does, is fall back to parsing it with the implicit matter structure.
 
+- for inline Code, we may want to do what some markdowns do and turn
+  newlines into spaces
+
+- a reasonable number of the `one text` usages could instead be
+  `allContentOf ...` with a concat.
+
+- facility for replacing typewriter apostrophe with right single
+  quotation mark? Might just be a style guide thing, though.
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -109,6 +117,9 @@ data Doc = Doc Section Section Section
 -- a preamble and a list of subsections.
 
 -- TODO: maybe preamble isn't the correct name?
+-- TODO: the inside should be "section content", probably, and the Doc
+-- should have three SectionContent components, since we're enforcing
+-- a particular matter structure.
 data Section = Section
   { secPreamble :: [Block]
   , secChildren :: [Section]
@@ -117,6 +128,7 @@ data Section = Section
 emptySection :: Section
 emptySection = Section [] []
 
+-- TODO: really need a better name than FormalBlockBlock
 data Block
   = FormalBlockBlock FormalBlock
   | CodeBlock Text
