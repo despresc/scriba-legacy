@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Intermediate where
 
@@ -45,7 +45,6 @@ data SourcePresentation
   | AsInline
   | AsSection Int
   deriving (Eq, Ord, Show, Read)
-
 
 data Meta = Meta
   { loc :: SourcePos

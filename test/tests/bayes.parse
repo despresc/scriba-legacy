@@ -1,545 +1,575 @@
 Doc
-(SourcePos { sourceName   = "bayes.sml"
-           , sourceLine   = Pos 1
+  SourcePos
+    { sourceName = "bayes.sml"
+    , sourceLine = Pos 1
+    , sourceColumn = Pos 1
+    }
+  Attrs { getAttrs = fromList [] }
+  [ SecHeaderNode
+      (SecHeader
+         1
+         SourcePos
+           { sourceName = "bayes.sml"
+           , sourceLine = Pos 1
            , sourceColumn = Pos 1
            }
-)
-(Attrs { getAttrs = fromList [] })
-[ SecHeaderNode
-  (SecHeader
-    1
-    (SourcePos { sourceName   = "bayes.sml"
-               , sourceLine   = Pos 1
-               , sourceColumn = Pos 1
-               }
-    )
-    (Just "mainMatter")
-    (Attrs { getAttrs = fromList [] })
-    []
-  )
-, SecBlock
-  (BlockBlock
-    (Element
-      { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                            , sourceLine   = Pos 3
-                            , sourceColumn = Pos 1
-                            }
-      , etype   = Just "problem"
-      , attrs   = Attrs { getAttrs = fromList [] }
-      , args    = []
-      , content = BlockInlines
-        [ InlineText
-          (SourcePos { sourceName   = "bayes.sml"
-                     , sourceLine   = Pos 3
-                     , sourceColumn = Pos 11
-                     }
-          )
-          "\n"
-        , InlineBraced
-          (Element
-            { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                  , sourceLine   = Pos 4
-                                  , sourceColumn = Pos 1
-                                  }
-            , etype   = Just "physPage"
-            , attrs   = Attrs { getAttrs = fromList [] }
-            , args    = []
-            , content = InlineSequence
-                          [ InlineText
-                              (SourcePos { sourceName   = "bayes.sml"
-                                         , sourceLine   = Pos 4
-                                         , sourceColumn = Pos 11
-                                         }
-                              )
-                              "376"
-                          ]
-            }
-          )
-        , InlineText
-          (SourcePos { sourceName   = "bayes.sml"
-                     , sourceLine   = Pos 4
-                     , sourceColumn = Pos 15
-                     }
-          )
-          " "
-        , InlineBraced
-          (Element
-            { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                  , sourceLine   = Pos 4
-                                  , sourceColumn = Pos 16
-                                  }
-            , etype   = Just "emph"
-            , attrs   = Attrs { getAttrs = fromList [] }
-            , args    = []
-            , content = InlineSequence
-                          [ InlineText
-                              (SourcePos { sourceName   = "bayes.sml"
-                                         , sourceLine   = Pos 4
-                                         , sourceColumn = Pos 22
-                                         }
-                              )
-                              "Given"
-                          ]
-            }
-          )
-        , InlineText
-          (SourcePos { sourceName   = "bayes.sml"
-                     , sourceLine   = Pos 4
-                     , sourceColumn = Pos 28
-                     }
-          )
-          " the number of times in which an unknown event has\nhappened and failed: "
-        , InlineBraced
-          (Element
-            { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                  , sourceLine   = Pos 5
-                                  , sourceColumn = Pos 22
-                                  }
-            , etype   = Just "emph"
-            , attrs   = Attrs { getAttrs = fromList [] }
-            , args    = []
-            , content = InlineSequence
-                          [ InlineText
-                              (SourcePos { sourceName   = "bayes.sml"
-                                         , sourceLine   = Pos 5
-                                         , sourceColumn = Pos 28
-                                         }
-                              )
-                              "Required"
-                          ]
-            }
-          )
-        , InlineText
-          (SourcePos { sourceName   = "bayes.sml"
-                     , sourceLine   = Pos 5
-                     , sourceColumn = Pos 37
-                     }
-          )
-          " the chance that the probability of its happening\nin a single trial lies somewhere between any two degrees of probability that can\nbe named.\n"
-        ]
-      }
-    )
-  )
-, SecHeaderNode
-  (SecHeader
-    2
-    (SourcePos { sourceName   = "bayes.sml"
-               , sourceLine   = Pos 10
-               , sourceColumn = Pos 1
-               }
-    )
-    (Just "section")
-    (Attrs
-      { getAttrs = fromList
-                     [ ( "fullTitle"
-                       , ( SourcePos { sourceName   = "bayes.sml"
-                                     , sourceLine   = Pos 10
-                                     , sourceColumn = Pos 23
-                                     }
-                         , Attrs { getAttrs = fromList [] }
-                         , []
-                         , InlineSequence
-                           [ InlineText
-                               (SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 10
-                                          , sourceColumn = Pos 34
-                                          }
-                               )
-                               "Section I"
-                           ]
-                         )
-                       )
-                     , ( "number"
-                       , ( SourcePos { sourceName   = "bayes.sml"
-                                     , sourceLine   = Pos 10
-                                     , sourceColumn = Pos 12
-                                     }
-                         , Attrs { getAttrs = fromList [] }
-                         , []
-                         , InlineSequence
-                           [ InlineText
-                               (SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 10
-                                          , sourceColumn = Pos 20
-                                          }
-                               )
-                               "I"
-                           ]
-                         )
-                       )
-                     ]
-      }
-    )
-    []
-  )
-, SecBlock
-  (BlockBlock
-    (Element
-      { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                            , sourceLine   = Pos 12
-                            , sourceColumn = Pos 1
-                            }
-      , etype   = Just "definition"
-      , attrs   = Attrs { getAttrs = fromList [] }
-      , args    = []
-      , content = BlockBlocks
-        [ BlockBlock
-            (Element
-              { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                    , sourceLine   = Pos 13
-                                    , sourceColumn = Pos 1
-                                    }
-              , etype   = Just "olist"
-              , attrs   = Attrs { getAttrs = fromList [] }
-              , args    = []
-              , content = BlockBlocks
-                [ BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 14
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 14
-                                   , sourceColumn = Pos 6
+         (Just "mainMatter")
+         Attrs { getAttrs = fromList [] }
+         [])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "bayes.sml"
+                 , sourceLine = Pos 3
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "problem"
+           , attrs = Attrs { getAttrs = fromList [] }
+           , args = []
+           , content =
+               BlockInlines
+                 [ InlineText
+                     SourcePos
+                       { sourceName = "bayes.sml"
+                       , sourceLine = Pos 3
+                       , sourceColumn = Pos 11
+                       }
+                     "\n"
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "bayes.sml"
+                             , sourceLine = Pos 4
+                             , sourceColumn = Pos 1
+                             }
+                       , etype = Just "physPage"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "bayes.sml"
+                                   , sourceLine = Pos 4
+                                   , sourceColumn = Pos 11
                                    }
-                        )
-                        "Several events are "
-                      , InlineBraced
-                        (Element
-                          { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 14
-                                                , sourceColumn = Pos 25
-                                                }
-                          , etype   = Just "emph"
-                          , attrs   = Attrs { getAttrs = fromList [] }
-                          , args    = []
-                          , content = InlineSequence
-                                        [ InlineText
-                                            (SourcePos
-                                              { sourceName   = "bayes.sml"
-                                              , sourceLine   = Pos 14
-                                              , sourceColumn = Pos 31
-                                              }
-                                            )
-                                            "inconsistent"
-                                        ]
-                          }
-                        )
-                      , InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 14
-                                   , sourceColumn = Pos 44
-                                   }
-                        )
-                        ", when if one of them happens, none of the\nrest can."
-                      ]
-                    }
-                  )
-                , BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 17
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 17
-                                   , sourceColumn = Pos 6
-                                   }
-                        )
-                        "Two events are "
-                      , InlineBraced
-                        (Element
-                          { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 17
-                                                , sourceColumn = Pos 21
-                                                }
-                          , etype   = Just "emph"
-                          , attrs   = Attrs { getAttrs = fromList [] }
-                          , args    = []
-                          , content = InlineSequence
-                                        [ InlineText
-                                            (SourcePos
-                                              { sourceName   = "bayes.sml"
-                                              , sourceLine   = Pos 17
-                                              , sourceColumn = Pos 27
-                                              }
-                                            )
-                                            "contrary"
-                                        ]
-                          }
-                        )
-                      , InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 17
-                                   , sourceColumn = Pos 36
-                                   }
-                        )
-                        " when one, or other of them must; and both together\ncannot happen."
-                      ]
-                    }
-                  )
-                , BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 20
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 20
-                                   , sourceColumn = Pos 6
-                                   }
-                        )
-                        "An event is said to "
-                      , InlineBraced
-                        (Element
-                          { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 20
-                                                , sourceColumn = Pos 26
-                                                }
-                          , etype   = Just "emph"
-                          , attrs   = Attrs { getAttrs = fromList [] }
-                          , args    = []
-                          , content = InlineSequence
-                                        [ InlineText
-                                            (SourcePos
-                                              { sourceName   = "bayes.sml"
-                                              , sourceLine   = Pos 20
-                                              , sourceColumn = Pos 32
-                                              }
-                                            )
-                                            "fail"
-                                        ]
-                          }
-                        )
-                      , InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 20
-                                   , sourceColumn = Pos 37
-                                   }
-                        )
-                        ", when it cannot happen; or, which comes to the same\nthing, when its contrary has happened."
-                      ]
-                    }
-                  )
-                , BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 23
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                          (SourcePos { sourceName   = "bayes.sml"
-                                     , sourceLine   = Pos 23
-                                     , sourceColumn = Pos 6
-                                     }
-                          )
-                          "An event is said to be determined when it has either happened or failed."
-                      ]
-                    }
-                  )
-                , BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 25
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 25
-                                   , sourceColumn = Pos 6
-                                   }
-                        )
-                        "The "
-                      , InlineBraced
-                        (Element
-                          { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 25
-                                                , sourceColumn = Pos 10
-                                                }
-                          , etype   = Just "emph"
-                          , attrs   = Attrs { getAttrs = fromList [] }
-                          , args    = []
-                          , content = InlineSequence
-                                        [ InlineText
-                                            (SourcePos
-                                              { sourceName   = "bayes.sml"
-                                              , sourceLine   = Pos 25
-                                              , sourceColumn = Pos 16
-                                              }
-                                            )
-                                            "probability of any event"
-                                        ]
-                          }
-                        )
-                      , InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 25
-                                   , sourceColumn = Pos 41
-                                   }
-                        )
-                        " is the ratio between the value at which an\nexpectation depending on the happening of the event ought to be computed, and\nthe value of the thing expected upon "
-                      , InlineBraced
-                        (Element
-                          { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 27
-                                                , sourceColumn = Pos 38
-                                                }
-                          , etype   = Just "reg"
-                          , attrs   = Attrs
-                                        { getAttrs = fromList
-                                          [ ( "new"
-                                            , ( SourcePos
-                                                { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 27
-                                                , sourceColumn = Pos 52
-                                                }
-                                              , Attrs { getAttrs = fromList [] }
-                                              , []
-                                              , InlineSequence
-                                                [ InlineText
-                                                    (SourcePos
-                                                      { sourceName = "bayes.sml"
-                                                      , sourceLine = Pos 27
-                                                      , sourceColumn = Pos 57
-                                                      }
-                                                    )
-                                                    "its"
-                                                ]
-                                              )
-                                            )
-                                          , ( "old"
-                                            , ( SourcePos
-                                                { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 27
-                                                , sourceColumn = Pos 42
-                                                }
-                                              , Attrs { getAttrs = fromList [] }
-                                              , []
-                                              , InlineSequence
-                                                [ InlineText
-                                                    (SourcePos
-                                                      { sourceName = "bayes.sml"
-                                                      , sourceLine = Pos 27
-                                                      , sourceColumn = Pos 47
-                                                      }
-                                                    )
-                                                    "it's"
-                                                ]
-                                              )
-                                            )
-                                          ]
-                                        }
-                          , args    = []
-                          , content = InlineNil
-                          }
-                        )
-                      , InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 27
-                                   , sourceColumn = Pos 62
-                                   }
-                        )
-                        " happening."
-                      ]
-                    }
-                  )
-                , BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 29
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 29
-                                   , sourceColumn = Pos 6
-                                   }
-                        )
-                        "By "
-                      , InlineBraced
-                        (Element
-                          { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                                , sourceLine   = Pos 29
-                                                , sourceColumn = Pos 9
-                                                }
-                          , etype   = Just "emph"
-                          , attrs   = Attrs { getAttrs = fromList [] }
-                          , args    = []
-                          , content = InlineSequence
-                                        [ InlineText
-                                            (SourcePos
-                                              { sourceName   = "bayes.sml"
-                                              , sourceLine   = Pos 29
-                                              , sourceColumn = Pos 15
-                                              }
-                                            )
-                                            "chance"
-                                        ]
-                          }
-                        )
-                      , InlineText
-                        (SourcePos { sourceName   = "bayes.sml"
-                                   , sourceLine   = Pos 29
+                                 "376"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.sml"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 15
+                       }
+                     " "
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "bayes.sml"
+                             , sourceLine = Pos 4
+                             , sourceColumn = Pos 16
+                             }
+                       , etype = Just "emph"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "bayes.sml"
+                                   , sourceLine = Pos 4
                                    , sourceColumn = Pos 22
                                    }
-                        )
-                        " I mean the same as probability."
-                      ]
-                    }
-                  )
-                , BlockBlock
-                  (Element
-                    { srcPos  = SourcePos { sourceName   = "bayes.sml"
-                                          , sourceLine   = Pos 31
-                                          , sourceColumn = Pos 1
-                                          }
-                    , etype   = Just "li"
-                    , attrs   = Attrs { getAttrs = fromList [] }
-                    , args    = []
-                    , content = BlockInlines
-                      [ InlineText
-                          (SourcePos { sourceName   = "bayes.sml"
-                                     , sourceLine   = Pos 31
-                                     , sourceColumn = Pos 6
-                                     }
-                          )
-                          "Events are independent when the happening of any one of them does neither\nincrease nor abate the probability of the rest."
-                      ]
-                    }
-                  )
-                ]
-              }
-            )
-        ]
-      }
-    )
-  )
-]
+                                 "Given"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.sml"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 28
+                       }
+                     " the number of times in which an unknown event has\nhappened and failed: "
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "bayes.sml"
+                             , sourceLine = Pos 5
+                             , sourceColumn = Pos 22
+                             }
+                       , etype = Just "emph"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "bayes.sml"
+                                   , sourceLine = Pos 5
+                                   , sourceColumn = Pos 28
+                                   }
+                                 "Required"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.sml"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 37
+                       }
+                     " the chance that the probability of its happening\nin a single trial lies somewhere between any two degrees of probability that can\nbe named.\n"
+                 ]
+           })
+  , SecHeaderNode
+      (SecHeader
+         2
+         SourcePos
+           { sourceName = "bayes.sml"
+           , sourceLine = Pos 10
+           , sourceColumn = Pos 1
+           }
+         (Just "section")
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "fullTitle"
+                   , ( SourcePos
+                         { sourceName = "bayes.sml"
+                         , sourceLine = Pos 10
+                         , sourceColumn = Pos 23
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "bayes.sml"
+                               , sourceLine = Pos 10
+                               , sourceColumn = Pos 34
+                               }
+                             "Section I"
+                         ]
+                     )
+                   )
+                 , ( "number"
+                   , ( SourcePos
+                         { sourceName = "bayes.sml"
+                         , sourceLine = Pos 10
+                         , sourceColumn = Pos 12
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "bayes.sml"
+                               , sourceLine = Pos 10
+                               , sourceColumn = Pos 20
+                               }
+                             "I"
+                         ]
+                     )
+                   )
+                 ]
+           }
+         [])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "bayes.sml"
+                 , sourceLine = Pos 12
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "definition"
+           , attrs = Attrs { getAttrs = fromList [] }
+           , args = []
+           , content =
+               BlockBlocks
+                 [ BlockBlock
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "bayes.sml"
+                             , sourceLine = Pos 13
+                             , sourceColumn = Pos 1
+                             }
+                       , etype = Just "olist"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           BlockBlocks
+                             [ BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 14
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 14
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "Several events are "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.sml"
+                                                     , sourceLine = Pos 14
+                                                     , sourceColumn = Pos 25
+                                                     }
+                                               , etype = Just "emph"
+                                               , attrs = Attrs { getAttrs = fromList [] }
+                                               , args = []
+                                               , content =
+                                                   InlineSequence
+                                                     [ InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.sml"
+                                                           , sourceLine = Pos 14
+                                                           , sourceColumn = Pos 31
+                                                           }
+                                                         "inconsistent"
+                                                     ]
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 14
+                                               , sourceColumn = Pos 44
+                                               }
+                                             ", when if one of them happens, none of the\nrest can."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 17
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 17
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "Two events are "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.sml"
+                                                     , sourceLine = Pos 17
+                                                     , sourceColumn = Pos 21
+                                                     }
+                                               , etype = Just "emph"
+                                               , attrs = Attrs { getAttrs = fromList [] }
+                                               , args = []
+                                               , content =
+                                                   InlineSequence
+                                                     [ InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.sml"
+                                                           , sourceLine = Pos 17
+                                                           , sourceColumn = Pos 27
+                                                           }
+                                                         "contrary"
+                                                     ]
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 17
+                                               , sourceColumn = Pos 36
+                                               }
+                                             " when one, or other of them must; and both together\ncannot happen."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 20
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 20
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "An event is said to "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.sml"
+                                                     , sourceLine = Pos 20
+                                                     , sourceColumn = Pos 26
+                                                     }
+                                               , etype = Just "emph"
+                                               , attrs = Attrs { getAttrs = fromList [] }
+                                               , args = []
+                                               , content =
+                                                   InlineSequence
+                                                     [ InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.sml"
+                                                           , sourceLine = Pos 20
+                                                           , sourceColumn = Pos 32
+                                                           }
+                                                         "fail"
+                                                     ]
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 20
+                                               , sourceColumn = Pos 37
+                                               }
+                                             ", when it cannot happen; or, which comes to the same\nthing, when its contrary has happened."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 23
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 23
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "An event is said to be determined when it has either happened or failed."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 25
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "The "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.sml"
+                                                     , sourceLine = Pos 25
+                                                     , sourceColumn = Pos 10
+                                                     }
+                                               , etype = Just "emph"
+                                               , attrs = Attrs { getAttrs = fromList [] }
+                                               , args = []
+                                               , content =
+                                                   InlineSequence
+                                                     [ InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.sml"
+                                                           , sourceLine = Pos 25
+                                                           , sourceColumn = Pos 16
+                                                           }
+                                                         "probability of any event"
+                                                     ]
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 41
+                                               }
+                                             " is the ratio between the value at which an\nexpectation depending on the happening of the event ought to be computed, and\nthe value of the thing expected upon "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.sml"
+                                                     , sourceLine = Pos 27
+                                                     , sourceColumn = Pos 38
+                                                     }
+                                               , etype = Just "reg"
+                                               , attrs =
+                                                   Attrs
+                                                     { getAttrs =
+                                                         fromList
+                                                           [ ( "new"
+                                                             , ( SourcePos
+                                                                   { sourceName = "bayes.sml"
+                                                                   , sourceLine = Pos 27
+                                                                   , sourceColumn = Pos 52
+                                                                   }
+                                                               , Attrs { getAttrs = fromList [] }
+                                                               , []
+                                                               , InlineSequence
+                                                                   [ InlineText
+                                                                       SourcePos
+                                                                         { sourceName = "bayes.sml"
+                                                                         , sourceLine = Pos 27
+                                                                         , sourceColumn = Pos 57
+                                                                         }
+                                                                       "its"
+                                                                   ]
+                                                               )
+                                                             )
+                                                           , ( "old"
+                                                             , ( SourcePos
+                                                                   { sourceName = "bayes.sml"
+                                                                   , sourceLine = Pos 27
+                                                                   , sourceColumn = Pos 42
+                                                                   }
+                                                               , Attrs { getAttrs = fromList [] }
+                                                               , []
+                                                               , InlineSequence
+                                                                   [ InlineText
+                                                                       SourcePos
+                                                                         { sourceName = "bayes.sml"
+                                                                         , sourceLine = Pos 27
+                                                                         , sourceColumn = Pos 47
+                                                                         }
+                                                                       "it's"
+                                                                   ]
+                                                               )
+                                                             )
+                                                           ]
+                                                     }
+                                               , args = []
+                                               , content = InlineNil
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 62
+                                               }
+                                             " happening."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 29
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 29
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "By "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.sml"
+                                                     , sourceLine = Pos 29
+                                                     , sourceColumn = Pos 9
+                                                     }
+                                               , etype = Just "emph"
+                                               , attrs = Attrs { getAttrs = fromList [] }
+                                               , args = []
+                                               , content =
+                                                   InlineSequence
+                                                     [ InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.sml"
+                                                           , sourceLine = Pos 29
+                                                           , sourceColumn = Pos 15
+                                                           }
+                                                         "chance"
+                                                     ]
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 29
+                                               , sourceColumn = Pos 22
+                                               }
+                                             " I mean the same as probability."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.sml"
+                                         , sourceLine = Pos 31
+                                         , sourceColumn = Pos 1
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { getAttrs = fromList [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.sml"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 6
+                                               }
+                                             "Events are independent when the happening of any one of them does neither\nincrease nor abate the probability of the rest."
+                                         ]
+                                   }
+                             ]
+                       }
+                 ]
+           })
+  ]

@@ -1,88 +1,91 @@
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
-
-import           Test.Hspec
+{-# LANGUAGE StandaloneDeriving #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 import qualified Text.Scriba.Parse             as SP
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
 import qualified Text.Scriba.Render.Html       as SRH
 
+import           Data.ByteString.Lazy          as BL
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
+import qualified Data.Text.Lazy                as TL
+import qualified Data.Text.Lazy.Encoding       as TLE
 import           System.FilePath                ( takeFileName )
+import           Test.Tasty
+import           Test.Tasty.Golden
+import qualified Text.Show.Pretty              as SP
+import qualified Text.Blaze.Html.Renderer.Text as HT
 
+byteShow :: Show a => a -> BL.ByteString
+byteShow = TLE.encodeUtf8 . TL.pack . SP.ppShow
 
-parsesAs :: FilePath -> FilePath -> Expectation
-parsesAs sml int = do
-  tSml      <- T.readFile sml
-  tInternal <- readFile int
-  let ea   = SP.parseDoc' (T.pack $ takeFileName sml) tSml
-      -- TODO: safe read, I suppose?
-      good = read tInternal
-  case ea of
-    -- TODO: something better here?
-    Left  e -> error $ T.unpack e
-    Right a -> a `shouldBe` good
+-- TODO: findByExtension?
+goldenWith
+  :: (Text -> BL.ByteString) -> String -> FilePath -> FilePath -> TestTree
+goldenWith f name src gold = goldenVsString name gold $ do
+  t <- T.readFile src
+  pure $ f t
 
-testParse :: FilePath -> Expectation
-testParse fp = do
-  let sml = "./test/tests/" <> fp <> ".sml"
-      int = "./test/tests/" <> fp <> ".parse"
-  sml `parsesAs` int
+inTests :: (b -> FilePath -> FilePath -> a) -> b -> FilePath -> FilePath -> a
+inTests f x p q = f x ("./test/tests/" <> p) ("./test/tests/" <> q)
 
-markedUpAs :: FilePath -> FilePath -> Expectation
-markedUpAs sml int = do
-  tSml      <- T.readFile sml
-  tInternal <- readFile int
-  let ea = do
-        a <- SP.parseDoc' (T.pack $ takeFileName sml) tSml
-        let a'     = SI.fromDoc a
-            toText = T.pack . show
-        either (Left . toText) Right $ SM.parseDoc a'
-      -- TODO: safe read, I suppose?
-      good = read tInternal
-  case ea of
-    -- TODO: something better here?
-    Left  e -> error $ T.unpack e
-    Right a -> a `shouldBe` good
+-- TODO: should probably have a few pipeline functions in the top
+-- level. Would reduce duplication.
+testParse :: String -> FilePath -> FilePath -> TestTree
+testParse name src gold = goldenWith go name src gold
+ where
+  go t = either (error . T.unpack) byteShow
+    $ SP.parseDoc' (T.pack $ takeFileName src) t
+
+testMarkup :: String -> FilePath -> FilePath -> TestTree
+testMarkup name src gold = goldenWith go name src gold
+ where
+  go t =
+    let n =
+            either (error . T.unpack) id
+              $   SI.fromDoc
+              <$> SP.parseDoc' (T.pack $ takeFileName src) t
+    in  either (error . show) byteShow $ SM.parseDoc n
 
 -- TODO: duplication
-testMarkup :: FilePath -> Expectation
-testMarkup fp = do
-  let sml = "./test/tests/" <> fp <> ".sml"
-      int = "./test/tests/" <> fp <> ".markup"
-  sml `markedUpAs` int
+testRenderingWith
+  :: (SM.Doc -> TL.Text) -> String -> FilePath -> FilePath -> TestTree
+testRenderingWith f name src gold = goldenWith go name src gold
+ where
+  go t =
+    let n =
+            either (error . T.unpack) id
+              $   SI.fromDoc
+              <$> SP.parseDoc' (T.pack $ takeFileName src) t
+    in  either (error . show) (TLE.encodeUtf8 . f) $ SM.parseDoc n
 
--- TODO: really should create a readDoc :: Text -> Either
--- ... function, in addition to the safe read
-rendersAsWith :: (SM.Doc -> Text) -> FilePath -> FilePath -> Expectation
-rendersAsWith f sml int = do
-  tSml <- T.readFile sml
-  good <- T.readFile int
-  let ea = do
-        a <- SP.parseDoc' (T.pack $ takeFileName sml) tSml
-        let a'     = SI.fromDoc a
-            toText = T.pack . show
-        either (Left . toText) Right $ SM.parseDoc a'
-  case ea of
-    -- TODO: something better here?
-    Left  e -> error $ T.unpack e
-    Right a -> f a <> "\n" `shouldBe` good
 
 -- TODO: one single test block for the manual?
+tests :: TestTree
+tests = testGroup
+  "tests"
+  [ inTests testParse "README example parses" "bayes.sml" "bayes.parse"
+  , inTests testParse
+            "verbatim block parses"
+            "block-verbatim.sml"
+            "block-verbatim.parse"
+  , inTests testMarkup
+            "simple markup parses correctly"
+            "simple.sml"
+            "simple.markup"
+  , testParse "manual parses" "./doc/manual.sml" "./test/tests/manual.parse"
+  , testMarkup "manual parses correctly"
+               "./doc/manual.sml"
+               "./test/tests/manual.markup"
+  , testRenderingWith (HT.renderHtml . SRH.renderStandalone)
+                      "manual renders to html"
+                      "./doc/manual.sml"
+                      "./test/tests/manual.html"
+  ]
+
 main :: IO ()
-main = hspec $ do
-  describe "scriba" $ do
-    it "parses the README example" $ testParse "bayes"
-    it "parses a verbatim block" $ testParse "block-verbatim"
-    it "parses a simple example correctly" $ testMarkup "simple"
-    it "parses the manual"
-      $          "./doc/manual.sml"
-      `parsesAs` "./test/tests/manual.parse"
-    it "parses the manual correctly"
-      $            "./doc/manual.sml"
-      `markedUpAs` "./test/tests/manual.markup"
-    it "renders the manual to html" $ rendersAsWith SRH.renderStandalone
-                                                    "./doc/manual.sml"
-                                                    "./test/tests/manual.html"
+main = defaultMain tests

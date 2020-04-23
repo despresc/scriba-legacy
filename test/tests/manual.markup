@@ -1,95 +1,79 @@
 Doc
-(Section { secPreamble = [], secChildren = [] })
-(Section
-  { secPreamble =
-    [ ParBlock
-        (Paragraph
-          [ ParInline
-              (Str
-                "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications."
-              )
-          ]
-        )
-    ]
-  , secChildren =
-    [ Section
-        { secPreamble = []
-        , secChildren =
-          [ Section
-            { secPreamble =
-              [ ParBlock
-                (Paragraph
-                  [ ParInline
-                    (Str
-                      "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba contains "
-                    )
-                  , ParInline (Emph [Str "paragraph text"])
-                  , ParInline (Str " and\n")
-                  , ParInline (Emph [Str "elements"])
-                  , ParInline (Str ". Two sample paragraphs are given below:")
-                  ]
-                )
-              , CodeBlock
-                "There was nothing so very remarkable in that; nor did Alice think\nit so very much out of the way to hear the Rabbit say to itself,\n{q|Oh dear! Oh dear! I shall be late!} (when she thought it over\nafterwards, it occurred to her that she ought to have wondered at\nthis, but at the time it all seemed quite natural); but when the\nRabbit actually {emph|took a watch out of its waistcoat-pocket},\nand looked at it, and then hurried on, Alice started to her feet,\nfor it flashed across her mind that she had never before seen a\nrabbit with either a waistcoat-pocket, or a watch to take out of\nit, and burning with curiosity, she ran across the field after it,\nand fortunately was just in time to see it pop down a large\nrabbit-hole under the hedge.\n\nIn another moment down went Alice after it, never once considering\nhow in the world she was to get out again."
-              , ParBlock
-                (Paragraph
-                  [ ParInline
-                    (Str
-                      "Plain paragraph text is any span of unicode characters other than\n"
-                    )
-                  , ParInline (Code "\\")
-                  , ParInline (Str ", ")
-                  , ParInline (Code "{")
-                  , ParInline (Str ", or ")
-                  , ParInline (Code "}")
-                  , ParInline
-                    (Str
-                      ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. The sequences\n"
-                    )
-                  , ParInline (Code "\\\\")
-                  , ParInline (Str ", ")
-                  , ParInline (Code "\\{")
-                  , ParInline (Str ", and ")
-                  , ParInline (Code "\\}")
-                  , ParInline
-                    (Str
-                      " are used to represent those\nliteral characters, should you need them in text."
-                    )
-                  ]
-                )
-              , ParBlock
-                (Paragraph
-                  [ ParInline
-                    (Str "The other feature of paragraph markup is ")
-                  , ParInline (Emph [Str "inline elements"])
-                  , ParInline
-                    (Str
-                      ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
-                    )
-                  , ParInline (Str " Simple\nelements start with ")
-                  , ParInline (Code "{tag|")
-                  , ParInline (Str " and end with ")
-                  , ParInline (Code "}")
-                  , ParInline (Str ". The\nparagraphs above have a ")
-                  , ParInline (Code "q")
-                  , ParInline
-                    (Str
-                      " element, representing quoted text\nand likely to be rendered between quotation marks, and a `"
-                    )
-                  , ParInline (Code "emph")
-                  , ParInline
-                    (Str
-                      "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
-                    )
-                  ]
-                )
-              ]
-            , secChildren = []
+  Section { secPreamble = [] , secChildren = [] }
+  Section
+    { secPreamble =
+        [ ParBlock
+            (Paragraph
+               [ ParInline
+                   (Str
+                      "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications.")
+               ])
+        ]
+    , secChildren =
+        [ Section
+            { secPreamble = []
+            , secChildren =
+                [ Section
+                    { secPreamble =
+                        [ ParBlock
+                            (Paragraph
+                               [ ParInline
+                                   (Str
+                                      "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba contains ")
+                               , ParInline (Emph [ Str "paragraph text" ])
+                               , ParInline (Str " and\n")
+                               , ParInline (Emph [ Str "elements" ])
+                               , ParInline (Str ". Two sample paragraphs are given below:")
+                               ])
+                        , CodeBlock
+                            "There was nothing so very remarkable in that; nor did Alice think\nit so very much out of the way to hear the Rabbit say to itself,\n{q|Oh dear! Oh dear! I shall be late!} (when she thought it over\nafterwards, it occurred to her that she ought to have wondered at\nthis, but at the time it all seemed quite natural); but when the\nRabbit actually {emph|took a watch out of its waistcoat-pocket},\nand looked at it, and then hurried on, Alice started to her feet,\nfor it flashed across her mind that she had never before seen a\nrabbit with either a waistcoat-pocket, or a watch to take out of\nit, and burning with curiosity, she ran across the field after it,\nand fortunately was just in time to see it pop down a large\nrabbit-hole under the hedge.\n\nIn another moment down went Alice after it, never once considering\nhow in the world she was to get out again."
+                        , ParBlock
+                            (Paragraph
+                               [ ParInline
+                                   (Str
+                                      "Plain paragraph text is any span of unicode characters other than\n")
+                               , ParInline (Code "\\")
+                               , ParInline (Str ", ")
+                               , ParInline (Code "{")
+                               , ParInline (Str ", or ")
+                               , ParInline (Code "}")
+                               , ParInline
+                                   (Str
+                                      ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. Those three characters\ncan be represented in paragraph text using the sequences ")
+                               , ParInline (Code "\\\\")
+                               , ParInline (Str ",\n")
+                               , ParInline (Code "\\{")
+                               , ParInline (Str ", and ")
+                               , ParInline (Code "\\}")
+                               , ParInline (Str ", should you need them in text.")
+                               ])
+                        , ParBlock
+                            (Paragraph
+                               [ ParInline (Str "The other feature of paragraph markup is ")
+                               , ParInline (Emph [ Str "inline elements" ])
+                               , ParInline
+                                   (Str
+                                      ", which\nare used to give further meaning to your text and to control scriba's\nmany features.")
+                               , ParInline (Str " Simple\nelements start with ")
+                               , ParInline (Code "{tag|")
+                               , ParInline (Str " and end with ")
+                               , ParInline (Code "}")
+                               , ParInline (Str ". The\nparagraphs above have a ")
+                               , ParInline (Code "q")
+                               , ParInline
+                                   (Str
+                                      " element, representing quoted text\nand likely to be rendered between quotation marks, and an ")
+                               , ParInline (Code "emph")
+                               , ParInline
+                                   (Str
+                                      "\nelement, representing emphasized text and likely to be rendered in\nitalic type.")
+                               ])
+                        ]
+                    , secChildren = []
+                    }
+                , Section { secPreamble = [] , secChildren = [] }
+                ]
             }
-          , Section { secPreamble = [], secChildren = [] }
-          ]
-        }
-    ]
-  }
-)
-(Section { secPreamble = [], secChildren = [] })
+        ]
+    }
+  Section { secPreamble = [] , secChildren = [] }

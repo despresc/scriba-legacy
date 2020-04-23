@@ -39,16 +39,16 @@ writing. A paragraph in scriba contains {emph|paragraph text} and
 Plain paragraph text is any span of unicode characters other than
 {code`\`}, {code`{`}, or {code`}`}, with the additional restriction
 that paragraph text cannot contain blank lines; like in the example
-above, these signal the end of the paragraph. The sequences
-{code`\\`}, {code`\{`}, and {code`\}`} are used to represent those
-literal characters, should you need them in text.
+above, these signal the end of the paragraph. Those three characters
+can be represented in paragraph text using the sequences {code`\\`},
+{code`\{`}, and {code`\}`}, should you need them in text.
 
 The other feature of paragraph markup is {emph|inline elements}, which
 are used to give further meaning to your text and to control scriba's
 many features.{%TODO: link here when this section is writtten%} Simple
 elements start with {code`{tag|`} and end with {code`}`}. The
 paragraphs above have a {code`q`} element, representing quoted text
-and likely to be rendered between quotation marks, and a `{code`emph`}
+and likely to be rendered between quotation marks, and an {code`emph`}
 element, representing emphasized text and likely to be rendered in
 italic type.
 

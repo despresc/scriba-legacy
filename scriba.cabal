@@ -20,7 +20,11 @@ common base
 library
   import: base
   hs-source-dirs: src
-  build-depends: megaparsec, text, containers, mtl, blaze-html
+  build-depends: megaparsec
+               , text
+               , containers
+               , mtl
+               , blaze-html
   exposed-modules:
     Text.Scriba.Intermediate
     Text.Scriba.Markup
@@ -31,4 +35,11 @@ test-suite scriba-test
   import: base
   type: exitcode-stdio-1.0
   main-is: test/test-scriba.hs
-  build-depends: hspec, text, scriba, filepath
+  build-depends: tasty
+               , tasty-golden
+               , text
+               , scriba
+               , filepath
+               , pretty-show
+               , bytestring
+               , blaze-html

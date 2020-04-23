@@ -5,13 +5,10 @@ module Text.Scriba.Render.Html where
 import           Text.Scriba.Markup
 
 import           Data.Foldable                  ( traverse_ )
-import           Data.Text                      ( Text )
-import qualified Data.Text.Lazy                as TL
 import           Text.Blaze.Html5               ( Html
                                                 , (!)
                                                 )
 import qualified Text.Blaze.Html5              as H
-import qualified Text.Blaze.Html.Renderer.Text as HT
 import qualified Text.Blaze.Html5.Attributes   as A
 
 {- TODO:
@@ -29,8 +26,8 @@ import qualified Text.Blaze.Html5.Attributes   as A
 -}
 
 -- TODO: should probably remove this
-renderStandalone :: Doc -> Text
-renderStandalone d = TL.toStrict $ HT.renderHtml $ H.docTypeHtml $ do
+renderStandalone :: Doc -> Html
+renderStandalone d = H.docTypeHtml $ do
   H.head $ do
     H.title "standalone"
   H.body $ do
