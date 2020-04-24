@@ -461,27 +461,6 @@ commonIndentStrip txt =
   correctNewline | Just (_, '\n') <- T.unsnoc txt = flip T.snoc '\n'
                  | otherwise                      = id
 
-
-{-
-throwScribaError :: MonadError ScribaError m => Text -> m a
-throwScribaError = throwError . Error
--- TODO: develop a better tree parsing infrastructure. I have some
--- work along those lines in old/alcuin-ml and in
--- pandoc-metaparsing. Essentially, something similar to what
--- aeson/(mega)parsec does, CPS with state. Certainly want some way of
--- annotating these things with expectations, so we can have
--- "expecting ..." in our errors.
-
--- TODO: not very good. Doesn't report expectations.
-asNode :: (Element -> Scriba a) -> Node -> Scriba a
-asNode p (NodeElement e) = p e
-asNode _ (NodeText sp _) =
-  throwScribaError
-    $  "Text encountered at "
-    <> T.pack (show sp)
-    <> " when an element was expected"
--}
-
 -- * Element parsers
 
 -- ** BlockParsing

@@ -150,15 +150,16 @@ renderInline (Emph i) = H.em <$> renderInlines i
 renderInline (Math t) =
   pure $ H.span ! A.class_ "math inline" $ "\\(" <> H.toHtml t <> "\\)"
 renderInline (Code     t) = pure $ H.code $ H.toHtml t
-renderInline (PageMark t) = pure $ H.span ! A.class_ "pageMark" $ H.toHtml t
+renderInline (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
 
 -- Add a sectionTitle class?
 renderTitle :: Int -> Title -> Render Html
-renderTitle lvl (Title t) = headAtLevel <$> renderInlines t
+renderTitle lvl (Title t) = headAtLevel lvl <$> renderInlines t
  where
-  headAtLevel | lvl == 1  = H.h1
-              | lvl == 2  = H.h2
-              | lvl == 3  = H.h3
-              | lvl == 4  = H.h4
-              | lvl == 5  = H.h5
-              | otherwise = H.h6
+  headAtLevel n = case n of
+    1 -> H.h1
+    2 -> H.h2
+    3 -> H.h3
+    4 -> H.h4
+    5 -> H.h5
+    _ -> H.h6
