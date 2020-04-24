@@ -550,13 +550,13 @@ pFormalBlock = do
   matchTy "formalBlock"
   whileParsingElem "formalBlock" $ do
     (mty, title, concl) <- meta $ attrs $ do
-      mty   <- attr "type" $ allContent $ one text
+      mty   <- attr "type" $ allContentOf simpleText
       title <- attr "title" $ allContentOf pInline
       concl <- attr "conclusion" $ allContentOf pInline
       pure (mty, title, concl)
     body <- allContent (manyOf pBlock)
       <|> allContent ((: []) . ParBlock . Paragraph <$> manyOf pParContent)
-    pure $ FormalBlock (snd <$> mty)
+    pure $ FormalBlock (T.concat <$> mty)
                        (fromMaybe [] title)
                        body
                        (fromMaybe [] concl)
@@ -566,8 +566,8 @@ pFormalBlock = do
 pCodeBlock :: Scriba Element Block
 pCodeBlock = do
   matchTy "codeBlock"
-  t <- whileParsingElem "codeBlock" $ allContent $ one text
-  pure $ CodeBlock $ commonIndentStrip $ snd t
+  t <- whileParsingElem "codeBlock" $ allContentOf simpleText
+  pure $ CodeBlock $ commonIndentStrip $ T.concat t
 
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
@@ -603,19 +603,19 @@ pPageMark = do
   pure $ PageMark $ snd t
 
 pText :: Scriba Node Inline
-pText = Str . snd <$> text
+pText = Str <$> simpleText
 
 pMath :: Scriba Element Inline
 pMath = do
   matchTy "math"
-  ts <- whileParsingElem "math" $ allContentOf $ snd <$> text
+  ts <- whileParsingElem "math" $ allContentOf simpleText
   pure $ Math $ T.concat ts
 
 pCode :: Scriba Element Inline
 pCode = do
   matchTy "code"
-  t <- whileParsingElem "code" $ allContent $ one text
-  pure $ Code $ snd t
+  t <- whileParsingElem "code" $ allContentOf simpleText
+  pure $ Code $ T.concat t
 
 -- ** Section parsing
 
