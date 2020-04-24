@@ -599,8 +599,8 @@ pQuote = do
 pPageMark :: Scriba Element Inline
 pPageMark = do
   matchTy "physPage"
-  t <- whileParsingElem "physPage" $ allContent $ one text
-  pure $ PageMark $ snd t
+  t <- whileParsingElem "physPage" $ allContentOf simpleText
+  pure $ PageMark $ T.concat t
 
 pText :: Scriba Node Inline
 pText = Str <$> simpleText
