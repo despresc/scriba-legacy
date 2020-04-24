@@ -15,8 +15,9 @@ well for new publications.
 
 The bulk of your document will most likely be paragraphs, sequences of
 normal text and marked-up content representing a single idea in your
-writing. A paragraph in scriba contains {emph|paragraph text} and
-{emph|elements}. Two sample paragraphs are given below:
+writing. A paragraph in scriba is a type of {emph|block}, and contains
+{emph|paragraph text} and {emph|elements}. Two sample paragraphs are
+given below:
 
 &{codeBlock {language|scriba}`
   There was nothing so very remarkable in that; nor did Alice think
@@ -41,7 +42,8 @@ Plain paragraph text is any span of unicode characters other than
 that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
 can be represented in paragraph text using the sequences {code`\\`},
-{code`\{`}, and {code`\}`}, should you need them in text.
+{code`\{`}, and {code`\}`}, should you need them in text. {%TODO:
+mention paragraphs not starting with &%}
 
 The other feature of paragraph markup is {emph|inline elements}, which
 are used to give further meaning to your text and to control scriba's
@@ -54,33 +56,31 @@ italic type.
 
 ## {title|Sections}
 
-{% TODO: add this back in
+The content of your document can be organized into {emph|sections},
+representing self-contained units of discussion. These have types,
+titles, and a body of blocks and subsections. Sections look like this:
 
-# {title|A sample document}
+&{codeBlock {language|scriba} `
+  # {title|An introduction to the language}
 
-The following is a skeleton scriba document.
+  ## {title|Paragraphs}
 
-{%TODO: put this in a {figure} and reference it in the sentence above%}
-
-&{code {language|scriba}`
-  {scriba
-    {title|Sample document}}
-
-  # frontMatter
-
-  <introductory sections>
-
-  # mainMatter
-
-  <main narrative>
-
-  # endMatter
-
-  <concluding sections>
+  The bulk of your document …
 `}
 
-The first component of a scriba document is an optional
-{code`{scriba}`} element containing document attributes, like the
-title, dates, authors, or editorial notes.
+Sections start with {code`# sectionType`}, the number of consecutive
+{code`#`} becoming its {emph|section level}. Section content continues
+until a section of at most that level, or the end of the document, is
+reached. In the example above, the {q|Paragraphs} section would
+continue until a level 2 or level 1 section were encountered. The
+section type is optional; section types classify the section, can
+denote built-in document structure, and can influence processing and
+rendering behaviour. Sections without a type become a generic
+{code`section`}.
 
-%}
+Sections, like other elements, can have {emph|attributes}. The only
+recognized attribute of a section, for now, is its title. In future,
+sections will have many attributes, like number, language, alternate
+titles for the table of contents or page header, and so on.
+
+## {title|The overall document structure}

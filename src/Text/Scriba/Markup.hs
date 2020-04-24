@@ -34,6 +34,7 @@ import           Text.Megaparsec                ( SourcePos
                                                 , many
                                                 , some
                                                 )
+import qualified Text.Megaparsec               as MP
 
 
 {- TODO:
@@ -111,6 +112,14 @@ import           Text.Megaparsec                ( SourcePos
 - the Doc should probably have room for a plain text title in its
   attributes. Something to put in the HTML title, the database, and so
   on.
+
+- Now that we have an "AsPara" presentation, we may want to parse
+  things presented as paragraphs as paragraphs and not give them the
+  "p" type in Intermediate. We should also let source presentation
+  influence errors, so that, say, an unexpected syntactic paragraph
+  would give the error "unexpected paragraph", not "unexpected element
+  p".
+
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -181,6 +190,7 @@ newtype Title = Title
 data Inline
   = Str Text
   | Emph [Inline]
+  | Quote [Inline]
   | Math Text
   | Code Text
   | PageMark Text
@@ -471,12 +481,14 @@ commonIndentStrip txt =
 
 -- | Strip out the markup in a sequence of inlines, leaving only the
 -- plain text. Very lossy, naturally. This doesn't add any textual
--- markers around code or math, so beware.
+-- markers around code, math, or quotations, or things like that, so
+-- beware.
 stripMarkup :: [Inline] -> Text
 stripMarkup = T.concat . concatMap inlineToText
  where
   inlineToText (Str      t ) = [t]
   inlineToText (Emph     is) = concatMap inlineToText is
+  inlineToText (Quote    is) = concatMap inlineToText is
   inlineToText (Math     t ) = [t]
   inlineToText (Code     t ) = [t]
   inlineToText (PageMark t ) = [t]
@@ -547,13 +559,19 @@ pParContent = ParInline <$> pInline
 -- ** Inline parsing
 
 pInline :: Scriba Node Inline
-pInline = asNode (pEmph <|> pPageMark <|> pMath <|> pCode) <|> pText
+pInline = asNode (pEmph <|> pQuote <|> pPageMark <|> pMath <|> pCode) <|> pText
 
 pEmph :: Scriba Element Inline
 pEmph = do
   matchTy "emph"
   c <- whileParsingElem "emph" $ allContentOf pInline
   pure $ Emph c
+
+pQuote :: Scriba Element Inline
+pQuote = do
+  matchTy "q"
+  c <- whileParsingElem "q" $ allContentOf pInline
+  pure $ Quote c
 
 -- TODO: well-formedness checking?
 pPageMark :: Scriba Element Inline
@@ -598,6 +616,9 @@ pSection = do
       _           -> empty
 
 -- implicitly parses the whole block content
+-- Note that we're getting bitten here by not being able to
+-- distinguish between failure with consumption and failure without! I
+-- think.
 pSectionContent :: Scriba [Node] SectionContent
 pSectionContent = do
   pre  <- manyOf $ pBlock
@@ -641,3 +662,14 @@ pDoc = do
 parseDoc :: Node -> Either ScribaError Doc
 parseDoc = fmap snd . runScriba (asNode pDoc)
 
+-- TODO: improve
+prettyScribaError :: ScribaError -> Text
+prettyScribaError (WhileParsing msp t e) =
+  prettyScribaError e <> "\n" <> errline
+ where
+  errAt =
+    " at " <> maybe "<unknown position>" (T.pack . MP.sourcePosPretty) msp
+  errline = "while parsing " <> t <> errAt
+prettyScribaError (Expecting e mspt) = T.pack $ show e <> " " <> show mspt
+prettyScribaError (Msg t           ) = "error: " <> t
+prettyScribaError ErrorNil           = "unknown error"

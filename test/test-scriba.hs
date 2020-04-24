@@ -20,6 +20,16 @@ import           Test.Tasty.Golden
 import qualified Text.Show.Pretty              as SP
 import qualified Text.Blaze.Html.Renderer.Text as HT
 
+parseOrExplode :: Text -> Text -> SP.Doc
+parseOrExplode name t = case SP.parseDoc' name t of
+  Left  e -> error $ T.unpack e
+  Right a -> a
+
+markupOrExplode :: SI.Node -> SM.Doc
+markupOrExplode n = case SM.parseDoc n of
+  Left  e -> error $ T.unpack $ SM.prettyScribaError e
+  Right a -> a
+
 byteShow :: Show a => a -> BL.ByteString
 byteShow = TLE.encodeUtf8 . TL.pack . SP.ppShow
 
@@ -37,32 +47,28 @@ inTests f x p q = f x ("./test/tests/" <> p) ("./test/tests/" <> q)
 -- level. Would reduce duplication.
 testParse :: String -> FilePath -> FilePath -> TestTree
 testParse name src gold = goldenWith go name src gold
+  where go t = byteShow $ parseOrExplode (T.pack $ takeFileName src) t
+
+testIntermediate :: String -> FilePath -> FilePath -> TestTree
+testIntermediate name src gold = goldenWith go name src gold
  where
-  go t = either (error . T.unpack) byteShow
-    $ SP.parseDoc' (T.pack $ takeFileName src) t
+  go t = byteShow $ SI.fromDoc $ parseOrExplode (T.pack $ takeFileName src) t
 
 testMarkup :: String -> FilePath -> FilePath -> TestTree
 testMarkup name src gold = goldenWith go name src gold
  where
-  go t =
-    let n =
-            either (error . T.unpack) id
-              $   SI.fromDoc
-              <$> SP.parseDoc' (T.pack $ takeFileName src) t
-    in  either (error . show) byteShow $ SM.parseDoc n
+  go t = byteShow $ markupOrExplode $ SI.fromDoc $ parseOrExplode
+    (T.pack $ takeFileName src)
+    t
 
 -- TODO: duplication
 testRenderingWith
   :: (SM.Doc -> TL.Text) -> String -> FilePath -> FilePath -> TestTree
 testRenderingWith f name src gold = goldenWith go name src gold
  where
-  go t =
-    let n =
-            either (error . T.unpack) id
-              $   SI.fromDoc
-              <$> SP.parseDoc' (T.pack $ takeFileName src) t
-    in  either (error . show) (TLE.encodeUtf8 . f) $ SM.parseDoc n
-
+  go t = TLE.encodeUtf8 $ f $ markupOrExplode $ SI.fromDoc $ parseOrExplode
+    (T.pack $ takeFileName src)
+    t
 
 -- TODO: one single test block for the manual?
 tests :: TestTree
@@ -78,7 +84,10 @@ tests = testGroup
             "simple.sml"
             "simple.markup"
   , testParse "manual parses" "./doc/manual.sml" "./test/tests/manual.parse"
-  , testMarkup "manual parses correctly"
+  , testIntermediate "manual parses into the node format"
+                     "./doc/manual.sml"
+                     "./test/tests/manual.intermediate"
+  , testMarkup "manual parses into internal markup"
                "./doc/manual.sml"
                "./test/tests/manual.markup"
   , testRenderingWith (HT.renderHtml . SRH.writeStandalone)

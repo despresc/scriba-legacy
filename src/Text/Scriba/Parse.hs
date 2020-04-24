@@ -103,6 +103,7 @@ data BlockContent
 data InlineNode
   = InlineBraced InlineElement
   | InlineText SourcePos Text
+  | InlineComment SourcePos Text
   deriving (Eq, Ord, Show, Read)
 
 -- | An inline element has an optional type and inline content.
@@ -128,26 +129,38 @@ pCommentStart = "{%" <?> "start of comment"
 pCommentEnd :: Parser Text
 pCommentEnd = "%}" <?> "end of comment"
 
--- | Parses (and skips) a nested comment.
-pComment :: Parser ()
-pComment = pCommentStart >> go 0
+-- | Parses the body of a nested comment.
+
+-- TODO: should probably accumulate with a snoc list, or a text
+-- builder. That might be true of the plain text parsers as well,
+-- honestly.
+pCommentBody :: Parser Text
+pCommentBody = T.concat <$> go 0
  where
-  insigChar = void $ MP.takeWhileP (Just "comment text") $ \c ->
-    not $ c == '%' || c == '{'
+  insigChar =
+    MP.takeWhileP (Just "comment text") $ \c -> not $ c == '%' || c == '{'
+  go :: Int -> Parser [Text]
   go n = do
-    insigChar
+    t <- insigChar
     e <- MP.optional $ MP.eitherP pCommentEnd pCommentStart
     case (n :: Int, e) of
       -- TODO: perhaps add location of the unbalanced comment start
       -- in an error?
-      (_, Nothing       ) -> (MP.anySingle <?> "comment text") >> go n
-      (0, Just (Left _) ) -> pure ()
-      (_, Just (Left _) ) -> go $ n - 1
-      (_, Just (Right _)) -> go $ n + 1
+      (_, Nothing) -> do
+        c  <- MP.takeP (Just "comment text") 1
+        cs <- go n
+        pure $ t : c : cs
+      (0, Just (Left _) ) -> pure [t]
+      (_, Just (Left cb)) -> do
+        cs <- go $ n - 1
+        pure $ t : cb : cs
+      (_, Just (Right cb)) -> do
+        cs <- go $ n + 1
+        pure $ t : cb : cs
 
 -- | Parses (and skips) insignificant whitespace characters.
 pSpace :: Parser ()
-pSpace = MPL.space MP.space1 empty pComment
+pSpace = MPL.space MP.space1 empty empty
 
 -- | A wrapper for lexemes using the 'pSpace' space consumer.
 lexemeAny :: Parser a -> Parser a
@@ -162,7 +175,7 @@ pBlankLine = pLineSpace <* "\n" <?> "blank end of line"
 -- | Parses (and skips) insignificant whitespace characters other than
 -- a newline.
 pLineSpace :: Parser ()
-pLineSpace = MPL.space lineSpace empty pComment <?> "line space"
+pLineSpace = MPL.space lineSpace empty empty <?> "line space"
  where
   lineSpace =
     void $ MP.takeWhile1P (Just "line space") $ \c -> isSpace c && c /= '\n'
@@ -311,15 +324,20 @@ pArgs sc = pElementArgsStart >> sc >> MP.many (pArgNode <* sc)
 
 -- ** Inline elements
 
--- | Parse an inline node with the given text node parser.
+-- | Parse an inline node with the given comment and text node
+-- parser. The comment parser is passed in separately so that
+-- different syntactic forms can process comments and surrounding
+-- whitespace differently. See the implementation of 'pParaContent'
+-- for an example.
 pInlineNodeWith :: Parser Text -> Parser InlineNode
 pInlineNodeWith pText = do
-  void $ MP.many pComment
   src <- MP.getSourcePos
-  eet <- MP.eitherP pInlineElement pText
+  eet <- MP.eitherP (pCommentStart >> pCommentBody)
+    $ MP.eitherP pInlineElement pText
   pure $ case eet of
-    Left  e -> InlineBraced $ e src
-    Right t -> InlineText src t
+    Left  c         -> InlineComment src c
+    Right (Left  e) -> InlineBraced $ e src
+    Right (Right t) -> InlineText src t
 
 pInlineElement :: Parser (SourcePos -> InlineElement)
 pInlineElement = pBraced $ pElement pSpace (MP.optional pElemTy) pInlineContent

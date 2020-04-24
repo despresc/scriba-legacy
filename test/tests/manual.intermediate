@@ -1,0 +1,1183 @@
+NodeElem
+  Element
+    { eType = Just "scriba"
+    , eMeta =
+        Meta
+          { loc =
+              SourcePos
+                { sourceName = "manual.sml"
+                , sourceLine = Pos 1
+                , sourceColumn = Pos 1
+                }
+          , sourcePres = AsDoc
+          , metaAttrs =
+              fromList
+                [ ( "title"
+                  , ( Meta
+                        { loc =
+                            SourcePos
+                              { sourceName = "manual.sml"
+                              , sourceLine = Pos 2
+                              , sourceColumn = Pos 3
+                              }
+                        , sourcePres = AsInline
+                        , metaAttrs = fromList []
+                        , metaArgs = []
+                        }
+                    , [ NodeText
+                          SourcePos
+                            { sourceName = "manual.sml"
+                            , sourceLine = Pos 2
+                            , sourceColumn = Pos 10
+                            }
+                          "The scriba markup language and document system"
+                      ]
+                    )
+                  )
+                , ( "type"
+                  , ( Meta
+                        { loc =
+                            SourcePos
+                              { sourceName = "manual.sml"
+                              , sourceLine = Pos 3
+                              , sourceColumn = Pos 3
+                              }
+                        , sourcePres = AsInline
+                        , metaAttrs = fromList []
+                        , metaArgs = []
+                        }
+                    , [ NodeText
+                          SourcePos
+                            { sourceName = "manual.sml"
+                            , sourceLine = Pos 3
+                            , sourceColumn = Pos 9
+                            }
+                          "article"
+                      ]
+                    )
+                  )
+                ]
+          , metaArgs = []
+          }
+    , eBody =
+        [ NodeElem
+            Element
+              { eType = Just "p"
+              , eMeta =
+                  Meta
+                    { loc =
+                        SourcePos
+                          { sourceName = "manual.sml"
+                          , sourceLine = Pos 5
+                          , sourceColumn = Pos 1
+                          }
+                    , sourcePres = AsPara
+                    , metaAttrs = fromList []
+                    , metaArgs = []
+                    }
+              , eBody =
+                  [ NodeText
+                      SourcePos
+                        { sourceName = "manual.sml"
+                        , sourceLine = Pos 5
+                        , sourceColumn = Pos 1
+                        }
+                      "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications."
+                  ]
+              }
+        , NodeElem
+            Element
+              { eType = Nothing
+              , eMeta =
+                  Meta
+                    { loc =
+                        SourcePos
+                          { sourceName = "manual.sml"
+                          , sourceLine = Pos 12
+                          , sourceColumn = Pos 1
+                          }
+                    , sourcePres = AsSection 1
+                    , metaAttrs =
+                        fromList
+                          [ ( "title"
+                            , ( Meta
+                                  { loc =
+                                      SourcePos
+                                        { sourceName = "manual.sml"
+                                        , sourceLine = Pos 12
+                                        , sourceColumn = Pos 3
+                                        }
+                                  , sourcePres = AsInline
+                                  , metaAttrs = fromList []
+                                  , metaArgs = []
+                                  }
+                              , [ NodeText
+                                    SourcePos
+                                      { sourceName = "manual.sml"
+                                      , sourceLine = Pos 12
+                                      , sourceColumn = Pos 10
+                                      }
+                                    "An introduction to the language"
+                                ]
+                              )
+                            )
+                          ]
+                    , metaArgs = []
+                    }
+              , eBody =
+                  [ NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.sml"
+                                    , sourceLine = Pos 14
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsSection 2
+                              , metaAttrs =
+                                  fromList
+                                    [ ( "title"
+                                      , ( Meta
+                                            { loc =
+                                                SourcePos
+                                                  { sourceName = "manual.sml"
+                                                  , sourceLine = Pos 14
+                                                  , sourceColumn = Pos 4
+                                                  }
+                                            , sourcePres = AsInline
+                                            , metaAttrs = fromList []
+                                            , metaArgs = []
+                                            }
+                                        , [ NodeText
+                                              SourcePos
+                                                { sourceName = "manual.sml"
+                                                , sourceLine = Pos 14
+                                                , sourceColumn = Pos 11
+                                                }
+                                              "Paragraphs"
+                                          ]
+                                        )
+                                      )
+                                    ]
+                              , metaArgs = []
+                              }
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 16
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 16
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba is a type of "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 18
+                                                        , sourceColumn = Pos 45
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 51
+                                                      }
+                                                    "block"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 18
+                                            , sourceColumn = Pos 57
+                                            }
+                                          ", and contains\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 19
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 19
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "paragraph text"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 19
+                                            , sourceColumn = Pos 22
+                                            }
+                                          " and "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 19
+                                                        , sourceColumn = Pos 27
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 19
+                                                      , sourceColumn = Pos 33
+                                                      }
+                                                    "elements"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 19
+                                            , sourceColumn = Pos 42
+                                            }
+                                          ". Two sample paragraphs are\ngiven below:"
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "codeBlock"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 22
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsBlock
+                                        , metaAttrs =
+                                            fromList
+                                              [ ( "language"
+                                                , ( Meta
+                                                      { loc =
+                                                          SourcePos
+                                                            { sourceName = "manual.sml"
+                                                            , sourceLine = Pos 22
+                                                            , sourceColumn = Pos 13
+                                                            }
+                                                      , sourcePres = AsInline
+                                                      , metaAttrs = fromList []
+                                                      , metaArgs = []
+                                                      }
+                                                  , [ NodeText
+                                                        SourcePos
+                                                          { sourceName = "manual.sml"
+                                                          , sourceLine = Pos 22
+                                                          , sourceColumn = Pos 23
+                                                          }
+                                                        "scriba"
+                                                    ]
+                                                  )
+                                                )
+                                              ]
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 22
+                                            , sourceColumn = Pos 30
+                                            }
+                                          "  There was nothing so very remarkable in that; nor did Alice think\n  it so very much out of the way to hear the Rabbit say to itself,\n  {q|Oh dear! Oh dear! I shall be late!} (when she thought it over\n  afterwards, it occurred to her that she ought to have wondered at\n  this, but at the time it all seemed quite natural); but when the\n  Rabbit actually {emph|took a watch out of its waistcoat-pocket},\n  and looked at it, and then hurried on, Alice started to her feet,\n  for it flashed across her mind that she had never before seen a\n  rabbit with either a waistcoat-pocket, or a watch to take out of\n  it, and burning with curiosity, she ran across the field after it,\n  and fortunately was just in time to see it pop down a large\n  rabbit-hole under the hedge.\n\n  In another moment down went Alice after it, never once considering\n  how in the world she was to get out again."
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 40
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 40
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Plain paragraph text is any span of unicode characters other than\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 41
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 41
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    "\\"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 41
+                                            , sourceColumn = Pos 10
+                                            }
+                                          ", "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 41
+                                                        , sourceColumn = Pos 12
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 41
+                                                      , sourceColumn = Pos 17
+                                                      }
+                                                    "{"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 41
+                                            , sourceColumn = Pos 21
+                                            }
+                                          ", or "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 41
+                                                        , sourceColumn = Pos 26
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 41
+                                                      , sourceColumn = Pos 31
+                                                      }
+                                                    "}"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 41
+                                            , sourceColumn = Pos 35
+                                            }
+                                          ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. Those three characters\ncan be represented in paragraph text using the sequences "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 44
+                                                        , sourceColumn = Pos 58
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 44
+                                                      , sourceColumn = Pos 63
+                                                      }
+                                                    "\\\\"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 44
+                                            , sourceColumn = Pos 68
+                                            }
+                                          ",\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 45
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 45
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    "\\{"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 45
+                                            , sourceColumn = Pos 11
+                                            }
+                                          ", and "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 45
+                                                        , sourceColumn = Pos 17
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 45
+                                                      , sourceColumn = Pos 22
+                                                      }
+                                                    "\\}"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 45
+                                            , sourceColumn = Pos 27
+                                            }
+                                          ", should you need them in text. "
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 48
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 48
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "The other feature of paragraph markup is "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 48
+                                                        , sourceColumn = Pos 42
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 48
+                                                      , sourceColumn = Pos 48
+                                                      }
+                                                    "inline elements"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 48
+                                            , sourceColumn = Pos 64
+                                            }
+                                          ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 50
+                                            , sourceColumn = Pos 64
+                                            }
+                                          " Simple\nelements start with "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 51
+                                                        , sourceColumn = Pos 21
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 51
+                                                      , sourceColumn = Pos 26
+                                                      }
+                                                    "{tag|"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 51
+                                            , sourceColumn = Pos 34
+                                            }
+                                          " and end with "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 51
+                                                        , sourceColumn = Pos 48
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 51
+                                                      , sourceColumn = Pos 53
+                                                      }
+                                                    "}"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 51
+                                            , sourceColumn = Pos 57
+                                            }
+                                          ". The\nparagraphs above have a "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 52
+                                                        , sourceColumn = Pos 25
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 52
+                                                      , sourceColumn = Pos 30
+                                                      }
+                                                    "q"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 52
+                                            , sourceColumn = Pos 34
+                                            }
+                                          " element, representing quoted text\nand likely to be rendered between quotation marks, and an "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 53
+                                                        , sourceColumn = Pos 59
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 53
+                                                      , sourceColumn = Pos 64
+                                                      }
+                                                    "emph"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 53
+                                            , sourceColumn = Pos 71
+                                            }
+                                          "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
+                                      ]
+                                  }
+                            ]
+                        }
+                  , NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.sml"
+                                    , sourceLine = Pos 57
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsSection 2
+                              , metaAttrs =
+                                  fromList
+                                    [ ( "title"
+                                      , ( Meta
+                                            { loc =
+                                                SourcePos
+                                                  { sourceName = "manual.sml"
+                                                  , sourceLine = Pos 57
+                                                  , sourceColumn = Pos 4
+                                                  }
+                                            , sourcePres = AsInline
+                                            , metaAttrs = fromList []
+                                            , metaArgs = []
+                                            }
+                                        , [ NodeText
+                                              SourcePos
+                                                { sourceName = "manual.sml"
+                                                , sourceLine = Pos 57
+                                                , sourceColumn = Pos 11
+                                                }
+                                              "Sections"
+                                          ]
+                                        )
+                                      )
+                                    ]
+                              , metaArgs = []
+                              }
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 59
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 59
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "The content of your document can be organized into "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 59
+                                                        , sourceColumn = Pos 52
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 59
+                                                      , sourceColumn = Pos 58
+                                                      }
+                                                    "sections"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 59
+                                            , sourceColumn = Pos 67
+                                            }
+                                          ",\nrepresenting self-contained units of discussion. These have types,\ntitles, and a body of blocks and subsections. Sections look like this:"
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "codeBlock"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 63
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsBlock
+                                        , metaAttrs =
+                                            fromList
+                                              [ ( "language"
+                                                , ( Meta
+                                                      { loc =
+                                                          SourcePos
+                                                            { sourceName = "manual.sml"
+                                                            , sourceLine = Pos 63
+                                                            , sourceColumn = Pos 13
+                                                            }
+                                                      , sourcePres = AsInline
+                                                      , metaAttrs = fromList []
+                                                      , metaArgs = []
+                                                      }
+                                                  , [ NodeText
+                                                        SourcePos
+                                                          { sourceName = "manual.sml"
+                                                          , sourceLine = Pos 63
+                                                          , sourceColumn = Pos 23
+                                                          }
+                                                        "scriba"
+                                                    ]
+                                                  )
+                                                )
+                                              ]
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 63
+                                            , sourceColumn = Pos 31
+                                            }
+                                          "  # {title|An introduction to the language}\n\n  ## {title|Paragraphs}\n\n  The bulk of your document \8230"
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 71
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 71
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Sections start with "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 71
+                                                        , sourceColumn = Pos 21
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 26
+                                                      }
+                                                    "# sectionType"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 71
+                                            , sourceColumn = Pos 42
+                                            }
+                                          ", the number of consecutive\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 72
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 72
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    "#"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 72
+                                            , sourceColumn = Pos 10
+                                            }
+                                          " becoming its "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 72
+                                                        , sourceColumn = Pos 24
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 72
+                                                      , sourceColumn = Pos 30
+                                                      }
+                                                    "section level"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 72
+                                            , sourceColumn = Pos 44
+                                            }
+                                          ". Section content continues\nuntil a section of at most that level, or the end of the document, is\nreached. In the example above, the "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "q"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 74
+                                                        , sourceColumn = Pos 36
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 74
+                                                      , sourceColumn = Pos 39
+                                                      }
+                                                    "Paragraphs"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 74
+                                            , sourceColumn = Pos 50
+                                            }
+                                          " section would\ncontinue until a level 2 or level 1 section were encountered. The\nsection type is optional; section types classify the section, can\ndenote built-in document structure, and can influence processing and\nrendering behaviour. Sections without a type become a generic\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 79
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 79
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    "section"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 79
+                                            , sourceColumn = Pos 16
+                                            }
+                                          "."
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.sml"
+                                              , sourceLine = Pos 81
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 81
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Sections, like other elements, can have "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.sml"
+                                                        , sourceLine = Pos 81
+                                                        , sourceColumn = Pos 41
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.sml"
+                                                      , sourceLine = Pos 81
+                                                      , sourceColumn = Pos 47
+                                                      }
+                                                    "attributes"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.sml"
+                                            , sourceLine = Pos 81
+                                            , sourceColumn = Pos 58
+                                            }
+                                          ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on."
+                                      ]
+                                  }
+                            ]
+                        }
+                  , NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.sml"
+                                    , sourceLine = Pos 86
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsSection 2
+                              , metaAttrs =
+                                  fromList
+                                    [ ( "title"
+                                      , ( Meta
+                                            { loc =
+                                                SourcePos
+                                                  { sourceName = "manual.sml"
+                                                  , sourceLine = Pos 86
+                                                  , sourceColumn = Pos 4
+                                                  }
+                                            , sourcePres = AsInline
+                                            , metaAttrs = fromList []
+                                            , metaArgs = []
+                                            }
+                                        , [ NodeText
+                                              SourcePos
+                                                { sourceName = "manual.sml"
+                                                , sourceLine = Pos 86
+                                                , sourceColumn = Pos 11
+                                                }
+                                              "The overall document structure"
+                                          ]
+                                        )
+                                      )
+                                    ]
+                              , metaArgs = []
+                              }
+                        , eBody = []
+                        }
+                  ]
+              }
+        ]
+    }

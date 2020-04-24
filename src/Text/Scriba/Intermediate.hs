@@ -10,9 +10,11 @@ import           Text.Scriba.Parse              ( InlineContent(..)
                                                 )
 import qualified Text.Scriba.Parse             as P
 
+import           Data.Char                      ( isSpace )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
+import qualified Data.Text                     as T
 import           Text.Megaparsec                ( SourcePos )
 
 {- TODO:
@@ -42,6 +44,7 @@ import           Text.Megaparsec                ( SourcePos )
 data SourcePresentation
   = AsDoc
   | AsBlock
+  | AsPara
   | AsInline
   | AsSection Int
   deriving (Eq, Ord, Show, Read)
@@ -75,7 +78,7 @@ nodeElement t m = NodeElem . Element t m
 
 fromAttr :: P.Attr -> Attr
 fromAttr (s, at, ar, con) =
-  ( Meta s AsInline (fromAttrs at) (map fromInlineNode ar)
+  ( Meta s AsInline (fromAttrs at) (concatMap fromInlineNode ar)
   , fromInlineContent con
   )
 
@@ -101,12 +104,15 @@ fromInlineElement (P.Element s t at ar c) =
     $ Element t (Meta s AsInline (fromAttrs at) (fromInlineNodes ar))
     $ fromInlineContent c
 
-fromInlineNode :: InlineNode -> Node
-fromInlineNode (InlineBraced e) = fromInlineElement e
-fromInlineNode (InlineText s t) = NodeText s t
+-- This only produces at most one node. This is important, for
+-- instance, in the arguments to functions.
+fromInlineNode :: InlineNode -> [Node]
+fromInlineNode (InlineBraced e) = [fromInlineElement e]
+fromInlineNode (InlineText s t) = [NodeText s t]
+fromInlineNode InlineComment{}  = []
 
 fromInlineNodes :: [InlineNode] -> [Node]
-fromInlineNodes = map fromInlineNode
+fromInlineNodes = concatMap fromInlineNode
 
 -- * Block conversion
 
@@ -116,11 +122,22 @@ fromBlockContent (BlockInlines b   ) = fromInlineNodes b
 fromBlockContent (BlockVerbatim s t) = [NodeText s t]
 fromBlockContent BlockNil            = []
 
--- TODO: document that this defaults to a `p` paragraph.
-fromBlockNode :: P.BlockNode -> Node
-fromBlockNode (P.BlockBlock b) = NodeElem $ fromBlockElement b
-fromBlockNode (P.BlockPar sp i) =
-  nodeElement (Just "p") (Meta sp AsBlock mempty mempty) $ fromInlineNodes i
+-- TODO: document that this defaults to a `p` paragraph. Also the
+-- empty paragraph stripping is a little inelegant. It exists to
+-- support comments occurring between blocks, which happen to parse as
+-- paragraphs full of comments and whitespace. The 'fromInlineNodes'
+-- removes the comments, leaving just malformed whitespace paragraphs.
+fromBlockNode :: P.BlockNode -> [Node]
+fromBlockNode (P.BlockBlock b) = [NodeElem $ fromBlockElement b]
+fromBlockNode (P.BlockPar sp i)
+  | isEmpty i
+  = []
+  | otherwise
+  = [nodeElement (Just "p") (Meta sp AsPara mempty mempty) $ fromInlineNodes i]
+ where
+  isWhitespace (InlineText _ t) = T.all isSpace t
+  isWhitespace _                = False
+  isEmpty = all isWhitespace
 
 fromBlockElement :: P.BlockElement -> Element
 fromBlockElement (P.Element s t at ar c) =
@@ -128,7 +145,7 @@ fromBlockElement (P.Element s t at ar c) =
     $ fromBlockContent c
 
 fromBlockNodes :: [P.BlockNode] -> [Node]
-fromBlockNodes = map fromBlockNode
+fromBlockNodes = concatMap fromBlockNode
 
 -- * Section conversion
 

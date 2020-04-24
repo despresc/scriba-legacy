@@ -143,14 +143,14 @@ Doc
                , sourceLine = Pos 16
                , sourceColumn = Pos 1
                }
-             "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba contains "
+             "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba is a type of "
          , InlineBraced
              Element
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
                      , sourceLine = Pos 18
-                     , sourceColumn = Pos 41
+                     , sourceColumn = Pos 45
                      }
                , etype = Just "emph"
                , attrs = Attrs { getAttrs = fromList [] }
@@ -161,18 +161,18 @@ Doc
                          SourcePos
                            { sourceName = "manual.sml"
                            , sourceLine = Pos 18
-                           , sourceColumn = Pos 47
+                           , sourceColumn = Pos 51
                            }
-                         "paragraph text"
+                         "block"
                      ]
                }
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
                , sourceLine = Pos 18
-               , sourceColumn = Pos 62
+               , sourceColumn = Pos 57
                }
-             " and\n"
+             ", and contains\n"
          , InlineBraced
              Element
                { srcPos =
@@ -192,6 +192,35 @@ Doc
                            , sourceLine = Pos 19
                            , sourceColumn = Pos 7
                            }
+                         "paragraph text"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 19
+               , sourceColumn = Pos 22
+               }
+             " and "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 19
+                     , sourceColumn = Pos 27
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.sml"
+                           , sourceLine = Pos 19
+                           , sourceColumn = Pos 33
+                           }
                          "elements"
                      ]
                }
@@ -199,9 +228,9 @@ Doc
              SourcePos
                { sourceName = "manual.sml"
                , sourceLine = Pos 19
-               , sourceColumn = Pos 16
+               , sourceColumn = Pos 42
                }
-             ". Two sample paragraphs are given below:"
+             ". Two sample paragraphs are\ngiven below:"
          ])
   , SecBlock
       (BlockBlock
@@ -209,7 +238,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.sml"
-                 , sourceLine = Pos 21
+                 , sourceLine = Pos 22
                  , sourceColumn = Pos 1
                  }
            , etype = Just "codeBlock"
@@ -220,7 +249,7 @@ Doc
                        [ ( "language"
                          , ( SourcePos
                                { sourceName = "manual.sml"
-                               , sourceLine = Pos 21
+                               , sourceLine = Pos 22
                                , sourceColumn = Pos 13
                                }
                            , Attrs { getAttrs = fromList [] }
@@ -229,7 +258,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "manual.sml"
-                                     , sourceLine = Pos 21
+                                     , sourceLine = Pos 22
                                      , sourceColumn = Pos 23
                                      }
                                    "scriba"
@@ -243,7 +272,7 @@ Doc
                BlockVerbatim
                  SourcePos
                    { sourceName = "manual.sml"
-                   , sourceLine = Pos 21
+                   , sourceLine = Pos 22
                    , sourceColumn = Pos 30
                    }
                  "  There was nothing so very remarkable in that; nor did Alice think\n  it so very much out of the way to hear the Rabbit say to itself,\n  {q|Oh dear! Oh dear! I shall be late!} (when she thought it over\n  afterwards, it occurred to her that she ought to have wondered at\n  this, but at the time it all seemed quite natural); but when the\n  Rabbit actually {emph|took a watch out of its waistcoat-pocket},\n  and looked at it, and then hurried on, Alice started to her feet,\n  for it flashed across her mind that she had never before seen a\n  rabbit with either a waistcoat-pocket, or a watch to take out of\n  it, and burning with curiosity, she ran across the field after it,\n  and fortunately was just in time to see it pop down a large\n  rabbit-hole under the hedge.\n\n  In another moment down went Alice after it, never once considering\n  how in the world she was to get out again."
@@ -252,13 +281,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.sml"
-           , sourceLine = Pos 39
+           , sourceLine = Pos 40
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 39
+               , sourceLine = Pos 40
                , sourceColumn = Pos 1
                }
              "Plain paragraph text is any span of unicode characters other than\n"
@@ -267,7 +296,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 40
+                     , sourceLine = Pos 41
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -277,7 +306,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 40
+                       , sourceLine = Pos 41
                        , sourceColumn = Pos 6
                        }
                      "\\"
@@ -285,7 +314,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 40
+               , sourceLine = Pos 41
                , sourceColumn = Pos 10
                }
              ", "
@@ -294,7 +323,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 40
+                     , sourceLine = Pos 41
                      , sourceColumn = Pos 12
                      }
                , etype = Just "code"
@@ -304,7 +333,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 40
+                       , sourceLine = Pos 41
                        , sourceColumn = Pos 17
                        }
                      "{"
@@ -312,7 +341,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 40
+               , sourceLine = Pos 41
                , sourceColumn = Pos 21
                }
              ", or "
@@ -321,7 +350,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 40
+                     , sourceLine = Pos 41
                      , sourceColumn = Pos 26
                      }
                , etype = Just "code"
@@ -331,7 +360,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 40
+                       , sourceLine = Pos 41
                        , sourceColumn = Pos 31
                        }
                      "}"
@@ -339,7 +368,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 40
+               , sourceLine = Pos 41
                , sourceColumn = Pos 35
                }
              ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. Those three characters\ncan be represented in paragraph text using the sequences "
@@ -348,7 +377,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 43
+                     , sourceLine = Pos 44
                      , sourceColumn = Pos 58
                      }
                , etype = Just "code"
@@ -358,7 +387,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 43
+                       , sourceLine = Pos 44
                        , sourceColumn = Pos 63
                        }
                      "\\\\"
@@ -366,7 +395,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 43
+               , sourceLine = Pos 44
                , sourceColumn = Pos 68
                }
              ",\n"
@@ -375,7 +404,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 44
+                     , sourceLine = Pos 45
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -385,7 +414,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 44
+                       , sourceLine = Pos 45
                        , sourceColumn = Pos 6
                        }
                      "\\{"
@@ -393,7 +422,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 44
+               , sourceLine = Pos 45
                , sourceColumn = Pos 11
                }
              ", and "
@@ -402,7 +431,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 44
+                     , sourceLine = Pos 45
                      , sourceColumn = Pos 17
                      }
                , etype = Just "code"
@@ -412,7 +441,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 44
+                       , sourceLine = Pos 45
                        , sourceColumn = Pos 22
                        }
                      "\\}"
@@ -420,22 +449,29 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 44
+               , sourceLine = Pos 45
                , sourceColumn = Pos 27
                }
-             ", should you need them in text."
+             ", should you need them in text. "
+         , InlineComment
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 45
+               , sourceColumn = Pos 59
+               }
+             "TODO:\nmention paragraphs not starting with &"
          ])
   , SecBlock
       (BlockPar
          SourcePos
            { sourceName = "manual.sml"
-           , sourceLine = Pos 46
+           , sourceLine = Pos 48
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 46
+               , sourceLine = Pos 48
                , sourceColumn = Pos 1
                }
              "The other feature of paragraph markup is "
@@ -444,7 +480,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 46
+                     , sourceLine = Pos 48
                      , sourceColumn = Pos 42
                      }
                , etype = Just "emph"
@@ -455,7 +491,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.sml"
-                           , sourceLine = Pos 46
+                           , sourceLine = Pos 48
                            , sourceColumn = Pos 48
                            }
                          "inline elements"
@@ -464,14 +500,21 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 46
+               , sourceLine = Pos 48
                , sourceColumn = Pos 64
                }
              ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
+         , InlineComment
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 50
+               , sourceColumn = Pos 15
+               }
+             "TODO: link here when this section is writtten"
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 48
+               , sourceLine = Pos 50
                , sourceColumn = Pos 64
                }
              " Simple\nelements start with "
@@ -480,7 +523,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 49
+                     , sourceLine = Pos 51
                      , sourceColumn = Pos 21
                      }
                , etype = Just "code"
@@ -490,7 +533,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 49
+                       , sourceLine = Pos 51
                        , sourceColumn = Pos 26
                        }
                      "{tag|"
@@ -498,7 +541,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 49
+               , sourceLine = Pos 51
                , sourceColumn = Pos 34
                }
              " and end with "
@@ -507,7 +550,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 49
+                     , sourceLine = Pos 51
                      , sourceColumn = Pos 48
                      }
                , etype = Just "code"
@@ -517,7 +560,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 49
+                       , sourceLine = Pos 51
                        , sourceColumn = Pos 53
                        }
                      "}"
@@ -525,7 +568,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 49
+               , sourceLine = Pos 51
                , sourceColumn = Pos 57
                }
              ". The\nparagraphs above have a "
@@ -534,7 +577,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 50
+                     , sourceLine = Pos 52
                      , sourceColumn = Pos 25
                      }
                , etype = Just "code"
@@ -544,7 +587,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 50
+                       , sourceLine = Pos 52
                        , sourceColumn = Pos 30
                        }
                      "q"
@@ -552,7 +595,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 50
+               , sourceLine = Pos 52
                , sourceColumn = Pos 34
                }
              " element, representing quoted text\nand likely to be rendered between quotation marks, and an "
@@ -561,7 +604,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.sml"
-                     , sourceLine = Pos 51
+                     , sourceLine = Pos 53
                      , sourceColumn = Pos 59
                      }
                , etype = Just "code"
@@ -571,7 +614,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.sml"
-                       , sourceLine = Pos 51
+                       , sourceLine = Pos 53
                        , sourceColumn = Pos 64
                        }
                      "emph"
@@ -579,7 +622,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.sml"
-               , sourceLine = Pos 51
+               , sourceLine = Pos 53
                , sourceColumn = Pos 71
                }
              "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
@@ -589,7 +632,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.sml"
-           , sourceLine = Pos 55
+           , sourceLine = Pos 57
            , sourceColumn = Pos 1
            }
          Nothing
@@ -599,7 +642,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.sml"
-                         , sourceLine = Pos 55
+                         , sourceLine = Pos 57
                          , sourceColumn = Pos 4
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -608,10 +651,331 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.sml"
-                               , sourceLine = Pos 55
+                               , sourceLine = Pos 57
                                , sourceColumn = Pos 11
                                }
                              "Sections"
+                         ]
+                     )
+                   )
+                 ]
+           }
+         [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.sml"
+           , sourceLine = Pos 59
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 59
+               , sourceColumn = Pos 1
+               }
+             "The content of your document can be organized into "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 59
+                     , sourceColumn = Pos 52
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.sml"
+                           , sourceLine = Pos 59
+                           , sourceColumn = Pos 58
+                           }
+                         "sections"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 59
+               , sourceColumn = Pos 67
+               }
+             ",\nrepresenting self-contained units of discussion. These have types,\ntitles, and a body of blocks and subsections. Sections look like this:"
+         ])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "manual.sml"
+                 , sourceLine = Pos 63
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "codeBlock"
+           , attrs =
+               Attrs
+                 { getAttrs =
+                     fromList
+                       [ ( "language"
+                         , ( SourcePos
+                               { sourceName = "manual.sml"
+                               , sourceLine = Pos 63
+                               , sourceColumn = Pos 13
+                               }
+                           , Attrs { getAttrs = fromList [] }
+                           , []
+                           , InlineSequence
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "manual.sml"
+                                     , sourceLine = Pos 63
+                                     , sourceColumn = Pos 23
+                                     }
+                                   "scriba"
+                               ]
+                           )
+                         )
+                       ]
+                 }
+           , args = []
+           , content =
+               BlockVerbatim
+                 SourcePos
+                   { sourceName = "manual.sml"
+                   , sourceLine = Pos 63
+                   , sourceColumn = Pos 31
+                   }
+                 "  # {title|An introduction to the language}\n\n  ## {title|Paragraphs}\n\n  The bulk of your document \8230"
+           })
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.sml"
+           , sourceLine = Pos 71
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 71
+               , sourceColumn = Pos 1
+               }
+             "Sections start with "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 71
+                     , sourceColumn = Pos 21
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.sml"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 26
+                       }
+                     "# sectionType"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 71
+               , sourceColumn = Pos 42
+               }
+             ", the number of consecutive\n"
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 72
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.sml"
+                       , sourceLine = Pos 72
+                       , sourceColumn = Pos 6
+                       }
+                     "#"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 72
+               , sourceColumn = Pos 10
+               }
+             " becoming its "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 72
+                     , sourceColumn = Pos 24
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.sml"
+                           , sourceLine = Pos 72
+                           , sourceColumn = Pos 30
+                           }
+                         "section level"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 72
+               , sourceColumn = Pos 44
+               }
+             ". Section content continues\nuntil a section of at most that level, or the end of the document, is\nreached. In the example above, the "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 74
+                     , sourceColumn = Pos 36
+                     }
+               , etype = Just "q"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.sml"
+                           , sourceLine = Pos 74
+                           , sourceColumn = Pos 39
+                           }
+                         "Paragraphs"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 74
+               , sourceColumn = Pos 50
+               }
+             " section would\ncontinue until a level 2 or level 1 section were encountered. The\nsection type is optional; section types classify the section, can\ndenote built-in document structure, and can influence processing and\nrendering behaviour. Sections without a type become a generic\n"
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 79
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.sml"
+                       , sourceLine = Pos 79
+                       , sourceColumn = Pos 6
+                       }
+                     "section"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 79
+               , sourceColumn = Pos 16
+               }
+             "."
+         ])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.sml"
+           , sourceLine = Pos 81
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 81
+               , sourceColumn = Pos 1
+               }
+             "Sections, like other elements, can have "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.sml"
+                     , sourceLine = Pos 81
+                     , sourceColumn = Pos 41
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.sml"
+                           , sourceLine = Pos 81
+                           , sourceColumn = Pos 47
+                           }
+                         "attributes"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.sml"
+               , sourceLine = Pos 81
+               , sourceColumn = Pos 58
+               }
+             ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on."
+         ])
+  , SecHeaderNode
+      (SecHeader
+         2
+         SourcePos
+           { sourceName = "manual.sml"
+           , sourceLine = Pos 86
+           , sourceColumn = Pos 1
+           }
+         Nothing
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "title"
+                   , ( SourcePos
+                         { sourceName = "manual.sml"
+                         , sourceLine = Pos 86
+                         , sourceColumn = Pos 4
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "manual.sml"
+                               , sourceLine = Pos 86
+                               , sourceColumn = Pos 11
+                               }
+                             "The overall document structure"
                          ]
                      )
                    )

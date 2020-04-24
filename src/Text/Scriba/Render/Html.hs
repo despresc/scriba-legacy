@@ -89,6 +89,7 @@ renderStandalone d@(Doc dm _ _ _) = do
     H.body d'
 
 -- TODO: selectively render empty sections?
+-- TODO: Should the title be a Maybe?
 renderDoc :: Doc -> Render Html
 renderDoc (Doc t f m b) = do
   t' <- renderTitle $ docTitle t
@@ -138,8 +139,9 @@ renderInlines :: [Inline] -> Render Html
 renderInlines = foldBy renderInline
 
 renderInline :: Inline -> Render Html
-renderInline (Str  t) = pure $ H.toHtml t
-renderInline (Emph i) = H.em <$> renderInlines i
+renderInline (Str   t) = pure $ H.toHtml t
+renderInline (Emph  i) = H.em <$> renderInlines i
+renderInline (Quote i) = H.q <$> renderInlines i
 renderInline (Math t) =
   pure $ H.span ! A.class_ "math inline" $ "\\(" <> H.toHtml t <> "\\)"
 renderInline (Code     t) = pure $ H.code $ H.toHtml t

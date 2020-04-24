@@ -6,8 +6,9 @@ format includes flexible markup constructs designed to represent a
 range of historical scientific material, but these can be used equally
 well for new publications.</p><section><h2>An introduction to the language</h2><div class="sectionContent"><section><h3>Paragraphs</h3><div class="sectionContent"><p>The bulk of your document will most likely be paragraphs, sequences of
 normal text and marked-up content representing a single idea in your
-writing. A paragraph in scriba contains <em>paragraph text</em> and
-<em>elements</em>. Two sample paragraphs are given below:</p><pre><code>There was nothing so very remarkable in that; nor did Alice think
+writing. A paragraph in scriba is a type of <em>block</em>, and contains
+<em>paragraph text</em> and <em>elements</em>. Two sample paragraphs are
+given below:</p><pre><code>There was nothing so very remarkable in that; nor did Alice think
 it so very much out of the way to hear the Rabbit say to itself,
 {q|Oh dear! Oh dear! I shall be late!} (when she thought it over
 afterwards, it occurred to her that she ought to have wondered at
@@ -26,11 +27,28 @@ how in the world she was to get out again.</code></pre><p>Plain paragraph text i
 that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
 can be represented in paragraph text using the sequences <code>\\</code>,
-<code>\{</code>, and <code>\}</code>, should you need them in text.</p><p>The other feature of paragraph markup is <em>inline elements</em>, which
+<code>\{</code>, and <code>\}</code>, should you need them in text. </p><p>The other feature of paragraph markup is <em>inline elements</em>, which
 are used to give further meaning to your text and to control scriba&#39;s
 many features. Simple
 elements start with <code>{tag|</code> and end with <code>}</code>. The
 paragraphs above have a <code>q</code> element, representing quoted text
 and likely to be rendered between quotation marks, and an <code>emph</code>
 element, representing emphasized text and likely to be rendered in
-italic type.</p></div></section><section><h3>Sections</h3><div class="sectionContent"></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
+italic type.</p></div></section><section><h3>Sections</h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
+representing self-contained units of discussion. These have types,
+titles, and a body of blocks and subsections. Sections look like this:</p><pre><code># {title|An introduction to the language}
+
+## {title|Paragraphs}
+
+The bulk of your document …</code></pre><p>Sections start with <code># sectionType</code>, the number of consecutive
+<code>#</code> becoming its <em>section level</em>. Section content continues
+until a section of at most that level, or the end of the document, is
+reached. In the example above, the <q>Paragraphs</q> section would
+continue until a level 2 or level 1 section were encountered. The
+section type is optional; section types classify the section, can
+denote built-in document structure, and can influence processing and
+rendering behaviour. Sections without a type become a generic
+<code>section</code>.</p><p>Sections, like other elements, can have <em>attributes</em>. The only
+recognized attribute of a section, for now, is its title. In future,
+sections will have many attributes, like number, language, alternate
+titles for the table of contents or page header, and so on.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
