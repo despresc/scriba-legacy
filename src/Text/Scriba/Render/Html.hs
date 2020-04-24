@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -10,6 +11,7 @@ import           Control.Monad.State            ( MonadState(..)
                                                 , State
                                                 , runState
                                                 , modify
+                                                , gets
                                                 )
 import           Data.Foldable                  ( foldl' )
 import           Text.Blaze.Html5               ( Html
@@ -39,7 +41,7 @@ writeStandalone d = fst $ runRender (renderStandalone d) initialRenderState
 
 -- Section titles run from h1 to h6, then top out there.
 data RenderState = RenderState
-  { rsSectionHeaderDepth :: Int
+  { rsHeaderDepth :: Int
   }
 
 foldBy :: (Foldable t, Monoid c) => (a -> c) -> t a -> c
@@ -50,7 +52,7 @@ foldBy f = foldl' go mempty where go c a = c <> f a
 -- the document itself hopefully has a title (that we should
 -- eventually gather and render).
 initialRenderState :: RenderState
-initialRenderState = RenderState { rsSectionHeaderDepth = 1 }
+initialRenderState = RenderState { rsHeaderDepth = 1 }
 
 newtype Render a = Render
   { unRender :: State RenderState a
@@ -65,18 +67,14 @@ instance Semigroup a => Semigroup (Render a) where
 instance Monoid a => Monoid (Render a) where
   mempty = pure mempty
 
--- TODO: really could use some optics
-setSectionHeaderDepth :: Int -> Render ()
-setSectionHeaderDepth n = modify $ \s -> s { rsSectionHeaderDepth = n }
-
--- TODO: this should probably be a local-style combinator, with
--- renderTitle simply getting the environmental header depth.
-bumpSectionHeaderDepth :: Render Int
-bumpSectionHeaderDepth = do
-  s <- get
-  let n = rsSectionHeaderDepth s
-  put $ s { rsSectionHeaderDepth = n + 1 }
-  pure n
+bumpHeaderDepth :: Render a -> Render a
+bumpHeaderDepth act = do
+  n <- gets rsHeaderDepth
+  setDepth $ n + 1
+  a <- act
+  setDepth n
+  pure a
+  where setDepth n = modify $ \s -> s { rsHeaderDepth = n }
 
 -- TODO: should probably remove this
 -- TODO: for standalone rendering we should probably put the title of
@@ -93,17 +91,16 @@ renderStandalone d@(Doc dm _ _ _) = do
 -- TODO: selectively render empty sections?
 renderDoc :: Doc -> Render Html
 renderDoc (Doc t f m b) = do
-  n  <- bumpSectionHeaderDepth
-  t' <- renderTitle n $ docTitle t
-  f' <- renderSectionContent f
-  m' <- renderSectionContent m
-  b' <- renderSectionContent b
-  setSectionHeaderDepth n
-  pure $ H.section ! A.class_ "scribaDoc" $ do
-    t'
-    H.section ! A.class_ "frontMatter" $ f'
-    H.section ! A.class_ "mainMatter" $ m'
-    H.section ! A.class_ "backMatter" $ b'
+  t' <- renderTitle $ docTitle t
+  bumpHeaderDepth $ do
+    f' <- renderSectionContent f
+    m' <- renderSectionContent m
+    b' <- renderSectionContent b
+    pure $ H.section ! A.class_ "scribaDoc" $ do
+      t'
+      H.section ! A.class_ "frontMatter" $ f'
+      H.section ! A.class_ "mainMatter" $ m'
+      H.section ! A.class_ "backMatter" $ b'
 
 -- TODO: Distinguish the preamble from the subsections?
 renderSectionContent :: SectionContent -> Render Html
@@ -114,11 +111,10 @@ renderSectionContent (SectionContent bs cs) = do
 
 renderSection :: Section -> Render Html
 renderSection (Section t c) = do
-  n  <- bumpSectionHeaderDepth
-  t' <- renderTitle n t
-  c' <- renderSectionContent c
-  setSectionHeaderDepth n
-  pure $ H.section $ t' <> c'
+  t' <- renderTitle t
+  bumpHeaderDepth $ do
+    c' <- renderSectionContent c
+    pure $ H.section $ t' <> c'
 
 renderSections :: [Section] -> Render Html
 renderSections = foldBy renderSection
@@ -149,9 +145,14 @@ renderInline (Math t) =
 renderInline (Code     t) = pure $ H.code $ H.toHtml t
 renderInline (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
 
+
+-- | Render a heading title using the ambient header depth.
+
 -- Add a sectionTitle class?
-renderTitle :: Int -> Title -> Render Html
-renderTitle lvl (Title t) = headAtLevel lvl <$> renderInlines t
+renderTitle :: Title -> Render Html
+renderTitle (Title t) = do
+  lvl <- gets rsHeaderDepth
+  headAtLevel lvl <$> renderInlines t
  where
   headAtLevel n = case n of
     1 -> H.h1
