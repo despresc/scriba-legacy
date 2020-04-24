@@ -655,6 +655,9 @@ pSectionContent = do
 -- troublesome ones).
 -- TODO: the pBare dm and pExplicitMatter dm thing is a bit bad.
 -- TODO: Enforce non-empty title for a doc? Or perhaps just warn on one.
+-- TODO: For error purposes it might be better if the meta is in a
+-- whileParsing "document meta", and the body is in a whileParsing
+-- "document body", but this is somewhat stylistic.
 pDoc :: Scriba Element Doc
 pDoc = do
   matchTy "scriba"
