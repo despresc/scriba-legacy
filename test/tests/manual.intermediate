@@ -5,7 +5,7 @@ NodeElem
         Meta
           { loc =
               SourcePos
-                { sourceName = "manual.sml"
+                { sourceName = "manual.scb"
                 , sourceLine = Pos 1
                 , sourceColumn = Pos 1
                 }
@@ -16,7 +16,7 @@ NodeElem
                   , ( Meta
                         { loc =
                             SourcePos
-                              { sourceName = "manual.sml"
+                              { sourceName = "manual.scb"
                               , sourceLine = Pos 2
                               , sourceColumn = Pos 3
                               }
@@ -26,7 +26,7 @@ NodeElem
                         }
                     , [ NodeText
                           SourcePos
-                            { sourceName = "manual.sml"
+                            { sourceName = "manual.scb"
                             , sourceLine = Pos 2
                             , sourceColumn = Pos 10
                             }
@@ -38,7 +38,7 @@ NodeElem
                   , ( Meta
                         { loc =
                             SourcePos
-                              { sourceName = "manual.sml"
+                              { sourceName = "manual.scb"
                               , sourceLine = Pos 3
                               , sourceColumn = Pos 3
                               }
@@ -48,7 +48,7 @@ NodeElem
                         }
                     , [ NodeText
                           SourcePos
-                            { sourceName = "manual.sml"
+                            { sourceName = "manual.scb"
                             , sourceLine = Pos 3
                             , sourceColumn = Pos 9
                             }
@@ -67,7 +67,7 @@ NodeElem
                   Meta
                     { loc =
                         SourcePos
-                          { sourceName = "manual.sml"
+                          { sourceName = "manual.scb"
                           , sourceLine = Pos 5
                           , sourceColumn = Pos 1
                           }
@@ -78,7 +78,7 @@ NodeElem
               , eBody =
                   [ NodeText
                       SourcePos
-                        { sourceName = "manual.sml"
+                        { sourceName = "manual.scb"
                         , sourceLine = Pos 5
                         , sourceColumn = Pos 1
                         }
@@ -92,7 +92,7 @@ NodeElem
                   Meta
                     { loc =
                         SourcePos
-                          { sourceName = "manual.sml"
+                          { sourceName = "manual.scb"
                           , sourceLine = Pos 12
                           , sourceColumn = Pos 1
                           }
@@ -103,7 +103,7 @@ NodeElem
                             , ( Meta
                                   { loc =
                                       SourcePos
-                                        { sourceName = "manual.sml"
+                                        { sourceName = "manual.scb"
                                         , sourceLine = Pos 12
                                         , sourceColumn = Pos 3
                                         }
@@ -113,7 +113,7 @@ NodeElem
                                   }
                               , [ NodeText
                                     SourcePos
-                                      { sourceName = "manual.sml"
+                                      { sourceName = "manual.scb"
                                       , sourceLine = Pos 12
                                       , sourceColumn = Pos 10
                                       }
@@ -132,7 +132,7 @@ NodeElem
                             Meta
                               { loc =
                                   SourcePos
-                                    { sourceName = "manual.sml"
+                                    { sourceName = "manual.scb"
                                     , sourceLine = Pos 14
                                     , sourceColumn = Pos 1
                                     }
@@ -143,7 +143,7 @@ NodeElem
                                       , ( Meta
                                             { loc =
                                                 SourcePos
-                                                  { sourceName = "manual.sml"
+                                                  { sourceName = "manual.scb"
                                                   , sourceLine = Pos 14
                                                   , sourceColumn = Pos 4
                                                   }
@@ -153,7 +153,7 @@ NodeElem
                                             }
                                         , [ NodeText
                                               SourcePos
-                                                { sourceName = "manual.sml"
+                                                { sourceName = "manual.scb"
                                                 , sourceLine = Pos 14
                                                 , sourceColumn = Pos 11
                                                 }
@@ -172,7 +172,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 16
                                               , sourceColumn = Pos 1
                                               }
@@ -183,7 +183,7 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 16
                                             , sourceColumn = Pos 1
                                             }
@@ -195,7 +195,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 18
                                                         , sourceColumn = Pos 45
                                                         }
@@ -206,7 +206,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 18
                                                       , sourceColumn = Pos 51
                                                       }
@@ -215,7 +215,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 18
                                             , sourceColumn = Pos 57
                                             }
@@ -227,7 +227,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 19
                                                         , sourceColumn = Pos 1
                                                         }
@@ -238,7 +238,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 19
                                                       , sourceColumn = Pos 7
                                                       }
@@ -247,7 +247,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 19
                                             , sourceColumn = Pos 22
                                             }
@@ -259,7 +259,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 19
                                                         , sourceColumn = Pos 27
                                                         }
@@ -270,7 +270,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 19
                                                       , sourceColumn = Pos 33
                                                       }
@@ -279,7 +279,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 19
                                             , sourceColumn = Pos 42
                                             }
@@ -293,7 +293,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 22
                                               , sourceColumn = Pos 1
                                               }
@@ -304,7 +304,7 @@ NodeElem
                                                 , ( Meta
                                                       { loc =
                                                           SourcePos
-                                                            { sourceName = "manual.sml"
+                                                            { sourceName = "manual.scb"
                                                             , sourceLine = Pos 22
                                                             , sourceColumn = Pos 13
                                                             }
@@ -314,7 +314,7 @@ NodeElem
                                                       }
                                                   , [ NodeText
                                                         SourcePos
-                                                          { sourceName = "manual.sml"
+                                                          { sourceName = "manual.scb"
                                                           , sourceLine = Pos 22
                                                           , sourceColumn = Pos 23
                                                           }
@@ -328,7 +328,7 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 22
                                             , sourceColumn = Pos 30
                                             }
@@ -342,7 +342,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 40
                                               , sourceColumn = Pos 1
                                               }
@@ -353,7 +353,7 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 40
                                             , sourceColumn = Pos 1
                                             }
@@ -365,7 +365,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 41
                                                         , sourceColumn = Pos 1
                                                         }
@@ -376,7 +376,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 41
                                                       , sourceColumn = Pos 6
                                                       }
@@ -385,7 +385,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 41
                                             , sourceColumn = Pos 10
                                             }
@@ -397,7 +397,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 41
                                                         , sourceColumn = Pos 12
                                                         }
@@ -408,7 +408,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 41
                                                       , sourceColumn = Pos 17
                                                       }
@@ -417,7 +417,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 41
                                             , sourceColumn = Pos 21
                                             }
@@ -429,7 +429,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 41
                                                         , sourceColumn = Pos 26
                                                         }
@@ -440,7 +440,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 41
                                                       , sourceColumn = Pos 31
                                                       }
@@ -449,7 +449,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 41
                                             , sourceColumn = Pos 35
                                             }
@@ -461,7 +461,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 44
                                                         , sourceColumn = Pos 58
                                                         }
@@ -472,7 +472,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 44
                                                       , sourceColumn = Pos 63
                                                       }
@@ -481,7 +481,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 44
                                             , sourceColumn = Pos 68
                                             }
@@ -493,7 +493,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 45
                                                         , sourceColumn = Pos 1
                                                         }
@@ -504,7 +504,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 45
                                                       , sourceColumn = Pos 6
                                                       }
@@ -513,7 +513,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 45
                                             , sourceColumn = Pos 11
                                             }
@@ -525,7 +525,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 45
                                                         , sourceColumn = Pos 17
                                                         }
@@ -536,7 +536,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 45
                                                       , sourceColumn = Pos 22
                                                       }
@@ -545,7 +545,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 45
                                             , sourceColumn = Pos 27
                                             }
@@ -559,7 +559,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 48
                                               , sourceColumn = Pos 1
                                               }
@@ -570,7 +570,7 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 48
                                             , sourceColumn = Pos 1
                                             }
@@ -582,7 +582,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 48
                                                         , sourceColumn = Pos 42
                                                         }
@@ -593,7 +593,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 48
                                                       , sourceColumn = Pos 48
                                                       }
@@ -602,14 +602,14 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 48
                                             , sourceColumn = Pos 64
                                             }
                                           ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 50
                                             , sourceColumn = Pos 64
                                             }
@@ -621,7 +621,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 51
                                                         , sourceColumn = Pos 21
                                                         }
@@ -632,7 +632,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 51
                                                       , sourceColumn = Pos 26
                                                       }
@@ -641,7 +641,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 51
                                             , sourceColumn = Pos 34
                                             }
@@ -653,7 +653,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 51
                                                         , sourceColumn = Pos 48
                                                         }
@@ -664,7 +664,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 51
                                                       , sourceColumn = Pos 53
                                                       }
@@ -673,7 +673,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 51
                                             , sourceColumn = Pos 57
                                             }
@@ -685,7 +685,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 52
                                                         , sourceColumn = Pos 25
                                                         }
@@ -696,7 +696,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 52
                                                       , sourceColumn = Pos 30
                                                       }
@@ -705,7 +705,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 52
                                             , sourceColumn = Pos 34
                                             }
@@ -717,7 +717,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 53
                                                         , sourceColumn = Pos 59
                                                         }
@@ -728,7 +728,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 53
                                                       , sourceColumn = Pos 64
                                                       }
@@ -737,7 +737,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 53
                                             , sourceColumn = Pos 71
                                             }
@@ -753,7 +753,7 @@ NodeElem
                             Meta
                               { loc =
                                   SourcePos
-                                    { sourceName = "manual.sml"
+                                    { sourceName = "manual.scb"
                                     , sourceLine = Pos 57
                                     , sourceColumn = Pos 1
                                     }
@@ -764,7 +764,7 @@ NodeElem
                                       , ( Meta
                                             { loc =
                                                 SourcePos
-                                                  { sourceName = "manual.sml"
+                                                  { sourceName = "manual.scb"
                                                   , sourceLine = Pos 57
                                                   , sourceColumn = Pos 4
                                                   }
@@ -774,7 +774,7 @@ NodeElem
                                             }
                                         , [ NodeText
                                               SourcePos
-                                                { sourceName = "manual.sml"
+                                                { sourceName = "manual.scb"
                                                 , sourceLine = Pos 57
                                                 , sourceColumn = Pos 11
                                                 }
@@ -793,7 +793,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 59
                                               , sourceColumn = Pos 1
                                               }
@@ -804,7 +804,7 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 59
                                             , sourceColumn = Pos 1
                                             }
@@ -816,7 +816,7 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 59
                                                         , sourceColumn = Pos 52
                                                         }
@@ -827,7 +827,7 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 59
                                                       , sourceColumn = Pos 58
                                                       }
@@ -836,7 +836,7 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 59
                                             , sourceColumn = Pos 67
                                             }
@@ -850,7 +850,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 63
                                               , sourceColumn = Pos 1
                                               }
@@ -861,7 +861,7 @@ NodeElem
                                                 , ( Meta
                                                       { loc =
                                                           SourcePos
-                                                            { sourceName = "manual.sml"
+                                                            { sourceName = "manual.scb"
                                                             , sourceLine = Pos 63
                                                             , sourceColumn = Pos 13
                                                             }
@@ -871,7 +871,7 @@ NodeElem
                                                       }
                                                   , [ NodeText
                                                         SourcePos
-                                                          { sourceName = "manual.sml"
+                                                          { sourceName = "manual.scb"
                                                           , sourceLine = Pos 63
                                                           , sourceColumn = Pos 23
                                                           }
@@ -885,7 +885,7 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 63
                                             , sourceColumn = Pos 31
                                             }
@@ -899,7 +899,7 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
+                                              { sourceName = "manual.scb"
                                               , sourceLine = Pos 71
                                               , sourceColumn = Pos 1
                                               }
@@ -910,21 +910,21 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
+                                            { sourceName = "manual.scb"
                                             , sourceLine = Pos 71
                                             , sourceColumn = Pos 1
                                             }
-                                          "Sections start with "
+                                          "The first component of a section is its "
                                       , NodeElem
                                           Element
-                                            { eType = Just "code"
+                                            { eType = Just "emph"
                                             , eMeta =
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
+                                                        { sourceName = "manual.scb"
                                                         , sourceLine = Pos 71
-                                                        , sourceColumn = Pos 21
+                                                        , sourceColumn = Pos 41
                                                         }
                                                   , sourcePres = AsInline
                                                   , metaAttrs = fromList []
@@ -933,18 +933,50 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
+                                                      { sourceName = "manual.scb"
                                                       , sourceLine = Pos 71
-                                                      , sourceColumn = Pos 26
+                                                      , sourceColumn = Pos 47
+                                                      }
+                                                    "header"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 71
+                                            , sourceColumn = Pos 54
+                                            }
+                                          ". The section\nheader starts with "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 72
+                                                        , sourceColumn = Pos 20
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 72
+                                                      , sourceColumn = Pos 25
                                                       }
                                                     "# sectionType"
                                                 ]
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 71
-                                            , sourceColumn = Pos 42
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 72
+                                            , sourceColumn = Pos 41
                                             }
                                           ", the number of consecutive\n"
                                       , NodeElem
@@ -954,8 +986,8 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
-                                                        , sourceLine = Pos 72
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 73
                                                         , sourceColumn = Pos 1
                                                         }
                                                   , sourcePres = AsInline
@@ -965,8 +997,8 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
-                                                      , sourceLine = Pos 72
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 73
                                                       , sourceColumn = Pos 6
                                                       }
                                                     "#"
@@ -974,11 +1006,11 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 72
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 73
                                             , sourceColumn = Pos 10
                                             }
-                                          " becoming its "
+                                          " becoming the overall "
                                       , NodeElem
                                           Element
                                             { eType = Just "emph"
@@ -986,9 +1018,9 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
-                                                        , sourceLine = Pos 72
-                                                        , sourceColumn = Pos 24
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 73
+                                                        , sourceColumn = Pos 32
                                                         }
                                                   , sourcePres = AsInline
                                                   , metaAttrs = fromList []
@@ -997,20 +1029,20 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
-                                                      , sourceLine = Pos 72
-                                                      , sourceColumn = Pos 30
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 73
+                                                      , sourceColumn = Pos 38
                                                       }
-                                                    "section level"
+                                                    "level"
                                                 ]
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 72
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 73
                                             , sourceColumn = Pos 44
                                             }
-                                          ". Section content continues\nuntil a section of at most that level, or the end of the document, is\nreached. In the example above, the "
+                                          " of the section. The\nsection content begins after the attributes of the section and at\nleast one blank line, and continues until a section of at most that\nlevel, or the end of the document, is reached. In the example above,\nthe "
                                       , NodeElem
                                           Element
                                             { eType = Just "q"
@@ -1018,9 +1050,9 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
-                                                        , sourceLine = Pos 74
-                                                        , sourceColumn = Pos 36
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 77
+                                                        , sourceColumn = Pos 5
                                                         }
                                                   , sourcePres = AsInline
                                                   , metaAttrs = fromList []
@@ -1029,20 +1061,20 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
-                                                      , sourceLine = Pos 74
-                                                      , sourceColumn = Pos 39
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 77
+                                                      , sourceColumn = Pos 8
                                                       }
                                                     "Paragraphs"
                                                 ]
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 74
-                                            , sourceColumn = Pos 50
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 77
+                                            , sourceColumn = Pos 19
                                             }
-                                          " section would\ncontinue until a level 2 or level 1 section were encountered. The\nsection type is optional; section types classify the section, can\ndenote built-in document structure, and can influence processing and\nrendering behaviour. Sections without a type become a generic\n"
+                                          " section would continue until a level 2 or level 1\nsection were encountered. The section type is optional; section types\nclassify the section, can denote built-in document structure, and can\ninfluence processing and rendering behaviour. Sections without a type\nbecome a generic "
                                       , NodeElem
                                           Element
                                             { eType = Just "code"
@@ -1050,9 +1082,9 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
-                                                        , sourceLine = Pos 79
-                                                        , sourceColumn = Pos 1
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 81
+                                                        , sourceColumn = Pos 18
                                                         }
                                                   , sourcePres = AsInline
                                                   , metaAttrs = fromList []
@@ -1061,18 +1093,18 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
-                                                      , sourceLine = Pos 79
-                                                      , sourceColumn = Pos 6
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 81
+                                                      , sourceColumn = Pos 23
                                                       }
                                                     "section"
                                                 ]
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 79
-                                            , sourceColumn = Pos 16
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 81
+                                            , sourceColumn = Pos 33
                                             }
                                           "."
                                       ]
@@ -1084,8 +1116,8 @@ NodeElem
                                       Meta
                                         { loc =
                                             SourcePos
-                                              { sourceName = "manual.sml"
-                                              , sourceLine = Pos 81
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 83
                                               , sourceColumn = Pos 1
                                               }
                                         , sourcePres = AsPara
@@ -1095,8 +1127,8 @@ NodeElem
                                   , eBody =
                                       [ NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 81
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 83
                                             , sourceColumn = Pos 1
                                             }
                                           "Sections, like other elements, can have "
@@ -1107,8 +1139,8 @@ NodeElem
                                                 Meta
                                                   { loc =
                                                       SourcePos
-                                                        { sourceName = "manual.sml"
-                                                        , sourceLine = Pos 81
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 83
                                                         , sourceColumn = Pos 41
                                                         }
                                                   , sourcePres = AsInline
@@ -1118,8 +1150,8 @@ NodeElem
                                             , eBody =
                                                 [ NodeText
                                                     SourcePos
-                                                      { sourceName = "manual.sml"
-                                                      , sourceLine = Pos 81
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 83
                                                       , sourceColumn = Pos 47
                                                       }
                                                     "attributes"
@@ -1127,11 +1159,11 @@ NodeElem
                                             }
                                       , NodeText
                                           SourcePos
-                                            { sourceName = "manual.sml"
-                                            , sourceLine = Pos 81
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 83
                                             , sourceColumn = Pos 58
                                             }
-                                          ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on."
+                                          ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on. The\nattributes of sections can be listed on multiple consecutive lines, as\nlong as no blank line occurs between them."
                                       ]
                                   }
                             ]
@@ -1143,8 +1175,8 @@ NodeElem
                             Meta
                               { loc =
                                   SourcePos
-                                    { sourceName = "manual.sml"
-                                    , sourceLine = Pos 86
+                                    { sourceName = "manual.scb"
+                                    , sourceLine = Pos 90
                                     , sourceColumn = Pos 1
                                     }
                               , sourcePres = AsSection 2
@@ -1154,8 +1186,8 @@ NodeElem
                                       , ( Meta
                                             { loc =
                                                 SourcePos
-                                                  { sourceName = "manual.sml"
-                                                  , sourceLine = Pos 86
+                                                  { sourceName = "manual.scb"
+                                                  , sourceLine = Pos 90
                                                   , sourceColumn = Pos 4
                                                   }
                                             , sourcePres = AsInline
@@ -1164,8 +1196,8 @@ NodeElem
                                             }
                                         , [ NodeText
                                               SourcePos
-                                                { sourceName = "manual.sml"
-                                                , sourceLine = Pos 86
+                                                { sourceName = "manual.scb"
+                                                , sourceLine = Pos 90
                                                 , sourceColumn = Pos 11
                                                 }
                                               "The overall document structure"

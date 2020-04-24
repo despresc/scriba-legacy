@@ -40,15 +40,19 @@ titles, and a body of blocks and subsections. Sections look like this:</p><pre><
 
 ## {title|Paragraphs}
 
-The bulk of your document …</code></pre><p>Sections start with <code># sectionType</code>, the number of consecutive
-<code>#</code> becoming its <em>section level</em>. Section content continues
-until a section of at most that level, or the end of the document, is
-reached. In the example above, the <q>Paragraphs</q> section would
-continue until a level 2 or level 1 section were encountered. The
-section type is optional; section types classify the section, can
-denote built-in document structure, and can influence processing and
-rendering behaviour. Sections without a type become a generic
-<code>section</code>.</p><p>Sections, like other elements, can have <em>attributes</em>. The only
+The bulk of your document …</code></pre><p>The first component of a section is its <em>header</em>. The section
+header starts with <code># sectionType</code>, the number of consecutive
+<code>#</code> becoming the overall <em>level</em> of the section. The
+section content begins after the attributes of the section and at
+least one blank line, and continues until a section of at most that
+level, or the end of the document, is reached. In the example above,
+the <q>Paragraphs</q> section would continue until a level 2 or level 1
+section were encountered. The section type is optional; section types
+classify the section, can denote built-in document structure, and can
+influence processing and rendering behaviour. Sections without a type
+become a generic <code>section</code>.</p><p>Sections, like other elements, can have <em>attributes</em>. The only
 recognized attribute of a section, for now, is its title. In future,
 sections will have many attributes, like number, language, alternate
-titles for the table of contents or page header, and so on.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
+titles for the table of contents or page header, and so on. The
+attributes of sections can be listed on multiple consecutive lines, as
+long as no blank line occurs between them.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

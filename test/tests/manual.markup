@@ -110,19 +110,22 @@ Doc
                                         "# {title|An introduction to the language}\n\n## {title|Paragraphs}\n\nThe bulk of your document \8230"
                                     , ParBlock
                                         (Paragraph
-                                           [ ParInline (Str "Sections start with ")
+                                           [ ParInline
+                                               (Str "The first component of a section is its ")
+                                           , ParInline (Emph [ Str "header" ])
+                                           , ParInline (Str ". The section\nheader starts with ")
                                            , ParInline (Code "# sectionType")
                                            , ParInline (Str ", the number of consecutive\n")
                                            , ParInline (Code "#")
-                                           , ParInline (Str " becoming its ")
-                                           , ParInline (Emph [ Str "section level" ])
+                                           , ParInline (Str " becoming the overall ")
+                                           , ParInline (Emph [ Str "level" ])
                                            , ParInline
                                                (Str
-                                                  ". Section content continues\nuntil a section of at most that level, or the end of the document, is\nreached. In the example above, the ")
+                                                  " of the section. The\nsection content begins after the attributes of the section and at\nleast one blank line, and continues until a section of at most that\nlevel, or the end of the document, is reached. In the example above,\nthe ")
                                            , ParInline (Quote [ Str "Paragraphs" ])
                                            , ParInline
                                                (Str
-                                                  " section would\ncontinue until a level 2 or level 1 section were encountered. The\nsection type is optional; section types classify the section, can\ndenote built-in document structure, and can influence processing and\nrendering behaviour. Sections without a type become a generic\n")
+                                                  " section would continue until a level 2 or level 1\nsection were encountered. The section type is optional; section types\nclassify the section, can denote built-in document structure, and can\ninfluence processing and rendering behaviour. Sections without a type\nbecome a generic ")
                                            , ParInline (Code "section")
                                            , ParInline (Str ".")
                                            ])
@@ -133,7 +136,7 @@ Doc
                                            , ParInline (Emph [ Str "attributes" ])
                                            , ParInline
                                                (Str
-                                                  ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on.")
+                                                  ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on. The\nattributes of sections can be listed on multiple consecutive lines, as\nlong as no blank line occurs between them.")
                                            ])
                                     ]
                                 , secChildren = []

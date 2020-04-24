@@ -83,16 +83,16 @@ tests = testGroup
             "simple markup parses correctly"
             "simple.sml"
             "simple.markup"
-  , testParse "manual parses" "./doc/manual.sml" "./test/tests/manual.parse"
+  , testParse "manual parses" "./doc/manual.scb" "./test/tests/manual.parse"
   , testIntermediate "manual parses into the node format"
-                     "./doc/manual.sml"
+                     "./doc/manual.scb"
                      "./test/tests/manual.intermediate"
   , testMarkup "manual parses into internal markup"
-               "./doc/manual.sml"
+               "./doc/manual.scb"
                "./test/tests/manual.markup"
   , testRenderingWith (HT.renderHtml . SRH.writeStandalone)
                       "manual renders to html"
-                      "./doc/manual.sml"
+                      "./doc/manual.scb"
                       "./test/tests/manual.html"
   ]
 
