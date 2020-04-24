@@ -1209,6 +1209,137 @@ NodeElem
                               }
                         , eBody = []
                         }
+                  , NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.scb"
+                                    , sourceLine = Pos 92
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsSection 2
+                              , metaAttrs =
+                                  fromList
+                                    [ ( "title"
+                                      , ( Meta
+                                            { loc =
+                                                SourcePos
+                                                  { sourceName = "manual.scb"
+                                                  , sourceLine = Pos 92
+                                                  , sourceColumn = Pos 4
+                                                  }
+                                            , sourcePres = AsInline
+                                            , metaAttrs = fromList []
+                                            , metaArgs = []
+                                            }
+                                        , [ NodeText
+                                              SourcePos
+                                                { sourceName = "manual.scb"
+                                                , sourceLine = Pos 92
+                                                , sourceColumn = Pos 11
+                                                }
+                                              "Mathematics"
+                                          ]
+                                        )
+                                      )
+                                    ]
+                              , metaArgs = []
+                              }
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 94
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 94
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "math"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 95
+                                                        , sourceColumn = Pos 50
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 95
+                                                      , sourceColumn = Pos 55
+                                                      }
+                                                    "2^3 = 8"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 95
+                                            , sourceColumn = Pos 65
+                                            }
+                                          ",\nand displayed formulas like\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "dmath"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 97
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 97
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 101
+                                            , sourceColumn = Pos 3
+                                            }
+                                          "\nare available, among other more complex constructs. HTML rendering is handled with MathJax."
+                                      ]
+                                  }
+                            ]
+                        }
                   ]
               }
         ]

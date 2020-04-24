@@ -148,6 +148,30 @@ Doc
                           , secContent =
                               SectionContent { secPreamble = [] , secChildren = [] }
                           }
+                      , Section
+                          { secTitle = Title { titleBody = [ Str "Mathematics" ] }
+                          , secContent =
+                              SectionContent
+                                { secPreamble =
+                                    [ ParBlock
+                                        (Paragraph
+                                           [ ParInline
+                                               (Str
+                                                  "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like ")
+                                           , ParInline (Math "2^3 = 8")
+                                           , ParInline (Str ",\nand displayed formulas like\n")
+                                           , ParInline
+                                               (DisplayMath
+                                                  (Formula
+                                                     "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"))
+                                           , ParInline
+                                               (Str
+                                                  "\nare available, among other more complex constructs. HTML rendering is handled with MathJax.")
+                                           ])
+                                    ]
+                                , secChildren = []
+                                }
+                          }
                       ]
                   }
             }

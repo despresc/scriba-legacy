@@ -14,6 +14,7 @@ import           Control.Monad.State            ( MonadState(..)
                                                 , gets
                                                 )
 import           Data.Foldable                  ( foldl' )
+import qualified Data.Text                     as T
 import           Text.Blaze.Html5               ( Html
                                                 , (!)
                                                 )
@@ -79,6 +80,7 @@ bumpHeaderDepth act = do
 -- TODO: should probably remove this
 -- TODO: for standalone rendering we should probably put the title of
 -- the document in the header.
+-- TODO: add configurability, especially re: the math.
 renderStandalone :: Doc -> Render Html
 renderStandalone d@(Doc dm _ _ _) = do
   d' <- renderDoc d
@@ -86,7 +88,13 @@ renderStandalone d@(Doc dm _ _ _) = do
   pure $ H.docTypeHtml $ do
     H.head $ do
       H.title $ H.toHtml tplain
+      H.script
+        ! A.id "MathJax-script"
+        ! A.async ""
+        ! A.src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+        $ ""
     H.body d'
+
 
 -- TODO: selectively render empty sections?
 -- TODO: Should the title be a Maybe?
@@ -144,8 +152,21 @@ renderInline (Emph  i) = H.em <$> renderInlines i
 renderInline (Quote i) = H.q <$> renderInlines i
 renderInline (Math t) =
   pure $ H.span ! A.class_ "math inline" $ "\\(" <> H.toHtml t <> "\\)"
+renderInline (DisplayMath d) = do
+  d' <- renderDmath d
+  pure $ H.span ! A.class_ "math display" $ "\\[" <> d' <> "\\]"
 renderInline (Code     t) = pure $ H.code $ H.toHtml t
 renderInline (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
+
+-- TODO: assumes mathjax or katex
+renderDmath :: Dmath -> Render Html
+renderDmath (Formula t) = pure $ H.toHtml t
+renderDmath (Gathered ts) =
+  pure
+    $  H.toHtml
+    $  "\\begin{gathered}"
+    <> T.intercalate "//\n" ts
+    <> "\\end{gathered}"
 
 
 -- | Render a heading title using the ambient header depth.

@@ -88,3 +88,16 @@ attributes of sections can be listed on multiple consecutive lines, as
 long as no blank line occurs between them.
 
 ## {title|The overall document structure}
+
+## {title|Mathematics}
+
+Formal mathematical content can be included in a document with
+particular inline elements. Inline formulas like {math`2^3 = 8`},
+and displayed formulas like
+{dmath`
+  \mathbf{B}(P) = \frac{\mu_0}{4\pi}
+  \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
+  \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
+`}
+are available, among other more complex constructs. HTML rendering is handled with MathJax.
+

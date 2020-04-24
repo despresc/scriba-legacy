@@ -20,6 +20,7 @@ import           Control.Monad.State.Strict     ( StateT
                                                 )
 import qualified Control.Monad.State.Strict    as S
 import qualified Control.Monad.Except          as E
+import           Data.Char                      ( isSpace )
 import           Data.Foldable                  ( foldl' )
 import           Data.Functor.Compose           ( Compose(..) )
 import           Data.Maybe                     ( mapMaybe
@@ -187,13 +188,20 @@ newtype Title = Title
   { titleBody :: [Inline]
   } deriving (Eq, Ord, Show, Read)
 
+-- TODO: rename Math to InlineMath?
 data Inline
   = Str Text
   | Emph [Inline]
   | Quote [Inline]
   | Math Text
+  | DisplayMath Dmath
   | Code Text
   | PageMark Text
+  deriving (Eq, Ord, Show, Read)
+
+data Dmath
+  = Formula Text
+  | Gathered [Text]
   deriving (Eq, Ord, Show, Read)
 
 -- TODO: move this to its own module?
@@ -449,6 +457,7 @@ match f = liftScriba $ \s -> do
 
 -- TODO: should really unify this with match...
 -- TODO: should really add source position lens/getter
+-- TODO: here, or elsewhere, should say "unrecognized element"
 matchTy :: Text -> Scriba Element ()
 matchTy t = do
   Element mty (Meta sp _ _ _) _ <- inspect
@@ -508,12 +517,35 @@ commonIndentStrip txt =
 stripMarkup :: [Inline] -> Text
 stripMarkup = T.concat . concatMap inlineToText
  where
-  inlineToText (Str      t ) = [t]
-  inlineToText (Emph     is) = concatMap inlineToText is
-  inlineToText (Quote    is) = concatMap inlineToText is
-  inlineToText (Math     t ) = [t]
-  inlineToText (Code     t ) = [t]
-  inlineToText (PageMark t ) = [t]
+  inlineToText (Str         t ) = [t]
+  inlineToText (Emph        is) = concatMap inlineToText is
+  inlineToText (Quote       is) = concatMap inlineToText is
+  inlineToText (Math        t ) = [t]
+  inlineToText (DisplayMath d ) = displayToText d
+  inlineToText (Code        t ) = [t]
+  inlineToText (PageMark    t ) = [t]
+
+  displayToText (Formula  t ) = [t]
+  displayToText (Gathered ts) = ts
+
+
+-- Space consumer. Don't need the non-void version yet. May want to
+-- pass in a function instead of using isSpace.
+
+-- TODO: need to update the source position of this NodeText!
+
+-- TODO: it might be better to have this fail when a non-whitespace
+-- text node is encountered, instead of adding its tail back to the
+-- node stream. Call it pOnlySpace, perhaps.
+pSpace :: Scriba [Node] ()
+pSpace = do
+  ns <- S.get
+  case ns of
+    NodeText sp t : ns' -> do
+      let t' = T.dropWhile isSpace t
+      if T.null t' then pSpace else S.put (NodeText sp t' : ns')
+    _ -> pure ()
+
 
 -- * Element parsers
 
@@ -581,7 +613,17 @@ pParContent = ParInline <$> pInline
 -- ** Inline parsing
 
 pInline :: Scriba Node Inline
-pInline = asNode (pEmph <|> pQuote <|> pPageMark <|> pMath <|> pCode) <|> pText
+pInline =
+  asNode
+      (   pEmph
+      <|> pQuote
+      <|> pPageMark
+      <|> pMath
+      <|> pFormula
+      <|> pGathered
+      <|> pCode
+      )
+    <|> pText
 
 pEmph :: Scriba Element Inline
 pEmph = do
@@ -610,6 +652,30 @@ pMath = do
   matchTy "math"
   ts <- whileParsingElem "math" $ allContentOf simpleText
   pure $ Math $ T.concat ts
+
+-- TODO: syntactic unification with pMath? it's probably better to
+-- have a single "display" parameter control both, and have dmath be a
+-- syntactic alias (in some way) for math {presentation|display}
+pFormula :: Scriba Element Inline
+pFormula = do
+  matchTy "dmath"
+  c <- whileParsingElem "dmath" $ allContentOf simpleText
+  pure $ DisplayMath $ Formula $ T.concat c
+
+-- TODO: syntact unification with formula? May want to consider design
+-- here. E.g. could have a single dmath whose content is flexibly
+-- parsed, have Gathered be a list of math and not Text, that sort of
+-- thing.
+pGathered :: Scriba Element Inline
+pGathered = do
+  matchTy "gathered"
+  c <- whileParsingElem "gathered" $ allContent $ pSpace *> many
+    (one pLine <* pSpace)
+  pure $ DisplayMath $ Gathered c
+ where
+  pLine = asNode $ do
+    matchTy "line"
+    fmap T.concat $ whileParsingElem "line" $ allContentOf simpleText
 
 pCode :: Scriba Element Inline
 pCode = do
@@ -703,7 +769,7 @@ prettyScribaError (WhileParsing msp t e) =
 prettyScribaError (Expecting e mspt) = ex <> got
  where
   got = case mspt of
-    Nothing -> ""
+    Nothing      -> ""
     Just (sp, t) -> "got: " <> t <> "\nat " <> T.pack (MP.sourcePosPretty sp)
   ex = "expecting one of: " <> prettyExpectations e <> "\n"
   prettyExpectations =

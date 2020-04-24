@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html><head><title>The scriba markup language and document system</title></head><body><section class="scribaDoc"><header><h1>The scriba markup language and document system</h1></header><section class="frontMatter"><div class="sectionContent"></div></section><section class="mainMatter"><div class="sectionContent"><p>Scriba is a plain text markup language emphasizing extensibility,
+<html><head><title>The scriba markup language and document system</title><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head><body><section class="scribaDoc"><header><h1>The scriba markup language and document system</h1></header><section class="frontMatter"><div class="sectionContent"></div></section><section class="mainMatter"><div class="sectionContent"><p>Scriba is a plain text markup language emphasizing extensibility,
 clarity, and ease of use. It is also a compiler, taking source scriba
 documents and rendering them to multi-page HTML, EPUB, and TeX. The
 format includes flexible markup constructs designed to represent a
@@ -55,4 +55,12 @@ recognized attribute of a section, for now, is its title. In future,
 sections will have many attributes, like number, language, alternate
 titles for the table of contents or page header, and so on. The
 attributes of sections can be listed on multiple consecutive lines, as
-long as no blank line occurs between them.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
+long as no blank line occurs between them.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section><section><h3>Mathematics</h3><div class="sectionContent"><p>Formal mathematical content can be included in a document with
+particular inline elements. Inline formulas like <span class="math inline">\(2^3 = 8\)</span>,
+and displayed formulas like
+<span class="math display">\[
+  \mathbf{B}(P) = \frac{\mu_0}{4\pi}
+  \int\frac{\mathbf{I}\times\hat{r}&#39;}{r&#39;^2}dl = \frac{\mu_0}{4\pi}\,I\!
+  \int\frac{d\boldsymbol{l}\times\hat{r}&#39;}{r&#39;^2}
+\]</span>
+are available, among other more complex constructs. HTML rendering is handled with MathJax.</p></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

@@ -1011,4 +1011,107 @@ Doc
                  ]
            }
          [])
+  , SecHeaderNode
+      (SecHeader
+         2
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 92
+           , sourceColumn = Pos 1
+           }
+         Nothing
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "title"
+                   , ( SourcePos
+                         { sourceName = "manual.scb"
+                         , sourceLine = Pos 92
+                         , sourceColumn = Pos 4
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 92
+                               , sourceColumn = Pos 11
+                               }
+                             "Mathematics"
+                         ]
+                     )
+                   )
+                 ]
+           }
+         [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 94
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 94
+               , sourceColumn = Pos 1
+               }
+             "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 95
+                     , sourceColumn = Pos 50
+                     }
+               , etype = Just "math"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 95
+                       , sourceColumn = Pos 55
+                       }
+                     "2^3 = 8"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 95
+               , sourceColumn = Pos 65
+               }
+             ",\nand displayed formulas like\n"
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 97
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Just "dmath"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 97
+                       , sourceColumn = Pos 7
+                       }
+                     "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 101
+               , sourceColumn = Pos 3
+               }
+             "\nare available, among other more complex constructs. HTML rendering is handled with MathJax."
+         ])
   ]
