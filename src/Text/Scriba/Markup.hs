@@ -239,7 +239,7 @@ liftScriba f = Scriba $ S.StateT $ E.liftEither . fmap flop . f
   where flop (x, y) = (y, x)
 
 newtype Expectations = Expectations
-  { getExpectation :: Set Expectation
+  { getExpectations :: Set Expectation
   } deriving (Eq, Ord, Show, Read, Semigroup, Monoid)
 
 -- | A non-empty expectation
@@ -454,7 +454,7 @@ matchTy t = do
   Element mty (Meta sp _ _ _) _ <- inspect
   if mty == Just t
     then pure ()
-    else expectsGotAt [t] sp $ fromMaybe "untyped element" mty
+    else expectsGotAt [t] sp $ maybe "untyped element" ("element " <>) mty
 
 -- TODO: have one that just returns the text?
 -- And maybe a "symbol" one that strips leading and trailing whitespace
@@ -684,7 +684,12 @@ pDoc = do
 parseDoc :: Node -> Either ScribaError Doc
 parseDoc = fmap snd . runScriba (asNode pDoc)
 
--- TODO: improve
+-- TODO: improve, especially the expectations.
+-- TODO: might want to lock multiple "while parsing" lines behind a
+-- --trace option in a standalone program.
+
+-- TODO: having the source position be optional in the Expecting makes
+-- the errors a little weird.
 prettyScribaError :: ScribaError -> Text
 prettyScribaError (WhileParsing msp t e) =
   prettyScribaError e <> "\n" <> errline
@@ -692,6 +697,13 @@ prettyScribaError (WhileParsing msp t e) =
   errAt =
     " at " <> maybe "<unknown position>" (T.pack . MP.sourcePosPretty) msp
   errline = "while parsing " <> t <> errAt
-prettyScribaError (Expecting e mspt) = T.pack $ show e <> " " <> show mspt
-prettyScribaError (Msg t           ) = "error: " <> t
-prettyScribaError ErrorNil           = "unknown error"
+prettyScribaError (Expecting e mspt) = ex <> got
+ where
+  got = case mspt of
+    Nothing -> ""
+    Just (sp, t) -> "got: " <> t <> "\nat " <> T.pack (MP.sourcePosPretty sp)
+  ex = "expecting one of: " <> prettyExpectations e <> "\n"
+  prettyExpectations =
+    T.intercalate ", " . map fromExpectation . Set.toAscList . getExpectations
+prettyScribaError (Msg t)  = "error: " <> t
+prettyScribaError ErrorNil = "unknown error"
