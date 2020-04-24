@@ -107,10 +107,14 @@ import           Text.Megaparsec                ( SourcePos
 
 - facility for replacing typewriter apostrophe with right single
   quotation mark? Might just be a style guide thing, though.
+
+- the Doc should probably have room for a plain text title in its
+  attributes. Something to put in the HTML title, the database, and so
+  on.
 -}
 
 -- | A document with front matter, main matter, and end matter.
-data Doc = Doc Section Section Section
+data Doc = Doc Title SectionContent SectionContent SectionContent
   deriving (Eq, Ord, Show, Read)
 
 -- | A section is a large-scale division of a document. For now it has
@@ -121,12 +125,17 @@ data Doc = Doc Section Section Section
 -- should have three SectionContent components, since we're enforcing
 -- a particular matter structure.
 data Section = Section
+  { secTitle :: Title
+  , secContent :: SectionContent
+  } deriving (Eq, Ord, Show, Read)
+
+data SectionContent = SectionContent
   { secPreamble :: [Block]
   , secChildren :: [Section]
   } deriving (Eq, Ord, Show, Read)
 
-emptySection :: Section
-emptySection = Section [] []
+emptySectionContent :: SectionContent
+emptySectionContent = SectionContent [] []
 
 -- TODO: really need a better name than FormalBlockBlock
 data Block
@@ -147,6 +156,8 @@ data ParContent
 
 -- Might want a formal inline too. Some kind of "inline result",
 -- anyway.
+-- TODO: the fbTitle _might_ be better as Title, but I'm not sure if a
+-- formalBlock title should be the same thing as a section title.
 data FormalBlock = FormalBlock
   { fbType :: Maybe Text
   , fbTitle :: [Inline]
@@ -154,6 +165,13 @@ data FormalBlock = FormalBlock
   , fbConclusion :: [Inline]
   } deriving (Eq, Ord, Show, Read)
 
+-- TODO: may want to restrict the inlines that can appear in a
+-- title. May also want to have a toc title and header/running title
+-- in here too. Also may want a richer title structure, say having
+-- titles, separators, subtitles, that sort of thing.
+newtype Title = Title
+  { titleBody :: [Inline]
+  } deriving (Eq, Ord, Show, Read)
 
 data Inline
   = Str Text
@@ -565,10 +583,14 @@ pCode = do
 -- For now, all things presented as sections become sections.
 
 -- TODO: do the expectations actually work out here?
+-- TODO: a top level title parser?
 pSection :: Scriba Element Section
 pSection = do
   matchTy "section" <|> presentedAsSection
-  whileParsingElem "section" $ content $ pSectionContent Section
+  whileParsingElem "section" $ do
+    title <- meta $ attrs $ attr "title" $ allContentOf pInline
+    c     <- content $ pSectionContent
+    pure $ Section (Title $ fromMaybe [] title) c
  where
   presentedAsSection = meta $ do
     Meta _ pres _ _ <- inspect
@@ -577,11 +599,11 @@ pSection = do
       _           -> empty
 
 -- implicitly parses the whole block content
-pSectionContent :: ([Block] -> [Section] -> a) -> Scriba [Node] a
-pSectionContent con = do
+pSectionContent :: Scriba [Node] SectionContent
+pSectionContent = do
   pre  <- manyOf $ pBlock
   subs <- remaining $ asNode pSection
-  pure $ con pre subs
+  pure $ SectionContent pre subs
 
 -- ** Document parsing
 
@@ -589,23 +611,27 @@ pSectionContent con = do
 -- deal with special sections, like the matter?
 -- TODO: deal with this allContent invocation (and any other
 -- troublesome ones).
+-- TODO: the pBare title and pExplicitMatter title thing is a bit bad.
+-- TODO: Enforce non-empty title for a doc? Or perhaps just warn on one.
 pDoc :: Scriba Element Doc
 pDoc = do
   matchTy "scriba"
-  whileParsingElem "scriba" $ content $ pExplicitMatter <|> pBare
+  whileParsingElem "scriba" $ do
+    title <- fmap (Title . fromMaybe []) $ meta $ attrs $ attr "title" $ allContentOf pInline
+    content $ pExplicitMatter title <|> pBare title
  where
   pMatter t = asNode $ do
     matchTy t
-    whileParsingElem t $ content $ pSectionContent Section
-  pExplicitMatter = do
+    whileParsingElem t $ content $ pSectionContent
+  pExplicitMatter title = do
     f <- one $ pMatter "frontMatter"
     m <- one $ pMatter "mainMatter"
     b <- one $ pMatter "endMatter"
     zero
-    pure $ Doc f m b
-  pBare = do
-    c <- pSectionContent Section
-    pure $ Doc emptySection c emptySection
+    pure $ Doc title f m b
+  pBare title = do
+    c <- pSectionContent
+    pure $ Doc title emptySectionContent c emptySectionContent
 
 -- * Running parsers
 

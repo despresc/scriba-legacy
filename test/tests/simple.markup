@@ -1,6 +1,7 @@
 Doc
-  Section { secPreamble = [] , secChildren = [] }
-  Section
+  Title { titleBody = [] }
+  SectionContent { secPreamble = [] , secChildren = [] }
+  SectionContent
     { secPreamble =
         [ ParBlock
             (Paragraph
@@ -33,4 +34,4 @@ Doc
         ]
     , secChildren = []
     }
-  Section { secPreamble = [] , secChildren = [] }
+  SectionContent { secPreamble = [] , secChildren = [] }

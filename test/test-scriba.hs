@@ -81,7 +81,7 @@ tests = testGroup
   , testMarkup "manual parses correctly"
                "./doc/manual.sml"
                "./test/tests/manual.markup"
-  , testRenderingWith (HT.renderHtml . SRH.renderStandalone)
+  , testRenderingWith (HT.renderHtml . SRH.writeStandalone)
                       "manual renders to html"
                       "./doc/manual.sml"
                       "./test/tests/manual.html"
