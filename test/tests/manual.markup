@@ -1,7 +1,11 @@
 Doc
-  Title
-    { titleBody =
-        [ Str "The scriba markup language and document system" ]
+  DocAttrs
+    { docTitle =
+        Title
+          { titleBody =
+              [ Str "The scriba markup language and document system" ]
+          }
+    , docPlainTitle = "The scriba markup language and document system"
     }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent

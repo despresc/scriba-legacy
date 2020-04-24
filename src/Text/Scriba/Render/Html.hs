@@ -5,6 +5,7 @@ module Text.Scriba.Render.Html where
 
 import           Text.Scriba.Markup
 
+import           Control.Applicative            ( liftA2 )
 import           Control.Monad.State            ( MonadState(..)
                                                 , State
                                                 , runState
@@ -59,10 +60,7 @@ runRender :: Render a -> RenderState -> (a, RenderState)
 runRender = runState . unRender
 
 instance Semigroup a => Semigroup (Render a) where
-  f <> g = do
-    x <- f
-    y <- g
-    pure $ x <> y
+  (<>) = liftA2 (<>)
 
 instance Monoid a => Monoid (Render a) where
   mempty = pure mempty
@@ -81,23 +79,22 @@ bumpSectionHeaderDepth = do
   pure n
 
 -- TODO: should probably remove this
--- TODO: certainly remove the "standalone" from the title and put in
--- an actual title.
 -- TODO: for standalone rendering we should probably put the title of
 -- the document in the header.
 renderStandalone :: Doc -> Render Html
-renderStandalone d = do
+renderStandalone d@(Doc dm _ _ _) = do
   d' <- renderDoc d
+  let tplain = docPlainTitle dm
   pure $ H.docTypeHtml $ do
     H.head $ do
-      H.title "standalone"
+      H.title $ H.toHtml tplain
     H.body d'
 
 -- TODO: selectively render empty sections?
 renderDoc :: Doc -> Render Html
 renderDoc (Doc t f m b) = do
   n  <- bumpSectionHeaderDepth
-  t' <- renderTitle n t
+  t' <- renderTitle n $ docTitle t
   f' <- renderSectionContent f
   m' <- renderSectionContent m
   b' <- renderSectionContent b

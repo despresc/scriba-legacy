@@ -1,5 +1,6 @@
 Doc
-  Title { titleBody = [] }
+  DocAttrs
+    { docTitle = Title { titleBody = [] } , docPlainTitle = "" }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
     { secPreamble =

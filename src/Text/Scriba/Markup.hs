@@ -114,8 +114,13 @@ import           Text.Megaparsec                ( SourcePos
 -}
 
 -- | A document with front matter, main matter, and end matter.
-data Doc = Doc Title SectionContent SectionContent SectionContent
+data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
   deriving (Eq, Ord, Show, Read)
+
+data DocAttrs = DocAttrs
+  { docTitle :: Title
+  , docPlainTitle :: Text
+  } deriving (Eq, Ord, Show, Read)
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -427,6 +432,9 @@ text = liftScriba $ \n -> case n of
   NodeElem (Element _ (Meta sp _ _ _) _) ->
     expectsGotAt ["text node"] sp "element"
 
+simpleText :: Scriba Node Text
+simpleText = snd <$> text
+
 -- TODO: no tab support yet. Should document.
 -- TODO: does this strip off a single trailing newline, by using
 -- lines? If so, might want to fix that.
@@ -460,6 +468,18 @@ commonIndentStrip txt =
   stripIndents (Nothing, l) = l
   correctNewline | Just (_, '\n') <- T.unsnoc txt = flip T.snoc '\n'
                  | otherwise                      = id
+
+-- | Strip out the markup in a sequence of inlines, leaving only the
+-- plain text. Very lossy, naturally. This doesn't add any textual
+-- markers around code or math, so beware.
+stripMarkup :: [Inline] -> Text
+stripMarkup = T.concat . concatMap inlineToText
+ where
+  inlineToText (Str      t ) = [t]
+  inlineToText (Emph     is) = concatMap inlineToText is
+  inlineToText (Math     t ) = [t]
+  inlineToText (Code     t ) = [t]
+  inlineToText (PageMark t ) = [t]
 
 -- * Element parsers
 
@@ -590,27 +610,31 @@ pSectionContent = do
 -- deal with special sections, like the matter?
 -- TODO: deal with this allContent invocation (and any other
 -- troublesome ones).
--- TODO: the pBare title and pExplicitMatter title thing is a bit bad.
+-- TODO: the pBare dm and pExplicitMatter dm thing is a bit bad.
 -- TODO: Enforce non-empty title for a doc? Or perhaps just warn on one.
 pDoc :: Scriba Element Doc
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
-    title <- fmap (Title . fromMaybe []) $ meta $ attrs $ attr "title" $ allContentOf pInline
-    content $ pExplicitMatter title <|> pBare title
+    dm <- meta $ attrs $ do
+      t      <- fmap (fromMaybe []) $ attr "title" $ allContentOf pInline
+      tplain <- fmap (fmap T.concat) $ attr "plainTitle" $ allContentOf
+        simpleText
+      pure $ DocAttrs (Title t) (fromMaybe (stripMarkup t) tplain)
+    content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do
     matchTy t
     whileParsingElem t $ content $ pSectionContent
-  pExplicitMatter title = do
+  pExplicitMatter dm = do
     f <- one $ pMatter "frontMatter"
     m <- one $ pMatter "mainMatter"
     b <- one $ pMatter "endMatter"
     zero
-    pure $ Doc title f m b
-  pBare title = do
+    pure $ Doc dm f m b
+  pBare dm = do
     c <- pSectionContent
-    pure $ Doc title emptySectionContent c emptySectionContent
+    pure $ Doc dm emptySectionContent c emptySectionContent
 
 -- * Running parsers
 
