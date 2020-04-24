@@ -206,9 +206,23 @@ newtype Scriba s a = Scriba
              , Applicative
              , Monad
              , MonadError ScribaError
-             , MonadState s
-             , Alternative
-             , MonadPlus)
+             , MonadState s)
+
+-- 1. If the first parser succeeds, use its output.
+-- 2. If the first parser fails with an error other than
+--    'WhileParsing', run the second parser and combine the two errors
+--    if the second also fails.
+-- 3. Otherwise the first parser will ignore the second.
+instance Alternative (Scriba s) where
+  empty = liftScriba $ \_ -> Left ErrorNil
+  p <|> q = liftScriba $ \s -> case (runScriba p s, runScriba q s) of
+    (a@Right{}            , _  ) -> a
+    (Left e@WhileParsing{}, _  ) -> Left e
+    (Left e               , qea) -> either (Left . mappend e) Right qea
+
+instance MonadPlus (Scriba s) where
+  mplus = (<|>)
+  mzero = empty
 
 runScriba :: Scriba s a -> s -> Either ScribaError (s, a)
 runScriba = go . S.runStateT . getScriba
@@ -244,6 +258,11 @@ toExpectations :: [Text] -> Expectations
 toExpectations = Expectations . Set.fromList . mapMaybe toExpectation
 
 -- could have an (Int, [Msg]) instead of a recursive error type.
+
+-- | A possible error that may occur when checking and parsing the
+-- tree. Note that 'WhileParsing' acts as a kind of failure with
+-- consumption: if the first parser in a composite @<|>@ parser throws
+-- it, then the second parser will not be run.
 data ScribaError
   = WhileParsing (Maybe SourcePos) Text ScribaError
   | Expecting Expectations (Maybe (SourcePos, Text))
@@ -376,6 +395,9 @@ remaining p = liftScriba $ \ss -> do
 
 -- TODO: we simply throw away the transformed nodes. Not sure if the
 -- version that keeps them would be useful.
+
+-- TODO: With the changes to the Alternative instance, perhaps this
+-- isn't needed?
 allContentOf :: Scriba Node a -> Scriba Element [a]
 allContentOf = content . remaining
 
