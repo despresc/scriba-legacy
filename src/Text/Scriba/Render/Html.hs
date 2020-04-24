@@ -97,7 +97,7 @@ renderDoc (Doc t f m b) = do
     m' <- renderSectionContent m
     b' <- renderSectionContent b
     pure $ H.section ! A.class_ "scribaDoc" $ do
-      t'
+      H.header t'
       H.section ! A.class_ "frontMatter" $ f'
       H.section ! A.class_ "mainMatter" $ m'
       H.section ! A.class_ "backMatter" $ b'
