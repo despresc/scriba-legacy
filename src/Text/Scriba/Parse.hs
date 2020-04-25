@@ -259,7 +259,10 @@ pInlineVerbText =
 -- cost of more complexity in this parser. We could, for instance, say
 -- that the ending token should never occur indented more than the
 -- minimum indent of lines that come before it. This would require
--- that we track that quantity while parsing.
+-- that we track that quantity while parsing. If we did that then we
+-- might as well strip off the common indent from the block, then
+-- report the common indent level in the source presentation
+-- somewhere.
 pBlockVerbText :: Int -> Parser Text
 pBlockVerbText indentLvl = pVerbText <* "\n" <* MP.takeWhileP Nothing (== ' ')
  where
