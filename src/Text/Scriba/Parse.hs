@@ -251,18 +251,23 @@ pInlineVerbText =
     MP.label "'`' not before '}'" $ MP.try $ MP.chunk "`" <* MP.notFollowedBy
       (MP.single '}')
 
--- | A block verbatim is a sequence of text ending with @\n`}@.
+-- | A block verbatim is a sequence of text ending with the sequence
+-- @`}@. In @pBlockVerbText n@, that ending sequence may be indented
+-- by as many as @n@ space characters.
 
--- TODO: possible enhancement: track the indentation of the start of
--- the verbatim block itself, so that the `} can be allowed to line up
--- with it, instead of being constrained to start at the beginning of
--- a line.
-pBlockVerbText :: Parser Text
-pBlockVerbText = pVerbText <* "\n"
+-- The parsing behaviour here could become more restrictive, at the
+-- cost of more complexity in this parser. We could, for instance, say
+-- that the ending token should never occur indented more than the
+-- minimum indent of lines that come before it. This would require
+-- that we track that quantity while parsing.
+pBlockVerbText :: Int -> Parser Text
+pBlockVerbText indentLvl = pVerbText <* (MP.takeWhile Nothing (== ' ') >> "\n")
  where
   pVerbText     = fmap T.concat $ MP.many $ pInsig <|> pNewlineInsig
   pInsig        = MP.takeWhile1P Nothing (/= '\n')
-  pNewlineInsig = MP.try $ "\n" <* MP.notFollowedBy "`}"
+  pNewlineInsig = MP.try $ "\n" <* MP.notFollowedBy
+    (MP.count' 0 indentLvl pSingleSpace >> "`}")
+  pSingleSpace = MP.single ' '
 
 -- ** Components of elements
 
@@ -362,7 +367,8 @@ pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
 pBlockNode :: Parser BlockNode
 pBlockNode = do
   src <- MP.getSourcePos
-  bn  <- ((BlockBlock .) <$> pBlockElement) <|> pPar
+  let indentLvl = subtract 1 . MP.unPos $ MP.sourceColumn src
+  bn <- ((BlockBlock .) <$> pBlockElement indentLvl) <|> pPar
   pure $ bn src
   where pPar = pParagraph >>= \p -> pure (\src -> BlockPar src p)
 
@@ -370,15 +376,16 @@ pParagraph :: Parser [InlineNode]
 -- TODO: add the paragraph header form.
 pParagraph = MP.some pParaNode where pParaNode = pInlineNodeWith pParaText
 
-pBlockElement :: Parser (SourcePos -> BlockElement)
-pBlockElement = pBlockMark
+-- The Int is the position of the start of the block, to be passed to pBlockVerbContent
+pBlockElement :: Int -> Parser (SourcePos -> BlockElement)
+pBlockElement indentLvl = pBlockMark
   >> pBraced (pElement pSpace (MP.optional pElemTy) pContent)
  where
   pContent =
     MP.option BlockNil
       $   pBlockParContent
       <|> pBlockUnparContent
-      <|> pBlockVerbContent
+      <|> pBlockVerbContent indentLvl
 
 -- | Parses paragraphed block content
 pBlockParContent :: Parser BlockContent
@@ -388,12 +395,12 @@ pBlockParContent = do
   BlockBlocks <$> MP.many (pBlockNode <* pSpace)
 
 -- | Parses verbatim block content
-pBlockVerbContent :: Parser BlockContent
-pBlockVerbContent = do
+pBlockVerbContent :: Int -> Parser BlockContent
+pBlockVerbContent indentLvl = do
   src <- MP.getSourcePos
   void "`" -- TODO: label?
   pBlankLine
-  t <- pBlockVerbText
+  t <- pBlockVerbText indentLvl
   void "`"
   pure $ BlockVerbatim src t
 
@@ -414,12 +421,13 @@ pSecContent = MP.many $ pSecNode <* pSpace
 pSecNode :: Parser SecNode
 pSecNode = do
   src <- MP.getSourcePos
-  f   <- (SecHeaderNode .) <$> pSecHeader <|> (SecBlock .) <$> pSecBlock
+  let indentLvl = subtract 1 . MP.unPos $ MP.sourceColumn src
+  f <- (SecHeaderNode .) <$> pSecHeader <|> (SecBlock .) <$> pSecBlock indentLvl
   pure $ f src
 
-pSecBlock :: Parser (SourcePos -> BlockNode)
+pSecBlock :: Int -> Parser (SourcePos -> BlockNode)
 -- TODO: somewhat duplicates pBlockNode
-pSecBlock = ((BlockBlock .) <$> pBlockElement) <|> pPar
+pSecBlock indentLvl = ((BlockBlock .) <$> pBlockElement indentLvl) <|> pPar
   where pPar = pParagraph >>= \p -> pure (\src -> BlockPar src p)
 
 -- | A section header is a sequence of one or more number signs, then
