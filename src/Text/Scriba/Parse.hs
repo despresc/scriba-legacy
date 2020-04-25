@@ -252,6 +252,11 @@ pInlineVerbText =
       (MP.single '}')
 
 -- | A block verbatim is a sequence of text ending with @\n`}@.
+
+-- TODO: possible enhancement: track the indentation of the start of
+-- the verbatim block itself, so that the `} can be allowed to line up
+-- with it, instead of being constrained to start at the beginning of
+-- a line.
 pBlockVerbText :: Parser Text
 pBlockVerbText = pVerbText <* "\n"
  where

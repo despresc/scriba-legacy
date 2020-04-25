@@ -143,10 +143,57 @@ Doc
                                 }
                           }
                       , Section
-                          { secTitle =
-                              Title { titleBody = [ Str "The overall document structure" ] }
+                          { secTitle = Title { titleBody = [ Str "Blocks" ] }
                           , secContent =
-                              SectionContent { secPreamble = [] , secChildren = [] }
+                              SectionContent
+                                { secPreamble =
+                                    [ ParBlock
+                                        (Paragraph
+                                           [ ParInline
+                                               (Str
+                                                  "The other type of syntactic form in scriba is the ")
+                                           , ParInline (Emph [ Str "block" ])
+                                           , ParInline
+                                               (Str
+                                                  "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:")
+                                           ])
+                                    , CodeBlock
+                                        "&{codeBlock {language|scriba} `\n  An {emph|interesting} proposition.\n`}\n\n&{olist&\n&{li|First item}\n&{li|Second item}\n}"
+                                    , ParBlock
+                                        (Paragraph
+                                           [ ParInline
+                                               (Str
+                                                  "Blocks are written like inline elements, complete with attributes and\narguments, except they are preceded by a ")
+                                           , ParInline (Code "&")
+                                           , ParInline
+                                               (Str
+                                                  ". They differ from\ninline elements in their content: blocks have ")
+                                           , ParInline (Emph [ Str "verbatim" ])
+                                           , ParInline (Str ",\n")
+                                           , ParInline (Emph [ Str "block" ])
+                                           , ParInline (Str ", and ")
+                                           , ParInline (Emph [ Str "inline" ])
+                                           , ParInline
+                                               (Str ". Verbatim content is signalled by a\n")
+                                           , ParInline (Code "`")
+                                           , ParInline
+                                               (Str
+                                                  " (backtick) character, starts on the next line, then runs\nuntil the sequence ")
+                                           , ParInline (Code "`}")
+                                           , ParInline
+                                               (Str
+                                                  " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a ")
+                                           , ParInline (Code "&")
+                                           , ParInline
+                                               (Str
+                                                  " character,\nand consists of a sequence of blocks and paragraphs, like section\ncontent without section headers. Finally, inline content is signalled\nby a ")
+                                           , ParInline (Code "|")
+                                           , ParInline
+                                               (Str " and can contain text and inline elements.")
+                                           ])
+                                    ]
+                                , secChildren = []
+                                }
                           }
                       , Section
                           { secTitle = Title { titleBody = [ Str "Mathematics" ] }
@@ -159,18 +206,24 @@ Doc
                                                (Str
                                                   "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like ")
                                            , ParInline (Math "2^3 = 8")
-                                           , ParInline (Str ",\nand displayed formulas like\n")
+                                           , ParInline (Str ", and\ndisplayed formulas like\n")
                                            , ParInline
                                                (DisplayMath
                                                   (Formula
                                                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"))
                                            , ParInline
                                                (Str
-                                                  "\nare available, among other more complex constructs. HTML rendering is handled with MathJax.")
+                                                  "\nare available, among other more complex constructs. Math rendering in\nHTML is handled with MathJax.")
                                            ])
                                     ]
                                 , secChildren = []
                                 }
+                          }
+                      , Section
+                          { secTitle =
+                              Title { titleBody = [ Str "The overall document structure" ] }
+                          , secContent =
+                              SectionContent { secPreamble = [] , secChildren = [] }
                           }
                       ]
                   }

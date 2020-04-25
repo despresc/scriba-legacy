@@ -87,17 +87,48 @@ titles for the table of contents or page header, and so on. The
 attributes of sections can be listed on multiple consecutive lines, as
 long as no blank line occurs between them.
 
-## {title|The overall document structure}
+## {title|Blocks}
+
+The other type of syntactic form in scriba is the {emph|block}
+element. Blocks group their content and give it extra meaning, and can
+appear wherever paragraphs or section headers can. Some blocks are
+shown in the following code sample:
+
+&{codeBlock {language|scriba} `
+  &{codeBlock {language|scriba} `
+    An {emph|interesting} proposition.
+  `}
+
+  &{olist&
+  &{li|First item}
+  &{li|Second item}
+  }
+`}
+
+Blocks are written like inline elements, complete with attributes and
+arguments, except they are preceded by a {code`&`}. They differ from
+inline elements in their content: blocks have {emph|verbatim},
+{emph|block}, and {emph|inline}. Verbatim content is signalled by a
+{code````} (backtick) character, starts on the next line, then runs
+until the sequence {code```}`} appears at the start of a line. The
+content itself becomes plain text; no control characters are
+recognized in it. Block content is signalled by a {code`&`} character,
+and consists of a sequence of blocks and paragraphs, like section
+content without section headers. Finally, inline content is signalled
+by a {code`|`} and can contain text and inline elements.
 
 ## {title|Mathematics}
 
 Formal mathematical content can be included in a document with
-particular inline elements. Inline formulas like {math`2^3 = 8`},
-and displayed formulas like
+particular inline elements. Inline formulas like {math`2^3 = 8`}, and
+displayed formulas like
 {dmath`
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
 `}
-are available, among other more complex constructs. HTML rendering is handled with MathJax.
+are available, among other more complex constructs. Math rendering in
+HTML is handled with MathJax.
+
+## {title|The overall document structure}
 

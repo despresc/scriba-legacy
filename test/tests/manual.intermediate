@@ -1200,14 +1200,402 @@ NodeElem
                                                 , sourceLine = Pos 90
                                                 , sourceColumn = Pos 11
                                                 }
-                                              "The overall document structure"
+                                              "Blocks"
                                           ]
                                         )
                                       )
                                     ]
                               , metaArgs = []
                               }
-                        , eBody = []
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 92
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 92
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "The other type of syntactic form in scriba is the "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 92
+                                                        , sourceColumn = Pos 51
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 92
+                                                      , sourceColumn = Pos 57
+                                                      }
+                                                    "block"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 92
+                                            , sourceColumn = Pos 63
+                                            }
+                                          "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:"
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "codeBlock"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 97
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsBlock
+                                        , metaAttrs =
+                                            fromList
+                                              [ ( "language"
+                                                , ( Meta
+                                                      { loc =
+                                                          SourcePos
+                                                            { sourceName = "manual.scb"
+                                                            , sourceLine = Pos 97
+                                                            , sourceColumn = Pos 13
+                                                            }
+                                                      , sourcePres = AsInline
+                                                      , metaAttrs = fromList []
+                                                      , metaArgs = []
+                                                      }
+                                                  , [ NodeText
+                                                        SourcePos
+                                                          { sourceName = "manual.scb"
+                                                          , sourceLine = Pos 97
+                                                          , sourceColumn = Pos 23
+                                                          }
+                                                        "scriba"
+                                                    ]
+                                                  )
+                                                )
+                                              ]
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 97
+                                            , sourceColumn = Pos 31
+                                            }
+                                          "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist&\n  &{li|First item}\n  &{li|Second item}\n  }"
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 108
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 108
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Blocks are written like inline elements, complete with attributes and\narguments, except they are preceded by a "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 109
+                                                        , sourceColumn = Pos 42
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 109
+                                                      , sourceColumn = Pos 47
+                                                      }
+                                                    "&"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 109
+                                            , sourceColumn = Pos 51
+                                            }
+                                          ". They differ from\ninline elements in their content: blocks have "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 110
+                                                        , sourceColumn = Pos 47
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 110
+                                                      , sourceColumn = Pos 53
+                                                      }
+                                                    "verbatim"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 110
+                                            , sourceColumn = Pos 62
+                                            }
+                                          ",\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 111
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 111
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "block"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 111
+                                            , sourceColumn = Pos 13
+                                            }
+                                          ", and "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "emph"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 111
+                                                        , sourceColumn = Pos 19
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 111
+                                                      , sourceColumn = Pos 25
+                                                      }
+                                                    "inline"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 111
+                                            , sourceColumn = Pos 32
+                                            }
+                                          ". Verbatim content is signalled by a\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 112
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 112
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    "`"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 112
+                                            , sourceColumn = Pos 11
+                                            }
+                                          " (backtick) character, starts on the next line, then runs\nuntil the sequence "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 113
+                                                        , sourceColumn = Pos 20
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 113
+                                                      , sourceColumn = Pos 25
+                                                      }
+                                                    "`}"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 113
+                                            , sourceColumn = Pos 31
+                                            }
+                                          " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 115
+                                                        , sourceColumn = Pos 51
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 115
+                                                      , sourceColumn = Pos 56
+                                                      }
+                                                    "&"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 115
+                                            , sourceColumn = Pos 60
+                                            }
+                                          " character,\nand consists of a sequence of blocks and paragraphs, like section\ncontent without section headers. Finally, inline content is signalled\nby a "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 118
+                                                        , sourceColumn = Pos 6
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 118
+                                                      , sourceColumn = Pos 11
+                                                      }
+                                                    "|"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 118
+                                            , sourceColumn = Pos 15
+                                            }
+                                          " and can contain text and inline elements."
+                                      ]
+                                  }
+                            ]
                         }
                   , NodeElem
                       Element
@@ -1217,7 +1605,7 @@ NodeElem
                               { loc =
                                   SourcePos
                                     { sourceName = "manual.scb"
-                                    , sourceLine = Pos 92
+                                    , sourceLine = Pos 120
                                     , sourceColumn = Pos 1
                                     }
                               , sourcePres = AsSection 2
@@ -1228,7 +1616,7 @@ NodeElem
                                             { loc =
                                                 SourcePos
                                                   { sourceName = "manual.scb"
-                                                  , sourceLine = Pos 92
+                                                  , sourceLine = Pos 120
                                                   , sourceColumn = Pos 4
                                                   }
                                             , sourcePres = AsInline
@@ -1238,7 +1626,7 @@ NodeElem
                                         , [ NodeText
                                               SourcePos
                                                 { sourceName = "manual.scb"
-                                                , sourceLine = Pos 92
+                                                , sourceLine = Pos 120
                                                 , sourceColumn = Pos 11
                                                 }
                                               "Mathematics"
@@ -1257,7 +1645,7 @@ NodeElem
                                         { loc =
                                             SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 94
+                                              , sourceLine = Pos 122
                                               , sourceColumn = Pos 1
                                               }
                                         , sourcePres = AsPara
@@ -1268,7 +1656,7 @@ NodeElem
                                       [ NodeText
                                           SourcePos
                                             { sourceName = "manual.scb"
-                                            , sourceLine = Pos 94
+                                            , sourceLine = Pos 122
                                             , sourceColumn = Pos 1
                                             }
                                           "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like "
@@ -1280,7 +1668,7 @@ NodeElem
                                                   { loc =
                                                       SourcePos
                                                         { sourceName = "manual.scb"
-                                                        , sourceLine = Pos 95
+                                                        , sourceLine = Pos 123
                                                         , sourceColumn = Pos 50
                                                         }
                                                   , sourcePres = AsInline
@@ -1291,7 +1679,7 @@ NodeElem
                                                 [ NodeText
                                                     SourcePos
                                                       { sourceName = "manual.scb"
-                                                      , sourceLine = Pos 95
+                                                      , sourceLine = Pos 123
                                                       , sourceColumn = Pos 55
                                                       }
                                                     "2^3 = 8"
@@ -1300,10 +1688,10 @@ NodeElem
                                       , NodeText
                                           SourcePos
                                             { sourceName = "manual.scb"
-                                            , sourceLine = Pos 95
+                                            , sourceLine = Pos 123
                                             , sourceColumn = Pos 65
                                             }
-                                          ",\nand displayed formulas like\n"
+                                          ", and\ndisplayed formulas like\n"
                                       , NodeElem
                                           Element
                                             { eType = Just "dmath"
@@ -1312,7 +1700,7 @@ NodeElem
                                                   { loc =
                                                       SourcePos
                                                         { sourceName = "manual.scb"
-                                                        , sourceLine = Pos 97
+                                                        , sourceLine = Pos 125
                                                         , sourceColumn = Pos 1
                                                         }
                                                   , sourcePres = AsInline
@@ -1323,7 +1711,7 @@ NodeElem
                                                 [ NodeText
                                                     SourcePos
                                                       { sourceName = "manual.scb"
-                                                      , sourceLine = Pos 97
+                                                      , sourceLine = Pos 125
                                                       , sourceColumn = Pos 7
                                                       }
                                                     "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
@@ -1332,13 +1720,54 @@ NodeElem
                                       , NodeText
                                           SourcePos
                                             { sourceName = "manual.scb"
-                                            , sourceLine = Pos 101
+                                            , sourceLine = Pos 129
                                             , sourceColumn = Pos 3
                                             }
-                                          "\nare available, among other more complex constructs. HTML rendering is handled with MathJax."
+                                          "\nare available, among other more complex constructs. Math rendering in\nHTML is handled with MathJax."
                                       ]
                                   }
                             ]
+                        }
+                  , NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.scb"
+                                    , sourceLine = Pos 133
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsSection 2
+                              , metaAttrs =
+                                  fromList
+                                    [ ( "title"
+                                      , ( Meta
+                                            { loc =
+                                                SourcePos
+                                                  { sourceName = "manual.scb"
+                                                  , sourceLine = Pos 133
+                                                  , sourceColumn = Pos 4
+                                                  }
+                                            , sourcePres = AsInline
+                                            , metaAttrs = fromList []
+                                            , metaArgs = []
+                                            }
+                                        , [ NodeText
+                                              SourcePos
+                                                { sourceName = "manual.scb"
+                                                , sourceLine = Pos 133
+                                                , sourceColumn = Pos 11
+                                                }
+                                              "The overall document structure"
+                                          ]
+                                        )
+                                      )
+                                    ]
+                              , metaArgs = []
+                              }
+                        , eBody = []
                         }
                   ]
               }

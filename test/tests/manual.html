@@ -55,12 +55,33 @@ recognized attribute of a section, for now, is its title. In future,
 sections will have many attributes, like number, language, alternate
 titles for the table of contents or page header, and so on. The
 attributes of sections can be listed on multiple consecutive lines, as
-long as no blank line occurs between them.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section><section><h3>Mathematics</h3><div class="sectionContent"><p>Formal mathematical content can be included in a document with
-particular inline elements. Inline formulas like <span class="math inline">\(2^3 = 8\)</span>,
-and displayed formulas like
+long as no blank line occurs between them.</p></div></section><section><h3>Blocks</h3><div class="sectionContent"><p>The other type of syntactic form in scriba is the <em>block</em>
+element. Blocks group their content and give it extra meaning, and can
+appear wherever paragraphs or section headers can. Some blocks are
+shown in the following code sample:</p><pre><code>&amp;{codeBlock {language|scriba} `
+  An {emph|interesting} proposition.
+`}
+
+&amp;{olist&amp;
+&amp;{li|First item}
+&amp;{li|Second item}
+}</code></pre><p>Blocks are written like inline elements, complete with attributes and
+arguments, except they are preceded by a <code>&amp;</code>. They differ from
+inline elements in their content: blocks have <em>verbatim</em>,
+<em>block</em>, and <em>inline</em>. Verbatim content is signalled by a
+<code>`</code> (backtick) character, starts on the next line, then runs
+until the sequence <code>`}</code> appears at the start of a line. The
+content itself becomes plain text; no control characters are
+recognized in it. Block content is signalled by a <code>&amp;</code> character,
+and consists of a sequence of blocks and paragraphs, like section
+content without section headers. Finally, inline content is signalled
+by a <code>|</code> and can contain text and inline elements.</p></div></section><section><h3>Mathematics</h3><div class="sectionContent"><p>Formal mathematical content can be included in a document with
+particular inline elements. Inline formulas like <span class="math inline">\(2^3 = 8\)</span>, and
+displayed formulas like
 <span class="math display">\[
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}&#39;}{r&#39;^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}&#39;}{r&#39;^2}
 \]</span>
-are available, among other more complex constructs. HTML rendering is handled with MathJax.</p></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
+are available, among other more complex constructs. Math rendering in
+HTML is handled with MathJax.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

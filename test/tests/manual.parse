@@ -1004,19 +1004,345 @@ Doc
                                , sourceLine = Pos 90
                                , sourceColumn = Pos 11
                                }
-                             "The overall document structure"
+                             "Blocks"
                          ]
                      )
                    )
                  ]
            }
          [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 92
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 92
+               , sourceColumn = Pos 1
+               }
+             "The other type of syntactic form in scriba is the "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 92
+                     , sourceColumn = Pos 51
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.scb"
+                           , sourceLine = Pos 92
+                           , sourceColumn = Pos 57
+                           }
+                         "block"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 92
+               , sourceColumn = Pos 63
+               }
+             "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:"
+         ])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "manual.scb"
+                 , sourceLine = Pos 97
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "codeBlock"
+           , attrs =
+               Attrs
+                 { getAttrs =
+                     fromList
+                       [ ( "language"
+                         , ( SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 97
+                               , sourceColumn = Pos 13
+                               }
+                           , Attrs { getAttrs = fromList [] }
+                           , []
+                           , InlineSequence
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "manual.scb"
+                                     , sourceLine = Pos 97
+                                     , sourceColumn = Pos 23
+                                     }
+                                   "scriba"
+                               ]
+                           )
+                         )
+                       ]
+                 }
+           , args = []
+           , content =
+               BlockVerbatim
+                 SourcePos
+                   { sourceName = "manual.scb"
+                   , sourceLine = Pos 97
+                   , sourceColumn = Pos 31
+                   }
+                 "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist&\n  &{li|First item}\n  &{li|Second item}\n  }"
+           })
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 108
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 108
+               , sourceColumn = Pos 1
+               }
+             "Blocks are written like inline elements, complete with attributes and\narguments, except they are preceded by a "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 109
+                     , sourceColumn = Pos 42
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 109
+                       , sourceColumn = Pos 47
+                       }
+                     "&"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 109
+               , sourceColumn = Pos 51
+               }
+             ". They differ from\ninline elements in their content: blocks have "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 110
+                     , sourceColumn = Pos 47
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.scb"
+                           , sourceLine = Pos 110
+                           , sourceColumn = Pos 53
+                           }
+                         "verbatim"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 110
+               , sourceColumn = Pos 62
+               }
+             ",\n"
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 111
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.scb"
+                           , sourceLine = Pos 111
+                           , sourceColumn = Pos 7
+                           }
+                         "block"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 111
+               , sourceColumn = Pos 13
+               }
+             ", and "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 111
+                     , sourceColumn = Pos 19
+                     }
+               , etype = Just "emph"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.scb"
+                           , sourceLine = Pos 111
+                           , sourceColumn = Pos 25
+                           }
+                         "inline"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 111
+               , sourceColumn = Pos 32
+               }
+             ". Verbatim content is signalled by a\n"
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 112
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 112
+                       , sourceColumn = Pos 6
+                       }
+                     "`"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 112
+               , sourceColumn = Pos 11
+               }
+             " (backtick) character, starts on the next line, then runs\nuntil the sequence "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 113
+                     , sourceColumn = Pos 20
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 113
+                       , sourceColumn = Pos 25
+                       }
+                     "`}"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 113
+               , sourceColumn = Pos 31
+               }
+             " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 115
+                     , sourceColumn = Pos 51
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 115
+                       , sourceColumn = Pos 56
+                       }
+                     "&"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 115
+               , sourceColumn = Pos 60
+               }
+             " character,\nand consists of a sequence of blocks and paragraphs, like section\ncontent without section headers. Finally, inline content is signalled\nby a "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 118
+                     , sourceColumn = Pos 6
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 118
+                       , sourceColumn = Pos 11
+                       }
+                     "|"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 118
+               , sourceColumn = Pos 15
+               }
+             " and can contain text and inline elements."
+         ])
   , SecHeaderNode
       (SecHeader
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 92
+           , sourceLine = Pos 120
            , sourceColumn = Pos 1
            }
          Nothing
@@ -1026,7 +1352,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 92
+                         , sourceLine = Pos 120
                          , sourceColumn = Pos 4
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -1035,7 +1361,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 92
+                               , sourceLine = Pos 120
                                , sourceColumn = Pos 11
                                }
                              "Mathematics"
@@ -1049,13 +1375,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 94
+           , sourceLine = Pos 122
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 94
+               , sourceLine = Pos 122
                , sourceColumn = Pos 1
                }
              "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like "
@@ -1064,7 +1390,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 95
+                     , sourceLine = Pos 123
                      , sourceColumn = Pos 50
                      }
                , etype = Just "math"
@@ -1074,7 +1400,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 95
+                       , sourceLine = Pos 123
                        , sourceColumn = Pos 55
                        }
                      "2^3 = 8"
@@ -1082,16 +1408,16 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 95
+               , sourceLine = Pos 123
                , sourceColumn = Pos 65
                }
-             ",\nand displayed formulas like\n"
+             ", and\ndisplayed formulas like\n"
          , InlineBraced
              Element
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 97
+                     , sourceLine = Pos 125
                      , sourceColumn = Pos 1
                      }
                , etype = Just "dmath"
@@ -1101,7 +1427,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 97
+                       , sourceLine = Pos 125
                        , sourceColumn = Pos 7
                        }
                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
@@ -1109,9 +1435,43 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 101
+               , sourceLine = Pos 129
                , sourceColumn = Pos 3
                }
-             "\nare available, among other more complex constructs. HTML rendering is handled with MathJax."
+             "\nare available, among other more complex constructs. Math rendering in\nHTML is handled with MathJax."
          ])
+  , SecHeaderNode
+      (SecHeader
+         2
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 133
+           , sourceColumn = Pos 1
+           }
+         Nothing
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "title"
+                   , ( SourcePos
+                         { sourceName = "manual.scb"
+                         , sourceLine = Pos 133
+                         , sourceColumn = Pos 4
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 133
+                               , sourceColumn = Pos 11
+                               }
+                             "The overall document structure"
+                         ]
+                     )
+                   )
+                 ]
+           }
+         [])
   ]
