@@ -629,6 +629,11 @@ pCodeBlock = do
   t <- whileParsingElem "codeBlock" $ allContentOf simpleText
   pure $ CodeBlock $ commonIndentStrip $ T.concat t
 
+-- In lists, if I use custom CSS styles for list items, then have ref
+-- elements be aware of the style that is used for rendering the
+-- number, I might not have to set the list markers manually. I will
+-- still need to number list items manually so that I can set the
+-- "start" attribute and get the correct list number in refs.
 pList :: Scriba Element List
 pList = pOlist <|> pUlist
 
