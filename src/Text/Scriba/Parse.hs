@@ -261,7 +261,7 @@ pInlineVerbText =
 -- minimum indent of lines that come before it. This would require
 -- that we track that quantity while parsing.
 pBlockVerbText :: Int -> Parser Text
-pBlockVerbText indentLvl = pVerbText <* (MP.takeWhile Nothing (== ' ') >> "\n")
+pBlockVerbText indentLvl = pVerbText <* "\n" <* MP.takeWhileP Nothing (== ' ')
  where
   pVerbText     = fmap T.concat $ MP.many $ pInsig <|> pNewlineInsig
   pInsig        = MP.takeWhile1P Nothing (/= '\n')
