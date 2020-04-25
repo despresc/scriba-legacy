@@ -152,7 +152,6 @@ data SectionContent = SectionContent
 emptySectionContent :: SectionContent
 emptySectionContent = SectionContent [] []
 
--- TODO: really need a better name than FormalBlockBlock
 data Block
   = FormalBlock Formal
   | CodeBlock Text
@@ -172,8 +171,9 @@ data ParContent
 
 -- Might want a formal inline too. Some kind of "inline result",
 -- anyway.
--- TODO: the fbTitle _might_ be better as Title, but I'm not sure if a
+-- TODO: the fTitle _might_ be better as Title, but I'm not sure if a
 -- formalBlock title should be the same thing as a section title.
+-- TODO: maybe there's a better name than Formal
 data Formal = Formal
   { fType :: Maybe Text
   , fTitle :: [Inline]

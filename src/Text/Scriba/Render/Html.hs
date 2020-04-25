@@ -133,8 +133,17 @@ renderBlock (CodeBlock   t ) = pure $ H.pre $ H.code $ H.toHtml t
 renderBlock (ParBlock    p ) = renderParagraph p
 renderBlock (ListBlock   b ) = renderList b
 
+-- TODO: add the type as a data-scribaType? Though we might want that
+-- to equal formalBlock here.
 renderFormalBlock :: Formal -> Render Html
-renderFormalBlock = undefined
+renderFormalBlock (Formal _ title body concl) = do
+  title' <- renderInlines title
+  body'  <- renderBlocks body
+  concl' <- renderInlines concl
+  pure $ H.div ! A.class_ "formalBlock" $ do
+    H.span ! A.class_ "title" $ title'
+    H.div ! A.class_ "body" $ body'
+    H.span ! A.class_ "conclusion" $ concl'
 
 renderList :: List -> Render Html
 renderList b = case b of

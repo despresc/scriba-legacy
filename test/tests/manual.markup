@@ -179,11 +179,11 @@ Doc
                                            , ParInline (Code "`")
                                            , ParInline
                                                (Str
-                                                  " (backtick) character, starts on the next line, then\nruns until the sequence ")
+                                                  " (backtick) character, starts on the next line, then runs\nuntil the sequence ")
                                            , ParInline (Code "`}")
                                            , ParInline
                                                (Str
-                                                  " appears at the start of a\nline. The content itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a ")
+                                                  " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a ")
                                            , ParInline (Code "&")
                                            , ParInline
                                                (Str
@@ -247,6 +247,47 @@ Doc
                   { secPreamble = [ ParBlock (Paragraph []) ]
                   , secChildren =
                       [ Section
+                          { secTitle = Title { titleBody = [ Str "formalBlock" ] }
+                          , secContent =
+                              SectionContent
+                                { secPreamble =
+                                    [ ParBlock
+                                        (Paragraph
+                                           [ ParInline (Str "The ")
+                                           , ParInline (Code "formalBlock")
+                                           , ParInline
+                                               (Str
+                                                  " element represents a formal part of the\ndocument, with optional ")
+                                           , ParInline (Code "title")
+                                           , ParInline (Str ", ")
+                                           , ParInline (Code "conclusion")
+                                           , ParInline (Str ", and\n")
+                                           , ParInline (Code "type")
+                                           , ParInline
+                                               (Str
+                                                  " attributes. It can contain block or inline content. It can\nbe used to represent theorems, propositions, exercises, proofs, and\nother amsthm-style elements.")
+                                           ])
+                                    , ParBlock (Paragraph [])
+                                    , ParBlock (Paragraph [ ParInline (Str "An example:") ])
+                                    , FormalBlock
+                                        Formal
+                                          { fType = Just "theorem"
+                                          , fTitle = [ Str "Theorem 4.2 (an interesting one). " ]
+                                          , fContent =
+                                              [ ParBlock
+                                                  (Paragraph
+                                                     [ ParInline
+                                                         (Str
+                                                            "The statement of some theorem of interest.\n")
+                                                     ])
+                                              ]
+                                          , fConclusion = []
+                                          }
+                                    ]
+                                , secChildren = []
+                                }
+                          }
+                      , Section
                           { secTitle = Title { titleBody = [ Str "olist" ] }
                           , secContent =
                               SectionContent
