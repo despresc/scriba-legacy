@@ -152,6 +152,8 @@ Will contain a description of documents as a whole.
 - The examples should be in a figure block. Possibly a two-part block,
   with the code and the rendered output.
 
+- Perhaps this should be an appendix?
+
 %}
 
 ## {title|olist}
