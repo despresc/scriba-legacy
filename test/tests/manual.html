@@ -4,7 +4,7 @@ clarity, and ease of use. It is also a compiler, taking source scriba
 documents and rendering them to multi-page HTML, EPUB, and TeX. The
 format includes flexible markup constructs designed to represent a
 range of historical scientific material, but these can be used equally
-well for new publications.</p><section><h2>An introduction to the language</h2><div class="sectionContent"><p></p><section><h3>Paragraphs</h3><div class="sectionContent"><p>The bulk of your document will most likely be paragraphs, sequences of
+well for new publications.</p><section><h2>An introduction to the language</h2><div class="sectionContent"><section><h3>Paragraphs</h3><div class="sectionContent"><p>The bulk of your document will most likely be paragraphs, sequences of
 normal text and marked-up content representing a single idea in your
 writing. A paragraph in scriba is a type of <em>block</em>, and contains
 <em>paragraph text</em> and <em>elements</em>. Two sample paragraphs are
@@ -108,10 +108,10 @@ other special character processing, even comments, so that the syntax
 of other languages can be included into scriba without too much
 overhead. This is only a syntactic convenience in this case; the
 inline example above could equally well have been written
-<code>{math|f(x, y) = x^\{y+6\}}</code>.</p><p></p><p></p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"><p>Will contain a description of documents as a whole.</p></div></section></div></section><section><h2>Element reference</h2><div class="sectionContent"><p></p><section><h3>formalBlock</h3><div class="sectionContent"><p>The <code>formalBlock</code> element represents a formal part of the
+<code>{math|f(x, y) = x^\{y+6\}}</code>.</p></div></section><section><h3>The overall document structure</h3><div class="sectionContent"><p>Will contain a description of documents as a whole.</p></div></section></div></section><section><h2>Element reference</h2><div class="sectionContent"><section><h3>formalBlock</h3><div class="sectionContent"><p>The <code>formalBlock</code> element represents a formal part of the
 document, with optional <code>title</code>, <code>conclusion</code>, and
 <code>type</code> attributes. It can contain block or inline content. It can
 be used to represent theorems, propositions, exercises, proofs, and
-other amsthm-style elements.</p><p></p><p>An example:</p><div class="formalBlock"><span class="title">Theorem 4.2 (an interesting one). </span><div class="body"><p>The statement of some theorem of interest.
+other amsthm-style elements.</p><p>An example:</p><div class="formalBlock"><span class="title">Theorem 4.2 (an interesting one). </span><div class="body"><p>The statement of some theorem of interest.
 </p></div><span class="conclusion"></span></div></div></section><section><h3>olist</h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
 a whitespace-separated list of <code>item</code> elements.</p><p>An example:</p><ol><li><p>First element</p></li><li><p>Second element</p></li><li><p>Third element</p></li></ol></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

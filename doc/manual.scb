@@ -2,6 +2,64 @@
   {title|The scriba markup language and document system}
   {type|article}}
 
+{% TODO:
+
+- Gather TODOs that pertain to design from the subsections and put
+  them here.
+
+- Rework the bits of these sections that talk about permissible
+  content. They're too technical for what should be a gentler
+  discussion of the language, I think.
+
+A disussion of macros and aliases:
+
+Okay. Macros and aliases.
+
+Say I want to have a "theorem" block. It's a fancy type of
+Formal. It's numbered in some way. There might be a `comment` or a
+`name` attribute in it, and the title ought to be rendered as
+
+Theorem <number> <if name then "(<name>)">
+
+possibly with a period at the end, though that might be considered a
+style thing.
+
+How is that reflected in the internal representation?
+
+Do we wrap it in a (CustomBlock "theorem"), maybe? Or maybe formal
+blocks have an optional `type` attribute associated with them, so that
+can be put there, and the custom theorem block can instead be a user
+function.
+
+Things that can be numbered and referenced ought to have some kind of
+a type, at least, for numbering purposes. Even a notional or built-in
+one, like "equation".
+
+If these have a type, what about elements that can appear as an inline
+or a block? I'm thinking of Gauss' inline propositions, which are
+unnumbered. For now, that could be covered by an inline "formal
+statement" element, I suppose, that would be untyped. Otherwise we
+could have a unified "formal statement" kind of element, but we'd need
+to be able to control numbering on such things, notably to disable
+their numbering if they appear inline.
+
+Something like formalStmt?
+
+Okay, but what about figures? I suppose they can have types too, just
+like the rest. Maybe everything has an implicit type at the outset?
+Figures have a default "figure" type for the purposes of numbering.
+Now, figures have content, a caption, and a caption title, but this
+can be handled like formal blocks, with some kind of template thing.
+
+Of course we still need to develop a numbering specification system,
+but that can wait, perhaps.
+
+Tables can have captions. Not sure what to do about that. Obviously
+people would expect to have their tables say "Table 6: ..." by
+default, not "Figure 6: ..."
+
+%}
+
 Scriba is a plain text markup language emphasizing extensibility,
 clarity, and ease of use. It is also a compiler, taking source scriba
 documents and rendering them to multi-page HTML, EPUB, and TeX. The
@@ -10,17 +68,6 @@ range of historical scientific material, but these can be used equally
 well for new publications.
 
 # {title|An introduction to the language}
-
-{% TODO:
-
-- Gather TODOs that pertain to design from these subsections and put
-  them here.
-
-- Rework the bits of these sections that talk about permissible
-  content. They're too technical for what should be a gentler
-  discussion of the language, I think.
-
-%}
 
 ## {title|Paragraphs}
 

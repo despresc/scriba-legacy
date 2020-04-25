@@ -134,13 +134,12 @@ fromBlockContent BlockNil            = []
 fromBlockNode :: P.BlockNode -> [Node]
 fromBlockNode (P.BlockBlock b) = [NodeElem $ fromBlockElement b]
 fromBlockNode (P.BlockPar sp i)
-  | isEmpty i
-  = []
-  | otherwise
-  = [nodeElement (Just "p") (Meta sp AsPara mempty mempty) $ fromInlineNodes i]
+  | isEmpty i' = []
+  | otherwise  = [nodeElement (Just "p") (Meta sp AsPara mempty mempty) i']
  where
-  isWhitespace (InlineText _ t) = T.all isSpace t
-  isWhitespace _                = False
+  i' = fromInlineNodes i
+  isWhitespace (NodeText _ t) = T.all isSpace t
+  isWhitespace _              = False
   isEmpty = all isWhitespace
 
 fromBlockElement :: P.BlockElement -> Element

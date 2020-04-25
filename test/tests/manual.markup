@@ -23,7 +23,7 @@ Doc
                 Title { titleBody = [ Str "An introduction to the language" ] }
             , secContent =
                 SectionContent
-                  { secPreamble = [ ParBlock (Paragraph []) ]
+                  { secPreamble = []
                   , secChildren =
                       [ Section
                           { secTitle = Title { titleBody = [ Str "Paragraphs" ] }
@@ -262,8 +262,6 @@ Doc
                                            , ParInline (Code "{math|f(x, y) = x^\\{y+6\\}}")
                                            , ParInline (Str ".")
                                            ])
-                                    , ParBlock (Paragraph [])
-                                    , ParBlock (Paragraph [])
                                     ]
                                 , secChildren = []
                                 }
@@ -291,7 +289,7 @@ Doc
             { secTitle = Title { titleBody = [ Str "Element reference" ] }
             , secContent =
                 SectionContent
-                  { secPreamble = [ ParBlock (Paragraph []) ]
+                  { secPreamble = []
                   , secChildren =
                       [ Section
                           { secTitle = Title { titleBody = [ Str "formalBlock" ] }
@@ -314,7 +312,6 @@ Doc
                                                (Str
                                                   " attributes. It can contain block or inline content. It can\nbe used to represent theorems, propositions, exercises, proofs, and\nother amsthm-style elements.")
                                            ])
-                                    , ParBlock (Paragraph [])
                                     , ParBlock (Paragraph [ ParInline (Str "An example:") ])
                                     , FormalBlock
                                         Formal
