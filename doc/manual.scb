@@ -128,8 +128,8 @@ displayed formulas like
   \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
 `}
 are available, among other more complex constructs. The formulas
-themselves are written in TeX syntax, and rendering in HTML is handled
-with MathJax.
+themselves are written in TeX syntax by default, and rendering in HTML
+is handled with MathJax.
 
 {%TODO: Notes on math environments, maybe amsthm-style formal blocks %}
 
