@@ -1227,14 +1227,14 @@ Doc
                , sourceLine = Pos 111
                , sourceColumn = Pos 32
                }
-             ". Verbatim content is signalled by a\n"
+             " content. Verbatim content is signalled\nby a "
          , InlineBraced
              Element
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
                      , sourceLine = Pos 112
-                     , sourceColumn = Pos 1
+                     , sourceColumn = Pos 6
                      }
                , etype = Just "code"
                , attrs = Attrs { getAttrs = fromList [] }
@@ -1244,7 +1244,7 @@ Doc
                      SourcePos
                        { sourceName = "manual.scb"
                        , sourceLine = Pos 112
-                       , sourceColumn = Pos 6
+                       , sourceColumn = Pos 11
                        }
                      "`"
                }
@@ -1252,16 +1252,16 @@ Doc
              SourcePos
                { sourceName = "manual.scb"
                , sourceLine = Pos 112
-               , sourceColumn = Pos 11
+               , sourceColumn = Pos 16
                }
-             " (backtick) character, starts on the next line, then runs\nuntil the sequence "
+             " (backtick) character, starts on the next line, then\nruns until the sequence "
          , InlineBraced
              Element
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
                      , sourceLine = Pos 113
-                     , sourceColumn = Pos 20
+                     , sourceColumn = Pos 25
                      }
                , etype = Just "code"
                , attrs = Attrs { getAttrs = fromList [] }
@@ -1271,7 +1271,7 @@ Doc
                      SourcePos
                        { sourceName = "manual.scb"
                        , sourceLine = Pos 113
-                       , sourceColumn = Pos 25
+                       , sourceColumn = Pos 30
                        }
                      "`}"
                }
@@ -1279,9 +1279,9 @@ Doc
              SourcePos
                { sourceName = "manual.scb"
                , sourceLine = Pos 113
-               , sourceColumn = Pos 31
+               , sourceColumn = Pos 36
                }
-             " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a "
+             " appears at the start of a\nline. The content itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a "
          , InlineBraced
              Element
                { srcPos =

@@ -174,15 +174,16 @@ Doc
                                            , ParInline (Str ", and ")
                                            , ParInline (Emph [ Str "inline" ])
                                            , ParInline
-                                               (Str ". Verbatim content is signalled by a\n")
+                                               (Str
+                                                  " content. Verbatim content is signalled\nby a ")
                                            , ParInline (Code "`")
                                            , ParInline
                                                (Str
-                                                  " (backtick) character, starts on the next line, then runs\nuntil the sequence ")
+                                                  " (backtick) character, starts on the next line, then\nruns until the sequence ")
                                            , ParInline (Code "`}")
                                            , ParInline
                                                (Str
-                                                  " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a ")
+                                                  " appears at the start of a\nline. The content itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a ")
                                            , ParInline (Code "&")
                                            , ParInline
                                                (Str

@@ -108,10 +108,10 @@ shown in the following code sample:
 Blocks are written like inline elements, complete with attributes and
 arguments, except they are preceded by a {code`&`}. They differ from
 inline elements in their content: blocks have {emph|verbatim},
-{emph|block}, and {emph|inline}. Verbatim content is signalled by a
-{code````} (backtick) character, starts on the next line, then runs
-until the sequence {code```}`} appears at the start of a line. The
-content itself becomes plain text; no control characters are
+{emph|block}, and {emph|inline} content. Verbatim content is signalled
+by a {code````} (backtick) character, starts on the next line, then
+runs until the sequence {code```}`} appears at the start of a
+line. The content itself becomes plain text; no control characters are
 recognized in it. Block content is signalled by a {code`&`} character,
 and consists of a sequence of blocks and paragraphs, like section
 content without section headers. Finally, inline content is signalled
