@@ -214,8 +214,9 @@ Doc
                                                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"))
                                            , ParInline
                                                (Str
-                                                  "\nare available, among other more complex constructs. Math rendering in\nHTML is handled with MathJax.")
+                                                  "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax, and rendering in HTML is handled\nwith MathJax.")
                                            ])
+                                    , ParBlock (Paragraph [])
                                     ]
                                 , secChildren = []
                                 }

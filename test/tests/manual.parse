@@ -1438,14 +1438,29 @@ Doc
                , sourceLine = Pos 129
                , sourceColumn = Pos 3
                }
-             "\nare available, among other more complex constructs. Math rendering in\nHTML is handled with MathJax."
+             "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax, and rendering in HTML is handled\nwith MathJax."
+         ])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 134
+           , sourceColumn = Pos 1
+           }
+         [ InlineComment
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 134
+               , sourceColumn = Pos 1
+               }
+             "TODO: Notes on math environments, maybe amsthm-style formal blocks "
          ])
   , SecHeaderNode
       (SecHeader
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 133
+           , sourceLine = Pos 136
            , sourceColumn = Pos 1
            }
          Nothing
@@ -1455,7 +1470,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 133
+                         , sourceLine = Pos 136
                          , sourceColumn = Pos 4
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -1464,7 +1479,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 133
+                               , sourceLine = Pos 136
                                , sourceColumn = Pos 11
                                }
                              "The overall document structure"

@@ -127,8 +127,11 @@ displayed formulas like
   \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
 `}
-are available, among other more complex constructs. Math rendering in
-HTML is handled with MathJax.
+are available, among other more complex constructs. The formulas
+themselves are written in TeX syntax, and rendering in HTML is handled
+with MathJax.
+
+{%TODO: Notes on math environments, maybe amsthm-style formal blocks %}
 
 ## {title|The overall document structure}
 
