@@ -11,6 +11,17 @@ well for new publications.
 
 # {title|An introduction to the language}
 
+{% TODO:
+
+- Gather TODOs that pertain to design from these subsections and put
+  them here.
+
+- Rework the bits of these sections that talk about permissible
+  content. They're too technical for what should be a gentler
+  discussion of the language, I think.
+
+%}
+
 ## {title|Paragraphs}
 
 The bulk of your document will most likely be paragraphs, sequences of
@@ -110,18 +121,19 @@ arguments, except they are preceded by a {code`&`}. They differ from
 inline elements in their content: blocks have {emph|verbatim},
 {emph|block}, and {emph|inline} content. Verbatim content is signalled
 by a {code|`} (backtick) character, starts on the next line, then runs
-until the sequence {code|`\}} appears at the start of a line. The
-content itself becomes plain text; no control characters are
-recognized in it. Block content is signalled by a {code|&} character,
-and consists of a sequence of blocks and paragraphs, like section
-content without section headers. Finally, inline content is signalled
-by a {code||} and can contain text and inline elements.
+until the sequence {code|`\}} appears on a line indented by at most as
+much as the start-of-block {code|&} character is. The content itself
+becomes plain text; no control characters are recognized in it. Block
+content is signalled by a {code|&} character, and consists of a
+sequence of blocks and paragraphs, like section content without
+section headers. Finally, inline content is signalled by a {code||}
+and can contain text and inline elements.
 
 ## {title|Mathematics}
 
 Formal mathematical content can be included in a document with
-particular inline elements. Inline formulas like {math`2^3 = 8`}, and
-displayed formulas like
+particular inline elements. Inline formulas like {math`f(x, y) =
+x^{y+6}`}, and displayed formulas like
 {dmath`
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
@@ -129,9 +141,56 @@ displayed formulas like
 `}
 are available, among other more complex constructs. The formulas
 themselves are written in TeX syntax by default, and rendering in HTML
-is handled with MathJax.
+is handled with MathJax. Be aware that amsmath-style environments like
+{code|gathered} or {code|alignedat} should not be used inside
+{code|math} or {code|dmath} elements themselves. Scriba itself
+implements some of these environments as elements, so that they can
+interact with its built-in numbering and referencing capabilities.
 
-{%TODO: Notes on math environments, maybe amsthm-style formal blocks %}
+The examples of formulas above were entered into the source like so:
+
+&{codeBlock {language|scriba} `
+  Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
+  {dmath`
+    \mathbf{B}(P) = \frac{\mu_0}{4\pi}
+    \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
+    \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
+  `}
+  are available, among …
+`}
+
+Since TeX syntax is heavily reliant on braces and backlashes, it will
+often be necessary for you to escape them in some way when entering
+math in that notation. In the inline example math example above, an
+{emph|inline verbatim body} was used for this purpose. Like block
+verbatim content, such a body starts with a {code|`} character instead
+of a {code||}. Inline verbatim content runs until it encounters a
+{code```}`}, and inside it any double-backtick {code|``} sequences
+collapse to a single backtick. The effect of this is to disable any
+other special character processing, even comments, so that the syntax
+of other languages can be included into scriba without too much
+overhead. This is only a syntactic convenience in this case; the
+inline example above could equally well have been written
+{code`{math|f(x, y) = x^\{y+6\}}`}.
+
+{%TODO: 
+
+- link to amsmath, sections on numbering and referencing, maybe
+  whatever manual section discusses mathematics in more detail.
+
+- link to the block section's discussion of block verbatim content
+
+- some kind of codeFigure custom block?
+
+- Maybe have some kind of fancy rendering of TeX?
+
+- Move the inline verbatim discussion to a section on inline elements?
+  The mention of the start-of-paragraph & issue could be included
+  there too.
+
+%}
+
+{%TODO: Notes on amsthm-style formal blocks %}
 
 ## {title|The overall document structure}
 

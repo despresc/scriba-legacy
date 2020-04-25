@@ -23,7 +23,7 @@ Doc
                 Title { titleBody = [ Str "An introduction to the language" ] }
             , secContent =
                 SectionContent
-                  { secPreamble = []
+                  { secPreamble = [ ParBlock (Paragraph []) ]
                   , secChildren =
                       [ Section
                           { secTitle = Title { titleBody = [ Str "Paragraphs" ] }
@@ -183,14 +183,18 @@ Doc
                                            , ParInline (Code "`}")
                                            , ParInline
                                                (Str
-                                                  " appears at the start of a line. The\ncontent itself becomes plain text; no control characters are\nrecognized in it. Block content is signalled by a ")
+                                                  " appears on a line indented by at most as\nmuch as the start-of-block ")
                                            , ParInline (Code "&")
                                            , ParInline
                                                (Str
-                                                  " character,\nand consists of a sequence of blocks and paragraphs, like section\ncontent without section headers. Finally, inline content is signalled\nby a ")
+                                                  " character is. The content itself\nbecomes plain text; no control characters are recognized in it. Block\ncontent is signalled by a ")
+                                           , ParInline (Code "&")
+                                           , ParInline
+                                               (Str
+                                                  " character, and consists of a\nsequence of blocks and paragraphs, like section content without\nsection headers. Finally, inline content is signalled by a ")
                                            , ParInline (Code "|")
                                            , ParInline
-                                               (Str " and can contain text and inline elements.")
+                                               (Str "\nand can contain text and inline elements.")
                                            ])
                                     ]
                                 , secChildren = []
@@ -206,16 +210,59 @@ Doc
                                            [ ParInline
                                                (Str
                                                   "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like ")
-                                           , ParInline (Math "2^3 = 8")
-                                           , ParInline (Str ", and\ndisplayed formulas like\n")
+                                           , ParInline (Math "f(x, y) =\nx^{y+6}")
+                                           , ParInline (Str ", and displayed formulas like\n")
                                            , ParInline
                                                (DisplayMath
                                                   (Formula
                                                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"))
                                            , ParInline
                                                (Str
-                                                  "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax by default, and rendering in HTML\nis handled with MathJax.")
+                                                  "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax by default, and rendering in HTML\nis handled with MathJax. Be aware that amsmath-style environments like\n")
+                                           , ParInline (Code "gathered")
+                                           , ParInline (Str " or ")
+                                           , ParInline (Code "alignedat")
+                                           , ParInline (Str " should not be used inside\n")
+                                           , ParInline (Code "math")
+                                           , ParInline (Str " or ")
+                                           , ParInline (Code "dmath")
+                                           , ParInline
+                                               (Str
+                                                  " elements themselves. Scriba itself\nimplements some of these environments as elements, so that they can\ninteract with its built-in numbering and referencing capabilities.")
                                            ])
+                                    , ParBlock
+                                        (Paragraph
+                                           [ ParInline
+                                               (Str
+                                                  "The examples of formulas above were entered into the source like so:")
+                                           ])
+                                    , CodeBlock
+                                        "Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like\n{dmath`\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n`}\nare available, among \8230"
+                                    , ParBlock
+                                        (Paragraph
+                                           [ ParInline
+                                               (Str
+                                                  "Since TeX syntax is heavily reliant on braces and backlashes, it will\noften be necessary for you to escape them in some way when entering\nmath in that notation. In the inline example math example above, an\n")
+                                           , ParInline (Emph [ Str "inline verbatim body" ])
+                                           , ParInline
+                                               (Str
+                                                  " was used for this purpose. Like block\nverbatim content, such a body starts with a ")
+                                           , ParInline (Code "`")
+                                           , ParInline (Str " character instead\nof a ")
+                                           , ParInline (Code "|")
+                                           , ParInline
+                                               (Str
+                                                  ". Inline verbatim content runs until it encounters a\n")
+                                           , ParInline (Code "`}")
+                                           , ParInline (Str ", and inside it any double-backtick ")
+                                           , ParInline (Code "``")
+                                           , ParInline
+                                               (Str
+                                                  " sequences\ncollapse to a single backtick. The effect of this is to disable any\nother special character processing, even comments, so that the syntax\nof other languages can be included into scriba without too much\noverhead. This is only a syntactic convenience in this case; the\ninline example above could equally well have been written\n")
+                                           , ParInline (Code "{math|f(x, y) = x^\\{y+6\\}}")
+                                           , ParInline (Str ".")
+                                           ])
+                                    , ParBlock (Paragraph [])
                                     , ParBlock (Paragraph [])
                                     ]
                                 , secChildren = []

@@ -76,6 +76,10 @@ nodeElement t m = NodeElem . Element t m
 
 -- * Meta conversion
 
+-- TODO: If the attributes and arguments to element arguments become
+-- relevant in a way where it's possible for those of an anonymous
+-- inline verbatim to matter, then we should write a separate
+-- fromInlineNode function for use in the arguments here.
 fromAttr :: P.Attr -> Attr
 fromAttr (s, at, ar, con) =
   ( Meta s AsInline (fromAttrs at) (concatMap fromInlineNode ar)
