@@ -129,12 +129,21 @@ renderSections :: [Section] -> Render Html
 renderSections = foldBy renderSection
 
 renderBlock :: Block -> Render Html
-renderBlock (FormalBlockBlock fb) = renderFormalBlock fb
-renderBlock (CodeBlock        t ) = pure $ H.pre $ H.code $ H.toHtml t
-renderBlock (ParBlock         p ) = renderParagraph p
+renderBlock (FormalBlock fb) = renderFormalBlock fb
+renderBlock (CodeBlock   t ) = pure $ H.pre $ H.code $ H.toHtml t
+renderBlock (ParBlock    p ) = renderParagraph p
+renderBlock (ListBlock   b ) = renderList b
 
-renderFormalBlock :: FormalBlock -> Render Html
+renderFormalBlock :: Formal -> Render Html
 renderFormalBlock = undefined
+
+renderList :: List -> Render Html
+renderList b = case b of
+  Ulist l -> H.ul <$> renderListItems l
+  Olist l -> H.ol <$> renderListItems l
+ where
+  renderListItems = foldBy renderListItem
+  renderListItem bs = H.li <$> renderBlocks bs
 
 renderParagraph :: Paragraph -> Render Html
 renderParagraph (Paragraph c) = H.p <$> foldBy renderParInline c

@@ -21,16 +21,16 @@ Doc
                [ ParInline (Str "&")
                , ParInline (Str " some verbatim testing.")
                ])
-        , FormalBlockBlock
-            FormalBlock
-              { fbType = Just "theorem"
-              , fbTitle = [ Str "Theorem 5 (an interesting one)" ]
-              , fbContent =
+        , FormalBlock
+            Formal
+              { fType = Just "theorem"
+              , fTitle = [ Str "Theorem 5 (an interesting one)" ]
+              , fContent =
                   [ ParBlock
                       (Paragraph
                          [ ParInline (Str "\nThe statement of an interesting theorem.\n") ])
                   ]
-              , fbConclusion = [ Str "QED" ]
+              , fConclusion = [ Str "QED" ]
               }
         ]
     , secChildren = []

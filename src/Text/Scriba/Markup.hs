@@ -154,9 +154,10 @@ emptySectionContent = SectionContent [] []
 
 -- TODO: really need a better name than FormalBlockBlock
 data Block
-  = FormalBlockBlock FormalBlock
+  = FormalBlock Formal
   | CodeBlock Text
   | ParBlock Paragraph
+  | ListBlock List
   deriving (Eq, Ord, Show, Read)
 
 data Paragraph = Paragraph [ParContent]
@@ -173,11 +174,11 @@ data ParContent
 -- anyway.
 -- TODO: the fbTitle _might_ be better as Title, but I'm not sure if a
 -- formalBlock title should be the same thing as a section title.
-data FormalBlock = FormalBlock
-  { fbType :: Maybe Text
-  , fbTitle :: [Inline]
-  , fbContent :: [Block]
-  , fbConclusion :: [Inline]
+data Formal = Formal
+  { fType :: Maybe Text
+  , fTitle :: [Inline]
+  , fContent :: [Block]
+  , fConclusion :: [Inline]
   } deriving (Eq, Ord, Show, Read)
 
 -- TODO: may want to restrict the inlines that can appear in a
@@ -187,6 +188,13 @@ data FormalBlock = FormalBlock
 newtype Title = Title
   { titleBody :: [Inline]
   } deriving (Eq, Ord, Show, Read)
+
+-- TODO: need an inline list form too.
+-- TODO: list markers and such, of course.
+data List
+  = Ulist [[Block]]
+  | Olist [[Block]]
+  deriving (Eq, Ord, Show, Read)
 
 -- TODO: rename Math to InlineMath?
 data Inline
@@ -302,6 +310,8 @@ instance Monoid ScribaError where
   mempty = ErrorNil
 
 -- | Throw an @Expecting@ error.
+
+-- TODO: should be pExpectsGotAt? Same with expectGotAt and the rest
 expectsGotAt :: MonadError ScribaError m => [Text] -> SourcePos -> Text -> m a
 expectsGotAt es sp t =
   throwError $ Expecting (toExpectations es) (Just (sp, t))
@@ -546,6 +556,20 @@ pSpace = do
       if T.null t' then pSpace else S.put (NodeText sp t' : ns')
     _ -> pure ()
 
+-- | Consumes whitespace up to the first element or end of
+-- input. Throws an error if a text element with a non-whitespace
+-- character in it is encountered.
+pOnlySpace :: Scriba [Node] ()
+pOnlySpace = do
+  ns <- get
+  case ns of
+    NodeText sp t : _ -> do
+      let t' = T.dropWhile isSpace t
+      if T.null t'
+        then pOnlySpace
+        else expectsGotAt ["element", "whitespace"] sp "text"
+    _ -> pure ()
+
 
 -- * Element parsers
 
@@ -554,7 +578,7 @@ pSpace = do
 pBlock :: Scriba Node Block
 pBlock =
   asNode
-    $   FormalBlockBlock
+    $   FormalBlock
     <$> pFormalBlock
     <|> ParBlock
     <$> pParagraph
@@ -577,7 +601,7 @@ pBlock =
 -- ... invocation, with the choice inside. That didn't work, because
 -- the manyOf can always succeed. Maybe I can preserve the behaviour
 -- by having the first one be a someOf?
-pFormalBlock :: Scriba Element FormalBlock
+pFormalBlock :: Scriba Element Formal
 pFormalBlock = do
   matchTy "formalBlock"
   whileParsingElem "formalBlock" $ do
@@ -588,10 +612,10 @@ pFormalBlock = do
       pure (mty, title, concl)
     body <- allContent (manyOf pBlock)
       <|> allContent ((: []) . ParBlock . Paragraph <$> manyOf pParContent)
-    pure $ FormalBlock (T.concat <$> mty)
-                       (fromMaybe [] title)
-                       body
-                       (fromMaybe [] concl)
+    pure $ Formal (T.concat <$> mty)
+                  (fromMaybe [] title)
+                  body
+                  (fromMaybe [] concl)
 
 -- TODO: no language attributes recognized. This is also a problem
 -- with the code inline.
@@ -669,8 +693,8 @@ pFormula = do
 pGathered :: Scriba Element Inline
 pGathered = do
   matchTy "gathered"
-  c <- whileParsingElem "gathered" $ allContent $ pSpace *> many
-    (one pLine <* pSpace)
+  c <- whileParsingElem "gathered" $ allContent $ pOnlySpace *> many
+    (one pLine <* pOnlySpace)
   pure $ DisplayMath $ Gathered c
  where
   pLine = asNode $ do
