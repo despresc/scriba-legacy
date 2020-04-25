@@ -99,9 +99,9 @@ shown in the following code sample:
     An {emph|interesting} proposition.
   `}
 
-  &{olist&
-  &{li|First item}
-  &{li|Second item}
+  &{olist|
+  {item|First item}
+  {item|Second item}
   }
 `}
 
@@ -135,3 +135,31 @@ is handled with MathJax.
 
 ## {title|The overall document structure}
 
+Will contain a description of documents as a whole.
+
+# {title|Element reference}
+
+{% TODO:
+
+- Might be nice to have a precis here, once we have those.
+
+- Should this entries be definition lists? Not sure exactly how to
+  represent a data sheet.
+
+- Should have examples, indicate how everything will get processed and
+  rendered, and indicate the permitted locations of elements.
+
+%}
+
+## {title|olist}
+
+The {code|olist} block element represents an ordered list. It contains
+a whitespace-separated list of {code|item} elements.
+
+An example:
+
+&{olist|
+{item|First element}
+{item|Second element}
+{item|Third element}
+}

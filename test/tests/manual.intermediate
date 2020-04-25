@@ -1311,7 +1311,7 @@ NodeElem
                                             , sourceLine = Pos 97
                                             , sourceColumn = Pos 31
                                             }
-                                          "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist&\n  &{li|First item}\n  &{li|Second item}\n  }"
+                                          "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist|\n  {item|First item}\n  {item|Second item}\n  }"
                                       ]
                                   }
                             , NodeElem
@@ -1784,7 +1784,369 @@ NodeElem
                                     ]
                               , metaArgs = []
                               }
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 138
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 138
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Will contain a description of documents as a whole."
+                                      ]
+                                  }
+                            ]
+                        }
+                  ]
+              }
+        , NodeElem
+            Element
+              { eType = Nothing
+              , eMeta =
+                  Meta
+                    { loc =
+                        SourcePos
+                          { sourceName = "manual.scb"
+                          , sourceLine = Pos 140
+                          , sourceColumn = Pos 1
+                          }
+                    , sourcePres = AsSection 1
+                    , metaAttrs =
+                        fromList
+                          [ ( "title"
+                            , ( Meta
+                                  { loc =
+                                      SourcePos
+                                        { sourceName = "manual.scb"
+                                        , sourceLine = Pos 140
+                                        , sourceColumn = Pos 3
+                                        }
+                                  , sourcePres = AsInline
+                                  , metaAttrs = fromList []
+                                  , metaArgs = []
+                                  }
+                              , [ NodeText
+                                    SourcePos
+                                      { sourceName = "manual.scb"
+                                      , sourceLine = Pos 140
+                                      , sourceColumn = Pos 10
+                                      }
+                                    "Element reference"
+                                ]
+                              )
+                            )
+                          ]
+                    , metaArgs = []
+                    }
+              , eBody =
+                  [ NodeElem
+                      Element
+                        { eType = Just "p"
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.scb"
+                                    , sourceLine = Pos 142
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsPara
+                              , metaAttrs = fromList []
+                              , metaArgs = []
+                              }
                         , eBody = []
+                        }
+                  , NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "manual.scb"
+                                    , sourceLine = Pos 154
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsSection 2
+                              , metaAttrs =
+                                  fromList
+                                    [ ( "title"
+                                      , ( Meta
+                                            { loc =
+                                                SourcePos
+                                                  { sourceName = "manual.scb"
+                                                  , sourceLine = Pos 154
+                                                  , sourceColumn = Pos 4
+                                                  }
+                                            , sourcePres = AsInline
+                                            , metaAttrs = fromList []
+                                            , metaArgs = []
+                                            }
+                                        , [ NodeText
+                                              SourcePos
+                                                { sourceName = "manual.scb"
+                                                , sourceLine = Pos 154
+                                                , sourceColumn = Pos 11
+                                                }
+                                              "olist"
+                                          ]
+                                        )
+                                      )
+                                    ]
+                              , metaArgs = []
+                              }
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 156
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 156
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "The "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 156
+                                                        , sourceColumn = Pos 5
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 156
+                                                      , sourceColumn = Pos 11
+                                                      }
+                                                    "olist"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 156
+                                            , sourceColumn = Pos 17
+                                            }
+                                          " block element represents an ordered list. It contains\na whitespace-separated list of "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "code"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 157
+                                                        , sourceColumn = Pos 32
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 157
+                                                      , sourceColumn = Pos 38
+                                                      }
+                                                    "item"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 157
+                                            , sourceColumn = Pos 43
+                                            }
+                                          " elements."
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "p"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 159
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 159
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "An example:"
+                                      ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Just "olist"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "manual.scb"
+                                              , sourceLine = Pos 161
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsBlock
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 161
+                                            , sourceColumn = Pos 9
+                                            }
+                                          "\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "item"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 162
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 162
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "First element"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 162
+                                            , sourceColumn = Pos 21
+                                            }
+                                          "\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "item"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 163
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 163
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "Second element"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 163
+                                            , sourceColumn = Pos 22
+                                            }
+                                          "\n"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "item"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "manual.scb"
+                                                        , sourceLine = Pos 164
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "manual.scb"
+                                                      , sourceLine = Pos 164
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "Third element"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "manual.scb"
+                                            , sourceLine = Pos 164
+                                            , sourceColumn = Pos 21
+                                            }
+                                          "\n"
+                                      ]
+                                  }
+                            ]
                         }
                   ]
               }

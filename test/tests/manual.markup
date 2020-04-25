@@ -158,7 +158,7 @@ Doc
                                                   "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:")
                                            ])
                                     , CodeBlock
-                                        "&{codeBlock {language|scriba} `\n  An {emph|interesting} proposition.\n`}\n\n&{olist&\n&{li|First item}\n&{li|Second item}\n}"
+                                        "&{codeBlock {language|scriba} `\n  An {emph|interesting} proposition.\n`}\n\n&{olist|\n{item|First item}\n{item|Second item}\n}"
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
@@ -225,7 +225,58 @@ Doc
                           { secTitle =
                               Title { titleBody = [ Str "The overall document structure" ] }
                           , secContent =
-                              SectionContent { secPreamble = [] , secChildren = [] }
+                              SectionContent
+                                { secPreamble =
+                                    [ ParBlock
+                                        (Paragraph
+                                           [ ParInline
+                                               (Str
+                                                  "Will contain a description of documents as a whole.")
+                                           ])
+                                    ]
+                                , secChildren = []
+                                }
+                          }
+                      ]
+                  }
+            }
+        , Section
+            { secTitle = Title { titleBody = [ Str "Element reference" ] }
+            , secContent =
+                SectionContent
+                  { secPreamble = [ ParBlock (Paragraph []) ]
+                  , secChildren =
+                      [ Section
+                          { secTitle = Title { titleBody = [ Str "olist" ] }
+                          , secContent =
+                              SectionContent
+                                { secPreamble =
+                                    [ ParBlock
+                                        (Paragraph
+                                           [ ParInline (Str "The ")
+                                           , ParInline (Code "olist")
+                                           , ParInline
+                                               (Str
+                                                  " block element represents an ordered list. It contains\na whitespace-separated list of ")
+                                           , ParInline (Code "item")
+                                           , ParInline (Str " elements.")
+                                           ])
+                                    , ParBlock (Paragraph [ ParInline (Str "An example:") ])
+                                    , ListBlock
+                                        (Olist
+                                           [ [ ParBlock
+                                                 (Paragraph [ ParInline (Str "First element") ])
+                                             ]
+                                           , [ ParBlock
+                                                 (Paragraph [ ParInline (Str "Second element") ])
+                                             ]
+                                           , [ ParBlock
+                                                 (Paragraph [ ParInline (Str "Third element") ])
+                                             ]
+                                           ])
+                                    ]
+                                , secChildren = []
+                                }
                           }
                       ]
                   }

@@ -37,7 +37,6 @@ import           Text.Megaparsec                ( SourcePos
                                                 )
 import qualified Text.Megaparsec               as MP
 
-
 {- TODO:
 
 - Actually finish this
@@ -50,7 +49,8 @@ import qualified Text.Megaparsec               as MP
 - Clarify whitespace policy. Right now none of the parsers allow
   whitespace around elements when recognizing them. This is fine when
   the output comes from a parsed sml document, but maybe we don't want
-  to rely on that.
+  to rely on that. That also means that elements with unusual
+  presentations might not be parsed correctly.
 
 - Page mark (physPage) might need to be some kind of locator term, or
   at least some kind of parsed value (to support, e.g., linking to
@@ -553,23 +553,25 @@ pSpace = do
   case ns of
     NodeText sp t : ns' -> do
       let t' = T.dropWhile isSpace t
-      if T.null t' then pSpace else S.put (NodeText sp t' : ns')
+      if T.null t' then S.put ns' >> pSpace else S.put (NodeText sp t' : ns')
     _ -> pure ()
 
 -- | Consumes whitespace up to the first element or end of
 -- input. Throws an error if a text element with a non-whitespace
 -- character in it is encountered.
+
+-- TODO: some kind of whitespace-separated list combinator? Scriba
+-- Node a -> Scriba [Node] a, essentially.
 pOnlySpace :: Scriba [Node] ()
 pOnlySpace = do
   ns <- get
   case ns of
-    NodeText sp t : _ -> do
+    NodeText sp t : ns' -> do
       let t' = T.dropWhile isSpace t
       if T.null t'
-        then pOnlySpace
+        then S.put ns' >> pOnlySpace
         else expectsGotAt ["element", "whitespace"] sp "text"
     _ -> pure ()
-
 
 -- * Element parsers
 
@@ -579,10 +581,12 @@ pBlock :: Scriba Node Block
 pBlock =
   asNode
     $   FormalBlock
-    <$> pFormalBlock
+    <$> pFormal
     <|> ParBlock
     <$> pParagraph
     <|> pCodeBlock
+    <|> ListBlock
+    <$> pList
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap
@@ -601,8 +605,8 @@ pBlock =
 -- ... invocation, with the choice inside. That didn't work, because
 -- the manyOf can always succeed. Maybe I can preserve the behaviour
 -- by having the first one be a someOf?
-pFormalBlock :: Scriba Element Formal
-pFormalBlock = do
+pFormal :: Scriba Element Formal
+pFormal = do
   matchTy "formalBlock"
   whileParsingElem "formalBlock" $ do
     (mty, title, concl) <- meta $ attrs $ do
@@ -624,6 +628,36 @@ pCodeBlock = do
   matchTy "codeBlock"
   t <- whileParsingElem "codeBlock" $ allContentOf simpleText
   pure $ CodeBlock $ commonIndentStrip $ T.concat t
+
+pList :: Scriba Element List
+pList = pOlist <|> pUlist
+
+pOlist :: Scriba Element List
+pOlist = do
+  matchTy "olist"
+  content $ pOnlySpace
+  fmap Olist $ whileParsingElem "olist" $ allContent $ many
+    (one pListItem <* pOnlySpace)
+
+pUlist :: Scriba Element List
+pUlist = do
+  matchTy "ulist"
+  content $ pOnlySpace
+  fmap Ulist $ whileParsingElem "ulist" $ allContent $ many
+    (one pListItem <* pOnlySpace)
+
+-- TODO: using the same embed-in-paragraph hack here.
+pListItem :: Scriba Node [Block]
+pListItem = asNode pItem
+ where
+  inPara = (: []) . ParBlock . Paragraph
+  pItem  = do
+    matchTy "item"
+    whileParsingElem "item"
+      $   allContentOf pBlock
+      <|> inPara
+      <$> allContentOf pParContent
+
 
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
@@ -728,9 +762,15 @@ pSection = do
       _           -> empty
 
 -- implicitly parses the whole block content
--- Note that we're getting bitten here by not being able to
--- distinguish between failure with consumption and failure without! I
--- think.
+
+-- The errors are better, but if we, e.g., have an unrecognized block,
+-- then the manyOf fails, and we get an "expecting one of: section",
+-- intead of also listing the blocks that we could have. Perhaps we
+-- should instead have a more restrictive parser type?
+-- (optparse-applicative being an example of that sort of thing) We'd
+-- want better expectation setting and propagation, certainly. Maybe
+-- also some conveniences like traversing a parser to get a text
+-- description of the node structure that it recognizes.
 pSectionContent :: Scriba [Node] SectionContent
 pSectionContent = do
   pre  <- manyOf $ pBlock

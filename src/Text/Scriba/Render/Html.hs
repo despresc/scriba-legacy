@@ -95,7 +95,6 @@ renderStandalone d@(Doc dm _ _ _) = do
         $ ""
     H.body d'
 
-
 -- TODO: selectively render empty sections?
 -- TODO: Should the title be a Maybe?
 renderDoc :: Doc -> Render Html

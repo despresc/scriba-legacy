@@ -1098,7 +1098,7 @@ Doc
                    , sourceLine = Pos 97
                    , sourceColumn = Pos 31
                    }
-                 "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist&\n  &{li|First item}\n  &{li|Second item}\n  }"
+                 "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist|\n  {item|First item}\n  {item|Second item}\n  }"
            })
   , SecBlock
       (BlockPar
@@ -1489,4 +1489,300 @@ Doc
                  ]
            }
          [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 138
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 138
+               , sourceColumn = Pos 1
+               }
+             "Will contain a description of documents as a whole."
+         ])
+  , SecHeaderNode
+      (SecHeader
+         1
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 140
+           , sourceColumn = Pos 1
+           }
+         Nothing
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "title"
+                   , ( SourcePos
+                         { sourceName = "manual.scb"
+                         , sourceLine = Pos 140
+                         , sourceColumn = Pos 3
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 140
+                               , sourceColumn = Pos 10
+                               }
+                             "Element reference"
+                         ]
+                     )
+                   )
+                 ]
+           }
+         [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 142
+           , sourceColumn = Pos 1
+           }
+         [ InlineComment
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 142
+               , sourceColumn = Pos 1
+               }
+             " TODO:\n\n- Might be nice to have a precis here, once we have those.\n\n- Should this entries be definition lists? Not sure exactly how to\n  represent a data sheet.\n\n- Should have examples, indicate how everything will get processed and\n  rendered, and indicate the permitted locations of elements.\n\n"
+         ])
+  , SecHeaderNode
+      (SecHeader
+         2
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 154
+           , sourceColumn = Pos 1
+           }
+         Nothing
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "title"
+                   , ( SourcePos
+                         { sourceName = "manual.scb"
+                         , sourceLine = Pos 154
+                         , sourceColumn = Pos 4
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 154
+                               , sourceColumn = Pos 11
+                               }
+                             "olist"
+                         ]
+                     )
+                   )
+                 ]
+           }
+         [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 156
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 156
+               , sourceColumn = Pos 1
+               }
+             "The "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 156
+                     , sourceColumn = Pos 5
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.scb"
+                           , sourceLine = Pos 156
+                           , sourceColumn = Pos 11
+                           }
+                         "olist"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 156
+               , sourceColumn = Pos 17
+               }
+             " block element represents an ordered list. It contains\na whitespace-separated list of "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "manual.scb"
+                     , sourceLine = Pos 157
+                     , sourceColumn = Pos 32
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "manual.scb"
+                           , sourceLine = Pos 157
+                           , sourceColumn = Pos 38
+                           }
+                         "item"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 157
+               , sourceColumn = Pos 43
+               }
+             " elements."
+         ])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "manual.scb"
+           , sourceLine = Pos 159
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "manual.scb"
+               , sourceLine = Pos 159
+               , sourceColumn = Pos 1
+               }
+             "An example:"
+         ])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "manual.scb"
+                 , sourceLine = Pos 161
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "olist"
+           , attrs = Attrs { getAttrs = fromList [] }
+           , args = []
+           , content =
+               BlockInlines
+                 [ InlineText
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 161
+                       , sourceColumn = Pos 9
+                       }
+                     "\n"
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "manual.scb"
+                             , sourceLine = Pos 162
+                             , sourceColumn = Pos 1
+                             }
+                       , etype = Just "item"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "manual.scb"
+                                   , sourceLine = Pos 162
+                                   , sourceColumn = Pos 7
+                                   }
+                                 "First element"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 162
+                       , sourceColumn = Pos 21
+                       }
+                     "\n"
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "manual.scb"
+                             , sourceLine = Pos 163
+                             , sourceColumn = Pos 1
+                             }
+                       , etype = Just "item"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "manual.scb"
+                                   , sourceLine = Pos 163
+                                   , sourceColumn = Pos 7
+                                   }
+                                 "Second element"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 163
+                       , sourceColumn = Pos 22
+                       }
+                     "\n"
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "manual.scb"
+                             , sourceLine = Pos 164
+                             , sourceColumn = Pos 1
+                             }
+                       , etype = Just "item"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "manual.scb"
+                                   , sourceLine = Pos 164
+                                   , sourceColumn = Pos 7
+                                   }
+                                 "Third element"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 164
+                       , sourceColumn = Pos 21
+                       }
+                     "\n"
+                 ]
+           })
   ]
