@@ -629,11 +629,15 @@ pCodeBlock = do
   t <- whileParsingElem "codeBlock" $ allContentOf simpleText
   pure $ CodeBlock $ commonIndentStrip $ T.concat t
 
--- In lists, if I use custom CSS styles for list items, then have ref
--- elements be aware of the style that is used for rendering the
--- number, I might not have to set the list markers manually. I will
--- still need to number list items manually so that I can set the
--- "start" attribute and get the correct list number in refs.
+-- TODO: For lists, and numbered things generally, we should assume a
+-- default numbering style, so that references to numbered list items
+-- can still be rendered visually in HTML. Alternate styles could
+-- still be set, but this would have to be done in-document, and it
+-- would be the responsibility of the user (if not using whatever
+-- standalone rendering we support) to ensure that the CSS matches
+-- what the document assumes. We could still ship with CSS styles for
+-- the numbers, and simply put different classes on the rendered
+-- lists, of course.
 pList :: Scriba Element List
 pList = pOlist <|> pUlist
 
