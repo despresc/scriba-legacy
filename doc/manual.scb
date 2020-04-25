@@ -149,6 +149,9 @@ Will contain a description of documents as a whole.
 - Should have examples, indicate how everything will get processed and
   rendered, and indicate the permitted locations of elements.
 
+- The examples should be in a figure block. Possibly a two-part block,
+  with the code and the rendered output.
+
 %}
 
 ## {title|olist}

@@ -1551,14 +1551,14 @@ Doc
                , sourceLine = Pos 142
                , sourceColumn = Pos 1
                }
-             " TODO:\n\n- Might be nice to have a precis here, once we have those.\n\n- Should this entries be definition lists? Not sure exactly how to\n  represent a data sheet.\n\n- Should have examples, indicate how everything will get processed and\n  rendered, and indicate the permitted locations of elements.\n\n"
+             " TODO:\n\n- Might be nice to have a precis here, once we have those.\n\n- Should this entries be definition lists? Not sure exactly how to\n  represent a data sheet.\n\n- Should have examples, indicate how everything will get processed and\n  rendered, and indicate the permitted locations of elements.\n\n- The examples should be in a figure block. Possibly a two-part block,\n  with the code and the rendered output.\n\n"
          ])
   , SecHeaderNode
       (SecHeader
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 154
+           , sourceLine = Pos 157
            , sourceColumn = Pos 1
            }
          Nothing
@@ -1568,7 +1568,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 154
+                         , sourceLine = Pos 157
                          , sourceColumn = Pos 4
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -1577,7 +1577,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 154
+                               , sourceLine = Pos 157
                                , sourceColumn = Pos 11
                                }
                              "olist"
@@ -1591,13 +1591,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 156
+           , sourceLine = Pos 159
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 156
+               , sourceLine = Pos 159
                , sourceColumn = Pos 1
                }
              "The "
@@ -1606,7 +1606,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 156
+                     , sourceLine = Pos 159
                      , sourceColumn = Pos 5
                      }
                , etype = Just "code"
@@ -1617,7 +1617,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 156
+                           , sourceLine = Pos 159
                            , sourceColumn = Pos 11
                            }
                          "olist"
@@ -1626,7 +1626,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 156
+               , sourceLine = Pos 159
                , sourceColumn = Pos 17
                }
              " block element represents an ordered list. It contains\na whitespace-separated list of "
@@ -1635,7 +1635,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 157
+                     , sourceLine = Pos 160
                      , sourceColumn = Pos 32
                      }
                , etype = Just "code"
@@ -1646,7 +1646,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 157
+                           , sourceLine = Pos 160
                            , sourceColumn = Pos 38
                            }
                          "item"
@@ -1655,7 +1655,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 157
+               , sourceLine = Pos 160
                , sourceColumn = Pos 43
                }
              " elements."
@@ -1664,13 +1664,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 159
+           , sourceLine = Pos 162
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 159
+               , sourceLine = Pos 162
                , sourceColumn = Pos 1
                }
              "An example:"
@@ -1681,7 +1681,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 161
+                 , sourceLine = Pos 164
                  , sourceColumn = Pos 1
                  }
            , etype = Just "olist"
@@ -1692,7 +1692,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 161
+                       , sourceLine = Pos 164
                        , sourceColumn = Pos 9
                        }
                      "\n"
@@ -1701,7 +1701,7 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "manual.scb"
-                             , sourceLine = Pos 162
+                             , sourceLine = Pos 165
                              , sourceColumn = Pos 1
                              }
                        , etype = Just "item"
@@ -1712,7 +1712,7 @@ Doc
                              [ InlineText
                                  SourcePos
                                    { sourceName = "manual.scb"
-                                   , sourceLine = Pos 162
+                                   , sourceLine = Pos 165
                                    , sourceColumn = Pos 7
                                    }
                                  "First element"
@@ -1721,7 +1721,7 @@ Doc
                  , InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 162
+                       , sourceLine = Pos 165
                        , sourceColumn = Pos 21
                        }
                      "\n"
@@ -1730,7 +1730,7 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "manual.scb"
-                             , sourceLine = Pos 163
+                             , sourceLine = Pos 166
                              , sourceColumn = Pos 1
                              }
                        , etype = Just "item"
@@ -1741,7 +1741,7 @@ Doc
                              [ InlineText
                                  SourcePos
                                    { sourceName = "manual.scb"
-                                   , sourceLine = Pos 163
+                                   , sourceLine = Pos 166
                                    , sourceColumn = Pos 7
                                    }
                                  "Second element"
@@ -1750,7 +1750,7 @@ Doc
                  , InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 163
+                       , sourceLine = Pos 166
                        , sourceColumn = Pos 22
                        }
                      "\n"
@@ -1759,7 +1759,7 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "manual.scb"
-                             , sourceLine = Pos 164
+                             , sourceLine = Pos 167
                              , sourceColumn = Pos 1
                              }
                        , etype = Just "item"
@@ -1770,7 +1770,7 @@ Doc
                              [ InlineText
                                  SourcePos
                                    { sourceName = "manual.scb"
-                                   , sourceLine = Pos 164
+                                   , sourceLine = Pos 167
                                    , sourceColumn = Pos 7
                                    }
                                  "Third element"
@@ -1779,7 +1779,7 @@ Doc
                  , InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 164
+                       , sourceLine = Pos 167
                        , sourceColumn = Pos 21
                        }
                      "\n"
