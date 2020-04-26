@@ -133,7 +133,7 @@ renderSections = foldBy renderSection
 
 renderBlock :: Block -> Render Html
 renderBlock (FormalBlock fb) = renderFormalBlock fb
-renderBlock (CodeBlock   t ) = pure $ H.pre $ H.code $ H.toHtml t
+renderBlock (CodeBlock   t ) = pure $ H.div ! A.class_ "codeBlock" $ H.pre $ H.code $ H.toHtml t
 renderBlock (ParBlock    p ) = renderParagraph p
 renderBlock (ListBlock   b ) = renderList b
 

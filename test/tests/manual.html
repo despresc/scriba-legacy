@@ -8,7 +8,7 @@ well for new publications.</p><section><h2>An introduction to the language</h2><
 normal text and marked-up content representing a single idea in your
 writing. A paragraph in scriba is a type of <em>block</em>, and contains
 <em>paragraph text</em> and <em>elements</em>. Two sample paragraphs are
-given below:</p><pre><code>There was nothing so very remarkable in that; nor did Alice think
+given below:</p><div class="codeBlock"><pre><code>There was nothing so very remarkable in that; nor did Alice think
 it so very much out of the way to hear the Rabbit say to itself,
 {q|Oh dear! Oh dear! I shall be late!} (when she thought it over
 afterwards, it occurred to her that she ought to have wondered at
@@ -22,7 +22,7 @@ and fortunately was just in time to see it pop down a large
 rabbit-hole under the hedge.
 
 In another moment down went Alice after it, never once considering
-how in the world she was to get out again.</code></pre><p>Plain paragraph text is any span of unicode characters other than
+how in the world she was to get out again.</code></pre></div><p>Plain paragraph text is any span of unicode characters other than
 <code>\</code>, <code>{</code>, or <code>}</code>, with the additional restriction
 that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
@@ -36,11 +36,11 @@ and likely to be rendered between quotation marks, and an <code>emph</code>
 element, representing emphasized text and likely to be rendered in
 italic type.</p></div></section><section><h3>Sections</h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
 representing self-contained units of discussion. These have types,
-titles, and a body of blocks and subsections. Sections look like this:</p><pre><code># {title|An introduction to the language}
+titles, and a body of blocks and subsections. Sections look like this:</p><div class="codeBlock"><pre><code># {title|An introduction to the language}
 
 ## {title|Paragraphs}
 
-The bulk of your document …</code></pre><p>The first component of a section is its <em>header</em>. The section
+The bulk of your document …</code></pre></div><p>The first component of a section is its <em>header</em>. The section
 header starts with <code># sectionType</code>, the number of consecutive
 <code>#</code> becoming the overall <em>level</em> of the section. The
 section content begins after the attributes of the section and at
@@ -58,14 +58,14 @@ attributes of sections can be listed on multiple consecutive lines, as
 long as no blank line occurs between them.</p></div></section><section><h3>Blocks</h3><div class="sectionContent"><p>The other type of syntactic form in scriba is the <em>block</em>
 element. Blocks group their content and give it extra meaning, and can
 appear wherever paragraphs or section headers can. Some blocks are
-shown in the following code sample:</p><pre><code>&amp;{codeBlock {language|scriba} `
+shown in the following code sample:</p><div class="codeBlock"><pre><code>&amp;{codeBlock {language|scriba} `
   An {emph|interesting} proposition.
 `}
 
 &amp;{olist|
 {item|First item}
 {item|Second item}
-}</code></pre><p>Blocks are written like inline elements, complete with attributes and
+}</code></pre></div><p>Blocks are written like inline elements, complete with attributes and
 arguments, except they are preceded by a <code>&amp;</code>. They differ from
 inline elements in their content: blocks have <em>verbatim</em>,
 <em>block</em>, and <em>inline</em> content. Verbatim content is signalled
@@ -90,13 +90,13 @@ is handled with MathJax. Be aware that amsmath-style environments like
 <code>gathered</code> or <code>alignedat</code> should not be used inside
 <code>math</code> or <code>dmath</code> elements themselves. Scriba itself
 implements some of these environments as elements, so that they can
-interact with its built-in numbering and referencing capabilities.</p><p>The examples of formulas above were entered into the source like so:</p><pre><code>Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
+interact with its built-in numbering and referencing capabilities.</p><p>The examples of formulas above were entered into the source like so:</p><div class="codeBlock"><pre><code>Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
 {dmath`
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}&#39;}{r&#39;^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}&#39;}{r&#39;^2}
 `}
-are available, among …</code></pre><p>Since TeX syntax is heavily reliant on braces and backlashes, it will
+are available, among …</code></pre></div><p>Since TeX syntax is heavily reliant on braces and backlashes, it will
 often be necessary for you to escape them in some way when entering
 math in that notation. In the inline example math example above, an
 <em>inline verbatim body</em> was used for this purpose. Like block

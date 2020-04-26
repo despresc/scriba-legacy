@@ -1,3 +1,34 @@
+body {
+    max-width: 1058px;
+    margin-top: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+p {
+    text-indent: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+section.scribaDoc {
+    margin-left: 58px;
+    width: 70%;
+}
+
+.codeBlock {
+    margin-left: auto;
+    margin-right: auto;
+    width: 36em;
+}
+
+code {
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+}
+
 .formalBlock > .title > .titleNote::before {
     content: "(";
 }
