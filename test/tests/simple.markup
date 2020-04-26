@@ -1,6 +1,9 @@
 Doc
   DocAttrs
-    { docTitle = Title { titleBody = [] } , docPlainTitle = "" }
+    { docTitle = Title { titleBody = [] }
+    , docPlainTitle = ""
+    , docFormalConfig = fromList []
+    }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
     { secPreamble =
@@ -24,7 +27,9 @@ Doc
         , FormalBlock
             Formal
               { fType = Just "theorem"
-              , fTitle = [ Str "Theorem 5 (an interesting one)" ]
+              , fNum = Nothing
+              , fTitle = Just [ Str "Theorem 5 (an interesting one)" ]
+              , fNote = Nothing
               , fContent =
                   [ ParBlock
                       (Paragraph

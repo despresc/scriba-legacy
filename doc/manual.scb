@@ -1,6 +1,13 @@
 {scriba
   {title|The scriba markup language and document system}
-  {type|article}}
+  {type|article}
+  {formalBlocks
+    {theorem
+      {prefix|Theorem}
+      {title|{$theorem.titlePrefix} {$theorem.n} {$theorem.titleNote}}
+    }
+  }
+}
 
 {% TODO:
 
@@ -287,7 +294,8 @@ An example:
 
 &{formalBlock
    {type|theorem}
-   {title|Theorem 4.2 (an interesting one)}
+   {titleNote|an interesting one}
+   {n|4.2}
 |The statement of some theorem of interest.
 }
 

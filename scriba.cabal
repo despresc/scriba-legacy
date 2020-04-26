@@ -29,6 +29,7 @@ library
     Text.Scriba.Intermediate
     Text.Scriba.Markup
     Text.Scriba.Parse
+    Text.Scriba.Decorate
     Text.Scriba.Render.Html
 
 test-suite scriba-test

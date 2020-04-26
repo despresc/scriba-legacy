@@ -13,6 +13,7 @@ import           Control.Monad.State            ( MonadState(..)
                                                 , modify
                                                 , gets
                                                 )
+import           Data.Maybe                     ( fromMaybe )
 import           Data.Foldable                  ( foldl' )
 import qualified Data.Text                     as T
 import           Text.Blaze.Html5               ( Html
@@ -81,6 +82,8 @@ bumpHeaderDepth act = do
 -- TODO: for standalone rendering we should probably put the title of
 -- the document in the header.
 -- TODO: add configurability, especially re: the math.
+-- TODO: have a header include option for documents. Hard-coding a
+-- style path for the manual is obviously poor.
 renderStandalone :: Doc -> Render Html
 renderStandalone d@(Doc dm _ _ _) = do
   d' <- renderDoc d
@@ -93,6 +96,7 @@ renderStandalone d@(Doc dm _ _ _) = do
         ! A.async ""
         ! A.src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
         $ ""
+      H.link ! A.href "../../doc/manual.css" ! A.rel "stylesheet"
     H.body d'
 
 -- TODO: selectively render empty sections?
@@ -134,13 +138,15 @@ renderBlock (ParBlock    p ) = renderParagraph p
 renderBlock (ListBlock   b ) = renderList b
 
 -- TODO: add the type as a data-scribaType? Though we might want that
--- to equal formalBlock here.
+-- to equal formalBlock here. Might want to record the number as well.
+-- TODO: Should the title be "formalTitle"?
 renderFormalBlock :: Formal -> Render Html
-renderFormalBlock (Formal _ title body concl) = do
-  title' <- renderInlines title
+renderFormalBlock (Formal mty _ mtitle _ body concl) = do
+  title' <- renderInlines $ fromMaybe [] mtitle
   body'  <- renderBlocks body
   concl' <- renderInlines concl
-  pure $ H.div ! A.class_ "formalBlock" $ do
+  let cls = "formalBlock" <> maybe "" (" " <>) mty
+  pure $ H.div ! A.class_ (H.toValue cls) $ do
     H.span ! A.class_ "title" $ title'
     H.div ! A.class_ "body" $ body'
     H.span ! A.class_ "conclusion" $ concl'
@@ -174,6 +180,10 @@ renderInline (DisplayMath d) = do
   pure $ H.span ! A.class_ "math display" $ "\\[" <> d' <> "\\]"
 renderInline (Code     t) = pure $ H.code $ H.toHtml t
 renderInline (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
+renderInline (TitlePrefix i) =
+  H.span ! A.class_ "titlePrefix" <$> renderInlines i
+renderInline (Number    i) = H.span ! A.class_ "number" <$> renderInlines i
+renderInline (TitleNote i) = H.span ! A.class_ "titleNote" <$> renderInlines i
 
 -- TODO: assumes mathjax or katex
 renderDmath :: Dmath -> Render Html

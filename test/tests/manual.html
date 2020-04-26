@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html><head><title>The scriba markup language and document system</title><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script></head><body><section class="scribaDoc"><header><h1>The scriba markup language and document system</h1></header><section class="frontMatter"><div class="sectionContent"></div></section><section class="mainMatter"><div class="sectionContent"><p>Scriba is a plain text markup language emphasizing extensibility,
+<html><head><title>The scriba markup language and document system</title><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script><link href="../../doc/manual.css" rel="stylesheet"></head><body><section class="scribaDoc"><header><h1>The scriba markup language and document system</h1></header><section class="frontMatter"><div class="sectionContent"></div></section><section class="mainMatter"><div class="sectionContent"><p>Scriba is a plain text markup language emphasizing extensibility,
 clarity, and ease of use. It is also a compiler, taking source scriba
 documents and rendering them to multi-page HTML, EPUB, and TeX. The
 format includes flexible markup constructs designed to represent a
@@ -112,6 +112,6 @@ inline example above could equally well have been written
 document, with optional <code>title</code>, <code>conclusion</code>, and
 <code>type</code> attributes. It can contain block or inline content. It can
 be used to represent theorems, propositions, exercises, proofs, and
-other amsthm-style elements.</p><p>An example:</p><div class="formalBlock"><span class="title">Theorem 4.2 (an interesting one)</span><div class="body"><p>The statement of some theorem of interest.
+other amsthm-style elements.</p><p>An example:</p><div class="formalBlock theorem"><span class="title"><span class="titlePrefix">Theorem</span> <span class="number">4.2</span> <span class="titleNote">an interesting one</span></span><div class="body"><p>The statement of some theorem of interest.
 </p></div><span class="conclusion"></span></div></div></section><section><h3>olist</h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
 a whitespace-separated list of <code>item</code> elements.</p><p>An example:</p><ol><li><p>First element</p></li><li><p>Second element</p></li><li><p>Third element</p></li></ol></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

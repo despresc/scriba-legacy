@@ -276,8 +276,11 @@ pBlockVerbText indentLvl = pVerbText <* "\n" <* MP.takeWhileP Nothing (== ' ')
 
 -- | An element type is a sequence of alphanumeric characters. This
 -- may be changed in future. Not lexemic.
+
+-- TODO: improve
 pElemTy :: Parser Text
-pElemTy = MP.takeWhile1P Nothing isAlphaNum <?> "element type"
+pElemTy = MP.takeWhile1P Nothing isTyChar <?> "element type"
+  where isTyChar x = isAlphaNum x || x == '_' || x == '.' || x == '$'
 
 -- | Parses a literal @\@@, the start of the arguments of an
 -- element. Not lexemic.

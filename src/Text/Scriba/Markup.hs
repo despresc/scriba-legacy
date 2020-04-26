@@ -26,6 +26,7 @@ import           Data.Functor.Compose           ( Compose(..) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
                                                 )
+import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
@@ -130,7 +131,16 @@ data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
 data DocAttrs = DocAttrs
   { docTitle :: Title
   , docPlainTitle :: Text
+  , docFormalConfig :: Map Text FormalConfig
   } deriving (Eq, Ord, Show, Read)
+
+data FormalConfig = FormalConfig
+  { fconfPrefix :: [Inline]
+  , fconfTitleTemplate :: [Varied]
+  } deriving (Eq, Ord, Show, Read)
+
+defaultFormalConfig :: FormalConfig
+defaultFormalConfig = FormalConfig [] []
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -173,10 +183,15 @@ data ParContent
 -- anyway.
 -- TODO: the fTitle _might_ be better as Title, but I'm not sure if a
 -- formalBlock title should be the same thing as a section title.
--- TODO: maybe there's a better name than Formal
+-- TODO: Maybe title should be a maybe...
+-- TODO: Might want the note to be exclusive with title? We could have
+-- Formal be polymorphic in its meta, then have the title be Either
+-- FullTitle Note, then decorate can turn that into a FullTitle
 data Formal = Formal
   { fType :: Maybe Text
-  , fTitle :: [Inline]
+  , fNum :: Maybe Text
+  , fTitle :: Maybe [Inline]
+  , fNote :: Maybe [Inline]
   , fContent :: [Block]
   , fConclusion :: [Inline]
   } deriving (Eq, Ord, Show, Read)
@@ -197,6 +212,13 @@ data List
   deriving (Eq, Ord, Show, Read)
 
 -- TODO: rename Math to InlineMath?
+-- TODO: introduce inline types for num, title, titleBody (rethink
+-- name), so that we can wrap generated title components in those
+-- things. We might want them to be forbidden in normal text
+-- statically, or to have parsers for them and allow them in normal text.
+-- TODO: Number is [Inline] because I'm lazy with runVaried. It should
+-- probably be Text, and might want to record the Int that produced
+-- that number, or maybe be a list of number parts?
 data Inline
   = Str Text
   | Emph [Inline]
@@ -205,6 +227,9 @@ data Inline
   | DisplayMath Dmath
   | Code Text
   | PageMark Text
+  | TitlePrefix [Inline]
+  | Number [Inline]
+  | TitleNote [Inline]
   deriving (Eq, Ord, Show, Read)
 
 data Dmath
@@ -429,6 +454,15 @@ attrs act = liftScriba $ \(Meta sp srcpres mat mar) -> do
   (mat', a) <- runScriba act mat
   pure (Meta sp srcpres mat' mar, a)
 
+-- TODO: doesn't update the input. Document?
+-- TODO: might want an element type with a Text type, not merely a Just Text.
+allAttrsOf :: Scriba Element a -> Scriba Attrs (Map Text a)
+allAttrsOf act = liftScriba $ \m -> do
+  m' <- M.traverseWithKey
+    (\k (met, b) -> fmap snd $ runScriba act $ Element (Just k) met b)
+    m
+  pure (m, m')
+
 -- TODO: little odd to be reconstituting an element here. Maybe an
 -- element body type? Also an infix combinator might be welcome.
 attr :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
@@ -534,6 +568,9 @@ stripMarkup = T.concat . concatMap inlineToText
   inlineToText (DisplayMath d ) = displayToText d
   inlineToText (Code        t ) = [t]
   inlineToText (PageMark    t ) = [t]
+  inlineToText (TitleNote   is) = concatMap inlineToText is
+  inlineToText (TitlePrefix is) = concatMap inlineToText is
+  inlineToText (Number      is) = concatMap inlineToText is
 
   displayToText (Formula  t ) = [t]
   displayToText (Gathered ts) = ts
@@ -561,7 +598,8 @@ pSpace = do
 -- character in it is encountered.
 
 -- TODO: some kind of whitespace-separated list combinator? Scriba
--- Node a -> Scriba [Node] a, essentially.
+-- Node a -> Scriba [Node] a, essentially. Or Scriba Element a ->
+-- Scriba [Node] a in this case.
 pOnlySpace :: Scriba [Node] ()
 pOnlySpace = do
   ns <- get
@@ -575,7 +613,93 @@ pOnlySpace = do
 
 -- * Element parsers
 
--- ** BlockParsing
+-- ** Document attribute parsing
+
+-- Content with variables and text in it, for use in formal
+-- config. Should probably have the internal representation be
+-- flexible enough to accommodate variables and things.
+data Varied
+  = VariedStr Text
+  | VariedSpace
+  | VariedNote
+  | VariedPrefix
+  | VariedNumber
+  deriving (Eq, Ord, Show, Read)
+
+pVariedSeq :: Text -> Scriba [Node] [Varied]
+pVariedSeq t = firstSpace . concat <$> manyOf (pVaried t)
+ where
+  firstSpace (VariedSpace : xs) = firstSpace xs
+  firstSpace xs                 = midSpace xs
+  midSpace (VariedSpace : VariedSpace : xs) = midSpace (VariedSpace : xs)
+  midSpace (VariedSpace : x           : xs) = VariedSpace : midSpace (x : xs)
+  midSpace [VariedSpace                   ] = []
+  midSpace (x : xs                        ) = x : midSpace xs
+  midSpace []                               = []
+
+pVaried :: Text -> Scriba Node [Varied]
+pVaried t = pVariedText <|> pVariedVar t
+
+pVariedText :: Scriba Node [Varied]
+pVariedText = explodeText <$> simpleText
+ where
+  explodeText = map toVaried . T.split isSpace
+  toVaried t | T.null t  = VariedSpace
+             | otherwise = VariedStr t
+
+-- TODO: improve error
+pVariedVar :: Text -> Scriba Node [Varied]
+pVariedVar t = asNode $ ty $ do
+  mty <- inspect
+  case mty of
+    Just typ -> case T.stripPrefix ("$" <> t <> ".") typ of
+      Just "titlePrefix" -> pure [VariedPrefix]
+      Just "titleNote"   -> pure [VariedNote]
+      Just "n"           -> pure [VariedNumber]
+      _                  -> throwError $ Msg "unrecognized variable"
+    _ -> throwError $ Msg "unrecognized variable"
+
+-- TODO: simply ignores undefined variables right now.
+-- TODO: use of Map seems a little wasteful at the moment.
+-- TODO: probably needs to wrap its components in spans!
+runVariedInline :: Map Text [Inline] -> [Varied] -> [Inline]
+runVariedInline m = concatMap unVary
+ where
+  msl con = maybe [] ((: []) . con)
+  unVary VariedSpace   = [Str " "]
+  unVary (VariedStr t) = [Str t]
+  unVary VariedPrefix  = msl TitlePrefix $ M.lookup "titlePrefix" m
+  unVary VariedNote    = msl TitleNote $ M.lookup "titleNote" m
+  unVary VariedNumber  = msl Number $ M.lookup "n" m
+
+-- TODO: write this. Will need to have options for how they are
+-- numbered, and how the title and conclusion are generated.
+-- TODO: should probably have "whileParsingAttr"
+-- TODO: put in checks on the possible {type} of formal blocks?
+-- TODO: better errors in some of the subparsers
+
+-- TODO: not entirely sure what to do here. I _think_ I want the title
+-- template to have variables and known blocks, but that will require
+-- my syntax tree to be a little more flexible.
+-- For now we just have variable parsing implemented here.
+
+-- TODO: I think we want to be able to give the components of the
+-- generated title different styles. E.g. have an
+-- optionalParenthetical style, or something like that, for the
+-- titleNote, so that CSS doesn't have to be touched too much.
+pFormalConfig :: Scriba Element (Map Text FormalConfig)
+pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
+  pFormalSpec
+ where
+  pFormalSpec = do
+    t <-
+      ty $ inspect >>= maybe (throwError $ Msg "a block type is required") pure
+    whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
+      pref          <- attr "prefix" $ allContentOf pInline
+      titleTemplate <- attr "title" $ allContent (pVariedSeq t)
+      pure $ FormalConfig (fromMaybe [] pref) (fromMaybe [] titleTemplate)
+
+-- ** Block Parsing
 
 pBlock :: Scriba Node Block
 pBlock =
@@ -609,15 +733,19 @@ pFormal :: Scriba Element Formal
 pFormal = do
   matchTy "formalBlock"
   whileParsingElem "formalBlock" $ do
-    (mty, title, concl) <- meta $ attrs $ do
-      mty   <- attr "type" $ allContentOf simpleText
-      title <- attr "title" $ allContentOf pInline
-      concl <- attr "conclusion" $ allContentOf pInline
-      pure (mty, title, concl)
+    (mty, mnumber, title, note, concl) <- meta $ attrs $ do
+      mty     <- attr "type" $ allContentOf simpleText
+      mnumber <- attr "n" $ allContentOf simpleText
+      title   <- attr "title" $ allContentOf pInline
+      note    <- attr "titleNote" $ allContentOf pInline
+      concl   <- attr "conclusion" $ allContentOf pInline
+      pure (mty, mnumber, title, note, concl)
     body <- allContent (manyOf pBlock)
       <|> allContent ((: []) . ParBlock . Paragraph <$> manyOf pParContent)
     pure $ Formal (T.concat <$> mty)
-                  (fromMaybe [] title)
+                  (T.concat <$> mnumber)
+                  title
+                  note
                   body
                   (fromMaybe [] concl)
 
@@ -805,7 +933,10 @@ pDoc = do
       t      <- fmap (fromMaybe []) $ attr "title" $ allContentOf pInline
       tplain <- fmap (fmap T.concat) $ attr "plainTitle" $ allContentOf
         simpleText
-      pure $ DocAttrs (Title t) (fromMaybe (stripMarkup t) tplain)
+      fconfig <- attr "formalBlocks" $ pFormalConfig
+      pure $ DocAttrs (Title t)
+                      (fromMaybe (stripMarkup t) tplain)
+                      (fromMaybe mempty fconfig)
     content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do

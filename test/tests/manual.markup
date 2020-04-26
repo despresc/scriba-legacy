@@ -6,6 +6,21 @@ Doc
               [ Str "The scriba markup language and document system" ]
           }
     , docPlainTitle = "The scriba markup language and document system"
+    , docFormalConfig =
+        fromList
+          [ ( "theorem"
+            , FormalConfig
+                { fconfPrefix = [ Str "Theorem" ]
+                , fconfTitleTemplate =
+                    [ VariedPrefix
+                    , VariedSpace
+                    , VariedNumber
+                    , VariedSpace
+                    , VariedNote
+                    ]
+                }
+            )
+          ]
     }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
@@ -316,7 +331,16 @@ Doc
                                     , FormalBlock
                                         Formal
                                           { fType = Just "theorem"
-                                          , fTitle = [ Str "Theorem 4.2 (an interesting one)" ]
+                                          , fNum = Just "4.2"
+                                          , fTitle =
+                                              Just
+                                                [ TitlePrefix [ Str "Theorem" ]
+                                                , Str " "
+                                                , Number [ Str "4.2" ]
+                                                , Str " "
+                                                , TitleNote [ Str "an interesting one" ]
+                                                ]
+                                          , fNote = Just [ Str "an interesting one" ]
                                           , fContent =
                                               [ ParBlock
                                                   (Paragraph

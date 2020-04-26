@@ -71,11 +71,15 @@ Currently the following elements are defined:
 
 Partially related to custom blocks. We want to number things, of
 course. Things that can be numbered. If they're titled, we might want
-to use the number in their title. This applies to captions as
-well. Something like a `genTitle` option in the metadata of a
-document? Might want to think about caching the result of unfolding
-all the definitions somehow. Serialize the form that we get right
-before rendering.
+to use the number in their title. Something like a `genTitle` option
+in the metadata of a document? Might want to think about caching the
+result of unfolding all the definitions somehow. Serialize the form
+that we get right before rendering.
+
+Numbering has to happen before the title gets generated. It could
+happen simultaneously, I suppose.
+
+This applies to captioned things, too.
 
 ## Custom blocks
 
@@ -93,6 +97,7 @@ we have (in some kind of `defblock` section of the meta)
 How would this work in practice? Would each variable get wrapped in
 something? Maybe that would be something controllable with an
 argument? I'd want the `theorem.title` to be wrapped in something. We
-might also want to normalize the whitespace of the title.
+might also want to normalize the whitespace of the title. Add an
+option not to do that, if we need it.
 
 Not sure about the `_` before `content`.

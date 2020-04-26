@@ -3,9 +3,10 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-import qualified Text.Scriba.Parse             as SP
+import qualified Text.Scriba.Decorate as SD
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
+import qualified Text.Scriba.Parse             as SP
 import qualified Text.Scriba.Render.Html       as SRH
 
 import           Data.ByteString.Lazy          as BL
@@ -25,10 +26,11 @@ parseOrExplode name t = case SP.parseDoc' name t of
   Left  e -> error $ T.unpack e
   Right a -> a
 
+-- with decoration
 markupOrExplode :: SI.Node -> SM.Doc
 markupOrExplode n = case SM.parseDoc n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
-  Right a -> a
+  Right a -> SD.decorate a
 
 byteShow :: Show a => a -> BL.ByteString
 byteShow = TLE.encodeUtf8 . TL.pack . SP.ppShow
