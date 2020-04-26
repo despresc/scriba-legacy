@@ -2205,7 +2205,7 @@ Doc
                                      , sourceLine = Pos 290
                                      , sourceColumn = Pos 11
                                      }
-                                   "Theorem 4.2 (an interesting one). "
+                                   "Theorem 4.2 (an interesting one)"
                                ]
                            )
                          )

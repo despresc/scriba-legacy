@@ -316,7 +316,7 @@ Doc
                                     , FormalBlock
                                         Formal
                                           { fType = Just "theorem"
-                                          , fTitle = [ Str "Theorem 4.2 (an interesting one). " ]
+                                          , fTitle = [ Str "Theorem 4.2 (an interesting one)" ]
                                           , fContent =
                                               [ ParBlock
                                                   (Paragraph
