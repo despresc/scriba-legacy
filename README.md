@@ -64,3 +64,35 @@ Currently the following elements are defined:
 : A marker indicating that a physical page break occurred at or near
   the marker. Its content should be a page locator (only text at the
   moment).
+
+# Future directions
+
+## Generated content
+
+Partially related to custom blocks. We want to number things, of
+course. Things that can be numbered. If they're titled, we might want
+to use the number in their title. This applies to captions as
+well. Something like a `genTitle` option in the metadata of a
+document? Might want to think about caching the result of unfolding
+all the definitions somehow. Serialize the form that we get right
+before rendering.
+
+## Custom blocks
+
+Suppose that we want a `theorem` block. It should look like a formal
+block with a title `Theorem <number> <if title then "(<title>)">`, and
+no conclusion. Do we even need the formal block at that point? What if
+we have (in some kind of `defblock` section of the meta)
+
+```
+{content|
+  {title|{$theorem.prefix} {$theorem.n} {$theorem.title}}
+  {body|{$theorem._content}}}
+```
+
+How would this work in practice? Would each variable get wrapped in
+something? Maybe that would be something controllable with an
+argument? I'd want the `theorem.title` to be wrapped in something. We
+might also want to normalize the whitespace of the title.
+
+Not sure about the `_` before `content`.

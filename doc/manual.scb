@@ -287,7 +287,7 @@ An example:
 
 &{formalBlock
    {type|theorem}
-   {title|Theorem 4.2 (an interesting one). }
+   {title|Theorem 4.2 (an interesting one)}
 |The statement of some theorem of interest.
 }
 
