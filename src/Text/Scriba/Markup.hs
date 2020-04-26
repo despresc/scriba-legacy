@@ -218,7 +218,8 @@ data List
 -- statically, or to have parsers for them and allow them in normal text.
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
 -- probably be Text, and might want to record the Int that produced
--- that number, or maybe be a list of number parts?
+-- that number, or maybe be a list of number parts? We might want to
+-- call it something different. Tag, or something.
 data Inline
   = Str Text
   | Emph [Inline]
