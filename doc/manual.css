@@ -32,6 +32,11 @@ code {
     font-size: 0.9rem;
 }
 
+.formalBlock {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
 .formalBlock > .title > .titleNote::before {
     content: "(";
 }
@@ -56,6 +61,6 @@ code {
     font-weight: bold;
 }
 
-div.formalBlock > .body {
+.formalBlock > .body {
     font-style: italic;
 }

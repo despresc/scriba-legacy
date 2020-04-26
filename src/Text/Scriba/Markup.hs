@@ -149,6 +149,8 @@ defaultFormalConfig = FormalConfig [] []
 -- TODO: the inside should be "section content", probably, and the Doc
 -- should have three SectionContent components, since we're enforcing
 -- a particular matter structure.
+-- TODO: when we do section templating, we may need templates based on
+-- the section level.
 data Section = Section
   { secTitle :: Title
   , secContent :: SectionContent
