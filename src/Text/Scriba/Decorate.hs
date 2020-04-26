@@ -37,7 +37,7 @@ genFormalTitle m (Formal mty mnum mti mnote cont conc) = Formal
   mnum
   (mti <|> mtigen)
   mnote
-  cont
+  (genMixedBlockBodyTitle m cont)
   conc
  where
   mtigen = do
@@ -56,7 +56,13 @@ genListTitle :: Map Text FormalConfig -> List -> List
 genListTitle m l = case l of
   Ulist l' -> Ulist $ go l'
   Olist l' -> Olist $ go l'
-  where go = map $ map $ genBlockTitle m
+  where go = map $ genMixedBlockBodyTitle m
+
+genMixedBlockBodyTitle
+  :: Map Text FormalConfig -> MixedBlockBody -> MixedBlockBody
+genMixedBlockBodyTitle m (BlockBlockBody b) =
+  BlockBlockBody $ map (genBlockTitle m) b
+genMixedBlockBodyTitle _ x = x
 
 -- TODO: should probably generate section titles too!
 genSectionTitle :: Map Text FormalConfig -> Section -> Section

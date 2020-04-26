@@ -169,6 +169,11 @@ data Block
   | ListBlock List
   deriving (Eq, Ord, Show, Read)
 
+data MixedBlockBody
+  = BlockInlineBody [ParContent]
+  | BlockBlockBody [Block]
+  deriving (Eq, Ord, Show, Read)
+
 data Paragraph = Paragraph [ParContent]
   deriving (Eq, Ord, Show, Read)
 
@@ -192,7 +197,7 @@ data Formal = Formal
   , fNum :: Maybe Text
   , fTitle :: Maybe [Inline]
   , fNote :: Maybe [Inline]
-  , fContent :: [Block]
+  , fContent :: MixedBlockBody
   , fConclusion :: [Inline]
   } deriving (Eq, Ord, Show, Read)
 
@@ -207,8 +212,8 @@ newtype Title = Title
 -- TODO: need an inline list form too.
 -- TODO: list markers and such, of course.
 data List
-  = Ulist [[Block]]
-  | Olist [[Block]]
+  = Ulist [MixedBlockBody]
+  | Olist [MixedBlockBody]
   deriving (Eq, Ord, Show, Read)
 
 -- TODO: rename Math to InlineMath?
@@ -741,8 +746,7 @@ pFormal = do
       note    <- attr "titleNote" $ allContentOf pInline
       concl   <- attr "conclusion" $ allContentOf pInline
       pure (mty, mnumber, title, note, concl)
-    body <- allContent (manyOf pBlock)
-      <|> allContent ((: []) . ParBlock . Paragraph <$> manyOf pParContent)
+    body <- pMixedBlockBody
     pure $ Formal (T.concat <$> mty)
                   (T.concat <$> mnumber)
                   title
@@ -784,18 +788,12 @@ pUlist = do
   fmap Ulist $ whileParsingElem "ulist" $ allContent $ many
     (one pListItem <* pOnlySpace)
 
--- TODO: using the same embed-in-paragraph hack here.
-pListItem :: Scriba Node [Block]
+pListItem :: Scriba Node MixedBlockBody
 pListItem = asNode pItem
  where
-  inPara = (: []) . ParBlock . Paragraph
-  pItem  = do
+  pItem = do
     matchTy "item"
-    whileParsingElem "item"
-      $   allContentOf pBlock
-      <|> inPara
-      <$> allContentOf pParContent
-
+    whileParsingElem "item" $ pMixedBlockBody
 
 pParagraph :: Scriba Element Paragraph
 pParagraph = do
@@ -805,6 +803,10 @@ pParagraph = do
 
 pParContent :: Scriba Node ParContent
 pParContent = ParInline <$> pInline
+
+pMixedBlockBody :: Scriba Element MixedBlockBody
+pMixedBlockBody = allContent (BlockBlockBody <$> manyOf pBlock)
+  <|> allContent (BlockInlineBody <$> manyOf pParContent)
 
 -- ** Inline parsing
 

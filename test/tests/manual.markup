@@ -342,13 +342,11 @@ Doc
                                                 ]
                                           , fNote = Just [ Str "an interesting one" ]
                                           , fContent =
-                                              [ ParBlock
-                                                  (Paragraph
-                                                     [ ParInline
-                                                         (Str
-                                                            "The statement of some theorem of interest.\n")
-                                                     ])
-                                              ]
+                                              BlockInlineBody
+                                                [ ParInline
+                                                    (Str
+                                                       "The statement of some theorem of interest.\n")
+                                                ]
                                           , fConclusion = []
                                           }
                                     ]
@@ -373,15 +371,9 @@ Doc
                                     , ParBlock (Paragraph [ ParInline (Str "An example:") ])
                                     , ListBlock
                                         (Olist
-                                           [ [ ParBlock
-                                                 (Paragraph [ ParInline (Str "First element") ])
-                                             ]
-                                           , [ ParBlock
-                                                 (Paragraph [ ParInline (Str "Second element") ])
-                                             ]
-                                           , [ ParBlock
-                                                 (Paragraph [ ParInline (Str "Third element") ])
-                                             ]
+                                           [ BlockInlineBody [ ParInline (Str "First element") ]
+                                           , BlockInlineBody [ ParInline (Str "Second element") ]
+                                           , BlockInlineBody [ ParInline (Str "Third element") ]
                                            ])
                                     ]
                                 , secChildren = []

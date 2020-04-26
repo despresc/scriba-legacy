@@ -1,35 +1,27 @@
-div.formalBlock > span.title > span.titleNote::before {
+.formalBlock > .title > .titleNote::before {
     content: "(";
 }
 
-div.formalBlock > span.title > span.titleNote::after {
+.formalBlock > .title > .titleNote::after {
     content: ")";
 }
 
-div.formalBlock > span.title::after {
+.formalBlock > .title::after {
     content: ".";
 }
 
-div.formalBlock > span.title {
+.formalBlock > .title {
     margin-right: 0.5em;
 }
 
-div.formalBlock > span.title > span.titlePrefix {
+.formalBlock > .title > .titlePrefix {
     font-weight: bold;
 }
 
-div.formalBlock > span.title > span.number {
+.formalBlock > .title > .number {
     font-weight: bold;
 }
 
-div.formalBlock > div.body {
-    display: inline;
-}
-
-div.formalBlock > div.body > p:first-child {
-    display: inline;
-}
-
-div.formalBlock > div.body {
+div.formalBlock > .body {
     font-style: italic;
 }

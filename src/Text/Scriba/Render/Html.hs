@@ -137,18 +137,33 @@ renderBlock (CodeBlock   t ) = pure $ H.pre $ H.code $ H.toHtml t
 renderBlock (ParBlock    p ) = renderParagraph p
 renderBlock (ListBlock   b ) = renderList b
 
+-- TODO: This does conditional span/div rendering. Is that robust?
+-- TODO: True for wrapping the body. Maybe better type?
+renderMixedBlockBody :: Bool -> MixedBlockBody -> Render Html
+renderMixedBlockBody b (BlockInlineBody ils) =
+  go <$> foldBy renderParInline ils
+ where
+  go = case b of
+    True  -> H.span ! A.class_ "body"
+    False -> id
+renderMixedBlockBody b (BlockBlockBody blks) = go <$> renderBlocks blks
+ where
+  go = case b of
+    True  -> H.div ! A.class_ "body"
+    False -> id
+
 -- TODO: add the type as a data-scribaType? Though we might want that
 -- to equal formalBlock here. Might want to record the number as well.
 -- TODO: Should the title be "formalTitle"?
 renderFormalBlock :: Formal -> Render Html
 renderFormalBlock (Formal mty _ mtitle _ body concl) = do
   title' <- renderInlines $ fromMaybe [] mtitle
-  body'  <- renderBlocks body
+  body'  <- renderMixedBlockBody True body
   concl' <- renderInlines concl
   let cls = "formalBlock" <> maybe "" (" " <>) mty
   pure $ H.div ! A.class_ (H.toValue cls) $ do
     H.span ! A.class_ "title" $ title'
-    H.div ! A.class_ "body" $ body'
+    body'
     H.span ! A.class_ "conclusion" $ concl'
 
 renderList :: List -> Render Html
@@ -157,11 +172,13 @@ renderList b = case b of
   Olist l -> H.ol <$> renderListItems l
  where
   renderListItems = foldBy renderListItem
-  renderListItem bs = H.li <$> renderBlocks bs
+  renderListItem bs = H.li <$> renderMixedBlockBody False bs
 
 renderParagraph :: Paragraph -> Render Html
 renderParagraph (Paragraph c) = H.p <$> foldBy renderParInline c
-  where renderParInline (ParInline i) = renderInline i
+
+renderParInline :: ParContent -> Render Html
+renderParInline (ParInline i) = renderInline i
 
 renderBlocks :: [Block] -> Render Html
 renderBlocks = foldBy renderBlock

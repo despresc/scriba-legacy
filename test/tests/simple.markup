@@ -31,10 +31,8 @@ Doc
               , fTitle = Just [ Str "Theorem 5 (an interesting one)" ]
               , fNote = Nothing
               , fContent =
-                  [ ParBlock
-                      (Paragraph
-                         [ ParInline (Str "\nThe statement of an interesting theorem.\n") ])
-                  ]
+                  BlockInlineBody
+                    [ ParInline (Str "\nThe statement of an interesting theorem.\n") ]
               , fConclusion = [ Str "QED" ]
               }
         ]
