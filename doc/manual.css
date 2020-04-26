@@ -29,3 +29,7 @@ div.formalBlock > div.body {
 div.formalBlock > div.body > p:first-child {
     display: inline;
 }
+
+div.formalBlock > div.body {
+    font-style: italic;
+}
