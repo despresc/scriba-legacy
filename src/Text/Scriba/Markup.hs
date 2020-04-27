@@ -637,6 +637,7 @@ data Varied
   | VariedSpace
   | VariedVar Text VariedVar Text
   deriving (Eq, Ord, Show, Read)
+
 data VariedVar
   = VariedNote
   | VariedPrefix
