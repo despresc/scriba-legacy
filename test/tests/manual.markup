@@ -8,18 +8,43 @@ Doc
     , docPlainTitle = "The scriba markup language and document system"
     , docFormalConfig =
         fromList
-          [ ( "theorem"
+          [ ( "lemma"
             , FormalConfig
-                { fconfPrefix = [ Str "Theorem" ]
+                { fconfPrefix = Just [ Str "Lemma" ]
                 , fconfTitleTemplate =
                     [ VariedVar "" VariedPrefix ""
                     , VariedVar " " VariedNumber ""
                     , VariedVar " (" VariedNote ")"
                     ]
-                , fconfTitleSep = [ Str ". " ]
+                , fconfTitleSep = Just [ Str ". " ]
+                }
+            )
+          , ( "theorem"
+            , FormalConfig
+                { fconfPrefix = Just [ Str "Theorem" ]
+                , fconfTitleTemplate =
+                    [ VariedVar "" VariedPrefix ""
+                    , VariedVar " " VariedNumber ""
+                    , VariedVar " (" VariedNote ")"
+                    ]
+                , fconfTitleSep = Just [ Str ". " ]
                 }
             )
           ]
+    , docElemCounterRel =
+        fromList
+          [ ( ContainerName { unContainerName = "lemma" }
+            , CounterName { unCounterName = "theorem" }
+            )
+          , ( ContainerName { unContainerName = "theorem" }
+            , CounterName { unCounterName = "theorem" }
+            )
+          ]
+    , docCounterRel =
+        fromList
+          [ ( CounterName { unCounterName = "theorem" } , fromList [] ) ]
+    , docNumberStyles =
+        fromList [ ( "lemma" , Decimal ) , ( "theorem" , Decimal ) ]
     }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
@@ -326,18 +351,38 @@ Doc
                                                (Str
                                                   " attributes. It can contain block or inline content. It can\nbe used to represent theorems, propositions, exercises, proofs, and\nother amsthm-style elements.")
                                            ])
-                                    , ParBlock (Paragraph [ ParInline (Str "An example:") ])
+                                    , ParBlock (Paragraph [ ParInline (Str "Some examples:") ])
+                                    , FormalBlock
+                                        Formal
+                                          { fType = Just "lemma"
+                                          , fNum = Just "1"
+                                          , fTitle =
+                                              Just
+                                                [ Str ""
+                                                , TitlePrefix [ Str "Lemma" ]
+                                                , Str ""
+                                                , Str " "
+                                                , Number [ Str "1" ]
+                                                , Str ""
+                                                ]
+                                          , fNote = Nothing
+                                          , fTitleSep = Just [ Str ". " ]
+                                          , fContent =
+                                              BlockInlineBody
+                                                [ ParInline (Str "A preliminary lemma.\n") ]
+                                          , fConclusion = []
+                                          }
                                     , FormalBlock
                                         Formal
                                           { fType = Just "theorem"
-                                          , fNum = Just "4.2"
+                                          , fNum = Just "2"
                                           , fTitle =
                                               Just
                                                 [ Str ""
                                                 , TitlePrefix [ Str "Theorem" ]
                                                 , Str ""
                                                 , Str " "
-                                                , Number [ Str "4.2" ]
+                                                , Number [ Str "2" ]
                                                 , Str ""
                                                 , Str " ("
                                                 , TitleNote [ Str "an interesting one" ]

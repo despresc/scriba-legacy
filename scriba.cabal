@@ -26,6 +26,7 @@ library
                , mtl
                , blaze-html
   exposed-modules:
+    Text.Scriba.Counters
     Text.Scriba.Intermediate
     Text.Scriba.Markup
     Text.Scriba.Parse

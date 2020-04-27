@@ -6,6 +6,15 @@
       {prefix|Theorem}
       {title|{$theorem.titlePrefix}{$theorem.n{before| }}{$theorem.titleNote{before| (}{after|)}}}
       {titleSep|. }
+      {numbering {absolute}
+                 {style@decimal}}
+    }
+    {lemma
+      {prefix|Lemma}
+      {title|{$lemma.titlePrefix}{$lemma.n{before| }}{$lemma.titleNote{before| (}{after|)}}}
+      {titleSep|. }
+      {numbering {share@theorem}
+                 {style@decimal}}
     }
   }
 }
@@ -291,12 +300,16 @@ other amsthm-style elements.
 the period and space need to be added manually. Though that can be
 fixed by custom CSS, which is also not supported. %}
 
-An example:
+Some examples:
+
+&{formalBlock
+   {type|lemma}
+|A preliminary lemma.
+}
 
 &{formalBlock
    {type|theorem}
    {titleNote|an interesting one}
-   {n|4.2}
 |The statement of some theorem of interest.
 }
 

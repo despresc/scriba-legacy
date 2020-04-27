@@ -5,6 +5,7 @@
 
 module Text.Scriba.Markup where
 
+import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
 
 import           Control.Applicative            ( (<|>)
@@ -22,6 +23,7 @@ import qualified Control.Monad.State.Strict    as S
 import qualified Control.Monad.Except          as E
 import           Data.Char                      ( isSpace )
 import           Data.Foldable                  ( foldl' )
+import           Data.Functor                   ( ($>) )
 import           Data.Functor.Compose           ( Compose(..) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
@@ -128,23 +130,30 @@ import qualified Text.Megaparsec               as MP
 data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
   deriving (Eq, Ord, Show, Read)
 
+-- TODO: should I mapKey the docNumberStyle here?
 data DocAttrs = DocAttrs
   { docTitle :: Title
   , docPlainTitle :: Text
   , docFormalConfig :: Map Text FormalConfig
+  , docElemCounterRel :: Map ContainerName CounterName
+  , docCounterRel :: Map CounterName (Set CounterName)
+  , docNumberStyles :: Map Text NumberStyle
   } deriving (Eq, Ord, Show, Read)
+
+data NumberStyle = Decimal
+  deriving (Eq, Ord, Show, Read)
 
 -- TODO: richer whitespace options not in the body of the template?
 -- E.g. stripping all whitespace, so that the template is a little
 -- more understandable.
 data FormalConfig = FormalConfig
-  { fconfPrefix :: [Inline]
+  { fconfPrefix :: Maybe [Inline]
   , fconfTitleTemplate :: [Varied]
-  , fconfTitleSep :: [Inline]
+  , fconfTitleSep :: Maybe [Inline]
   } deriving (Eq, Ord, Show, Read)
 
 defaultFormalConfig :: FormalConfig
-defaultFormalConfig = FormalConfig [] [] []
+defaultFormalConfig = FormalConfig Nothing [] Nothing
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -198,6 +207,7 @@ data ParContent
 -- TODO: Might want the note to be exclusive with title? We could have
 -- Formal be polymorphic in its meta, then have the title be Either
 -- FullTitle Note, then decorate can turn that into a FullTitle
+-- TODO: Make the conclusion a maybe and add conclusion setting to the formal config.
 data Formal = Formal
   { fType :: Maybe Text
   , fNum :: Maybe Text
@@ -378,7 +388,6 @@ elemPos = meta $ do
   Meta sp _ _ _ <- inspect
   pure sp
 
-
 whileParsing :: Maybe SourcePos -> Text -> Scriba s a -> Scriba s a
 whileParsing sp t = (`catchError` go)
   where go e = throwError $ WhileParsing sp t e
@@ -434,6 +443,7 @@ content act = liftScriba $ \(Element mty met con) -> do
 -- expectations. Right now if we fail to parse a block we simply get
 -- this "unexpected element" error instead of what we should get,
 -- which is a "failed to parse" error.
+-- TODO: Should generalize this.
 allContent :: Scriba [Node] a -> Scriba Element a
 allContent p = content $ do
   a  <- p
@@ -457,6 +467,9 @@ remaining p = liftScriba $ \ss -> do
 allContentOf :: Scriba Node a -> Scriba Element [a]
 allContentOf = content . remaining
 
+allArgsOf :: Scriba Node a -> Scriba Meta [a]
+allArgsOf = args . remaining
+
 meta :: Scriba Meta a -> Scriba Element a
 meta act = liftScriba $ \(Element mty met con) -> do
   (met', a) <- runScriba act met
@@ -467,6 +480,11 @@ attrs act = liftScriba $ \(Meta sp srcpres mat mar) -> do
   (mat', a) <- runScriba act mat
   pure (Meta sp srcpres mat' mar, a)
 
+args :: Scriba [Node] a -> Scriba Meta a
+args act = liftScriba $ \(Meta sp srcpres mat mar) -> do
+  (mar', a) <- runScriba act mar
+  pure (Meta sp srcpres mat mar', a)
+
 -- TODO: doesn't update the input. Document?
 -- TODO: might want an element type with a Text type, not merely a Just Text.
 allAttrsOf :: Scriba Element a -> Scriba Attrs (Map Text a)
@@ -476,18 +494,29 @@ allAttrsOf act = liftScriba $ \m -> do
     m
   pure (m, m')
 
+
 -- TODO: little odd to be reconstituting an element here. Maybe an
 -- element body type? Also an infix combinator might be welcome.
 -- TODO: should have one of these that takes a default and returns an
 -- `a`, I think. Maybe one for monoidal values too.
-attr :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
+-- TODO: better error here.
+attr :: Text -> Scriba Element a -> Scriba Attrs a
 attr k act = liftScriba $ fmap flop . getCompose . M.alterF go k
  where
-  go Nothing       = Compose $ Right (Nothing, Nothing)
+  go Nothing       = Compose $ Left $ Msg $ "present attribute " <> k
   go (Just (m, n)) = case runScriba act $ Element (Just k) m n of
     Left  e                    -> Compose $ Left e
-    Right (Element _ m' n', a) -> Compose $ Right (Just a, Just (m', n'))
+    Right (Element _ m' n', a) -> Compose $ Right (a, Just (m', n'))
   flop (x, y) = (y, x)
+
+attrMaybe :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
+attrMaybe k act = Just <$> attr k act <|> pure Nothing
+
+attrDef :: Text -> a -> Scriba Element a -> Scriba Attrs a
+attrDef k a act = attr k act <|> pure a
+
+mattr :: Monoid c => Text -> Scriba Element c -> Scriba Attrs c
+mattr k act = attr k act <|> pure mempty
 
 ty :: Scriba (Maybe Text) a -> Scriba Element a
 ty act = liftScriba $ \(Element mty met con) -> do
@@ -533,6 +562,16 @@ text = liftScriba $ \n -> case n of
 
 simpleText :: Scriba Node Text
 simpleText = snd <$> text
+
+unzips :: Functor f => f (a, b) -> (f a, f b)
+unzips x = (fmap fst x, fmap snd x)
+
+unzips3 :: Functor f => f (a, b, c) -> (f a, f b, f c)
+unzips3 x = (fmap fst' x, fmap snd' x, fmap thd' x)
+ where
+  fst' (a, _, _) = a
+  snd' (_, b, _) = b
+  thd' (_, _, c) = c
 
 -- TODO: no tab support yet. Should document.
 -- TODO: does this strip off a single trailing newline, by using
@@ -592,9 +631,7 @@ stripMarkup = T.concat . concatMap inlineToText
 
 -- Space consumer. Don't need the non-void version yet. May want to
 -- pass in a function instead of using isSpace.
-
 -- TODO: need to update the source position of this NodeText!
-
 -- TODO: it might be better to have this fail when a non-whitespace
 -- text node is encountered, instead of adding its tail back to the
 -- node stream. Call it pOnlySpace, perhaps.
@@ -606,6 +643,20 @@ pSpace = do
       let t' = T.dropWhile isSpace t
       if T.null t' then S.put ns' >> pSpace else S.put (NodeText sp t' : ns')
     _ -> pure ()
+
+-- TODO: Should just lift takeWhile to [Node], honestly.
+-- TODO: need to implement updatePosText here. The positions are off.
+-- TODO: pNotWhiteSpace1?
+pNotWhiteSpace :: Scriba [Node] Text
+pNotWhiteSpace = do
+  ns <- S.get
+  case ns of
+    NodeText sp t : ns' -> do
+      let (tpref, tsuff) = T.break isSpace t
+      case T.null tsuff of
+        True  -> (<>) tpref <$> pNotWhiteSpace
+        False -> S.put (NodeText sp tsuff : ns') $> tpref
+    _ -> pure ""
 
 -- | Consumes whitespace up to the first element or end of
 -- input. Throws an error if a text element with a non-whitespace
@@ -682,9 +733,9 @@ pVariedVar t = asNode $ do
         _                  -> throwError $ Msg "unrecognized variable"
       _ -> throwError $ Msg "unrecognized variable"
   (b, a) <- whileParsingElem (printVar v) $ meta $ attrs $ do
-    bs <- attr "before" $ allContentOf simpleText
-    as <- attr "after" $ allContentOf simpleText
-    pure (maybe "" T.concat bs, maybe "" T.concat as)
+    bs <- mattr "before" $ allContentOf simpleText
+    as <- mattr "after" $ allContentOf simpleText
+    pure (T.concat bs, T.concat as)
   pure [VariedVar b v a]
  where
   printVar VariedPrefix = "titlePrefix"
@@ -697,13 +748,14 @@ pVariedVar t = asNode $ do
 runVariedInline :: Map Text [Inline] -> [Varied] -> [Inline]
 runVariedInline m = concatMap unVary
  where
-  msl con = maybe [] ((: []) . con)
   unVary VariedSpace       = [Str " "]
   unVary (VariedStr t    ) = [Str t]
-  unVary (VariedVar b v a) = [Str b] <> unVaryVar v <> [Str a]
-  unVaryVar VariedPrefix = msl TitlePrefix $ M.lookup "titlePrefix" m
-  unVaryVar VariedNote   = msl TitleNote $ M.lookup "titleNote" m
-  unVaryVar VariedNumber = msl Number $ M.lookup "n" m
+  unVary (VariedVar b v a) = case unVaryVar v of
+    Just vi -> [Str b, vi, Str a]
+    Nothing -> []
+  unVaryVar VariedPrefix = TitlePrefix <$> M.lookup "titlePrefix" m
+  unVaryVar VariedNote   = TitleNote <$> M.lookup "titleNote" m
+  unVaryVar VariedNumber = Number <$> M.lookup "n" m
 
 -- TODO: write this. Will need to have options for how they are
 -- numbered, and how the title and conclusion are generated.
@@ -721,8 +773,17 @@ runVariedInline m = concatMap unVary
 -- optionalParenthetical style, or something like that, for the
 -- titleNote, so that CSS doesn't have to be touched too much.
 
--- TODO: think about the title sep more carefully.
-pFormalConfig :: Scriba Element (Map Text FormalConfig)
+-- TODO: think about the title sep more carefully.  
+-- TODO: need to think about NumberStyle. Later, we just M.mapMaybe id
+-- what we get from unzip3, but perhaps this isn't wise?
+
+-- TODO: should have a NumberingConfig, TitlingConfig, etc., I think,
+-- keyed by the type of the element. Then we can operate on numbered
+-- things somewhat uniformly internally.
+pFormalConfig
+  :: Scriba
+       Element
+       (Map Text (FormalConfig, Maybe ContainerRelation, Maybe NumberStyle))
 pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
   pFormalSpec
  where
@@ -730,12 +791,33 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
     t <-
       ty $ inspect >>= maybe (throwError $ Msg "a block type is required") pure
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
-      pref          <- attr "prefix" $ allContentOf pInline
-      titleTemplate <- attr "title" $ allContent (pVariedSeq t)
-      titleSep      <- attr "titleSep" $ allContentOf pInline
-      pure $ FormalConfig (fromMaybe [] pref)
-                          (fromMaybe [] titleTemplate)
-                          (fromMaybe [] titleSep)
+      pref          <- attrMaybe "prefix" $ allContentOf pInline
+      titleTemplate <- mattr "title" $ allContent (pVariedSeq t)
+      titleSep      <- attrMaybe "titleSep" $ allContentOf pInline
+      numbering     <- attrMaybe "numbering" $ pCounterDepends
+      let (counterDepends, ns) = unzips numbering
+      pure $ (FormalConfig pref titleTemplate titleSep, counterDepends, ns)
+
+-- TODO: enforce option exclusivity? Could do that by running all
+-- parsers (which should also return expectations), then throw an
+-- error if at least two are Right.
+-- TODO: need some pOneArg thing, clearly
+pCounterDepends :: Scriba Element (ContainerRelation, NumberStyle)
+pCounterDepends = meta $ attrs $ do
+  cr <- pAbsCounter <|> pRelCounter <|> pShare
+  ns <- pNumberStyle
+  pure (cr, ns)
+ where
+  pAbsCounter = attr "absolute" $ pure $ Relative []
+  pRelCounter =
+    fmap (Relative . map ContainerName) $ attr "relative" $ meta $ allArgsOf
+      simpleText
+  pShare = attr "share" $ meta $ do
+    ts <- allArgsOf simpleText
+    case ts of
+      [t] -> pure $ Share $ ContainerName t
+      _   -> throwError $ Msg "expecting exactly one counter"
+  pNumberStyle = attrDef "style" Decimal $ pure Decimal
 
 -- ** Block Parsing
 
@@ -772,12 +854,12 @@ pFormal = do
   matchTy "formalBlock"
   whileParsingElem "formalBlock" $ do
     (mty, mnumber, title, note, tsep, concl) <- meta $ attrs $ do
-      mty     <- attr "type" $ allContentOf simpleText
-      mnumber <- attr "n" $ allContentOf simpleText
-      title   <- attr "title" $ allContentOf pInline
-      note    <- attr "titleNote" $ allContentOf pInline
-      tsep    <- attr "titleSep" $ allContentOf pInline
-      concl   <- attr "conclusion" $ allContentOf pInline
+      mty     <- attrMaybe "type" $ allContentOf simpleText
+      mnumber <- attrMaybe "n" $ allContentOf simpleText
+      title   <- attrMaybe "title" $ allContentOf pInline
+      note    <- attrMaybe "titleNote" $ allContentOf pInline
+      tsep    <- attrMaybe "titleSep" $ allContentOf pInline
+      concl   <- mattr "conclusion" $ allContentOf pInline
       pure (mty, mnumber, title, note, tsep, concl)
     body <- pMixedBlockBody
     pure $ Formal (T.concat <$> mty)
@@ -786,7 +868,7 @@ pFormal = do
                   note
                   tsep
                   body
-                  (fromMaybe [] concl)
+                  concl
 
 -- TODO: no language attributes recognized. This is also a problem
 -- with the code inline.
@@ -925,9 +1007,9 @@ pSection :: Scriba Element Section
 pSection = do
   matchTy "section" <|> presentedAsSection
   whileParsingElem "section" $ do
-    title <- meta $ attrs $ attr "title" $ allContentOf pInline
+    title <- meta $ attrs $ mattr "title" $ allContentOf pInline
     c     <- content $ pSectionContent
-    pure $ Section (Title $ fromMaybe [] title) c
+    pure $ Section (Title title) c
  where
   presentedAsSection = meta $ do
     Meta _ pres _ _ <- inspect
@@ -962,18 +1044,28 @@ pSectionContent = do
 -- TODO: For error purposes it might be better if the meta is in a
 -- whileParsing "document meta", and the body is in a whileParsing
 -- "document body", but this is somewhat stylistic.
+-- TODO: error in the container relations compiling
 pDoc :: Scriba Element Doc
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
-      t      <- fmap (fromMaybe []) $ attr "title" $ allContentOf pInline
-      tplain <- fmap (fmap T.concat) $ attr "plainTitle" $ allContentOf
-        simpleText
-      fconfig <- attr "formalBlocks" $ pFormalConfig
+      t <- mattr "title" $ allContentOf pInline
+      tplain <- attrMaybe "plainTitle" $ fmap T.concat $ allContentOf simpleText
+      fconfig <- mattr "formalBlocks" $ pFormalConfig
+      let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig
+          mcrel (x, y) = (,) (ContainerName x) <$> y
+          fnstyle = M.mapMaybe id fnstyleRaw
+      (fcelemrel, fcrel) <-
+        case compileContainerRelations (mapMaybe mcrel $ M.toList frelRaw) of
+          Left  e -> throwError $ Msg e
+          Right a -> pure a
       pure $ DocAttrs (Title t)
                       (fromMaybe (stripMarkup t) tplain)
-                      (fromMaybe mempty fconfig)
+                      fconf
+                      fcelemrel
+                      fcrel
+                      fnstyle
     content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do

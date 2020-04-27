@@ -3,6 +3,9 @@ Doc
     { docTitle = Title { titleBody = [] }
     , docPlainTitle = ""
     , docFormalConfig = fromList []
+    , docElemCounterRel = fromList []
+    , docCounterRel = fromList []
+    , docNumberStyles = fromList []
     }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
