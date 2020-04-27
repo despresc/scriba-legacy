@@ -37,22 +37,6 @@ code {
     margin-bottom: 1em;
 }
 
-.formalBlock > .title > .titleNote::before {
-    content: "(";
-}
-
-.formalBlock > .title > .titleNote::after {
-    content: ")";
-}
-
-.formalBlock > .title::after {
-    content: ".";
-}
-
-.formalBlock > .title {
-    margin-right: 0.5em;
-}
-
 .formalBlock > .title > .titlePrefix {
     font-weight: bold;
 }

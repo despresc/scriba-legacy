@@ -12,12 +12,11 @@ Doc
             , FormalConfig
                 { fconfPrefix = [ Str "Theorem" ]
                 , fconfTitleTemplate =
-                    [ VariedPrefix
-                    , VariedSpace
-                    , VariedNumber
-                    , VariedSpace
-                    , VariedNote
+                    [ VariedVar "" VariedPrefix ""
+                    , VariedVar " " VariedNumber ""
+                    , VariedVar " (" VariedNote ")"
                     ]
+                , fconfTitleSep = [ Str ". " ]
                 }
             )
           ]
@@ -334,13 +333,18 @@ Doc
                                           , fNum = Just "4.2"
                                           , fTitle =
                                               Just
-                                                [ TitlePrefix [ Str "Theorem" ]
+                                                [ Str ""
+                                                , TitlePrefix [ Str "Theorem" ]
+                                                , Str ""
                                                 , Str " "
                                                 , Number [ Str "4.2" ]
-                                                , Str " "
+                                                , Str ""
+                                                , Str " ("
                                                 , TitleNote [ Str "an interesting one" ]
+                                                , Str ")"
                                                 ]
                                           , fNote = Just [ Str "an interesting one" ]
+                                          , fTitleSep = Just [ Str ". " ]
                                           , fContent =
                                               BlockInlineBody
                                                 [ ParInline

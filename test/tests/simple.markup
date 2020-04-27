@@ -30,6 +30,7 @@ Doc
               , fNum = Nothing
               , fTitle = Just [ Str "Theorem 5 (an interesting one)" ]
               , fNote = Nothing
+              , fTitleSep = Nothing
               , fContent =
                   BlockInlineBody
                     [ ParInline (Str "\nThe statement of an interesting theorem.\n") ]

@@ -133,9 +133,10 @@ renderSections = foldBy renderSection
 
 renderBlock :: Block -> Render Html
 renderBlock (FormalBlock fb) = renderFormalBlock fb
-renderBlock (CodeBlock   t ) = pure $ H.div ! A.class_ "codeBlock" $ H.pre $ H.code $ H.toHtml t
-renderBlock (ParBlock    p ) = renderParagraph p
-renderBlock (ListBlock   b ) = renderList b
+renderBlock (CodeBlock t) =
+  pure $ H.div ! A.class_ "codeBlock" $ H.pre $ H.code $ H.toHtml t
+renderBlock (ParBlock  p) = renderParagraph p
+renderBlock (ListBlock b) = renderList b
 
 -- TODO: This does conditional span/div rendering. Is that robust?
 -- TODO: True for wrapping the body. Maybe better type?
@@ -155,14 +156,18 @@ renderMixedBlockBody b (BlockBlockBody blks) = go <$> renderBlocks blks
 -- TODO: add the type as a data-scribaType? Though we might want that
 -- to equal formalBlock here. Might want to record the number as well.
 -- TODO: Should the title be "formalTitle"?
+-- TODO: wrap the title separator? Also the title separator should be
+-- rendered conditional on there being a title at all.
 renderFormalBlock :: Formal -> Render Html
-renderFormalBlock (Formal mty _ mtitle _ body concl) = do
-  title' <- renderInlines $ fromMaybe [] mtitle
-  body'  <- renderMixedBlockBody True body
-  concl' <- renderInlines concl
+renderFormalBlock (Formal mty _ mtitle _ mtitlesep body concl) = do
+  title'    <- renderInlines $ fromMaybe [] mtitle
+  titlesep' <- renderInlines $ fromMaybe [] mtitlesep
+  body'     <- renderMixedBlockBody True body
+  concl'    <- renderInlines concl
   let cls = "formalBlock" <> maybe "" (" " <>) mty
   pure $ H.div ! A.class_ (H.toValue cls) $ do
     H.span ! A.class_ "title" $ title'
+    titlesep'
     body'
     H.span ! A.class_ "conclusion" $ concl'
 

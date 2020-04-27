@@ -4,7 +4,8 @@
   {formalBlocks
     {theorem
       {prefix|Theorem}
-      {title|{$theorem.titlePrefix} {$theorem.n} {$theorem.titleNote}}
+      {title|{$theorem.titlePrefix}{$theorem.n{before| }}{$theorem.titleNote{before| (}{after|)}}}
+      {titleSep|. }
     }
   }
 }

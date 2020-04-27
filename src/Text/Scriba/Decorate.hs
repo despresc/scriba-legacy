@@ -32,25 +32,29 @@ genBlockTitle m (ListBlock   l     ) = ListBlock $ genListTitle m l
 genBlockTitle _ x                    = x
 
 genFormalTitle :: Map Text FormalConfig -> Formal -> Formal
-genFormalTitle m (Formal mty mnum mti mnote cont conc) = Formal
+genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
   mty
   mnum
   (mti <|> mtigen)
   mnote
+  (mtisep <|> mtisep')
   (genMixedBlockBodyTitle m cont)
   conc
  where
-  mtigen = do
+  pushPair (Just (x, y)) = (Just x, Just y)
+  pushPair Nothing       = (Nothing, Nothing)
+  (mtisep', mtigen) = pushPair $ do
     t     <- mty
     fconf <- M.lookup t m
     let
+      tisep    = fconfTitleSep fconf
       pref     = fconfPrefix fconf
       template = fconfTitleTemplate fconf
       num      = maybe [] ((: []) . Str) mnum
       note     = fromMaybe [] mnote
       vars =
         M.fromList $ [("titlePrefix", pref), ("titleNote", note), ("n", num)]
-    pure $ runVariedInline vars template
+    pure $ (tisep, runVariedInline vars template)
 
 genListTitle :: Map Text FormalConfig -> List -> List
 genListTitle m l = case l of

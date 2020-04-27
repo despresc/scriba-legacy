@@ -134,13 +134,17 @@ data DocAttrs = DocAttrs
   , docFormalConfig :: Map Text FormalConfig
   } deriving (Eq, Ord, Show, Read)
 
+-- TODO: richer whitespace options not in the body of the template?
+-- E.g. stripping all whitespace, so that the template is a little
+-- more understandable.
 data FormalConfig = FormalConfig
   { fconfPrefix :: [Inline]
   , fconfTitleTemplate :: [Varied]
+  , fconfTitleSep :: [Inline]
   } deriving (Eq, Ord, Show, Read)
 
 defaultFormalConfig :: FormalConfig
-defaultFormalConfig = FormalConfig [] []
+defaultFormalConfig = FormalConfig [] [] []
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -199,6 +203,7 @@ data Formal = Formal
   , fNum :: Maybe Text
   , fTitle :: Maybe [Inline]
   , fNote :: Maybe [Inline]
+  , fTitleSep :: Maybe [Inline]
   , fContent :: MixedBlockBody
   , fConclusion :: [Inline]
   } deriving (Eq, Ord, Show, Read)
@@ -473,6 +478,8 @@ allAttrsOf act = liftScriba $ \m -> do
 
 -- TODO: little odd to be reconstituting an element here. Maybe an
 -- element body type? Also an infix combinator might be welcome.
+-- TODO: should have one of these that takes a default and returns an
+-- `a`, I think. Maybe one for monoidal values too.
 attr :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
 attr k act = liftScriba $ fmap flop . getCompose . M.alterF go k
  where
@@ -481,7 +488,6 @@ attr k act = liftScriba $ fmap flop . getCompose . M.alterF go k
     Left  e                    -> Compose $ Left e
     Right (Element _ m' n', a) -> Compose $ Right (Just a, Just (m', n'))
   flop (x, y) = (y, x)
-
 
 ty :: Scriba (Maybe Text) a -> Scriba Element a
 ty act = liftScriba $ \(Element mty met con) -> do
@@ -629,7 +635,10 @@ pOnlySpace = do
 data Varied
   = VariedStr Text
   | VariedSpace
-  | VariedNote
+  | VariedVar Text VariedVar Text
+  deriving (Eq, Ord, Show, Read)
+data VariedVar
+  = VariedNote
   | VariedPrefix
   | VariedNumber
   deriving (Eq, Ord, Show, Read)
@@ -657,15 +666,25 @@ pVariedText = explodeText <$> simpleText
 
 -- TODO: improve error
 pVariedVar :: Text -> Scriba Node [Varied]
-pVariedVar t = asNode $ ty $ do
-  mty <- inspect
-  case mty of
-    Just typ -> case T.stripPrefix ("$" <> t <> ".") typ of
-      Just "titlePrefix" -> pure [VariedPrefix]
-      Just "titleNote"   -> pure [VariedNote]
-      Just "n"           -> pure [VariedNumber]
-      _                  -> throwError $ Msg "unrecognized variable"
-    _ -> throwError $ Msg "unrecognized variable"
+pVariedVar t = asNode $ do
+  v <- ty $ do
+    mty <- inspect
+    case mty of
+      Just typ -> case T.stripPrefix ("$" <> t <> ".") typ of
+        Just "titlePrefix" -> pure VariedPrefix
+        Just "titleNote"   -> pure VariedNote
+        Just "n"           -> pure VariedNumber
+        _                  -> throwError $ Msg "unrecognized variable"
+      _ -> throwError $ Msg "unrecognized variable"
+  (b, a) <- whileParsingElem (printVar v) $ meta $ attrs $ do
+    bs <- attr "before" $ allContentOf simpleText
+    as <- attr "after" $ allContentOf simpleText
+    pure (maybe "" T.concat bs, maybe "" T.concat as)
+  pure [VariedVar b v a]
+ where
+  printVar VariedPrefix = "titlePrefix"
+  printVar VariedNote   = "titleNode"
+  printVar VariedNumber = "n"
 
 -- TODO: simply ignores undefined variables right now.
 -- TODO: use of Map seems a little wasteful at the moment.
@@ -674,11 +693,12 @@ runVariedInline :: Map Text [Inline] -> [Varied] -> [Inline]
 runVariedInline m = concatMap unVary
  where
   msl con = maybe [] ((: []) . con)
-  unVary VariedSpace   = [Str " "]
-  unVary (VariedStr t) = [Str t]
-  unVary VariedPrefix  = msl TitlePrefix $ M.lookup "titlePrefix" m
-  unVary VariedNote    = msl TitleNote $ M.lookup "titleNote" m
-  unVary VariedNumber  = msl Number $ M.lookup "n" m
+  unVary VariedSpace       = [Str " "]
+  unVary (VariedStr t    ) = [Str t]
+  unVary (VariedVar b v a) = [Str b] <> unVaryVar v <> [Str a]
+  unVaryVar VariedPrefix = msl TitlePrefix $ M.lookup "titlePrefix" m
+  unVaryVar VariedNote   = msl TitleNote $ M.lookup "titleNote" m
+  unVaryVar VariedNumber = msl Number $ M.lookup "n" m
 
 -- TODO: write this. Will need to have options for how they are
 -- numbered, and how the title and conclusion are generated.
@@ -695,6 +715,8 @@ runVariedInline m = concatMap unVary
 -- generated title different styles. E.g. have an
 -- optionalParenthetical style, or something like that, for the
 -- titleNote, so that CSS doesn't have to be touched too much.
+
+-- TODO: think about the title sep more carefully.
 pFormalConfig :: Scriba Element (Map Text FormalConfig)
 pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
   pFormalSpec
@@ -705,7 +727,10 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
       pref          <- attr "prefix" $ allContentOf pInline
       titleTemplate <- attr "title" $ allContent (pVariedSeq t)
-      pure $ FormalConfig (fromMaybe [] pref) (fromMaybe [] titleTemplate)
+      titleSep      <- attr "titleSep" $ allContentOf pInline
+      pure $ FormalConfig (fromMaybe [] pref)
+                          (fromMaybe [] titleTemplate)
+                          (fromMaybe [] titleSep)
 
 -- ** Block Parsing
 
@@ -741,18 +766,20 @@ pFormal :: Scriba Element Formal
 pFormal = do
   matchTy "formalBlock"
   whileParsingElem "formalBlock" $ do
-    (mty, mnumber, title, note, concl) <- meta $ attrs $ do
+    (mty, mnumber, title, note, tsep, concl) <- meta $ attrs $ do
       mty     <- attr "type" $ allContentOf simpleText
       mnumber <- attr "n" $ allContentOf simpleText
       title   <- attr "title" $ allContentOf pInline
       note    <- attr "titleNote" $ allContentOf pInline
+      tsep    <- attr "titleSep" $ allContentOf pInline
       concl   <- attr "conclusion" $ allContentOf pInline
-      pure (mty, mnumber, title, note, concl)
+      pure (mty, mnumber, title, note, tsep, concl)
     body <- pMixedBlockBody
     pure $ Formal (T.concat <$> mty)
                   (T.concat <$> mnumber)
                   title
                   note
+                  tsep
                   body
                   (fromMaybe [] concl)
 
