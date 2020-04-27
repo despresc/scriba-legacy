@@ -630,9 +630,9 @@ pOnlySpace = do
 -- ** Document attribute parsing
 
 -- Content with variables and text in it, for use in formal
--- config. Should probably have the internal representation be
+-- config. 
+-- TODO: Should probably have the internal representation be
 -- flexible enough to accommodate variables and things.
-
 -- TODO: Some sort of conditional behaviour may become necessary in
 -- templates. There may be examples where separator styling needs to
 -- vary based on the presence of certain elements.
