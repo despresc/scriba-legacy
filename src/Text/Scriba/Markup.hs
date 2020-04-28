@@ -659,13 +659,10 @@ stripMarkup f = T.concat . concatMap inlineToText
   inlineToText (Iemph        is) = emphToText inlineToText is
   inlineToText (Iquote       is) = quoteToText inlineToText is
   inlineToText (IinlineMath  t ) = inlineMathToText t
-  inlineToText (IdisplayMath d ) = displayToText d
+  inlineToText (IdisplayMath d ) = displayMathToText d
   inlineToText (Icode        t ) = inlineCodeToText t
   inlineToText (IpageMark    t ) = pageMarkToText t
   inlineToText (Iother       a ) = f a
-
-  displayToText (Formula  t ) = [t]
-  displayToText (Gathered ts) = ts
 
 -- | Consumes whitespace up to the first element or end of
 -- input. Throws an error if a text element with a non-whitespace
