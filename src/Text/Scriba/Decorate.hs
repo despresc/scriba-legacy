@@ -28,6 +28,9 @@ import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
+import           Data.Void                      ( Void
+                                                , absurd
+                                                )
 import           Data.Foldable                  ( traverse_ )
 import           Data.Traversable               ( for )
 
@@ -211,7 +214,7 @@ numBlock x                    = pure x
 
 -- TODO: duplication with numFormal
 numSection :: Section -> Numbering Section
-numSection (Section mty t mnum c) = do
+numSection (Section mty tbody tfull mnum c) = do
   mnumdata <- fmap (join . join) $ for mty $ \typ -> do
     let containername = ContainerName typ
     mcountername <- lookupCounter containername
@@ -226,13 +229,14 @@ numSection (Section mty t mnum c) = do
         num <- renderNumber oldPath countername localNumber
         setParentPath $ (countername, localNumber) : oldPath
         pure (num, oldPath, oldDependants)
-  t'      <- traverse numTitle t
+  tbody'  <- traverse numTitle tbody
+  tfull'  <- traverse numTitle tfull
   c'      <- numSectionContent c
   mnumgen <- for mnumdata $ \(num, oldPath, oldDependants) -> do
     setParentPath oldPath
     restoreDependants oldDependants
     pure num
-  pure $ Section mty t' (mnum <|> mnumgen) c'
+  pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'
 
 -- TODO: factor out the numbering and use it for other numbered
 -- things.
@@ -257,7 +261,7 @@ numFormal (Formal mty mnum ti note tsep cont concl) = do
         num <- renderNumber oldPath countername localNumber
         setParentPath $ (countername, localNumber) : oldPath
         pure (num, oldPath, oldDependants)
-  ti'     <- traverse numInlines ti
+  ti'     <- traverse (numInlinesWith pure) ti
   note'   <- traverse numInlines note
   tsep'   <- traverse numInlines tsep
   cont'   <- numMixedBlockBody cont
@@ -272,11 +276,16 @@ numList :: List -> Numbering List
 numList (Ulist l) = Ulist <$> traverse numMixedBlockBody l
 numList (Olist l) = Olist <$> traverse numMixedBlockBody l
 
-numTitle :: Title -> Numbering Title
-numTitle (Title t) = Title <$> numInlines t
+-- TODO: we don't descend into Iother, even though it might be
+-- possible to have numbered inline things.
+numTitle :: Title a -> Numbering (Title a)
+numTitle = pure
 
-numInlines :: [Inline] -> Numbering [Inline]
-numInlines = traverse numInline
+numInlinesWith :: (a -> Numbering a) -> [Inline a] -> Numbering [Inline a]
+numInlinesWith _ = pure
+
+numInlines :: [Inline Void] -> Numbering [Inline Void]
+numInlines = numInlinesWith absurd
 
 numMixedBlockBody :: MixedBlockBody -> Numbering MixedBlockBody
 numMixedBlockBody (BlockInlineBody p) =
@@ -286,8 +295,8 @@ numMixedBlockBody (BlockBlockBody b) = BlockBlockBody <$> numBlocks b
 numParContent :: ParContent -> Numbering ParContent
 numParContent (ParInline i) = ParInline <$> numInline i
 
-numInline :: Inline -> Numbering Inline
-numInline l = pure l
+numInline :: Inline a -> Numbering (Inline a)
+numInline = pure
 
 -- * Generating titles
 
@@ -331,7 +340,7 @@ genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
         pref     = fconfPrefix fconf
         template = fconfTitleTemplate fconf
         pushMaybe (x, y) = (,) x <$> y
-        toInlStr = (: []) . Str
+        toInlStr = (: []) . Istr . Str
         vars     = M.fromList $ mapMaybe
           pushMaybe
           [ ("titlePrefix", pref)
@@ -353,8 +362,9 @@ genMixedBlockBodyTitle _ x = x
 
 -- TODO: reduce duplication with genFormalTitle
 genSectionTitle :: TitlingConfig -> Section -> Section
-genSectionTitle m (Section mty mti mnum c) =
-  let c' = genSecContentTitle m c in Section mty (mtigen <|> mti) mnum c'
+genSectionTitle m (Section mty mtbody mtfull mnum c) =
+  let c' = genSecContentTitle m c
+  in  Section mty mtbody (mtfull <|> mtigen) mnum c'
  where
   mtigen = do
     t     <- mty
@@ -362,11 +372,11 @@ genSectionTitle m (Section mty mti mnum c) =
     let pref     = sconfPrefix sconf
         template = sconfTitleTemplate sconf
         pushMaybe (x, y) = (,) x <$> y
-        toInlStr = (: []) . Str
+        toInlStr = (: []) . Istr . Str
         vars     = M.fromList $ mapMaybe
           pushMaybe
           [ ("titlePrefix", pref)
-          , ("titleBody"  , titleBody <$> mti)
+          , ("titleBody"  , titleBody <$> mtbody)
           , ("n"          , toInlStr <$> mnum)
           ]
     pure $ Title $ runVariedInline vars template

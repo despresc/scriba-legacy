@@ -29,6 +29,13 @@ library
     Text.Scriba.Counters
     Text.Scriba.Intermediate
     Text.Scriba.Markup
+    Text.Scriba.Markup.Str
+    Text.Scriba.Markup.Emph
+    Text.Scriba.Markup.Quote
+    Text.Scriba.Markup.InlineMath
+    Text.Scriba.Markup.DisplayMath
+    Text.Scriba.Markup.InlineCode
+    Text.Scriba.Markup.PageMark
     Text.Scriba.Parse
     Text.Scriba.Decorate
     Text.Scriba.Render.Html

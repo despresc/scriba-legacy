@@ -16,6 +16,9 @@ import           Control.Monad.State            ( MonadState(..)
 import           Data.Maybe                     ( fromMaybe )
 import           Data.Foldable                  ( foldl' )
 import qualified Data.Text                     as T
+import           Data.Void                      ( Void
+                                                , absurd
+                                                )
 import           Text.Blaze.Html5               ( Html
                                                 , (!)
                                                 )
@@ -130,8 +133,8 @@ renderSectionContent (SectionContent bs cs) = do
 -- break? They would be necessary when we first render a sibling
 -- untitled section. Some kind of state variable, I think.
 renderSection :: Section -> Render Html
-renderSection (Section _ t _ c) = do
-  t' <- traverse renderTitle t
+renderSection (Section _ _ t _ c) = do
+  t' <- traverse (renderTitleWith id) t
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
     pure $ H.section $ fromMaybe mempty t' <> c'
@@ -168,7 +171,7 @@ renderMixedBlockBody b (BlockBlockBody blks) = go <$> renderBlocks blks
 -- rendered conditional on there being a title at all.
 renderFormalBlock :: Formal -> Render Html
 renderFormalBlock (Formal mty _ mtitle _ mtitlesep body concl) = do
-  title'    <- traverse renderInlines mtitle
+  title'    <- traverse (renderInlinesWith renderTitleParts) mtitle
   titlesep' <- traverse renderInlines mtitlesep
   body'     <- renderMixedBlockBody True body
   concl'    <- traverse renderInlines concl
@@ -196,31 +199,53 @@ renderParInline (ParInline i) = renderInline i
 renderBlocks :: [Block] -> Render Html
 renderBlocks = foldBy renderBlock
 
-renderInlines :: [Inline] -> Render Html
-renderInlines = foldBy renderInline
+renderInlinesWith :: (a -> Render Html) -> [Inline a] -> Render Html
+renderInlinesWith f = foldBy (renderInlineWith f)
 
-renderInline :: Inline -> Render Html
-renderInline (Str   t) = pure $ H.toHtml t
-renderInline (Emph  i) = H.em <$> renderInlines i
-renderInline (Quote i) = H.q <$> renderInlines i
-renderInline (Math t) =
+renderInlines :: [Inline Void] -> Render Html
+renderInlines = renderInlinesWith absurd
+
+renderInlineWith :: (a -> Render Html) -> Inline a -> Render Html
+renderInlineWith _ (Istr         s) = renderStr s
+renderInlineWith f (Iemph        s) = renderEmph (renderInlineWith f) s
+renderInlineWith f (Iquote       s) = renderQuote (renderInlineWith f) s
+renderInlineWith _ (IinlineMath  s) = renderInlineMath s
+renderInlineWith _ (IdisplayMath s) = renderDisplayMath s
+renderInlineWith _ (Icode        s) = renderInlineCode s
+renderInlineWith _ (IpageMark    s) = renderPageMark s
+renderInlineWith f (Iother       s) = f s
+
+renderInline :: Inline Void -> Render Html
+renderInline = renderInlineWith absurd
+
+renderStr :: Str -> Render Html
+renderStr (Str t) = pure $ H.toHtml t
+
+renderEmph :: (a -> Render Html) -> Emph a -> Render Html
+renderEmph f (Emph i) = H.em <$> foldBy f i
+
+renderQuote :: (a -> Render Html) -> Quote a -> Render Html
+renderQuote f (Quote i) = H.q <$> foldBy f i
+
+renderInlineMath :: InlineMath -> Render Html
+renderInlineMath (InlineMath t) =
   pure $ H.span ! A.class_ "math inline" $ "\\(" <> H.toHtml t <> "\\)"
-renderInline (DisplayMath d) = do
-  d' <- renderDmath d
+
+renderDisplayMath :: DisplayMath -> Render Html
+renderDisplayMath d = do
+  d' <- renderDisplayMathContent d
   pure $ H.span ! A.class_ "math display" $ "\\[" <> d' <> "\\]"
-renderInline (Code     t) = pure $ H.code $ H.toHtml t
-renderInline (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
-renderInline (TitlePrefix i) =
-  H.span ! A.class_ "titlePrefix" <$> renderInlines i
-renderInline (Number    i) = H.span ! A.class_ "number" <$> renderInlines i
-renderInline (TitleNote i) = H.span ! A.class_ "titleNote" <$> renderInlines i
-renderInline (TitleSep  i) = H.span ! A.class_ "titleSep" <$> renderInlines i
-renderInline (TitleBody i) = H.span ! A.class_ "titleBody" <$> renderInlines i
+
+renderInlineCode :: InlineCode -> Render Html
+renderInlineCode (InlineCode t) = pure $ H.code $ H.toHtml t
+
+renderPageMark :: PageMark -> Render Html
+renderPageMark (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
 
 -- TODO: assumes mathjax or katex
-renderDmath :: Dmath -> Render Html
-renderDmath (Formula t) = pure $ H.toHtml t
-renderDmath (Gathered ts) =
+renderDisplayMathContent :: DisplayMath -> Render Html
+renderDisplayMathContent (Formula t) = pure $ H.toHtml t
+renderDisplayMathContent (Gathered ts) =
   pure
     $  H.toHtml
     $  "\\begin{gathered}"
@@ -231,10 +256,10 @@ renderDmath (Gathered ts) =
 -- | Render a heading title using the ambient header depth.
 
 -- Add a sectionTitle class?
-renderTitle :: Title -> Render Html
-renderTitle (Title t) = do
+renderTitleWith :: (a -> TitleParts) -> Title a -> Render Html
+renderTitleWith f (Title t) = do
   lvl <- gets rsHeaderDepth
-  headAtLevel lvl <$> renderInlines t
+  headAtLevel lvl <$> renderInlinesWith (renderTitleParts . f) t
  where
   headAtLevel n = case n of
     1 -> H.h1
@@ -243,3 +268,18 @@ renderTitle (Title t) = do
     4 -> H.h4
     5 -> H.h5
     _ -> H.h6
+
+renderTitle :: Title Void -> Render Html
+renderTitle = renderTitleWith absurd
+
+renderTitleParts :: TitleParts -> Render Html
+renderTitleParts (TitlePrefix i) =
+  H.span ! A.class_ "titlePrefix" <$> renderInlines i
+renderTitleParts (TitleNumber i) =
+  H.span ! A.class_ "number" <$> renderInlines i
+renderTitleParts (TitleNote i) =
+  H.span ! A.class_ "titleNote" <$> renderInlines i
+renderTitleParts (TitleSep i) =
+  H.span ! A.class_ "titleSep" <$> renderInlines i
+renderTitleParts (TitleBody i) =
+  H.span ! A.class_ "titleBody" <$> renderInlines i

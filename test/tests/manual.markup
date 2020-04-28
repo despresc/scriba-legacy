@@ -3,7 +3,9 @@ Doc
     { docTitle =
         Title
           { titleBody =
-              [ Str "The scriba markup language and document system" ]
+              [ Istr
+                  Str { getStr = "The scriba markup language and document system" }
+              ]
           }
     , docPlainTitle = "The scriba markup language and document system"
     , docTitlingConfig =
@@ -12,34 +14,34 @@ Doc
               fromList
                 [ ( "lemma"
                   , FormalConfig
-                      { fconfPrefix = Just [ Str "Lemma" ]
+                      { fconfPrefix = Just [ Istr Str { getStr = "Lemma" } ]
                       , fconfTitleTemplate =
                           [ VariedVar "" VariedPrefix ""
                           , VariedVar " " VariedNumber ""
                           , VariedVar " (" VariedNote ")"
                           ]
-                      , fconfTitleSep = Just [ Str ". " ]
+                      , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
                       , fconfConcl = Nothing
                       }
                   )
                 , ( "proof"
                   , FormalConfig
-                      { fconfPrefix = Just [ Str "Proof" ]
+                      { fconfPrefix = Just [ Istr Str { getStr = "Proof" } ]
                       , fconfTitleTemplate =
                           [ VariedVar "" VariedPrefix "" , VariedVar " " VariedNote "" ]
-                      , fconfTitleSep = Just [ Str ". " ]
-                      , fconfConcl = Just [ Str "\8718" ]
+                      , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
+                      , fconfConcl = Just [ Istr Str { getStr = "\8718" } ]
                       }
                   )
                 , ( "theorem"
                   , FormalConfig
-                      { fconfPrefix = Just [ Str "Theorem" ]
+                      { fconfPrefix = Just [ Istr Str { getStr = "Theorem" } ]
                       , fconfTitleTemplate =
                           [ VariedVar "" VariedPrefix ""
                           , VariedVar " " VariedNumber ""
                           , VariedVar " (" VariedNote ")"
                           ]
-                      , fconfTitleSep = Just [ Str ". " ]
+                      , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
                       , fconfConcl = Nothing
                       }
                   )
@@ -48,7 +50,7 @@ Doc
               fromList
                 [ ( "section"
                   , SectionConfig
-                      { sconfPrefix = Just [ Str "Section" ]
+                      { sconfPrefix = Just [ Istr Str { getStr = "Section" } ]
                       , sconfTitleTemplate =
                           [ VariedVar "" VariedPrefix ""
                           , VariedVar " " VariedNumber ". "
@@ -109,26 +111,37 @@ Doc
         [ ParBlock
             (Paragraph
                [ ParInline
-                   (Str
-                      "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications.")
+                   (Istr
+                      Str
+                        { getStr =
+                            "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications."
+                        })
                ])
         ]
     , secChildren =
         [ Section
             { secType = Just "section"
-            , secTitle =
+            , secTitleBody =
                 Just
                   Title
                     { titleBody =
-                        [ Str ""
-                        , TitlePrefix [ Str "Section" ]
-                        , Str ""
-                        , Str " "
-                        , Number [ Str "1" ]
-                        , Str ". "
-                        , Str " "
-                        , TitleBody [ Str "An introduction to the language" ]
-                        , Str ""
+                        [ Istr Str { getStr = "An introduction to the language" } ]
+                    }
+            , secTitleFull =
+                Just
+                  Title
+                    { titleBody =
+                        [ Istr Str { getStr = "" }
+                        , Iother (TitlePrefix [ Istr Str { getStr = "Section" } ])
+                        , Istr Str { getStr = "" }
+                        , Istr Str { getStr = " " }
+                        , Iother (TitleNumber [ Istr Str { getStr = "1" } ])
+                        , Istr Str { getStr = ". " }
+                        , Istr Str { getStr = " " }
+                        , Iother
+                            (TitleBody
+                               [ Istr Str { getStr = "An introduction to the language" } ])
+                        , Istr Str { getStr = "" }
                         ]
                     }
             , secNum = Just "1"
@@ -138,16 +151,18 @@ Doc
                   , secChildren =
                       [ Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "Paragraphs" } ] }
+                          , secTitleFull =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "1.1" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "Paragraphs" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "1.1" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother (TitleBody [ Istr Str { getStr = "Paragraphs" } ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "1.1"
@@ -157,59 +172,111 @@ Doc
                                     [ ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba is a type of ")
-                                           , ParInline (Emph [ Str "block" ])
-                                           , ParInline (Str ", and contains\n")
-                                           , ParInline (Emph [ Str "paragraph text" ])
-                                           , ParInline (Str " and ")
-                                           , ParInline (Emph [ Str "elements" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba is a type of "
+                                                    })
                                            , ParInline
-                                               (Str ". Two sample paragraphs are\ngiven below:")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "block" } ] })
+                                           , ParInline (Istr Str { getStr = ", and contains\n" })
+                                           , ParInline
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph =
+                                                        [ Istr Str { getStr = "paragraph text" } ]
+                                                    })
+                                           , ParInline (Istr Str { getStr = " and " })
+                                           , ParInline
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "elements" } ]
+                                                    })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ". Two sample paragraphs are\ngiven below:"
+                                                    })
                                            ])
                                     , CodeBlock
                                         "There was nothing so very remarkable in that; nor did Alice think\nit so very much out of the way to hear the Rabbit say to itself,\n{q|Oh dear! Oh dear! I shall be late!} (when she thought it over\nafterwards, it occurred to her that she ought to have wondered at\nthis, but at the time it all seemed quite natural); but when the\nRabbit actually {emph|took a watch out of its waistcoat-pocket},\nand looked at it, and then hurried on, Alice started to her feet,\nfor it flashed across her mind that she had never before seen a\nrabbit with either a waistcoat-pocket, or a watch to take out of\nit, and burning with curiosity, she ran across the field after it,\nand fortunately was just in time to see it pop down a large\nrabbit-hole under the hedge.\n\nIn another moment down went Alice after it, never once considering\nhow in the world she was to get out again."
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "Plain paragraph text is any span of unicode characters other than\n")
-                                           , ParInline (Code "\\")
-                                           , ParInline (Str ", ")
-                                           , ParInline (Code "{")
-                                           , ParInline (Str ", or ")
-                                           , ParInline (Code "}")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "Plain paragraph text is any span of unicode characters other than\n"
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "\\" })
+                                           , ParInline (Istr Str { getStr = ", " })
+                                           , ParInline (Icode InlineCode { getInlineCode = "{" })
+                                           , ParInline (Istr Str { getStr = ", or " })
+                                           , ParInline (Icode InlineCode { getInlineCode = "}" })
                                            , ParInline
-                                               (Str
-                                                  ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. Those three characters\ncan be represented in paragraph text using the sequences ")
-                                           , ParInline (Code "\\\\")
-                                           , ParInline (Str ",\n")
-                                           , ParInline (Code "\\{")
-                                           , ParInline (Str ", and ")
-                                           , ParInline (Code "\\}")
-                                           , ParInline (Str ", should you need them in text. ")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. Those three characters\ncan be represented in paragraph text using the sequences "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "\\\\" })
+                                           , ParInline (Istr Str { getStr = ",\n" })
+                                           , ParInline (Icode InlineCode { getInlineCode = "\\{" })
+                                           , ParInline (Istr Str { getStr = ", and " })
+                                           , ParInline (Icode InlineCode { getInlineCode = "\\}" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr = ", should you need them in text. " })
                                            ])
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str "The other feature of paragraph markup is ")
-                                           , ParInline (Emph [ Str "inline elements" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The other feature of paragraph markup is "
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  ", which\nare used to give further meaning to your text and to control scriba's\nmany features.")
-                                           , ParInline (Str " Simple\nelements start with ")
-                                           , ParInline (Code "{tag|")
-                                           , ParInline (Str " and end with ")
-                                           , ParInline (Code "}")
-                                           , ParInline (Str ". The\nparagraphs above have a ")
-                                           , ParInline (Code "q")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph =
+                                                        [ Istr Str { getStr = "inline elements" } ]
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " element, representing quoted text\nand likely to be rendered between quotation marks, and an ")
-                                           , ParInline (Code "emph")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  "\nelement, representing emphasized text and likely to be rendered in\nitalic type.")
+                                               (Istr
+                                                  Str { getStr = " Simple\nelements start with " })
+                                           , ParInline
+                                               (Icode InlineCode { getInlineCode = "{tag|" })
+                                           , ParInline (Istr Str { getStr = " and end with " })
+                                           , ParInline (Icode InlineCode { getInlineCode = "}" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr = ". The\nparagraphs above have a " })
+                                           , ParInline (Icode InlineCode { getInlineCode = "q" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " element, representing quoted text\nand likely to be rendered between quotation marks, and an "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "emph" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
+                                                    })
                                            ])
                                     ]
                                 , secChildren = []
@@ -217,16 +284,18 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "Sections" } ] }
+                          , secTitleFull =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "1.2" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "Sections" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "1.2" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother (TitleBody [ Istr Str { getStr = "Sections" } ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "1.2"
@@ -236,44 +305,98 @@ Doc
                                     [ ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "The content of your document can be organized into ")
-                                           , ParInline (Emph [ Str "sections" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The content of your document can be organized into "
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  ",\nrepresenting self-contained units of discussion. These have types,\ntitles, and a body of blocks and subsections. Sections look like this:")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "sections" } ]
+                                                    })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ",\nrepresenting self-contained units of discussion. These have types,\ntitles, and a body of blocks and subsections. Sections look like this:"
+                                                    })
                                            ])
                                     , CodeBlock
                                         "# {title|An introduction to the language}\n\n## {title|Paragraphs}\n\nThe bulk of your document \8230"
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str "The first component of a section is its ")
-                                           , ParInline (Emph [ Str "header" ])
-                                           , ParInline (Str ". The section\nheader starts with ")
-                                           , ParInline (Code "# sectionType")
-                                           , ParInline (Str ", the number of consecutive\n")
-                                           , ParInline (Code "#")
-                                           , ParInline (Str " becoming the overall ")
-                                           , ParInline (Emph [ Str "level" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The first component of a section is its "
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " of the section. The\nsection content begins after the attributes of the section and at\nleast one blank line, and continues until a section of at most that\nlevel, or the end of the document, is reached. In the example above,\nthe ")
-                                           , ParInline (Quote [ Str "Paragraphs" ])
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "header" } ]
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " section would continue until a level 2 or level 1\nsection were encountered. The section type is optional; section types\nclassify the section, can denote built-in document structure, and can\ninfluence processing and rendering behaviour. Sections without a type\nbecome a generic ")
-                                           , ParInline (Code "section")
-                                           , ParInline (Str ".")
+                                               (Istr
+                                                  Str
+                                                    { getStr = ". The section\nheader starts with "
+                                                    })
+                                           , ParInline
+                                               (Icode
+                                                  InlineCode { getInlineCode = "# sectionType" })
+                                           , ParInline
+                                               (Istr
+                                                  Str { getStr = ", the number of consecutive\n" })
+                                           , ParInline (Icode InlineCode { getInlineCode = "#" })
+                                           , ParInline
+                                               (Istr Str { getStr = " becoming the overall " })
+                                           , ParInline
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "level" } ] })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " of the section. The\nsection content begins after the attributes of the section and at\nleast one blank line, and continues until a section of at most that\nlevel, or the end of the document, is reached. In the example above,\nthe "
+                                                    })
+                                           , ParInline
+                                               (Iquote
+                                                  Quote
+                                                    { getQuote =
+                                                        [ Istr Str { getStr = "Paragraphs" } ]
+                                                    })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " section would continue until a level 2 or level 1\nsection were encountered. The section type is optional; section types\nclassify the section, can denote built-in document structure, and can\ninfluence processing and rendering behaviour. Sections without a type\nbecome a generic "
+                                                    })
+                                           , ParInline
+                                               (Icode InlineCode { getInlineCode = "section" })
+                                           , ParInline (Istr Str { getStr = "." })
                                            ])
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str "Sections, like other elements, can have ")
-                                           , ParInline (Emph [ Str "attributes" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "Sections, like other elements, can have "
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on. The\nattributes of sections can be listed on multiple consecutive lines, as\nlong as no blank line occurs between them.")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph =
+                                                        [ Istr Str { getStr = "attributes" } ]
+                                                    })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on. The\nattributes of sections can be listed on multiple consecutive lines, as\nlong as no blank line occurs between them."
+                                                    })
                                            ])
                                     ]
                                 , secChildren = []
@@ -281,16 +404,18 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "Blocks" } ] }
+                          , secTitleFull =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "1.3" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "Blocks" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "1.3" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother (TitleBody [ Istr Str { getStr = "Blocks" } ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "1.3"
@@ -300,51 +425,96 @@ Doc
                                     [ ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "The other type of syntactic form in scriba is the ")
-                                           , ParInline (Emph [ Str "block" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The other type of syntactic form in scriba is the "
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "block" } ] })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:"
+                                                    })
                                            ])
                                     , CodeBlock
                                         "&{codeBlock {language|scriba} `\n  An {emph|interesting} proposition.\n`}\n\n&{olist|\n{item|First item}\n{item|Second item}\n}"
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "Blocks are written like inline elements, complete with attributes and\narguments, except they are preceded by a ")
-                                           , ParInline (Code "&")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "Blocks are written like inline elements, complete with attributes and\narguments, except they are preceded by a "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "&" })
                                            , ParInline
-                                               (Str
-                                                  ". They differ from\ninline elements in their content: blocks have ")
-                                           , ParInline (Emph [ Str "verbatim" ])
-                                           , ParInline (Str ",\n")
-                                           , ParInline (Emph [ Str "block" ])
-                                           , ParInline (Str ", and ")
-                                           , ParInline (Emph [ Str "inline" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ". They differ from\ninline elements in their content: blocks have "
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " content. Verbatim content is signalled\nby a ")
-                                           , ParInline (Code "`")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "verbatim" } ]
+                                                    })
+                                           , ParInline (Istr Str { getStr = ",\n" })
                                            , ParInline
-                                               (Str
-                                                  " (backtick) character, starts on the next line, then runs\nuntil the sequence ")
-                                           , ParInline (Code "`}")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "block" } ] })
+                                           , ParInline (Istr Str { getStr = ", and " })
                                            , ParInline
-                                               (Str
-                                                  " appears on a line indented by at most as\nmuch as the start-of-block ")
-                                           , ParInline (Code "&")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph = [ Istr Str { getStr = "inline" } ]
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " character is. The content itself\nbecomes plain text; no control characters are recognized in it. Block\ncontent is signalled by a ")
-                                           , ParInline (Code "&")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " content. Verbatim content is signalled\nby a "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "`" })
                                            , ParInline
-                                               (Str
-                                                  " character, and consists of a\nsequence of blocks and paragraphs, like section content without\nsection headers. Finally, inline content is signalled by a ")
-                                           , ParInline (Code "|")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " (backtick) character, starts on the next line, then runs\nuntil the sequence "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "`}" })
                                            , ParInline
-                                               (Str "\nand can contain text and inline elements.")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " appears on a line indented by at most as\nmuch as the start-of-block "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "&" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " character is. The content itself\nbecomes plain text; no control characters are recognized in it. Block\ncontent is signalled by a "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "&" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " character, and consists of a\nsequence of blocks and paragraphs, like section content without\nsection headers. Finally, inline content is signalled by a "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "|" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "\nand can contain text and inline elements."
+                                                    })
                                            ])
                                     ]
                                 , secChildren = []
@@ -352,16 +522,18 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "Mathematics" } ] }
+                          , secTitleFull =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "1.4" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "Mathematics" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "1.4" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother (TitleBody [ Istr Str { getStr = "Mathematics" } ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "1.4"
@@ -371,59 +543,111 @@ Doc
                                     [ ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like ")
-                                           , ParInline (Math "f(x, y) =\nx^{y+6}")
-                                           , ParInline (Str ", and displayed formulas like\n")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like "
+                                                    })
                                            , ParInline
-                                               (DisplayMath
+                                               (IinlineMath
+                                                  InlineMath
+                                                    { getInlineMath = "f(x, y) =\nx^{y+6}" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr = ", and displayed formulas like\n" })
+                                           , ParInline
+                                               (IdisplayMath
                                                   (Formula
                                                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"))
                                            , ParInline
-                                               (Str
-                                                  "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax by default, and rendering in HTML\nis handled with MathJax. Be aware that amsmath-style environments like\n")
-                                           , ParInline (Code "gathered")
-                                           , ParInline (Str " or ")
-                                           , ParInline (Code "alignedat")
-                                           , ParInline (Str " should not be used inside\n")
-                                           , ParInline (Code "math")
-                                           , ParInline (Str " or ")
-                                           , ParInline (Code "dmath")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax by default, and rendering in HTML\nis handled with MathJax. Be aware that amsmath-style environments like\n"
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " elements themselves. Scriba itself\nimplements some of these environments as elements, so that they can\ninteract with its built-in numbering and referencing capabilities.")
+                                               (Icode InlineCode { getInlineCode = "gathered" })
+                                           , ParInline (Istr Str { getStr = " or " })
+                                           , ParInline
+                                               (Icode InlineCode { getInlineCode = "alignedat" })
+                                           , ParInline
+                                               (Istr
+                                                  Str { getStr = " should not be used inside\n" })
+                                           , ParInline (Icode InlineCode { getInlineCode = "math" })
+                                           , ParInline (Istr Str { getStr = " or " })
+                                           , ParInline
+                                               (Icode InlineCode { getInlineCode = "dmath" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " elements themselves. Scriba itself\nimplements some of these environments as elements, so that they can\ninteract with its built-in numbering and referencing capabilities."
+                                                    })
                                            ])
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "The examples of formulas above were entered into the source like so:")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The examples of formulas above were entered into the source like so:"
+                                                    })
                                            ])
                                     , CodeBlock
                                         "Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like\n{dmath`\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n`}\nare available, among \8230"
                                     , ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "Since TeX syntax is heavily reliant on braces and backlashes, it will\noften be necessary for you to escape them in some way when entering\nmath in that notation. In the inline example math example above, an\n")
-                                           , ParInline (Emph [ Str "inline verbatim body" ])
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "Since TeX syntax is heavily reliant on braces and backlashes, it will\noften be necessary for you to escape them in some way when entering\nmath in that notation. In the inline example math example above, an\n"
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  " was used for this purpose. Like block\nverbatim content, such a body starts with a ")
-                                           , ParInline (Code "`")
-                                           , ParInline (Str " character instead\nof a ")
-                                           , ParInline (Code "|")
+                                               (Iemph
+                                                  Emph
+                                                    { getEmph =
+                                                        [ Istr
+                                                            Str { getStr = "inline verbatim body" }
+                                                        ]
+                                                    })
                                            , ParInline
-                                               (Str
-                                                  ". Inline verbatim content runs until it encounters a\n")
-                                           , ParInline (Code "`}")
-                                           , ParInline (Str ", and inside it any double-backtick ")
-                                           , ParInline (Code "``")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " was used for this purpose. Like block\nverbatim content, such a body starts with a "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "`" })
                                            , ParInline
-                                               (Str
-                                                  " sequences\ncollapse to a single backtick. The effect of this is to disable any\nother special character processing, even comments, so that the syntax\nof other languages can be included into scriba without too much\noverhead. This is only a syntactic convenience in this case; the\ninline example above could equally well have been written\n")
-                                           , ParInline (Code "{math|f(x, y) = x^\\{y+6\\}}")
-                                           , ParInline (Str ".")
+                                               (Istr Str { getStr = " character instead\nof a " })
+                                           , ParInline (Icode InlineCode { getInlineCode = "|" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ". Inline verbatim content runs until it encounters a\n"
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "`}" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        ", and inside it any double-backtick "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "``" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " sequences\ncollapse to a single backtick. The effect of this is to disable any\nother special character processing, even comments, so that the syntax\nof other languages can be included into scriba without too much\noverhead. This is only a syntactic convenience in this case; the\ninline example above could equally well have been written\n"
+                                                    })
+                                           , ParInline
+                                               (Icode
+                                                  InlineCode
+                                                    { getInlineCode = "{math|f(x, y) = x^\\{y+6\\}}"
+                                                    })
+                                           , ParInline (Istr Str { getStr = "." })
                                            ])
                                     ]
                                 , secChildren = []
@@ -431,16 +655,26 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "1.5" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "The overall document structure" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = "The overall document structure" } ]
+                                  }
+                          , secTitleFull =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "1.5" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother
+                                          (TitleBody
+                                             [ Istr
+                                                 Str { getStr = "The overall document structure" }
+                                             ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "1.5"
@@ -450,8 +684,11 @@ Doc
                                     [ ParBlock
                                         (Paragraph
                                            [ ParInline
-                                               (Str
-                                                  "Will contain a description of documents as a whole.")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        "Will contain a description of documents as a whole."
+                                                    })
                                            ])
                                     ]
                                 , secChildren = []
@@ -462,19 +699,22 @@ Doc
             }
         , Section
             { secType = Just "section"
-            , secTitle =
+            , secTitleBody =
+                Just
+                  Title { titleBody = [ Istr Str { getStr = "Element reference" } ] }
+            , secTitleFull =
                 Just
                   Title
                     { titleBody =
-                        [ Str ""
-                        , TitlePrefix [ Str "Section" ]
-                        , Str ""
-                        , Str " "
-                        , Number [ Str "2" ]
-                        , Str ". "
-                        , Str " "
-                        , TitleBody [ Str "Element reference" ]
-                        , Str ""
+                        [ Istr Str { getStr = "" }
+                        , Iother (TitlePrefix [ Istr Str { getStr = "Section" } ])
+                        , Istr Str { getStr = "" }
+                        , Istr Str { getStr = " " }
+                        , Iother (TitleNumber [ Istr Str { getStr = "2" } ])
+                        , Istr Str { getStr = ". " }
+                        , Istr Str { getStr = " " }
+                        , Iother (TitleBody [ Istr Str { getStr = "Element reference" } ])
+                        , Istr Str { getStr = "" }
                         ]
                     }
             , secNum = Just "2"
@@ -484,16 +724,18 @@ Doc
                   , secChildren =
                       [ Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "formalBlock" } ] }
+                          , secTitleFull =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "2.1" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "formalBlock" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "2.1" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother (TitleBody [ Istr Str { getStr = "formalBlock" } ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "2.1"
@@ -502,39 +744,54 @@ Doc
                                 { secPreamble =
                                     [ ParBlock
                                         (Paragraph
-                                           [ ParInline (Str "The ")
-                                           , ParInline (Code "formalBlock")
+                                           [ ParInline (Istr Str { getStr = "The " })
                                            , ParInline
-                                               (Str
-                                                  " element represents a formal part of the\ndocument, with optional ")
-                                           , ParInline (Code "title")
-                                           , ParInline (Str ", ")
-                                           , ParInline (Code "conclusion")
-                                           , ParInline (Str ", and\n")
-                                           , ParInline (Code "type")
+                                               (Icode InlineCode { getInlineCode = "formalBlock" })
                                            , ParInline
-                                               (Str
-                                                  " attributes. It can contain block or inline content. It can\nbe used to represent theorems, propositions, exercises, proofs, and\nother amsthm-style elements.")
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " element represents a formal part of the\ndocument, with optional "
+                                                    })
+                                           , ParInline
+                                               (Icode InlineCode { getInlineCode = "title" })
+                                           , ParInline (Istr Str { getStr = ", " })
+                                           , ParInline
+                                               (Icode InlineCode { getInlineCode = "conclusion" })
+                                           , ParInline (Istr Str { getStr = ", and\n" })
+                                           , ParInline (Icode InlineCode { getInlineCode = "type" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " attributes. It can contain block or inline content. It can\nbe used to represent theorems, propositions, exercises, proofs, and\nother amsthm-style elements."
+                                                    })
                                            ])
-                                    , ParBlock (Paragraph [ ParInline (Str "Some examples:") ])
+                                    , ParBlock
+                                        (Paragraph
+                                           [ ParInline (Istr Str { getStr = "Some examples:" }) ])
                                     , FormalBlock
                                         Formal
                                           { fType = Just "lemma"
                                           , fNum = Just "2.1"
                                           , fTitle =
                                               Just
-                                                [ Str ""
-                                                , TitlePrefix [ Str "Lemma" ]
-                                                , Str ""
-                                                , Str " "
-                                                , Number [ Str "2.1" ]
-                                                , Str ""
+                                                [ Istr Str { getStr = "" }
+                                                , Iother
+                                                    (TitlePrefix [ Istr Str { getStr = "Lemma" } ])
+                                                , Istr Str { getStr = "" }
+                                                , Istr Str { getStr = " " }
+                                                , Iother
+                                                    (TitleNumber [ Istr Str { getStr = "2.1" } ])
+                                                , Istr Str { getStr = "" }
                                                 ]
                                           , fNote = Nothing
-                                          , fTitleSep = Just [ Str ". " ]
+                                          , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
                                               BlockInlineBody
-                                                [ ParInline (Str "A preliminary lemma.\n") ]
+                                                [ ParInline
+                                                    (Istr Str { getStr = "A preliminary lemma.\n" })
+                                                ]
                                           , fConclusion = Nothing
                                           }
                                     , FormalBlock
@@ -543,23 +800,33 @@ Doc
                                           , fNum = Just "2.2"
                                           , fTitle =
                                               Just
-                                                [ Str ""
-                                                , TitlePrefix [ Str "Theorem" ]
-                                                , Str ""
-                                                , Str " "
-                                                , Number [ Str "2.2" ]
-                                                , Str ""
-                                                , Str " ("
-                                                , TitleNote [ Str "an interesting one" ]
-                                                , Str ")"
+                                                [ Istr Str { getStr = "" }
+                                                , Iother
+                                                    (TitlePrefix
+                                                       [ Istr Str { getStr = "Theorem" } ])
+                                                , Istr Str { getStr = "" }
+                                                , Istr Str { getStr = " " }
+                                                , Iother
+                                                    (TitleNumber [ Istr Str { getStr = "2.2" } ])
+                                                , Istr Str { getStr = "" }
+                                                , Istr Str { getStr = " (" }
+                                                , Iother
+                                                    (TitleNote
+                                                       [ Istr Str { getStr = "an interesting one" }
+                                                       ])
+                                                , Istr Str { getStr = ")" }
                                                 ]
-                                          , fNote = Just [ Str "an interesting one" ]
-                                          , fTitleSep = Just [ Str ". " ]
+                                          , fNote =
+                                              Just [ Istr Str { getStr = "an interesting one" } ]
+                                          , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
                                               BlockInlineBody
                                                 [ ParInline
-                                                    (Str
-                                                       "The statement of some theorem of interest.\n")
+                                                    (Istr
+                                                       Str
+                                                         { getStr =
+                                                             "The statement of some theorem of interest.\n"
+                                                         })
                                                 ]
                                           , fConclusion = Nothing
                                           }
@@ -569,19 +836,31 @@ Doc
                                           , fNum = Just "2.3"
                                           , fTitle =
                                               Just
-                                                [ Str ""
-                                                , TitlePrefix [ Str "Proof" ]
-                                                , Str ""
-                                                , Str " "
-                                                , TitleNote [ Str "of the interesting theorem" ]
-                                                , Str ""
+                                                [ Istr Str { getStr = "" }
+                                                , Iother
+                                                    (TitlePrefix [ Istr Str { getStr = "Proof" } ])
+                                                , Istr Str { getStr = "" }
+                                                , Istr Str { getStr = " " }
+                                                , Iother
+                                                    (TitleNote
+                                                       [ Istr
+                                                           Str
+                                                             { getStr = "of the interesting theorem"
+                                                             }
+                                                       ])
+                                                , Istr Str { getStr = "" }
                                                 ]
-                                          , fNote = Just [ Str "of the interesting theorem" ]
-                                          , fTitleSep = Just [ Str ". " ]
+                                          , fNote =
+                                              Just
+                                                [ Istr Str { getStr = "of the interesting theorem" }
+                                                ]
+                                          , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
                                               BlockInlineBody
-                                                [ ParInline (Str "Details of the proof\n") ]
-                                          , fConclusion = Just [ Str "\8718" ]
+                                                [ ParInline
+                                                    (Istr Str { getStr = "Details of the proof\n" })
+                                                ]
+                                          , fConclusion = Just [ Istr Str { getStr = "\8718" } ]
                                           }
                                     ]
                                 , secChildren = []
@@ -589,16 +868,18 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
-                          , secTitle =
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "olist" } ] }
+                          , secTitleFull =
                               Just
                                 Title
                                   { titleBody =
-                                      [ Str " "
-                                      , Number [ Str "2.2" ]
-                                      , Str ". "
-                                      , Str " "
-                                      , TitleBody [ Str "olist" ]
-                                      , Str ""
+                                      [ Istr Str { getStr = " " }
+                                      , Iother (TitleNumber [ Istr Str { getStr = "2.2" } ])
+                                      , Istr Str { getStr = ". " }
+                                      , Istr Str { getStr = " " }
+                                      , Iother (TitleBody [ Istr Str { getStr = "olist" } ])
+                                      , Istr Str { getStr = "" }
                                       ]
                                   }
                           , secNum = Just "2.2"
@@ -607,20 +888,30 @@ Doc
                                 { secPreamble =
                                     [ ParBlock
                                         (Paragraph
-                                           [ ParInline (Str "The ")
-                                           , ParInline (Code "olist")
+                                           [ ParInline (Istr Str { getStr = "The " })
                                            , ParInline
-                                               (Str
-                                                  " block element represents an ordered list. It contains\na whitespace-separated list of ")
-                                           , ParInline (Code "item")
-                                           , ParInline (Str " elements.")
+                                               (Icode InlineCode { getInlineCode = "olist" })
+                                           , ParInline
+                                               (Istr
+                                                  Str
+                                                    { getStr =
+                                                        " block element represents an ordered list. It contains\na whitespace-separated list of "
+                                                    })
+                                           , ParInline (Icode InlineCode { getInlineCode = "item" })
+                                           , ParInline (Istr Str { getStr = " elements." })
                                            ])
-                                    , ParBlock (Paragraph [ ParInline (Str "An example:") ])
+                                    , ParBlock
+                                        (Paragraph
+                                           [ ParInline (Istr Str { getStr = "An example:" }) ])
                                     , ListBlock
                                         (Olist
-                                           [ BlockInlineBody [ ParInline (Str "First element") ]
-                                           , BlockInlineBody [ ParInline (Str "Second element") ]
-                                           , BlockInlineBody [ ParInline (Str "Third element") ]
+                                           [ BlockInlineBody
+                                               [ ParInline (Istr Str { getStr = "First element" }) ]
+                                           , BlockInlineBody
+                                               [ ParInline (Istr Str { getStr = "Second element" })
+                                               ]
+                                           , BlockInlineBody
+                                               [ ParInline (Istr Str { getStr = "Third element" }) ]
                                            ])
                                     ]
                                 , secChildren = []

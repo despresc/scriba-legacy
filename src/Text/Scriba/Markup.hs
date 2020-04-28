@@ -2,11 +2,52 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveFunctor #-}
 
-module Text.Scriba.Markup where
+-- TODO: review exports once the refactor is done
+
+module Text.Scriba.Markup
+  ( Doc(..)
+  , SectionContent(..)
+  , Section(..)
+  , Block(..)
+  , MixedBlockBody(..)
+  , Formal(..)
+  , List(..)
+  , Paragraph(..)
+  , ParContent(..)
+  , Inline(..)
+  , Title(..)
+  , DocAttrs(..)
+  , NumberStyle(..)
+  , TitlingConfig(..)
+  , unzips
+  , unzips3
+  , FormalConfig(..)
+  , runVariedInline
+  , SectionConfig(..)
+  , parseDoc
+  , prettyScribaError
+  , Str(..)
+  , Emph(..)
+  , Quote(..)
+  , InlineMath(..)
+  , DisplayMath(..)
+  , InlineCode(..)
+  , PageMark(..)
+  , TitleParts(..)
+  )
+where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
+import           Text.Scriba.Markup.DisplayMath
+import           Text.Scriba.Markup.Emph
+import           Text.Scriba.Markup.InlineCode
+import           Text.Scriba.Markup.InlineMath
+import           Text.Scriba.Markup.PageMark
+import           Text.Scriba.Markup.Quote
+import           Text.Scriba.Markup.Str
 
 import           Control.Applicative            ( (<|>)
                                                 , Alternative
@@ -34,9 +75,11 @@ import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
+import           Data.Void                      ( Void
+                                                , absurd
+                                                )
 import           Text.Megaparsec                ( SourcePos
                                                 , many
-                                                , some
                                                 )
 import qualified Text.Megaparsec               as MP
 
@@ -136,7 +179,7 @@ data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
 
 -- TODO: should I mapKey the docNumberStyle here?
 data DocAttrs = DocAttrs
-  { docTitle :: Title
+  { docTitle :: Title Void
   , docPlainTitle :: Text
   , docTitlingConfig :: TitlingConfig
   , docElemCounterRel :: Map ContainerName CounterName
@@ -156,22 +199,16 @@ data TitlingConfig = TitlingConfig
 -- E.g. stripping all whitespace, so that the template is a little
 -- more understandable.
 data FormalConfig = FormalConfig
-  { fconfPrefix :: Maybe [Inline]
+  { fconfPrefix :: Maybe [Inline Void]
   , fconfTitleTemplate :: [Varied]
-  , fconfTitleSep :: Maybe [Inline]
-  , fconfConcl :: Maybe [Inline]
+  , fconfTitleSep :: Maybe [Inline Void]
+  , fconfConcl :: Maybe [Inline Void]
   } deriving (Eq, Ord, Show, Read)
 
 data SectionConfig = SectionConfig
-  { sconfPrefix :: Maybe [Inline]
+  { sconfPrefix :: Maybe [Inline Void]
   , sconfTitleTemplate :: [Varied]
   } deriving (Eq, Ord, Show, Read)
-
-defaultFormalConfig :: FormalConfig
-defaultFormalConfig = FormalConfig Nothing [] Nothing Nothing
-
-defaultSectionConfig :: FormalConfig
-defaultSectionConfig = FormalConfig Nothing [] Nothing Nothing
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -190,7 +227,8 @@ defaultSectionConfig = FormalConfig Nothing [] Nothing Nothing
 -- that.
 data Section = Section
   { secType :: Maybe Text
-  , secTitle :: Maybe Title
+  , secTitleBody :: Maybe (Title Void)
+  , secTitleFull :: Maybe (Title TitleParts)
   , secNum :: Maybe Text
   , secContent :: SectionContent
   } deriving (Eq, Ord, Show, Read)
@@ -222,7 +260,7 @@ data Paragraph = Paragraph [ParContent]
 -- honestly. There could simply be some types of inline with a
 -- "display" property (math, notably).
 data ParContent
-  = ParInline Inline
+  = ParInline (Inline Void)
   deriving (Eq, Ord, Show, Read)
 
 -- Might want a formal inline too. Some kind of "inline result",
@@ -237,19 +275,19 @@ data ParContent
 data Formal = Formal
   { fType :: Maybe Text
   , fNum :: Maybe Text
-  , fTitle :: Maybe [Inline]
-  , fNote :: Maybe [Inline]
-  , fTitleSep :: Maybe [Inline]
+  , fTitle :: Maybe [Inline TitleParts]
+  , fNote :: Maybe [Inline Void]
+  , fTitleSep :: Maybe [Inline Void]
   , fContent :: MixedBlockBody
-  , fConclusion :: Maybe [Inline]
+  , fConclusion :: Maybe [Inline Void]
   } deriving (Eq, Ord, Show, Read)
 
 -- TODO: may want to restrict the inlines that can appear in a
 -- title. May also want to have a toc title and header/running title
 -- in here too. Also may want a richer title structure, say having
 -- titles, separators, subtitles, that sort of thing.
-newtype Title = Title
-  { titleBody :: [Inline]
+newtype Title a = Title
+  { titleBody :: [Inline a]
   } deriving (Eq, Ord, Show, Read)
 
 -- TODO: need an inline list form too.
@@ -267,24 +305,23 @@ data List
 -- TODO: Should probably make this type more modular. Would allow us
 -- greater control over the usage of inlines, allow greater
 -- modularization of functions
-data Inline
-  = Str Text
-  | Emph [Inline]
-  | Quote [Inline]
-  | Math Text
-  | DisplayMath Dmath
-  | Code Text
-  | PageMark Text
-  | TitlePrefix [Inline]
-  | Number [Inline]
-  | TitleNote [Inline]
-  | TitleSep [Inline]
-  | TitleBody [Inline]
-  deriving (Eq, Ord, Show, Read)
+data Inline a
+  = Istr !Str
+  | Iemph !(Emph (Inline a))
+  | Iquote !(Quote (Inline a))
+  | IinlineMath !InlineMath
+  | IdisplayMath !DisplayMath
+  | Icode !InlineCode
+  | IpageMark !PageMark
+  | Iother !a
+  deriving (Eq, Ord, Show, Read, Functor)
 
-data Dmath
-  = Formula Text
-  | Gathered [Text]
+data TitleParts
+  = TitlePrefix [Inline Void]
+  | TitleNote [Inline Void]
+  | TitleNumber [Inline Void]
+  | TitleSep [Inline Void]
+  | TitleBody [Inline Void]
   deriving (Eq, Ord, Show, Read)
 
 -- TODO: move this to its own module?
@@ -391,24 +428,6 @@ expectsGotAt :: MonadError ScribaError m => [Text] -> SourcePos -> Text -> m a
 expectsGotAt es sp t =
   throwError $ Expecting (toExpectations es) (Just (sp, t))
 
-expectGotAt :: Text -> SourcePos -> Text -> Scriba s a
-expectGotAt = expectsGotAt . (: [])
-
--- | Re-annotate a thrown @Expecting@ error with the given
--- expectations, shallowly.
-
--- TODO: should there be a deeper version of this? Or at least one
--- that overrides more things? There could be one with HasPosition s
--- => Scriba s a that might be a little more automatic?
-expects :: [Text] -> Scriba s a -> Scriba s a
-expects e = flip catchError go
- where
-  go (Expecting _ g) = throwError $ Expecting (toExpectations e) g
-  go x               = throwError x
-
-expect :: Text -> Scriba s a -> Scriba s a
-expect = expects . (: [])
-
 -- TODO: generalize, maybe with a HasPosition class? Also lenses
 elemPos :: Scriba Element SourcePos
 elemPos = meta $ do
@@ -447,9 +466,6 @@ zero = liftScriba $ \ss -> case ss of
 
 manyOf :: Scriba s a -> Scriba [s] [a]
 manyOf = many . one
-
-someOf :: Scriba s a -> Scriba [s] [a]
-someOf = some . one
 
 inspect :: Scriba s s
 inspect = Scriba S.get
@@ -567,11 +583,6 @@ asNode act = liftScriba $ \n -> case n of
     pure (NodeElem e', a)
   NodeText sp _ -> expectsGotAt ["element"] sp "text node"
 
--- TODO: automatic annotation for expectation here?
-match :: (s -> Bool) -> Scriba s s
-match f = liftScriba $ \s -> do
-  if f s then pure (s, s) else Left (Msg "no match")
-
 -- TODO: should really unify this with match...
 -- TODO: should really add source position lens/getter
 -- TODO: here, or elsewhere, should say "unrecognized element"
@@ -641,54 +652,20 @@ commonIndentStrip txt =
 -- plain text. Very lossy, naturally. This doesn't add any textual
 -- markers around code, math, or quotations, or things like that, so
 -- beware.
-stripMarkup :: [Inline] -> Text
-stripMarkup = T.concat . concatMap inlineToText
+stripMarkup :: (a -> [Text]) -> [Inline a] -> Text
+stripMarkup f = T.concat . concatMap inlineToText
  where
-  inlineToText (Str         t ) = [t]
-  inlineToText (Emph        is) = concatMap inlineToText is
-  inlineToText (Quote       is) = concatMap inlineToText is
-  inlineToText (Math        t ) = [t]
-  inlineToText (DisplayMath d ) = displayToText d
-  inlineToText (Code        t ) = [t]
-  inlineToText (PageMark    t ) = [t]
-  inlineToText (TitleNote   is) = concatMap inlineToText is
-  inlineToText (TitlePrefix is) = concatMap inlineToText is
-  inlineToText (TitleBody   is) = concatMap inlineToText is
-  inlineToText (Number      is) = concatMap inlineToText is
-  inlineToText (TitleSep    is) = concatMap inlineToText is
+  inlineToText (Istr         i ) = strToText i
+  inlineToText (Iemph        is) = emphToText inlineToText is
+  inlineToText (Iquote       is) = quoteToText inlineToText is
+  inlineToText (IinlineMath  t ) = inlineMathToText t
+  inlineToText (IdisplayMath d ) = displayToText d
+  inlineToText (Icode        t ) = inlineCodeToText t
+  inlineToText (IpageMark    t ) = pageMarkToText t
+  inlineToText (Iother       a ) = f a
 
   displayToText (Formula  t ) = [t]
   displayToText (Gathered ts) = ts
-
-
--- Space consumer. Don't need the non-void version yet. May want to
--- pass in a function instead of using isSpace.
--- TODO: need to update the source position of this NodeText!
--- TODO: it might be better to have this fail when a non-whitespace
--- text node is encountered, instead of adding its tail back to the
--- node stream. Call it pOnlySpace, perhaps.
-pSpace :: Scriba [Node] ()
-pSpace = do
-  ns <- S.get
-  case ns of
-    NodeText sp t : ns' -> do
-      let t' = T.dropWhile isSpace t
-      if T.null t' then S.put ns' >> pSpace else S.put (NodeText sp t' : ns')
-    _ -> pure ()
-
--- TODO: Should just lift takeWhile to [Node], honestly.
--- TODO: need to implement updatePosText here. The positions are off.
--- TODO: pNotWhiteSpace1?
-pNotWhiteSpace :: Scriba [Node] Text
-pNotWhiteSpace = do
-  ns <- S.get
-  case ns of
-    NodeText sp t : ns' -> do
-      let (tpref, tsuff) = T.break isSpace t
-      case T.null tsuff of
-        True  -> (<>) tpref <$> pNotWhiteSpace
-        False -> S.put (NodeText sp tsuff : ns') $> tpref
-    _ -> pure ""
 
 -- | Consumes whitespace up to the first element or end of
 -- input. Throws an error if a text element with a non-whitespace
@@ -720,6 +697,7 @@ pOnlySpace = do
 -- TODO: Some sort of conditional behaviour may become necessary in
 -- templates. There may be examples where separator styling needs to
 -- vary based on the presence of certain elements.
+-- TODO: need a default [Varied] template.
 data Varied
   = VariedStr Text
   | VariedSpace
@@ -786,18 +764,18 @@ pVariedVar t = asNode $ do
 -- TODO: use of Map seems a little wasteful at the moment.
 -- TODO: probably needs to wrap its components in spans!
 -- TODO: do the before/after things need to be in spans too?
-runVariedInline :: Map Text [Inline] -> [Varied] -> [Inline]
+runVariedInline :: Map Text [Inline Void] -> [Varied] -> [Inline TitleParts]
 runVariedInline m = concatMap unVary
  where
-  unVary VariedSpace       = [Str " "]
-  unVary (VariedStr t    ) = [Str t]
+  unVary VariedSpace       = [Istr $ Str " "]
+  unVary (VariedStr t    ) = [Istr $ Str t]
   unVary (VariedVar b v a) = case unVaryVar v of
-    Just vi -> [Str b, vi, Str a]
+    Just vi -> [Istr $ Str b, vi, Istr $ Str a]
     Nothing -> []
-  unVaryVar VariedPrefix = TitlePrefix <$> M.lookup "titlePrefix" m
-  unVaryVar VariedNote   = TitleNote <$> M.lookup "titleNote" m
-  unVaryVar VariedTitle  = TitleBody <$> M.lookup "titleBody" m
-  unVaryVar VariedNumber = Number <$> M.lookup "n" m
+  unVaryVar VariedPrefix = Iother . TitlePrefix <$> M.lookup "titlePrefix" m
+  unVaryVar VariedNote   = Iother . TitleNote <$> M.lookup "titleNote" m
+  unVaryVar VariedTitle  = Iother . TitleBody <$> M.lookup "titleBody" m
+  unVaryVar VariedNumber = Iother . TitleNumber <$> M.lookup "n" m
 
 -- TODO: write this. Will need to have options for how they are
 -- numbered, and how the title and conclusion are generated.
@@ -861,7 +839,11 @@ pSectionConfig = whileParsingElem "sections" $ meta $ attrs $ allAttrsOf
       titleTemplate <- mattr "title" $ allContent (pVariedSeq t)
       numbering     <- attrMaybe "numbering" $ pCounterDepends
       let (counterDepends, ns) = unzips numbering
-      pure $ (SectionConfig pref titleTemplate, counterDepends, ns)
+      pure
+        $ ( SectionConfig (fmap (fmap (fmap absurd)) pref) titleTemplate
+          , counterDepends
+          , ns
+          )
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an
@@ -929,7 +911,7 @@ pFormal = do
     body <- pMixedBlockBody
     pure $ Formal (T.concat <$> mty)
                   (T.concat <$> mnumber)
-                  title
+                  (fmap (fmap (fmap absurd)) title)
                   note
                   tsep
                   body
@@ -991,7 +973,7 @@ pMixedBlockBody = allContent (BlockBlockBody <$> manyOf pBlock)
 
 -- ** Inline parsing
 
-pInline :: Scriba Node Inline
+pInline :: Scriba Node (Inline Void)
 pInline =
   asNode
       (   pEmph
@@ -1004,63 +986,63 @@ pInline =
       )
     <|> pText
 
-pEmph :: Scriba Element Inline
+pEmph :: Scriba Element (Inline Void)
 pEmph = do
   matchTy "emph"
   c <- whileParsingElem "emph" $ allContentOf pInline
-  pure $ Emph c
+  pure $ Iemph $ Emph c
 
-pQuote :: Scriba Element Inline
+pQuote :: Scriba Element (Inline Void)
 pQuote = do
   matchTy "q"
   c <- whileParsingElem "q" $ allContentOf pInline
-  pure $ Quote c
+  pure $ Iquote $ Quote c
 
 -- TODO: well-formedness checking?
-pPageMark :: Scriba Element Inline
+pPageMark :: Scriba Element (Inline Void)
 pPageMark = do
   matchTy "physPage"
   t <- whileParsingElem "physPage" $ allContentOf simpleText
-  pure $ PageMark $ T.concat t
+  pure $ IpageMark $ PageMark $ T.concat t
 
-pText :: Scriba Node Inline
-pText = Str <$> simpleText
+pText :: Scriba Node (Inline Void)
+pText = Istr . Str <$> simpleText
 
-pMath :: Scriba Element Inline
+pMath :: Scriba Element (Inline Void)
 pMath = do
   matchTy "math"
   ts <- whileParsingElem "math" $ allContentOf simpleText
-  pure $ Math $ T.concat ts
+  pure $ IinlineMath $ InlineMath $ T.concat ts
 
 -- TODO: syntactic unification with pMath? it's probably better to
 -- have a single "display" parameter control both, and have dmath be a
 -- syntactic alias (in some way) for math {presentation|display}
-pFormula :: Scriba Element Inline
+pFormula :: Scriba Element (Inline Void)
 pFormula = do
   matchTy "dmath"
   c <- whileParsingElem "dmath" $ allContentOf simpleText
-  pure $ DisplayMath $ Formula $ T.concat c
+  pure $ IdisplayMath $ Formula $ T.concat c
 
 -- TODO: syntact unification with formula? May want to consider design
 -- here. E.g. could have a single dmath whose content is flexibly
 -- parsed, have Gathered be a list of math and not Text, that sort of
 -- thing.
-pGathered :: Scriba Element Inline
+pGathered :: Scriba Element (Inline Void)
 pGathered = do
   matchTy "gathered"
   c <- whileParsingElem "gathered" $ allContent $ pOnlySpace *> many
     (one pLine <* pOnlySpace)
-  pure $ DisplayMath $ Gathered c
+  pure $ IdisplayMath $ Gathered c
  where
   pLine = asNode $ do
     matchTy "line"
     fmap T.concat $ whileParsingElem "line" $ allContentOf simpleText
 
-pCode :: Scriba Element Inline
+pCode :: Scriba Element (Inline Void)
 pCode = do
   matchTy "code"
   t <- whileParsingElem "code" $ allContentOf simpleText
-  pure $ Code $ T.concat t
+  pure $ Icode $ InlineCode $ T.concat t
 
 -- ** Section parsing
 
@@ -1073,12 +1055,17 @@ pSection :: Scriba Element Section
 pSection = do
   mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
   whileParsingElem (fromMaybe "section of unknown type" mty) $ do
-    (mtitle, mnumber) <- meta $ attrs $ do
-      mtitle  <- attrMaybe "title" $ allContentOf pInline
-      mnumber <- attrMaybe "n" $ allContentOf simpleText
-      pure (mtitle, mnumber)
+    (mtitle, mfullTitle, mnumber) <- meta $ attrs $ do
+      mtitle     <- attrMaybe "title" $ allContentOf pInline
+      mfullTitle <- attrMaybe "fullTitle" $ allContentOf pInline
+      mnumber    <- attrMaybe "n" $ allContentOf simpleText
+      pure (mtitle, mfullTitle, mnumber)
     c <- content $ pSectionContent
-    pure $ Section mty (Title <$> mtitle) (T.concat <$> mnumber) c
+    pure $ Section mty
+                   (Title <$> mtitle)
+                   (Title . fmap (fmap absurd) <$> mfullTitle)
+                   (T.concat <$> mnumber)
+                   c
  where
   presentedAsSection = do
     meta $ do
@@ -1141,7 +1128,7 @@ pDoc = do
           Left  e -> throwError $ Msg e
           Right a -> pure a
       pure $ DocAttrs (Title t)
-                      (fromMaybe (stripMarkup t) tplain)
+                      (fromMaybe (stripMarkup absurd t) tplain)
                       (TitlingConfig fconf sconf)
                       elemrel
                       crel
