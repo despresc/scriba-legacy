@@ -751,7 +751,7 @@ Doc
                                           , fNote = Nothing
                                           , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
-                                              BlockInlineBody
+                                              MixedInline
                                                 [ Istr Str { getStr = "A preliminary lemma.\n" } ]
                                           , fConclusion = Nothing
                                           }
@@ -781,7 +781,7 @@ Doc
                                               Just [ Istr Str { getStr = "an interesting one" } ]
                                           , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
-                                              BlockInlineBody
+                                              MixedInline
                                                 [ Istr
                                                     Str
                                                       { getStr =
@@ -816,7 +816,7 @@ Doc
                                                 ]
                                           , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
-                                              BlockInlineBody
+                                              MixedInline
                                                 [ Istr Str { getStr = "Details of the proof\n" } ]
                                           , fConclusion = Just [ Istr Str { getStr = "\8718" } ]
                                           }
@@ -863,12 +863,9 @@ Doc
                                           { getParagraph = [ Istr Str { getStr = "An example:" } ] }
                                     , Blist
                                         (Olist
-                                           [ BlockInlineBody
-                                               [ Istr Str { getStr = "First element" } ]
-                                           , BlockInlineBody
-                                               [ Istr Str { getStr = "Second element" } ]
-                                           , BlockInlineBody
-                                               [ Istr Str { getStr = "Third element" } ]
+                                           [ MixedInline [ Istr Str { getStr = "First element" } ]
+                                           , MixedInline [ Istr Str { getStr = "Second element" } ]
+                                           , MixedInline [ Istr Str { getStr = "Third element" } ]
                                            ])
                                     ]
                                 , secChildren = []

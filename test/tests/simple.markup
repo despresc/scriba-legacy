@@ -42,7 +42,7 @@ Doc
               , fNote = Nothing
               , fTitleSep = Nothing
               , fContent =
-                  BlockInlineBody
+                  MixedInline
                     [ Istr
                         Str { getStr = "\nThe statement of an interesting theorem.\n" }
                     ]

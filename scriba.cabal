@@ -38,6 +38,8 @@ library
     Text.Scriba.Markup.PageMark
     Text.Scriba.Markup.BlockCode
     Text.Scriba.Markup.Paragraph
+    Text.Scriba.Markup.MixedBody
+    Text.Scriba.Markup.List
     Text.Scriba.Parse
     Text.Scriba.Decorate
     Text.Scriba.Render.Html

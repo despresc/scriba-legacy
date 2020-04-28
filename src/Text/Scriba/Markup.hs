@@ -12,7 +12,7 @@ module Text.Scriba.Markup
   , SectionContent(..)
   , Section(..)
   , Block(..)
-  , MixedBlockBody(..)
+  , MixedBody(..)
   , Formal(..)
   , List(..)
   , Paragraph(..)
@@ -53,6 +53,8 @@ import           Text.Scriba.Markup.Quote
 import           Text.Scriba.Markup.Str
 import           Text.Scriba.Markup.BlockCode
 import           Text.Scriba.Markup.Paragraph
+import           Text.Scriba.Markup.List
+import           Text.Scriba.Markup.MixedBody
 
 import           Control.Applicative            ( (<|>)
                                                 , Alternative
@@ -240,23 +242,18 @@ data Section = Section
   } deriving (Eq, Ord, Show, Read, Generic)
 
 data SectionContent = SectionContent
-  { secPreamble :: [Block]
+  { secPreamble :: [Block (Inline Void)]
   , secChildren :: [Section]
   } deriving (Eq, Ord, Show, Read, Generic)
 
 emptySectionContent :: SectionContent
 emptySectionContent = SectionContent [] []
 
-data Block
+data Block i
   = Bformal Formal
   | Bcode BlockCode
-  | Bpar (Paragraph (Inline Void))
-  | Blist List
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data MixedBlockBody i
-  = BlockInlineBody [i]
-  | BlockBlockBody [Block]
+  | Bpar (Paragraph i)
+  | Blist (List Block i)
   deriving (Eq, Ord, Show, Read, Generic)
 
 -- Might want a formal inline too. Some kind of "inline result",
@@ -274,7 +271,7 @@ data Formal = Formal
   , fTitle :: Maybe [Inline TitleParts]
   , fNote :: Maybe [Inline Void]
   , fTitleSep :: Maybe [Inline Void]
-  , fContent :: MixedBlockBody (Inline Void)
+  , fContent :: MixedBody Block (Inline Void)
   , fConclusion :: Maybe [Inline Void]
   } deriving (Eq, Ord, Show, Read, Generic)
 
@@ -285,13 +282,6 @@ data Formal = Formal
 newtype Title a = Title
   { titleBody :: [Inline a]
   } deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: need an inline list form too.
--- TODO: list markers and such, of course.
-data List
-  = Ulist [MixedBlockBody (Inline Void)]
-  | Olist [MixedBlockBody (Inline Void)]
-  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: rename Math to InlineMath?
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
@@ -861,7 +851,7 @@ pCounterDepends = meta $ attrs $ do
 
 -- ** Block Parsing
 
-pBlock :: Scriba Node Block
+pBlock :: Scriba Node (Block (Inline a))
 pBlock =
   asNode
     $   Bformal
@@ -912,7 +902,7 @@ pFormal = do
 
 -- TODO: no language attributes recognized. This is also a problem
 -- with the code inline.
-pCodeBlock :: Scriba Element Block
+pCodeBlock :: Scriba Element (Block i)
 pCodeBlock = do
   matchTy "codeBlock"
   t <- whileParsingElem "codeBlock" $ allContentOf simpleText
@@ -927,24 +917,24 @@ pCodeBlock = do
 -- what the document assumes. We could still ship with CSS styles for
 -- the numbers, and simply put different classes on the rendered
 -- lists, of course.
-pList :: Scriba Element List
+pList :: Scriba Element (List Block (Inline a))
 pList = pOlist <|> pUlist
 
-pOlist :: Scriba Element List
+pOlist :: Scriba Element (List Block (Inline a))
 pOlist = do
   matchTy "olist"
   content $ pOnlySpace
   fmap Olist $ whileParsingElem "olist" $ allContent $ many
     (one pListItem <* pOnlySpace)
 
-pUlist :: Scriba Element List
+pUlist :: Scriba Element (List Block (Inline a))
 pUlist = do
   matchTy "ulist"
   content $ pOnlySpace
   fmap Ulist $ whileParsingElem "ulist" $ allContent $ many
     (one pListItem <* pOnlySpace)
 
-pListItem :: Scriba Node (MixedBlockBody (Inline a))
+pListItem :: Scriba Node (MixedBody Block (Inline a))
 pListItem = asNode pItem
  where
   pItem = do
@@ -957,9 +947,9 @@ pParagraph = do
   c <- whileParsingElem "p" $ allContentOf pInline
   pure $ Paragraph c
 
-pMixedBlockBody :: Scriba Element (MixedBlockBody (Inline a))
-pMixedBlockBody = allContent (BlockBlockBody <$> manyOf pBlock)
-  <|> allContent (BlockInlineBody <$> manyOf pInline)
+pMixedBlockBody :: Scriba Element (MixedBody Block (Inline a))
+pMixedBlockBody = allContent (MixedBlock <$> manyOf pBlock)
+  <|> allContent (MixedInline <$> manyOf pInline)
 
 -- ** Inline parsing
 

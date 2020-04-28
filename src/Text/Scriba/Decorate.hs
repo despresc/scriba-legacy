@@ -28,9 +28,6 @@ import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
-import           Data.Void                      ( Void
-                                                , absurd
-                                                )
 import           Data.Foldable                  ( traverse_ )
 import           Data.Traversable               ( for )
 
@@ -200,14 +197,14 @@ numSectionContent (SectionContent p c) = do
   c' <- numSections c
   pure $ SectionContent p' c'
 
-numBlocks :: [Block] -> Numbering [Block]
+numBlocks :: [Block (Inline a)] -> Numbering [Block (Inline a)]
 numBlocks = traverse numBlock
 
 numSections :: [Section] -> Numbering [Section]
 numSections = traverse numSection
 
 -- TODO: integrate list numbering into all of this.
-numBlock :: Block -> Numbering Block
+numBlock :: Block (Inline a) -> Numbering (Block (Inline a))
 numBlock (Bformal formal) = Bformal <$> numFormal formal
 numBlock (Blist   l     ) = Blist <$> numList l
 numBlock x                = pure x
@@ -272,7 +269,7 @@ numFormal (Formal mty mnum ti note tsep cont concl) = do
     pure num
   pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'
 
-numList :: List -> Numbering List
+numList :: List Block (Inline a) -> Numbering (List Block (Inline a))
 numList (Ulist l) = Ulist <$> traverse numMixedBlockBody l
 numList (Olist l) = Olist <$> traverse numMixedBlockBody l
 
@@ -284,13 +281,13 @@ numTitle = pure
 numInlinesWith :: (a -> Numbering a) -> [Inline a] -> Numbering [Inline a]
 numInlinesWith _ = pure
 
-numInlines :: [Inline Void] -> Numbering [Inline Void]
-numInlines = numInlinesWith absurd
+numInlines :: [Inline a] -> Numbering [Inline a]
+numInlines = numInlinesWith pure
 
 numMixedBlockBody
-  :: MixedBlockBody (Inline Void) -> Numbering (MixedBlockBody (Inline Void))
-numMixedBlockBody (BlockInlineBody p) = BlockInlineBody <$> numInlines p
-numMixedBlockBody (BlockBlockBody  b) = BlockBlockBody <$> numBlocks b
+  :: MixedBody Block (Inline a) -> Numbering (MixedBody Block (Inline a))
+numMixedBlockBody (MixedInline p) = MixedInline <$> numInlines p
+numMixedBlockBody (MixedBlock  b) = MixedBlock <$> numBlocks b
 
 numInline :: Inline a -> Numbering (Inline a)
 numInline = pure
@@ -312,7 +309,7 @@ genSecContentTitle m (SectionContent p c) =
 
 -- TODO: we don't walk any inlines because there is nothing to
 -- generate for them. That might change!
-genBlockTitle :: TitlingConfig -> Block -> Block
+genBlockTitle :: TitlingConfig -> Block (Inline a) -> Block (Inline a)
 genBlockTitle m (Bformal formal) = Bformal $ genFormalTitle m formal
 genBlockTitle m (Blist   l     ) = Blist $ genListTitle m l
 genBlockTitle _ x                = x
@@ -346,17 +343,16 @@ genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
           ]
     pure (tisep, pure $ runVariedInline vars template, concl)
 
-genListTitle :: TitlingConfig -> List -> List
+genListTitle :: TitlingConfig -> List Block (Inline a) -> List Block (Inline a)
 genListTitle m l = case l of
   Ulist l' -> Ulist $ go l'
   Olist l' -> Olist $ go l'
   where go = map $ genMixedBlockBodyTitle m
 
 genMixedBlockBodyTitle
-  :: TitlingConfig -> MixedBlockBody (Inline a) -> MixedBlockBody (Inline a)
-genMixedBlockBodyTitle m (BlockBlockBody b) =
-  BlockBlockBody $ map (genBlockTitle m) b
-genMixedBlockBodyTitle _ x = x
+  :: TitlingConfig -> MixedBody Block (Inline a) -> MixedBody Block (Inline a)
+genMixedBlockBodyTitle m (MixedBlock b) = MixedBlock $ map (genBlockTitle m) b
+genMixedBlockBodyTitle _ x              = x
 
 -- TODO: reduce duplication with genFormalTitle
 genSectionTitle :: TitlingConfig -> Section -> Section
