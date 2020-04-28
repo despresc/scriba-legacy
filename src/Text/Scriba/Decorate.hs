@@ -17,6 +17,7 @@ import           Control.Monad.State.Strict     ( State
                                                 , modify
                                                 )
 import qualified Control.Monad.State.Strict    as State
+import           Data.Foldable                  ( traverse_ )
 import           Data.Functor                   ( ($>) )
 import           Data.Map.Strict                ( Map )
 import           Data.Maybe                     ( fromMaybe
@@ -28,8 +29,8 @@ import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
-import           Data.Foldable                  ( traverse_ )
 import           Data.Traversable               ( for )
+import           Data.Void
 
 -- TODO: may need errors, a state for numbering, environment for
 -- titling. Or perhaps pipelined for modularity, with a shared error
@@ -242,7 +243,7 @@ numSection (Section mty tbody tfull mnum c) = do
 -- TODO: we don't skip numbering a formal block when it already has a
 -- number. Should have config for that sort of thing.
 -- TODO: should not join so much
-numFormal :: Formal -> Numbering Formal
+numFormal :: Formal Block (Inline a) -> Numbering (Formal Block (Inline a))
 numFormal (Formal mty mnum ti note tsep cont concl) = do
   mnumdata <- fmap (join . join) $ for mty $ \typ -> do
     let containername = ContainerName typ
@@ -309,14 +310,15 @@ genSecContentTitle m (SectionContent p c) =
 
 -- TODO: we don't walk any inlines because there is nothing to
 -- generate for them. That might change!
-genBlockTitle :: TitlingConfig -> Block (Inline a) -> Block (Inline a)
+genBlockTitle :: TitlingConfig -> Block (Inline Void) -> Block (Inline Void)
 genBlockTitle m (Bformal formal) = Bformal $ genFormalTitle m formal
 genBlockTitle m (Blist   l     ) = Blist $ genListTitle m l
 genBlockTitle _ x                = x
 
 -- TODO: this also generates the conclusion of formal blocks. Sort of
 -- misleading that it happens here, perhaps...
-genFormalTitle :: TitlingConfig -> Formal -> Formal
+genFormalTitle
+  :: TitlingConfig -> Formal Block (Inline Void) -> Formal Block (Inline Void)
 genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
   mty
   mnum
@@ -343,14 +345,17 @@ genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
           ]
     pure (tisep, pure $ runVariedInline vars template, concl)
 
-genListTitle :: TitlingConfig -> List Block (Inline a) -> List Block (Inline a)
+genListTitle
+  :: TitlingConfig -> List Block (Inline Void) -> List Block (Inline Void)
 genListTitle m l = case l of
   Ulist l' -> Ulist $ go l'
   Olist l' -> Olist $ go l'
   where go = map $ genMixedBlockBodyTitle m
 
 genMixedBlockBodyTitle
-  :: TitlingConfig -> MixedBody Block (Inline a) -> MixedBody Block (Inline a)
+  :: TitlingConfig
+  -> MixedBody Block (Inline Void)
+  -> MixedBody Block (Inline Void)
 genMixedBlockBodyTitle m (MixedBlock b) = MixedBlock $ map (genBlockTitle m) b
 genMixedBlockBodyTitle _ x              = x
 

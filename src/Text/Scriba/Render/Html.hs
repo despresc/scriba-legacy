@@ -134,7 +134,7 @@ renderSectionContent (SectionContent bs cs) = do
 -- untitled section. Some kind of state variable, I think.
 renderSection :: Section -> Render Html
 renderSection (Section _ _ t _ c) = do
-  t' <- traverse (renderTitleWith id) t
+  t' <- traverse renderTitle t
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
     pure $ H.section $ fromMaybe mempty t' <> c'
@@ -171,9 +171,9 @@ renderMixedBlockBody b (MixedBlock blks) = go <$> renderBlocks blks
 -- TODO: Should the title be "formalTitle"?
 -- TODO: wrap the title separator? Also the title separator should be
 -- rendered conditional on there being a title at all.
-renderFormalBlock :: Formal -> Render Html
+renderFormalBlock :: Formal Block (Inline Void) -> Render Html
 renderFormalBlock (Formal mty _ mtitle _ mtitlesep body concl) = do
-  title'    <- traverse (renderInlinesWith renderTitleParts) mtitle
+  title'    <- traverse renderInlines mtitle
   titlesep' <- traverse renderInlines mtitlesep
   body'     <- renderMixedBlockBody True body
   concl'    <- traverse renderInlines concl
@@ -212,6 +212,7 @@ renderInlineWith _ (IinlineMath  s) = renderInlineMath s
 renderInlineWith _ (IdisplayMath s) = renderDisplayMath s
 renderInlineWith _ (Icode        s) = renderInlineCode s
 renderInlineWith _ (IpageMark    s) = renderPageMark s
+renderInlineWith f (ItitleParts  s) = renderTitleParts (renderInlineWith f) s
 renderInlineWith f (Iother       s) = f s
 
 renderInline :: Inline Void -> Render Html
@@ -251,14 +252,13 @@ renderDisplayMathContent (Gathered ts) =
     <> T.intercalate "//\n" ts
     <> "\\end{gathered}"
 
-
 -- | Render a heading title using the ambient header depth.
 
 -- Add a sectionTitle class?
-renderTitleWith :: (a -> TitleParts (Inline Void)) -> Title a -> Render Html
-renderTitleWith f (Title t) = do
+renderTitle :: Title (Inline Void) -> Render Html
+renderTitle (Title t) = do
   lvl <- gets rsHeaderDepth
-  headAtLevel lvl <$> renderInlinesWith (renderTitleParts . f) t
+  headAtLevel lvl <$> renderInlines t
  where
   headAtLevel n = case n of
     1 -> H.h1
@@ -268,17 +268,10 @@ renderTitleWith f (Title t) = do
     5 -> H.h5
     _ -> H.h6
 
-renderTitle :: Title Void -> Render Html
-renderTitle = renderTitleWith absurd
-
-renderTitleParts :: TitleParts (Inline Void) -> Render Html
-renderTitleParts (TitlePrefix i) =
-  H.span ! A.class_ "titlePrefix" <$> renderInlines i
-renderTitleParts (TitleNumber i) =
-  H.span ! A.class_ "number" <$> renderInlines i
-renderTitleParts (TitleNote i) =
-  H.span ! A.class_ "titleNote" <$> renderInlines i
-renderTitleParts (TitleSep i) =
-  H.span ! A.class_ "titleSep" <$> renderInlines i
-renderTitleParts (TitleBody i) =
-  H.span ! A.class_ "titleBody" <$> renderInlines i
+renderTitleParts :: (a -> Render Html) -> TitleParts a -> Render Html
+renderTitleParts f (TitlePrefix i) =
+  H.span ! A.class_ "titlePrefix" <$> foldBy f i
+renderTitleParts f (TitleNumber i) = H.span ! A.class_ "number" <$> foldBy f i
+renderTitleParts f (TitleNote i) = H.span ! A.class_ "titleNote" <$> foldBy f i
+renderTitleParts f (TitleSep i) = H.span ! A.class_ "titleSep" <$> foldBy f i
+renderTitleParts f (TitleBody i) = H.span ! A.class_ "titleBody" <$> foldBy f i

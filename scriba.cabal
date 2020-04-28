@@ -41,7 +41,9 @@ library
     Text.Scriba.Markup.MixedBody
     Text.Scriba.Markup.List
     Text.Scriba.Markup.TitleParts
+    Text.Scriba.Markup.Formal
     Text.Scriba.Parse
+    Text.Scriba.ParseIntermediate
     Text.Scriba.Decorate
     Text.Scriba.Render.Html
 
