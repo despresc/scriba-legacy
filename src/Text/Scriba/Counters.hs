@@ -1,7 +1,8 @@
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TupleSections #-}
 
 module Text.Scriba.Counters
   ( ContainerName(..)
@@ -32,20 +33,21 @@ import qualified Data.Set                      as Set
 import           Data.String                    ( IsString )
 import           Data.Text                      ( Text )
 import           Data.Traversable               ( for )
+import           GHC.Generics                   ( Generic )
 
 -- | A 'ContainerName' is the name of a type of thing that is being numbered,
 -- such as a @section@, @theorem@, or @lemma@. Numbering relations are specified
 -- as relations between container names.
 newtype ContainerName = ContainerName
   { unContainerName :: Text
-  } deriving (Eq, Ord, Show, Read, IsString)
+  } deriving (Eq, Ord, Show, Read, IsString, Generic)
 
 -- | A 'CounterName' is the name of a counter, which will have a numeric state
 -- during numbering. For each container that doesn't 'Share' the numbering of
 -- another container, we create a counter with the same name.
 newtype CounterName = CounterName
   { unCounterName :: Text
-  } deriving (Eq, Ord, Show, Read, IsString)
+  } deriving (Eq, Ord, Show, Read, IsString, Generic)
 
 -- | We will need to make counter names out of the names of containers that
 -- don't 'Share' a counter.
@@ -74,7 +76,7 @@ runCounterM = runExcept . unCounterM
 data ContainerRelation
   = Relative [ContainerName]
   | Share ContainerName
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- | The raw counter dependency map associates container names to their
 -- relations with other containers.

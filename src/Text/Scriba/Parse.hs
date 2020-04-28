@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -19,6 +20,7 @@ import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Void                      ( Void )
+import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( Parsec
                                                 , ParseErrorBundle
                                                 , (<?>)
@@ -47,13 +49,13 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
 
 -- | A document has metadata and sectional content.
 data Doc = Doc SourcePos Attrs [SecNode]
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- | Attributes are the same as a list of typed inline elements with
 -- no two types repeated.
 newtype Attrs = Attrs
   { getAttrs :: Map Text Attr
-  } deriving (Eq, Ord, Show, Read, Semigroup, Monoid)
+  } deriving (Eq, Ord, Show, Read, Semigroup, Monoid, Generic)
 
 attrsFromList :: [(Text, Attr)] -> Attrs
 attrsFromList = Attrs . M.fromList
@@ -68,23 +70,23 @@ data Element t c = Element
   , attrs :: Attrs
   , args :: [InlineNode]
   , content :: c
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 -- | A section node is either a section header or a block.
 data SecNode
   = SecHeaderNode SecHeader
   | SecBlock BlockNode
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 data SecHeader = SecHeader Int SourcePos (Maybe Text) Attrs [InlineNode]
- deriving (Eq, Ord, Show, Read)
+ deriving (Eq, Ord, Show, Read, Generic)
 
 -- | A block node is either a block element or a paragraph.
 data BlockNode
   = BlockBlock BlockElement
   -- TODO: implement paragraph header syntax?
   | BlockPar SourcePos [InlineNode]
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- | A block element has an always-present type and block content.
 type BlockElement = Element (Maybe Text) BlockContent
@@ -97,14 +99,14 @@ data BlockContent
   | BlockInlines [InlineNode]
   | BlockVerbatim SourcePos Text
   | BlockNil
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- | Inline sequence content is a list of inline nodes and plain text.
 data InlineNode
   = InlineBraced InlineElement
   | InlineText SourcePos Text
   | InlineComment SourcePos Text
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- | An inline element has an optional type and inline content.
 type InlineElement = Element (Maybe Text) InlineContent
@@ -113,7 +115,7 @@ data InlineContent
   = InlineSequence [InlineNode]
   | InlineVerbatim SourcePos Text
   | InlineNil
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- * Parsing
 

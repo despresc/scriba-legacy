@@ -1,8 +1,9 @@
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveFunctor #-}
 
 -- TODO: review exports once the refactor is done
 
@@ -36,6 +37,8 @@ module Text.Scriba.Markup
   , InlineCode(..)
   , PageMark(..)
   , TitleParts(..)
+  , Varied(..)
+  , VariedVar(..)
   )
 where
 
@@ -78,6 +81,7 @@ import qualified Data.Text                     as T
 import           Data.Void                      ( Void
                                                 , absurd
                                                 )
+import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( SourcePos
                                                 , many
                                                 )
@@ -175,7 +179,7 @@ import qualified Text.Megaparsec               as MP
 
 -- | A document with front matter, main matter, and end matter.
 data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: should I mapKey the docNumberStyle here?
 data DocAttrs = DocAttrs
@@ -185,15 +189,15 @@ data DocAttrs = DocAttrs
   , docElemCounterRel :: Map ContainerName CounterName
   , docCounterRel :: Map CounterName (Set CounterName)
   , docNumberStyles :: Map Text NumberStyle
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 data NumberStyle = Decimal
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 data TitlingConfig = TitlingConfig
   { tcFormalConfig :: Map Text FormalConfig
   , tcSectionConfig :: Map Text SectionConfig
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: richer whitespace options not in the body of the template?
 -- E.g. stripping all whitespace, so that the template is a little
@@ -203,12 +207,12 @@ data FormalConfig = FormalConfig
   , fconfTitleTemplate :: [Varied]
   , fconfTitleSep :: Maybe [Inline Void]
   , fconfConcl :: Maybe [Inline Void]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 data SectionConfig = SectionConfig
   { sconfPrefix :: Maybe [Inline Void]
   , sconfTitleTemplate :: [Varied]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -231,12 +235,12 @@ data Section = Section
   , secTitleFull :: Maybe (Title TitleParts)
   , secNum :: Maybe Text
   , secContent :: SectionContent
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 data SectionContent = SectionContent
   { secPreamble :: [Block]
   , secChildren :: [Section]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 emptySectionContent :: SectionContent
 emptySectionContent = SectionContent [] []
@@ -246,22 +250,22 @@ data Block
   | CodeBlock Text
   | ParBlock Paragraph
   | ListBlock List
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 data MixedBlockBody
   = BlockInlineBody [ParContent]
   | BlockBlockBody [Block]
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 data Paragraph = Paragraph [ParContent]
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- Not sure if there should be anything here other than Inline,
 -- honestly. There could simply be some types of inline with a
 -- "display" property (math, notably).
 data ParContent
   = ParInline (Inline Void)
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- Might want a formal inline too. Some kind of "inline result",
 -- anyway.
@@ -280,7 +284,7 @@ data Formal = Formal
   , fTitleSep :: Maybe [Inline Void]
   , fContent :: MixedBlockBody
   , fConclusion :: Maybe [Inline Void]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: may want to restrict the inlines that can appear in a
 -- title. May also want to have a toc title and header/running title
@@ -288,14 +292,14 @@ data Formal = Formal
 -- titles, separators, subtitles, that sort of thing.
 newtype Title a = Title
   { titleBody :: [Inline a]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: need an inline list form too.
 -- TODO: list markers and such, of course.
 data List
   = Ulist [MixedBlockBody]
   | Olist [MixedBlockBody]
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: rename Math to InlineMath?
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
@@ -314,7 +318,7 @@ data Inline a
   | Icode !InlineCode
   | IpageMark !PageMark
   | Iother !a
-  deriving (Eq, Ord, Show, Read, Functor)
+  deriving (Eq, Ord, Show, Read, Functor, Generic)
 
 data TitleParts
   = TitlePrefix [Inline Void]
@@ -322,7 +326,7 @@ data TitleParts
   | TitleNumber [Inline Void]
   | TitleSep [Inline Void]
   | TitleBody [Inline Void]
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: move this to its own module?
 
@@ -372,7 +376,7 @@ newtype Expectations = Expectations
 
 -- | A non-empty expectation
 newtype Expectation = Expectation Text
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 toExpectation :: Text -> Maybe Expectation
 toExpectation t | T.null t  = Nothing
@@ -396,7 +400,7 @@ data ScribaError
   | Expecting Expectations (Maybe (SourcePos, Text))
   | Msg Text
   | ErrorNil
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: test the precedence of this. E.g. should Expecting come
 -- before Msg or not?
@@ -699,7 +703,7 @@ data Varied
   = VariedStr Text
   | VariedSpace
   | VariedVar Text VariedVar Text
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: restrict the appearance of particular variables? Right now we
 -- use the same pVaried for formal blocks and sections.
@@ -708,7 +712,7 @@ data VariedVar
   | VariedTitle
   | VariedPrefix
   | VariedNumber
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 pVariedSeq :: Text -> Scriba [Node] [Varied]
 pVariedSeq t = firstSpace . concat <$> manyOf (pVaried t)

@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Intermediate where
@@ -15,6 +16,7 @@ import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
+import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( SourcePos )
 
 {- TODO:
@@ -47,14 +49,14 @@ data SourcePresentation
   | AsPara
   | AsInline
   | AsSection Int
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 data Meta = Meta
   { loc :: SourcePos
   , sourcePres :: SourcePresentation
   , metaAttrs :: Attrs
   , metaArgs  :: [Node]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 type Attr = (Meta, [Node])
 
@@ -64,12 +66,12 @@ data Element = Element
   { eType :: Maybe Text
   , eMeta :: Meta
   , eBody :: [Node]
-  } deriving (Eq, Ord, Show, Read)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
 data Node
   = NodeElem Element
   | NodeText SourcePos Text
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
 
 nodeElement :: Maybe Text -> Meta -> [Node] -> Node
 nodeElement t m = NodeElem . Element t m
