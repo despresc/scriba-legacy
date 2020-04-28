@@ -255,7 +255,7 @@ renderDisplayMathContent (Gathered ts) =
 -- | Render a heading title using the ambient header depth.
 
 -- Add a sectionTitle class?
-renderTitleWith :: (a -> TitleParts) -> Title a -> Render Html
+renderTitleWith :: (a -> TitleParts (Inline Void)) -> Title a -> Render Html
 renderTitleWith f (Title t) = do
   lvl <- gets rsHeaderDepth
   headAtLevel lvl <$> renderInlinesWith (renderTitleParts . f) t
@@ -271,7 +271,7 @@ renderTitleWith f (Title t) = do
 renderTitle :: Title Void -> Render Html
 renderTitle = renderTitleWith absurd
 
-renderTitleParts :: TitleParts -> Render Html
+renderTitleParts :: TitleParts (Inline Void) -> Render Html
 renderTitleParts (TitlePrefix i) =
   H.span ! A.class_ "titlePrefix" <$> renderInlines i
 renderTitleParts (TitleNumber i) =

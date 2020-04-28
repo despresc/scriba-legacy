@@ -55,6 +55,7 @@ import           Text.Scriba.Markup.BlockCode
 import           Text.Scriba.Markup.Paragraph
 import           Text.Scriba.Markup.List
 import           Text.Scriba.Markup.MixedBody
+import           Text.Scriba.Markup.TitleParts
 
 import           Control.Applicative            ( (<|>)
                                                 , Alternative
@@ -236,7 +237,7 @@ data SectionConfig = SectionConfig
 data Section = Section
   { secType :: Maybe Text
   , secTitleBody :: Maybe (Title Void)
-  , secTitleFull :: Maybe (Title TitleParts)
+  , secTitleFull :: Maybe (Title (TitleParts (Inline Void)))
   , secNum :: Maybe Text
   , secContent :: SectionContent
   } deriving (Eq, Ord, Show, Read, Generic)
@@ -268,7 +269,7 @@ data Block i
 data Formal = Formal
   { fType :: Maybe Text
   , fNum :: Maybe Text
-  , fTitle :: Maybe [Inline TitleParts]
+  , fTitle :: Maybe [Inline (TitleParts (Inline Void))]
   , fNote :: Maybe [Inline Void]
   , fTitleSep :: Maybe [Inline Void]
   , fContent :: MixedBody Block (Inline Void)
@@ -301,14 +302,6 @@ data Inline a
   | IpageMark !PageMark
   | Iother !a
   deriving (Eq, Ord, Show, Read, Functor, Generic)
-
-data TitleParts
-  = TitlePrefix [Inline Void]
-  | TitleNote [Inline Void]
-  | TitleNumber [Inline Void]
-  | TitleSep [Inline Void]
-  | TitleBody [Inline Void]
-  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: move this to its own module?
 
@@ -747,7 +740,8 @@ pVariedVar t = asNode $ do
 -- TODO: use of Map seems a little wasteful at the moment.
 -- TODO: probably needs to wrap its components in spans!
 -- TODO: do the before/after things need to be in spans too?
-runVariedInline :: Map Text [Inline Void] -> [Varied] -> [Inline TitleParts]
+runVariedInline
+  :: Map Text [Inline a] -> [Varied] -> [Inline (TitleParts (Inline a))]
 runVariedInline m = concatMap unVary
  where
   unVary VariedSpace       = [Istr $ Str " "]
