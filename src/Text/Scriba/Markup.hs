@@ -657,7 +657,7 @@ commonIndentStrip txt =
 -- markers around code, math, or quotations, or things like that, so
 -- beware.
 stripMarkup :: (a -> [Text]) -> [Inline a] -> Text
-stripMarkup f = T.concat . concatMap inlineToText
+stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
  where
   inlineToText (Istr         i ) = strToText i
   inlineToText (Iemph        is) = emphToText inlineToText is
