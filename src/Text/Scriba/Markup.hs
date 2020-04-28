@@ -124,6 +124,10 @@ import qualified Text.Megaparsec               as MP
   would give the error "unexpected paragraph", not "unexpected element
   p".
 
+- For the formal and section config, we might want different styles as
+  in amsmath, perhaps custom ones too. What these entail could be
+  configurable through css and the tex header.
+
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -134,7 +138,7 @@ data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
 data DocAttrs = DocAttrs
   { docTitle :: Title
   , docPlainTitle :: Text
-  , docFormalConfig :: Map Text FormalConfig
+  , docTitlingConfig :: TitlingConfig
   , docElemCounterRel :: Map ContainerName CounterName
   , docCounterRel :: Map CounterName (Set CounterName)
   , docNumberStyles :: Map Text NumberStyle
@@ -143,6 +147,11 @@ data DocAttrs = DocAttrs
 data NumberStyle = Decimal
   deriving (Eq, Ord, Show, Read)
 
+data TitlingConfig = TitlingConfig
+  { tcFormalConfig :: Map Text FormalConfig
+  , tcSectionConfig :: Map Text SectionConfig
+  } deriving (Eq, Ord, Show, Read)
+
 -- TODO: richer whitespace options not in the body of the template?
 -- E.g. stripping all whitespace, so that the template is a little
 -- more understandable.
@@ -150,10 +159,19 @@ data FormalConfig = FormalConfig
   { fconfPrefix :: Maybe [Inline]
   , fconfTitleTemplate :: [Varied]
   , fconfTitleSep :: Maybe [Inline]
+  , fconfConcl :: Maybe [Inline]
+  } deriving (Eq, Ord, Show, Read)
+
+data SectionConfig = SectionConfig
+  { sconfPrefix :: Maybe [Inline]
+  , sconfTitleTemplate :: [Varied]
   } deriving (Eq, Ord, Show, Read)
 
 defaultFormalConfig :: FormalConfig
-defaultFormalConfig = FormalConfig Nothing [] Nothing
+defaultFormalConfig = FormalConfig Nothing [] Nothing Nothing
+
+defaultSectionConfig :: FormalConfig
+defaultSectionConfig = FormalConfig Nothing [] Nothing Nothing
 
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
@@ -164,8 +182,16 @@ defaultFormalConfig = FormalConfig Nothing [] Nothing
 -- a particular matter structure.
 -- TODO: when we do section templating, we may need templates based on
 -- the section level.
+-- TODO: no section title separator. Doesn't seem hugely necessary
+-- right now.
+-- TODO: There's no title body or anything here. If a section is
+-- configured to be titled then any existing title becomes the
+-- body. It doesn't count as an override. Might want configuration for
+-- that.
 data Section = Section
-  { secTitle :: Title
+  { secType :: Maybe Text
+  , secTitle :: Maybe Title
+  , secNum :: Maybe Text
   , secContent :: SectionContent
   } deriving (Eq, Ord, Show, Read)
 
@@ -215,7 +241,7 @@ data Formal = Formal
   , fNote :: Maybe [Inline]
   , fTitleSep :: Maybe [Inline]
   , fContent :: MixedBlockBody
-  , fConclusion :: [Inline]
+  , fConclusion :: Maybe [Inline]
   } deriving (Eq, Ord, Show, Read)
 
 -- TODO: may want to restrict the inlines that can appear in a
@@ -234,14 +260,13 @@ data List
   deriving (Eq, Ord, Show, Read)
 
 -- TODO: rename Math to InlineMath?
--- TODO: introduce inline types for num, title, titleBody (rethink
--- name), so that we can wrap generated title components in those
--- things. We might want them to be forbidden in normal text
--- statically, or to have parsers for them and allow them in normal text.
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
 -- probably be Text, and might want to record the Int that produced
 -- that number, or maybe be a list of number parts? We might want to
 -- call it something different. Tag, or something.
+-- TODO: Should probably make this type more modular. Would allow us
+-- greater control over the usage of inlines, allow greater
+-- modularization of functions
 data Inline
   = Str Text
   | Emph [Inline]
@@ -253,6 +278,8 @@ data Inline
   | TitlePrefix [Inline]
   | Number [Inline]
   | TitleNote [Inline]
+  | TitleSep [Inline]
+  | TitleBody [Inline]
   deriving (Eq, Ord, Show, Read)
 
 data Dmath
@@ -494,7 +521,6 @@ allAttrsOf act = liftScriba $ \m -> do
     m
   pure (m, m')
 
-
 -- TODO: little odd to be reconstituting an element here. Maybe an
 -- element body type? Also an infix combinator might be welcome.
 -- TODO: should have one of these that takes a default and returns an
@@ -508,6 +534,10 @@ attr k act = liftScriba $ fmap flop . getCompose . M.alterF go k
     Left  e                    -> Compose $ Left e
     Right (Element _ m' n', a) -> Compose $ Right (a, Just (m', n'))
   flop (x, y) = (y, x)
+
+-- TODO: I think I need an attr parser that succeeds on a variable
+-- that isn't present, and fails if a malformed attribute is
+-- present. Necessary for variable templates, for instance.
 
 attrMaybe :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
 attrMaybe k act = Just <$> attr k act <|> pure Nothing
@@ -623,7 +653,9 @@ stripMarkup = T.concat . concatMap inlineToText
   inlineToText (PageMark    t ) = [t]
   inlineToText (TitleNote   is) = concatMap inlineToText is
   inlineToText (TitlePrefix is) = concatMap inlineToText is
+  inlineToText (TitleBody   is) = concatMap inlineToText is
   inlineToText (Number      is) = concatMap inlineToText is
+  inlineToText (TitleSep    is) = concatMap inlineToText is
 
   displayToText (Formula  t ) = [t]
   displayToText (Gathered ts) = ts
@@ -684,6 +716,7 @@ pOnlySpace = do
 -- config. 
 -- TODO: Should probably have the internal representation be
 -- flexible enough to accommodate variables and things.
+
 -- TODO: Some sort of conditional behaviour may become necessary in
 -- templates. There may be examples where separator styling needs to
 -- vary based on the presence of certain elements.
@@ -693,8 +726,11 @@ data Varied
   | VariedVar Text VariedVar Text
   deriving (Eq, Ord, Show, Read)
 
+-- TODO: restrict the appearance of particular variables? Right now we
+-- use the same pVaried for formal blocks and sections.
 data VariedVar
   = VariedNote
+  | VariedTitle
   | VariedPrefix
   | VariedNumber
   deriving (Eq, Ord, Show, Read)
@@ -720,7 +756,9 @@ pVariedText = explodeText <$> simpleText
   toVaried t | T.null t  = VariedSpace
              | otherwise = VariedStr t
 
--- TODO: improve error
+-- TODO: improve error. I think I need a whileParsing here?
+-- TODO: this stripping of the prefix thing is bad. Remove it, and
+-- maybe add it back in if templates ever get more complex.
 pVariedVar :: Text -> Scriba Node [Varied]
 pVariedVar t = asNode $ do
   v <- ty $ do
@@ -729,6 +767,7 @@ pVariedVar t = asNode $ do
       Just typ -> case T.stripPrefix ("$" <> t <> ".") typ of
         Just "titlePrefix" -> pure VariedPrefix
         Just "titleNote"   -> pure VariedNote
+        Just "title"       -> pure VariedTitle
         Just "n"           -> pure VariedNumber
         _                  -> throwError $ Msg "unrecognized variable"
       _ -> throwError $ Msg "unrecognized variable"
@@ -740,11 +779,13 @@ pVariedVar t = asNode $ do
  where
   printVar VariedPrefix = "titlePrefix"
   printVar VariedNote   = "titleNode"
+  printVar VariedTitle  = "title"
   printVar VariedNumber = "n"
 
 -- TODO: simply ignores undefined variables right now.
 -- TODO: use of Map seems a little wasteful at the moment.
 -- TODO: probably needs to wrap its components in spans!
+-- TODO: do the before/after things need to be in spans too?
 runVariedInline :: Map Text [Inline] -> [Varied] -> [Inline]
 runVariedInline m = concatMap unVary
  where
@@ -755,6 +796,7 @@ runVariedInline m = concatMap unVary
     Nothing -> []
   unVaryVar VariedPrefix = TitlePrefix <$> M.lookup "titlePrefix" m
   unVaryVar VariedNote   = TitleNote <$> M.lookup "titleNote" m
+  unVaryVar VariedTitle  = TitleBody <$> M.lookup "titleBody" m
   unVaryVar VariedNumber = Number <$> M.lookup "n" m
 
 -- TODO: write this. Will need to have options for how they are
@@ -795,8 +837,31 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
       titleTemplate <- mattr "title" $ allContent (pVariedSeq t)
       titleSep      <- attrMaybe "titleSep" $ allContentOf pInline
       numbering     <- attrMaybe "numbering" $ pCounterDepends
+      concl         <- attrMaybe "conclusion" $ allContentOf pInline
       let (counterDepends, ns) = unzips numbering
-      pure $ (FormalConfig pref titleTemplate titleSep, counterDepends, ns)
+      pure
+        $ (FormalConfig pref titleTemplate titleSep concl, counterDepends, ns)
+
+
+-- TODO: reduce duplication with pFormalConfig
+pSectionConfig
+  :: Scriba
+       Element
+       (Map Text (SectionConfig, Maybe ContainerRelation, Maybe NumberStyle))
+pSectionConfig = whileParsingElem "sections" $ meta $ attrs $ allAttrsOf
+  pSectionSpec
+ where
+  pSectionSpec = do
+    t <-
+      ty
+      $   inspect
+      >>= maybe (throwError $ Msg "a section type is required") pure
+    whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
+      pref          <- attrMaybe "prefix" $ allContentOf pInline
+      titleTemplate <- mattr "title" $ allContent (pVariedSeq t)
+      numbering     <- attrMaybe "numbering" $ pCounterDepends
+      let (counterDepends, ns) = unzips numbering
+      pure $ (SectionConfig pref titleTemplate, counterDepends, ns)
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an
@@ -859,7 +924,7 @@ pFormal = do
       title   <- attrMaybe "title" $ allContentOf pInline
       note    <- attrMaybe "titleNote" $ allContentOf pInline
       tsep    <- attrMaybe "titleSep" $ allContentOf pInline
-      concl   <- mattr "conclusion" $ allContentOf pInline
+      concl   <- attrMaybe "conclusion" $ allContentOf pInline
       pure (mty, mnumber, title, note, tsep, concl)
     body <- pMixedBlockBody
     pure $ Formal (T.concat <$> mty)
@@ -1003,19 +1068,25 @@ pCode = do
 
 -- TODO: do the expectations actually work out here?
 -- TODO: a top level title parser?
+-- TODO: reduce duplication with pFormalConfig
 pSection :: Scriba Element Section
 pSection = do
-  matchTy "section" <|> presentedAsSection
-  whileParsingElem "section" $ do
-    title <- meta $ attrs $ mattr "title" $ allContentOf pInline
-    c     <- content $ pSectionContent
-    pure $ Section (Title title) c
+  mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
+  whileParsingElem (fromMaybe "section of unknown type" mty) $ do
+    (mtitle, mnumber) <- meta $ attrs $ do
+      mtitle  <- attrMaybe "title" $ allContentOf pInline
+      mnumber <- attrMaybe "n" $ allContentOf simpleText
+      pure (mtitle, mnumber)
+    c <- content $ pSectionContent
+    pure $ Section mty (Title <$> mtitle) (T.concat <$> mnumber) c
  where
-  presentedAsSection = meta $ do
-    Meta _ pres _ _ <- inspect
-    case pres of
-      AsSection _ -> pure ()
-      _           -> empty
+  presentedAsSection = do
+    meta $ do
+      Meta _ pres _ _ <- inspect
+      case pres of
+        AsSection _ -> pure ()
+        _           -> empty
+    ty inspect
 
 -- implicitly parses the whole block content
 
@@ -1045,27 +1116,36 @@ pSectionContent = do
 -- whileParsing "document meta", and the body is in a whileParsing
 -- "document body", but this is somewhat stylistic.
 -- TODO: error in the container relations compiling
+-- TODO: document section config takes precedence over formal block
+-- config re: counters, in particular that there is no namespacing
+-- going on.
 pDoc :: Scriba Element Doc
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
-      t <- mattr "title" $ allContentOf pInline
+      t       <- mattr "title" $ allContentOf pInline
       tplain <- attrMaybe "plainTitle" $ fmap T.concat $ allContentOf simpleText
       fconfig <- mattr "formalBlocks" $ pFormalConfig
+      sconfig <- mattr "sections" $ pSectionConfig
       let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig
           mcrel (x, y) = (,) (ContainerName x) <$> y
-          fnstyle = M.mapMaybe id fnstyleRaw
-      (fcelemrel, fcrel) <-
-        case compileContainerRelations (mapMaybe mcrel $ M.toList frelRaw) of
+          fnstyle                      = M.mapMaybe id fnstyleRaw
+          (sconf, srelRaw, snstyleRaw) = unzips3 sconfig
+          snstyle                      = M.mapMaybe id snstyleRaw
+      (elemrel, crel) <-
+        case
+          compileContainerRelations
+            (mapMaybe mcrel $ M.toList srelRaw <> M.toList frelRaw)
+        of
           Left  e -> throwError $ Msg e
           Right a -> pure a
       pure $ DocAttrs (Title t)
                       (fromMaybe (stripMarkup t) tplain)
-                      fconf
-                      fcelemrel
-                      fcrel
-                      fnstyle
+                      (TitlingConfig fconf sconf)
+                      elemrel
+                      crel
+                      (snstyle <> fnstyle)
     content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do

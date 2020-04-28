@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Text.Scriba.Decorate where
 
@@ -20,6 +21,7 @@ import           Data.Functor                   ( ($>) )
 import           Data.Map.Strict                ( Map )
 import           Data.Maybe                     ( fromMaybe
                                                 , mapMaybe
+                                                , catMaybes
                                                 )
 import qualified Data.Map.Strict               as M
 import           Data.Set                       ( Set )
@@ -81,7 +83,8 @@ instance Monoid DecorateError where
 -- the depth of containers of the same type appearing above it?
 -- Depends on what our needs turn out to be.
 
-type ContainerPath = [LocalNumber]
+-- Container path, with the associated container type for filtering.
+type ContainerPath = [(CounterName, LocalNumber)]
 
 type LocalNumber = Text
 
@@ -114,8 +117,22 @@ renderCounter :: NumberStyle -> Int -> LocalNumber
 renderCounter Decimal n = T.pack $ show n
 
 -- TODO: will need to accept config at some point!
-renderNumber :: ContainerPath -> LocalNumber -> Text
-renderNumber cp n = T.intercalate "." $ reverse $ n : cp
+renderNumber :: ContainerPath -> CounterName -> LocalNumber -> Numbering Text
+renderNumber cp cname n = do
+  cp' <- filterDepends cname cp
+  pure $ T.intercalate "." $ reverse $ n : fmap snd cp'
+
+-- Filter that path so that only numbers coming from a counter with
+-- the given counter as a dependency remain.
+filterDepends :: CounterName -> ContainerPath -> Numbering ContainerPath
+filterDepends cname cp = do
+  let hasAsDependant (cpcname, ln) = do
+        deps <- fmap (fromMaybe mempty) $ gets $ M.lookup cpcname . nsCounterRel
+        case cname `Set.member` deps of
+          True  -> pure $ Just (cpcname, ln)
+          False -> pure Nothing
+  cp' <- traverse hasAsDependant cp
+  pure $ catMaybes cp'
 
 -- | Get the value of a counter.
 getCounter :: CounterName -> Numbering (Maybe Int)
@@ -192,11 +209,30 @@ numBlock (FormalBlock formal) = FormalBlock <$> numFormal formal
 numBlock (ListBlock   l     ) = ListBlock <$> numList l
 numBlock x                    = pure x
 
+-- TODO: duplication with numFormal
 numSection :: Section -> Numbering Section
-numSection (Section t c) = do
-  t' <- numTitle t
-  c' <- numSectionContent c
-  pure $ Section t' c'
+numSection (Section mty t mnum c) = do
+  mnumdata <- fmap (join . join) $ for mty $ \typ -> do
+    let containername = ContainerName typ
+    mcountername <- lookupCounter containername
+    for mcountername $ \countername -> do
+      mn <- getIncCounter countername
+      for mn $ \n -> do
+        oldPath       <- gets nsParentPath
+        oldDependants <- getResetDependants countername
+        numbersty     <- gets
+          $ \s -> fromMaybe Decimal $ M.lookup typ (nsNumberStyles s)
+        let localNumber = renderCounter numbersty n
+        num <- renderNumber oldPath countername localNumber
+        setParentPath $ (countername, localNumber) : oldPath
+        pure (num, oldPath, oldDependants)
+  t'      <- traverse numTitle t
+  c'      <- numSectionContent c
+  mnumgen <- for mnumdata $ \(num, oldPath, oldDependants) -> do
+    setParentPath oldPath
+    restoreDependants oldDependants
+    pure num
+  pure $ Section mty t' (mnum <|> mnumgen) c'
 
 -- TODO: factor out the numbering and use it for other numbered
 -- things.
@@ -208,7 +244,8 @@ numSection (Section t c) = do
 numFormal :: Formal -> Numbering Formal
 numFormal (Formal mty mnum ti note tsep cont concl) = do
   mnumdata <- fmap (join . join) $ for mty $ \typ -> do
-    mcountername <- lookupCounter $ ContainerName typ
+    let containername = ContainerName typ
+    mcountername <- lookupCounter containername
     for mcountername $ \countername -> do
       mn <- getIncCounter countername
       for mn $ \n -> do
@@ -217,14 +254,14 @@ numFormal (Formal mty mnum ti note tsep cont concl) = do
         numbersty     <- gets
           $ \s -> fromMaybe Decimal $ M.lookup typ (nsNumberStyles s)
         let localNumber = renderCounter numbersty n
-            num         = renderNumber oldPath localNumber
-        setParentPath $ localNumber : oldPath
+        num <- renderNumber oldPath countername localNumber
+        setParentPath $ (countername, localNumber) : oldPath
         pure (num, oldPath, oldDependants)
   ti'     <- traverse numInlines ti
   note'   <- traverse numInlines note
   tsep'   <- traverse numInlines tsep
   cont'   <- numMixedBlockBody cont
-  concl'  <- numInlines concl
+  concl'  <- traverse numInlines concl
   mnumgen <- for mnumdata $ \(num, oldPath, oldDependants) -> do
     setParentPath oldPath
     restoreDependants oldDependants
@@ -257,39 +294,40 @@ numInline l = pure l
 genDocTitle :: Doc -> Doc
 genDocTitle (Doc met f m b) = Doc met (go f) (go m) (go b)
  where
-  dfc = docFormalConfig met
+  dfc = docTitlingConfig met
   go  = genSecContentTitle dfc
 
 -- TODO: Make a Reader for this stuff
 
 -- TODO: really shows that a Walkable class is necessary.
-genSecContentTitle :: Map Text FormalConfig -> SectionContent -> SectionContent
+genSecContentTitle :: TitlingConfig -> SectionContent -> SectionContent
 genSecContentTitle m (SectionContent p c) =
   SectionContent (genBlockTitle m <$> p) (genSectionTitle m <$> c)
 
 -- TODO: we don't walk any inlines because there is nothing to
 -- generate for them. That might change!
-genBlockTitle :: Map Text FormalConfig -> Block -> Block
+genBlockTitle :: TitlingConfig -> Block -> Block
 genBlockTitle m (FormalBlock formal) = FormalBlock $ genFormalTitle m formal
 genBlockTitle m (ListBlock   l     ) = ListBlock $ genListTitle m l
 genBlockTitle _ x                    = x
 
-genFormalTitle :: Map Text FormalConfig -> Formal -> Formal
+-- TODO: this also generates the conclusion of formal blocks. Sort of
+-- misleading that it happens here, perhaps...
+genFormalTitle :: TitlingConfig -> Formal -> Formal
 genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
   mty
   mnum
-  (mti <|> mtigen)
+  (mti <|> join mtigen)
   mnote
   (mtisep <|> join mtisep')
   (genMixedBlockBodyTitle m cont)
-  conc
+  (conc <|> join concgen)
  where
-  pushPair (Just (x, y)) = (Just x, Just y)
-  pushPair Nothing       = (Nothing, Nothing)
-  (mtisep', mtigen) = pushPair $ do
+  (mtisep', mtigen, concgen) = unzips3 $ do
     t     <- mty
-    fconf <- M.lookup t m
-    let tisep    = fconfTitleSep fconf
+    fconf <- M.lookup t $ tcFormalConfig m
+    let concl    = fconfConcl fconf
+        tisep    = fconfTitleSep fconf
         pref     = fconfPrefix fconf
         template = fconfTitleTemplate fconf
         pushMaybe (x, y) = (,) x <$> y
@@ -300,20 +338,35 @@ genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
           , ("titleNote"  , mnote)
           , ("n"          , toInlStr <$> mnum)
           ]
-    pure $ (tisep, runVariedInline vars template)
+    pure (tisep, pure $ runVariedInline vars template, concl)
 
-genListTitle :: Map Text FormalConfig -> List -> List
+genListTitle :: TitlingConfig -> List -> List
 genListTitle m l = case l of
   Ulist l' -> Ulist $ go l'
   Olist l' -> Olist $ go l'
   where go = map $ genMixedBlockBodyTitle m
 
-genMixedBlockBodyTitle
-  :: Map Text FormalConfig -> MixedBlockBody -> MixedBlockBody
+genMixedBlockBodyTitle :: TitlingConfig -> MixedBlockBody -> MixedBlockBody
 genMixedBlockBodyTitle m (BlockBlockBody b) =
   BlockBlockBody $ map (genBlockTitle m) b
 genMixedBlockBodyTitle _ x = x
 
--- TODO: should probably generate section titles too!
-genSectionTitle :: Map Text FormalConfig -> Section -> Section
-genSectionTitle m (Section t c) = Section t $ genSecContentTitle m c
+-- TODO: reduce duplication with genFormalTitle
+genSectionTitle :: TitlingConfig -> Section -> Section
+genSectionTitle m (Section mty mti mnum c) =
+  let c' = genSecContentTitle m c in Section mty (mtigen <|> mti) mnum c'
+ where
+  mtigen = do
+    t     <- mty
+    sconf <- M.lookup t $ tcSectionConfig m
+    let pref     = sconfPrefix sconf
+        template = sconfTitleTemplate sconf
+        pushMaybe (x, y) = (,) x <$> y
+        toInlStr = (: []) . Str
+        vars     = M.fromList $ mapMaybe
+          pushMaybe
+          [ ("titlePrefix", pref)
+          , ("titleBody"  , titleBody <$> mti)
+          , ("n"          , toInlStr <$> mnum)
+          ]
+    pure $ Title $ runVariedInline vars template

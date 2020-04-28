@@ -6,35 +6,78 @@ Doc
               [ Str "The scriba markup language and document system" ]
           }
     , docPlainTitle = "The scriba markup language and document system"
-    , docFormalConfig =
-        fromList
-          [ ( "lemma"
-            , FormalConfig
-                { fconfPrefix = Just [ Str "Lemma" ]
-                , fconfTitleTemplate =
-                    [ VariedVar "" VariedPrefix ""
-                    , VariedVar " " VariedNumber ""
-                    , VariedVar " (" VariedNote ")"
-                    ]
-                , fconfTitleSep = Just [ Str ". " ]
-                }
-            )
-          , ( "theorem"
-            , FormalConfig
-                { fconfPrefix = Just [ Str "Theorem" ]
-                , fconfTitleTemplate =
-                    [ VariedVar "" VariedPrefix ""
-                    , VariedVar " " VariedNumber ""
-                    , VariedVar " (" VariedNote ")"
-                    ]
-                , fconfTitleSep = Just [ Str ". " ]
-                }
-            )
-          ]
+    , docTitlingConfig =
+        TitlingConfig
+          { tcFormalConfig =
+              fromList
+                [ ( "lemma"
+                  , FormalConfig
+                      { fconfPrefix = Just [ Str "Lemma" ]
+                      , fconfTitleTemplate =
+                          [ VariedVar "" VariedPrefix ""
+                          , VariedVar " " VariedNumber ""
+                          , VariedVar " (" VariedNote ")"
+                          ]
+                      , fconfTitleSep = Just [ Str ". " ]
+                      , fconfConcl = Nothing
+                      }
+                  )
+                , ( "proof"
+                  , FormalConfig
+                      { fconfPrefix = Just [ Str "Proof" ]
+                      , fconfTitleTemplate =
+                          [ VariedVar "" VariedPrefix "" , VariedVar " " VariedNote "" ]
+                      , fconfTitleSep = Just [ Str ". " ]
+                      , fconfConcl = Just [ Str "\8718" ]
+                      }
+                  )
+                , ( "theorem"
+                  , FormalConfig
+                      { fconfPrefix = Just [ Str "Theorem" ]
+                      , fconfTitleTemplate =
+                          [ VariedVar "" VariedPrefix ""
+                          , VariedVar " " VariedNumber ""
+                          , VariedVar " (" VariedNote ")"
+                          ]
+                      , fconfTitleSep = Just [ Str ". " ]
+                      , fconfConcl = Nothing
+                      }
+                  )
+                ]
+          , tcSectionConfig =
+              fromList
+                [ ( "section"
+                  , SectionConfig
+                      { sconfPrefix = Just [ Str "Section" ]
+                      , sconfTitleTemplate =
+                          [ VariedVar "" VariedPrefix ""
+                          , VariedVar " " VariedNumber ". "
+                          , VariedVar " " VariedTitle ""
+                          ]
+                      }
+                  )
+                , ( "subsection"
+                  , SectionConfig
+                      { sconfPrefix = Nothing
+                      , sconfTitleTemplate =
+                          [ VariedVar " " VariedNumber ". " , VariedVar " " VariedTitle "" ]
+                      }
+                  )
+                ]
+          }
     , docElemCounterRel =
         fromList
           [ ( ContainerName { unContainerName = "lemma" }
             , CounterName { unCounterName = "theorem" }
+            )
+          , ( ContainerName { unContainerName = "proof" }
+            , CounterName { unCounterName = "theorem" }
+            )
+          , ( ContainerName { unContainerName = "section" }
+            , CounterName { unCounterName = "section" }
+            )
+          , ( ContainerName { unContainerName = "subsection" }
+            , CounterName { unCounterName = "subsection" }
             )
           , ( ContainerName { unContainerName = "theorem" }
             , CounterName { unCounterName = "theorem" }
@@ -42,9 +85,23 @@ Doc
           ]
     , docCounterRel =
         fromList
-          [ ( CounterName { unCounterName = "theorem" } , fromList [] ) ]
+          [ ( CounterName { unCounterName = "section" }
+            , fromList
+                [ CounterName { unCounterName = "subsection" }
+                , CounterName { unCounterName = "theorem" }
+                ]
+            )
+          , ( CounterName { unCounterName = "subsection" } , fromList [] )
+          , ( CounterName { unCounterName = "theorem" } , fromList [] )
+          ]
     , docNumberStyles =
-        fromList [ ( "lemma" , Decimal ) , ( "theorem" , Decimal ) ]
+        fromList
+          [ ( "lemma" , Decimal )
+          , ( "proof" , Decimal )
+          , ( "section" , Decimal )
+          , ( "subsection" , Decimal )
+          , ( "theorem" , Decimal )
+          ]
     }
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
@@ -58,14 +115,42 @@ Doc
         ]
     , secChildren =
         [ Section
-            { secTitle =
-                Title { titleBody = [ Str "An introduction to the language" ] }
+            { secType = Just "section"
+            , secTitle =
+                Just
+                  Title
+                    { titleBody =
+                        [ Str ""
+                        , TitlePrefix [ Str "Section" ]
+                        , Str ""
+                        , Str " "
+                        , Number [ Str "1" ]
+                        , Str ". "
+                        , Str " "
+                        , TitleBody [ Str "An introduction to the language" ]
+                        , Str ""
+                        ]
+                    }
+            , secNum = Just "1"
             , secContent =
                 SectionContent
                   { secPreamble = []
                   , secChildren =
                       [ Section
-                          { secTitle = Title { titleBody = [ Str "Paragraphs" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "1.1" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "Paragraphs" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "1.1"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -131,7 +216,20 @@ Doc
                                 }
                           }
                       , Section
-                          { secTitle = Title { titleBody = [ Str "Sections" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "1.2" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "Sections" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "1.2"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -182,7 +280,20 @@ Doc
                                 }
                           }
                       , Section
-                          { secTitle = Title { titleBody = [ Str "Blocks" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "1.3" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "Blocks" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "1.3"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -240,7 +351,20 @@ Doc
                                 }
                           }
                       , Section
-                          { secTitle = Title { titleBody = [ Str "Mathematics" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "1.4" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "Mathematics" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "1.4"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -306,8 +430,20 @@ Doc
                                 }
                           }
                       , Section
-                          { secTitle =
-                              Title { titleBody = [ Str "The overall document structure" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "1.5" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "The overall document structure" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "1.5"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -325,13 +461,42 @@ Doc
                   }
             }
         , Section
-            { secTitle = Title { titleBody = [ Str "Element reference" ] }
+            { secType = Just "section"
+            , secTitle =
+                Just
+                  Title
+                    { titleBody =
+                        [ Str ""
+                        , TitlePrefix [ Str "Section" ]
+                        , Str ""
+                        , Str " "
+                        , Number [ Str "2" ]
+                        , Str ". "
+                        , Str " "
+                        , TitleBody [ Str "Element reference" ]
+                        , Str ""
+                        ]
+                    }
+            , secNum = Just "2"
             , secContent =
                 SectionContent
                   { secPreamble = []
                   , secChildren =
                       [ Section
-                          { secTitle = Title { titleBody = [ Str "formalBlock" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "2.1" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "formalBlock" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "2.1"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -355,14 +520,14 @@ Doc
                                     , FormalBlock
                                         Formal
                                           { fType = Just "lemma"
-                                          , fNum = Just "1"
+                                          , fNum = Just "2.1"
                                           , fTitle =
                                               Just
                                                 [ Str ""
                                                 , TitlePrefix [ Str "Lemma" ]
                                                 , Str ""
                                                 , Str " "
-                                                , Number [ Str "1" ]
+                                                , Number [ Str "2.1" ]
                                                 , Str ""
                                                 ]
                                           , fNote = Nothing
@@ -370,19 +535,19 @@ Doc
                                           , fContent =
                                               BlockInlineBody
                                                 [ ParInline (Str "A preliminary lemma.\n") ]
-                                          , fConclusion = []
+                                          , fConclusion = Nothing
                                           }
                                     , FormalBlock
                                         Formal
                                           { fType = Just "theorem"
-                                          , fNum = Just "2"
+                                          , fNum = Just "2.2"
                                           , fTitle =
                                               Just
                                                 [ Str ""
                                                 , TitlePrefix [ Str "Theorem" ]
                                                 , Str ""
                                                 , Str " "
-                                                , Number [ Str "2" ]
+                                                , Number [ Str "2.2" ]
                                                 , Str ""
                                                 , Str " ("
                                                 , TitleNote [ Str "an interesting one" ]
@@ -396,14 +561,47 @@ Doc
                                                     (Str
                                                        "The statement of some theorem of interest.\n")
                                                 ]
-                                          , fConclusion = []
+                                          , fConclusion = Nothing
+                                          }
+                                    , FormalBlock
+                                        Formal
+                                          { fType = Just "proof"
+                                          , fNum = Just "2.3"
+                                          , fTitle =
+                                              Just
+                                                [ Str ""
+                                                , TitlePrefix [ Str "Proof" ]
+                                                , Str ""
+                                                , Str " "
+                                                , TitleNote [ Str "of the interesting theorem" ]
+                                                , Str ""
+                                                ]
+                                          , fNote = Just [ Str "of the interesting theorem" ]
+                                          , fTitleSep = Just [ Str ". " ]
+                                          , fContent =
+                                              BlockInlineBody
+                                                [ ParInline (Str "Details of the proof\n") ]
+                                          , fConclusion = Just [ Str "\8718" ]
                                           }
                                     ]
                                 , secChildren = []
                                 }
                           }
                       , Section
-                          { secTitle = Title { titleBody = [ Str "olist" ] }
+                          { secType = Just "subsection"
+                          , secTitle =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ Str " "
+                                      , Number [ Str "2.2" ]
+                                      , Str ". "
+                                      , Str " "
+                                      , TitleBody [ Str "olist" ]
+                                      , Str ""
+                                      ]
+                                  }
+                          , secNum = Just "2.2"
                           , secContent =
                               SectionContent
                                 { secPreamble =

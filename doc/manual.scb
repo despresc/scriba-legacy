@@ -6,7 +6,7 @@
       {prefix|Theorem}
       {title|{$theorem.titlePrefix}{$theorem.n{before| }}{$theorem.titleNote{before| (}{after|)}}}
       {titleSep|. }
-      {numbering {absolute}
+      {numbering {relative@section}
                  {style@decimal}}
     }
     {lemma
@@ -15,6 +15,27 @@
       {titleSep|. }
       {numbering {share@theorem}
                  {style@decimal}}
+    }
+    {proof
+      {prefix|Proof}
+      {title|{$proof.titlePrefix}{$proof.titleNote{before| }}}
+      {titleSep|. }
+      {conclusion|∎}
+      {numbering {share@theorem}
+                 {style@decimal}}
+    }
+  }
+  {sections
+    {section
+      {prefix|Section}
+      {title|{$section.titlePrefix}{$section.n{before| }{after|. }}{$section.title{before| }}}
+      {numbering {absolute}
+      		 {style@decimal}}
+    }
+    {subsection
+      {title|{$subsection.n{before| }{after|. }}{$subsection.title{before| }}}
+      {numbering {relative@section}
+      		 {style@decimal}}
     }
   }
 }
@@ -84,9 +105,9 @@ format includes flexible markup constructs designed to represent a
 range of historical scientific material, but these can be used equally
 well for new publications.
 
-# {title|An introduction to the language}
+# section {title|An introduction to the language}
 
-## {title|Paragraphs}
+## subsection {title|Paragraphs}
 
 The bulk of your document will most likely be paragraphs, sequences of
 normal text and marked-up content representing a single idea in your
@@ -129,7 +150,7 @@ and likely to be rendered between quotation marks, and an {code`emph`}
 element, representing emphasized text and likely to be rendered in
 italic type.
 
-## {title|Sections}
+## subsection {title|Sections}
 
 The content of your document can be organized into {emph|sections},
 representing self-contained units of discussion. These have types,
@@ -162,7 +183,7 @@ titles for the table of contents or page header, and so on. The
 attributes of sections can be listed on multiple consecutive lines, as
 long as no blank line occurs between them.
 
-## {title|Blocks}
+## subsection {title|Blocks}
 
 The other type of syntactic form in scriba is the {emph|block}
 element. Blocks group their content and give it extra meaning, and can
@@ -193,7 +214,7 @@ sequence of blocks and paragraphs, like section content without
 section headers. Finally, inline content is signalled by a {code||}
 and can contain text and inline elements.
 
-## {title|Mathematics}
+## subsection {title|Mathematics}
 
 Formal mathematical content can be included in a document with
 particular inline elements. Inline formulas like {math`f(x, y) =
@@ -256,11 +277,11 @@ inline example above could equally well have been written
 
 {%TODO: Notes on amsthm-style formal blocks %}
 
-## {title|The overall document structure}
+## subsection {title|The overall document structure}
 
 Will contain a description of documents as a whole.
 
-# {title|Element reference}
+# section {title|Element reference}
 
 {% TODO:
 
@@ -288,7 +309,7 @@ Will contain a description of documents as a whole.
 
 %}
 
-## {title|formalBlock}
+## subsection {title|formalBlock}
 
 The {code|formalBlock} element represents a formal part of the
 document, with optional {code|title}, {code|conclusion}, and
@@ -313,8 +334,13 @@ Some examples:
 |The statement of some theorem of interest.
 }
 
+&{formalBlock
+    {type|proof}
+    {titleNote|of the interesting theorem}
+|Details of the proof
+}
 
-## {title|olist}
+## subsection {title|olist}
 
 The {code|olist} block element represents an ordered list. It contains
 a whitespace-separated list of {code|item} elements.

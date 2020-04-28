@@ -48,3 +48,18 @@ code {
 .formalBlock > .body {
     font-style: italic;
 }
+
+.formalBlock.proof > .title {
+    font-style: italic;
+    font-weight: normal;
+}
+
+.formalBlock.proof > .body {
+    font-style: normal;
+    font-weight: normal;
+}
+
+.formalBlock.proof > .title > .titlePrefix {
+    font-style: italic;
+    font-weight: normal;
+}

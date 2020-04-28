@@ -49,6 +49,9 @@ data RenderState = RenderState
 foldBy :: (Foldable t, Monoid c) => (a -> c) -> t a -> c
 foldBy f = foldl' go mempty where go c a = c <> f a
 
+renderMaybe :: Maybe Html -> (Html -> Html) -> Html
+renderMaybe mh f = maybe mempty f mh
+
 -- TODO: I _think_ the header depth should start at 1? Might need to
 -- be configurable later. I think for standalone it should be 1, since
 -- the document itself hopefully has a title (that we should
@@ -121,12 +124,17 @@ renderSectionContent (SectionContent bs cs) = do
   cs' <- renderSections cs
   pure $ H.div ! A.class_ "sectionContent" $ bs' <> cs'
 
+-- TODO: add the section type as a class or data attribute
+
+-- TODO: for untitled sections, perhaps conditionally add an anonymous
+-- break? They would be necessary when we first render a sibling
+-- untitled section. Some kind of state variable, I think.
 renderSection :: Section -> Render Html
-renderSection (Section t c) = do
-  t' <- renderTitle t
+renderSection (Section _ t _ c) = do
+  t' <- traverse renderTitle t
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
-    pure $ H.section $ t' <> c'
+    pure $ H.section $ fromMaybe mempty t' <> c'
 
 renderSections :: [Section] -> Render Html
 renderSections = foldBy renderSection
@@ -160,16 +168,16 @@ renderMixedBlockBody b (BlockBlockBody blks) = go <$> renderBlocks blks
 -- rendered conditional on there being a title at all.
 renderFormalBlock :: Formal -> Render Html
 renderFormalBlock (Formal mty _ mtitle _ mtitlesep body concl) = do
-  title'    <- renderInlines $ fromMaybe [] mtitle
-  titlesep' <- renderInlines $ fromMaybe [] mtitlesep
+  title'    <- traverse renderInlines mtitle
+  titlesep' <- traverse renderInlines mtitlesep
   body'     <- renderMixedBlockBody True body
-  concl'    <- renderInlines concl
+  concl'    <- traverse renderInlines concl
   let cls = "formalBlock" <> maybe "" (" " <>) mty
   pure $ H.div ! A.class_ (H.toValue cls) $ do
-    H.span ! A.class_ "title" $ title'
-    titlesep'
+    renderMaybe title' $ H.span ! A.class_ "title"
+    renderMaybe titlesep' $ H.span ! A.class_ "titleSep"
     body'
-    H.span ! A.class_ "conclusion" $ concl'
+    renderMaybe concl' $ H.span ! A.class_ "conclusion"
 
 renderList :: List -> Render Html
 renderList b = case b of
@@ -206,6 +214,8 @@ renderInline (TitlePrefix i) =
   H.span ! A.class_ "titlePrefix" <$> renderInlines i
 renderInline (Number    i) = H.span ! A.class_ "number" <$> renderInlines i
 renderInline (TitleNote i) = H.span ! A.class_ "titleNote" <$> renderInlines i
+renderInline (TitleSep  i) = H.span ! A.class_ "titleSep" <$> renderInlines i
+renderInline (TitleBody i) = H.span ! A.class_ "titleBody" <$> renderInlines i
 
 -- TODO: assumes mathjax or katex
 renderDmath :: Dmath -> Render Html

@@ -2,7 +2,9 @@ Doc
   DocAttrs
     { docTitle = Title { titleBody = [] }
     , docPlainTitle = ""
-    , docFormalConfig = fromList []
+    , docTitlingConfig =
+        TitlingConfig
+          { tcFormalConfig = fromList [] , tcSectionConfig = fromList [] }
     , docElemCounterRel = fromList []
     , docCounterRel = fromList []
     , docNumberStyles = fromList []
@@ -37,7 +39,7 @@ Doc
               , fContent =
                   BlockInlineBody
                     [ ParInline (Str "\nThe statement of an interesting theorem.\n") ]
-              , fConclusion = [ Str "QED" ]
+              , fConclusion = Just [ Str "QED" ]
               }
         ]
     , secChildren = []
