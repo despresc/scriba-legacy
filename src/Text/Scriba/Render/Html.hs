@@ -143,17 +143,20 @@ renderSections :: [Section] -> Render Html
 renderSections = foldBy renderSection
 
 renderBlock :: Block -> Render Html
-renderBlock (FormalBlock fb) = renderFormalBlock fb
-renderBlock (CodeBlock t) =
+renderBlock (Bformal fb) = renderFormalBlock fb
+renderBlock (Bcode   t ) = renderCodeBlock t
+renderBlock (Bpar    p ) = renderParagraph p
+renderBlock (Blist   b ) = renderList b
+
+renderCodeBlock :: BlockCode -> Render Html
+renderCodeBlock (BlockCode t) =
   pure $ H.div ! A.class_ "codeBlock" $ H.pre $ H.code $ H.toHtml t
-renderBlock (ParBlock  p) = renderParagraph p
-renderBlock (ListBlock b) = renderList b
 
 -- TODO: This does conditional span/div rendering. Is that robust?
 -- TODO: True for wrapping the body. Maybe better type?
-renderMixedBlockBody :: Bool -> MixedBlockBody -> Render Html
+renderMixedBlockBody :: Bool -> MixedBlockBody (Inline Void) -> Render Html
 renderMixedBlockBody b (BlockInlineBody ils) =
-  go <$> foldBy renderParInline ils
+  go <$> foldBy renderInline ils
  where
   go = case b of
     True  -> H.span ! A.class_ "body"
@@ -190,11 +193,8 @@ renderList b = case b of
   renderListItems = foldBy renderListItem
   renderListItem bs = H.li <$> renderMixedBlockBody False bs
 
-renderParagraph :: Paragraph -> Render Html
-renderParagraph (Paragraph c) = H.p <$> foldBy renderParInline c
-
-renderParInline :: ParContent -> Render Html
-renderParInline (ParInline i) = renderInline i
+renderParagraph :: Paragraph (Inline Void) -> Render Html
+renderParagraph (Paragraph c) = H.p <$> foldBy renderInline c
 
 renderBlocks :: [Block] -> Render Html
 renderBlocks = foldBy renderBlock

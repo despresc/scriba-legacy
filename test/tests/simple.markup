@@ -12,26 +12,28 @@ Doc
   SectionContent { secPreamble = [] , secChildren = [] }
   SectionContent
     { secPreamble =
-        [ ParBlock
-            (Paragraph
-               [ ParInline (Istr Str { getStr = "A " })
-               , ParInline
-                   (Iemph Emph { getEmph = [ Istr Str { getStr = "simple" } ] })
-               , ParInline (Istr Str { getStr = " paragraph with a " })
-               , ParInline (IpageMark PageMark { getPageMark = "24" })
-               , ParInline (Istr Str { getStr = " marker and some\nmath " })
-               , ParInline (IinlineMath InlineMath { getInlineMath = "2+2=5" })
-               , ParInline (Istr Str { getStr = " and a little more math " })
-               , ParInline
-                   (IinlineMath InlineMath { getInlineMath = "5\215\&9=42" })
-               , ParInline (Istr Str { getStr = "." })
-               ])
-        , ParBlock
-            (Paragraph
-               [ ParInline (Istr Str { getStr = "&" })
-               , ParInline (Istr Str { getStr = " some verbatim testing." })
-               ])
-        , FormalBlock
+        [ Bpar
+            Paragraph
+              { getParagraph =
+                  [ Istr Str { getStr = "A " }
+                  , Iemph Emph { getEmph = [ Istr Str { getStr = "simple" } ] }
+                  , Istr Str { getStr = " paragraph with a " }
+                  , IpageMark PageMark { getPageMark = "24" }
+                  , Istr Str { getStr = " marker and some\nmath " }
+                  , IinlineMath InlineMath { getInlineMath = "2+2=5" }
+                  , Istr Str { getStr = " and a little more math " }
+                  , IinlineMath InlineMath { getInlineMath = "5\215\&9=42" }
+                  , Istr Str { getStr = "." }
+                  ]
+              }
+        , Bpar
+            Paragraph
+              { getParagraph =
+                  [ Istr Str { getStr = "&" }
+                  , Istr Str { getStr = " some verbatim testing." }
+                  ]
+              }
+        , Bformal
             Formal
               { fType = Just "theorem"
               , fNum = Nothing
@@ -41,9 +43,8 @@ Doc
               , fTitleSep = Nothing
               , fContent =
                   BlockInlineBody
-                    [ ParInline
-                        (Istr
-                           Str { getStr = "\nThe statement of an interesting theorem.\n" })
+                    [ Istr
+                        Str { getStr = "\nThe statement of an interesting theorem.\n" }
                     ]
               , fConclusion = Just [ Istr Str { getStr = "QED" } ]
               }

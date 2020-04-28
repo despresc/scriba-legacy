@@ -208,9 +208,9 @@ numSections = traverse numSection
 
 -- TODO: integrate list numbering into all of this.
 numBlock :: Block -> Numbering Block
-numBlock (FormalBlock formal) = FormalBlock <$> numFormal formal
-numBlock (ListBlock   l     ) = ListBlock <$> numList l
-numBlock x                    = pure x
+numBlock (Bformal formal) = Bformal <$> numFormal formal
+numBlock (Blist   l     ) = Blist <$> numList l
+numBlock x                = pure x
 
 -- TODO: duplication with numFormal
 numSection :: Section -> Numbering Section
@@ -287,13 +287,10 @@ numInlinesWith _ = pure
 numInlines :: [Inline Void] -> Numbering [Inline Void]
 numInlines = numInlinesWith absurd
 
-numMixedBlockBody :: MixedBlockBody -> Numbering MixedBlockBody
-numMixedBlockBody (BlockInlineBody p) =
-  BlockInlineBody <$> traverse numParContent p
-numMixedBlockBody (BlockBlockBody b) = BlockBlockBody <$> numBlocks b
-
-numParContent :: ParContent -> Numbering ParContent
-numParContent (ParInline i) = ParInline <$> numInline i
+numMixedBlockBody
+  :: MixedBlockBody (Inline Void) -> Numbering (MixedBlockBody (Inline Void))
+numMixedBlockBody (BlockInlineBody p) = BlockInlineBody <$> numInlines p
+numMixedBlockBody (BlockBlockBody  b) = BlockBlockBody <$> numBlocks b
 
 numInline :: Inline a -> Numbering (Inline a)
 numInline = pure
@@ -316,9 +313,9 @@ genSecContentTitle m (SectionContent p c) =
 -- TODO: we don't walk any inlines because there is nothing to
 -- generate for them. That might change!
 genBlockTitle :: TitlingConfig -> Block -> Block
-genBlockTitle m (FormalBlock formal) = FormalBlock $ genFormalTitle m formal
-genBlockTitle m (ListBlock   l     ) = ListBlock $ genListTitle m l
-genBlockTitle _ x                    = x
+genBlockTitle m (Bformal formal) = Bformal $ genFormalTitle m formal
+genBlockTitle m (Blist   l     ) = Blist $ genListTitle m l
+genBlockTitle _ x                = x
 
 -- TODO: this also generates the conclusion of formal blocks. Sort of
 -- misleading that it happens here, perhaps...
@@ -355,7 +352,8 @@ genListTitle m l = case l of
   Olist l' -> Olist $ go l'
   where go = map $ genMixedBlockBodyTitle m
 
-genMixedBlockBodyTitle :: TitlingConfig -> MixedBlockBody -> MixedBlockBody
+genMixedBlockBodyTitle
+  :: TitlingConfig -> MixedBlockBody (Inline a) -> MixedBlockBody (Inline a)
 genMixedBlockBodyTitle m (BlockBlockBody b) =
   BlockBlockBody $ map (genBlockTitle m) b
 genMixedBlockBodyTitle _ x = x

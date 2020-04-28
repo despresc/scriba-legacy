@@ -16,7 +16,6 @@ module Text.Scriba.Markup
   , Formal(..)
   , List(..)
   , Paragraph(..)
-  , ParContent(..)
   , Inline(..)
   , Title(..)
   , DocAttrs(..)
@@ -39,6 +38,7 @@ module Text.Scriba.Markup
   , TitleParts(..)
   , Varied(..)
   , VariedVar(..)
+  , BlockCode(..)
   )
 where
 
@@ -51,6 +51,8 @@ import           Text.Scriba.Markup.InlineMath
 import           Text.Scriba.Markup.PageMark
 import           Text.Scriba.Markup.Quote
 import           Text.Scriba.Markup.Str
+import           Text.Scriba.Markup.BlockCode
+import           Text.Scriba.Markup.Paragraph
 
 import           Control.Applicative            ( (<|>)
                                                 , Alternative
@@ -246,25 +248,15 @@ emptySectionContent :: SectionContent
 emptySectionContent = SectionContent [] []
 
 data Block
-  = FormalBlock Formal
-  | CodeBlock Text
-  | ParBlock Paragraph
-  | ListBlock List
+  = Bformal Formal
+  | Bcode BlockCode
+  | Bpar (Paragraph (Inline Void))
+  | Blist List
   deriving (Eq, Ord, Show, Read, Generic)
 
-data MixedBlockBody
-  = BlockInlineBody [ParContent]
+data MixedBlockBody i
+  = BlockInlineBody [i]
   | BlockBlockBody [Block]
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data Paragraph = Paragraph [ParContent]
-  deriving (Eq, Ord, Show, Read, Generic)
-
--- Not sure if there should be anything here other than Inline,
--- honestly. There could simply be some types of inline with a
--- "display" property (math, notably).
-data ParContent
-  = ParInline (Inline Void)
   deriving (Eq, Ord, Show, Read, Generic)
 
 -- Might want a formal inline too. Some kind of "inline result",
@@ -282,7 +274,7 @@ data Formal = Formal
   , fTitle :: Maybe [Inline TitleParts]
   , fNote :: Maybe [Inline Void]
   , fTitleSep :: Maybe [Inline Void]
-  , fContent :: MixedBlockBody
+  , fContent :: MixedBlockBody (Inline Void)
   , fConclusion :: Maybe [Inline Void]
   } deriving (Eq, Ord, Show, Read, Generic)
 
@@ -297,8 +289,8 @@ newtype Title a = Title
 -- TODO: need an inline list form too.
 -- TODO: list markers and such, of course.
 data List
-  = Ulist [MixedBlockBody]
-  | Olist [MixedBlockBody]
+  = Ulist [MixedBlockBody (Inline Void)]
+  | Olist [MixedBlockBody (Inline Void)]
   deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: rename Math to InlineMath?
@@ -872,12 +864,12 @@ pCounterDepends = meta $ attrs $ do
 pBlock :: Scriba Node Block
 pBlock =
   asNode
-    $   FormalBlock
+    $   Bformal
     <$> pFormal
-    <|> ParBlock
+    <|> Bpar
     <$> pParagraph
     <|> pCodeBlock
-    <|> ListBlock
+    <|> Blist
     <$> pList
 
 -- TODO: no formal block type validation
@@ -924,7 +916,7 @@ pCodeBlock :: Scriba Element Block
 pCodeBlock = do
   matchTy "codeBlock"
   t <- whileParsingElem "codeBlock" $ allContentOf simpleText
-  pure $ CodeBlock $ commonIndentStrip $ T.concat t
+  pure $ Bcode $ BlockCode $ commonIndentStrip $ T.concat t
 
 -- TODO: For lists, and numbered things generally, we should assume a
 -- default numbering style, so that references to numbered list items
@@ -952,29 +944,27 @@ pUlist = do
   fmap Ulist $ whileParsingElem "ulist" $ allContent $ many
     (one pListItem <* pOnlySpace)
 
-pListItem :: Scriba Node MixedBlockBody
+pListItem :: Scriba Node (MixedBlockBody (Inline a))
 pListItem = asNode pItem
  where
   pItem = do
     matchTy "item"
     whileParsingElem "item" $ pMixedBlockBody
 
-pParagraph :: Scriba Element Paragraph
+pParagraph :: Scriba Element (Paragraph (Inline a))
 pParagraph = do
   matchTy "p"
-  c <- whileParsingElem "p" $ allContentOf pParContent
+  c <- whileParsingElem "p" $ allContentOf pInline
   pure $ Paragraph c
 
-pParContent :: Scriba Node ParContent
-pParContent = ParInline <$> pInline
-
-pMixedBlockBody :: Scriba Element MixedBlockBody
+pMixedBlockBody :: Scriba Element (MixedBlockBody (Inline a))
 pMixedBlockBody = allContent (BlockBlockBody <$> manyOf pBlock)
-  <|> allContent (BlockInlineBody <$> manyOf pParContent)
+  <|> allContent (BlockInlineBody <$> manyOf pInline)
 
 -- ** Inline parsing
 
-pInline :: Scriba Node (Inline Void)
+-- pInline is synonymous with pParInline
+pInline :: Scriba Node (Inline a)
 pInline =
   asNode
       (   pEmph
@@ -987,29 +977,29 @@ pInline =
       )
     <|> pText
 
-pEmph :: Scriba Element (Inline Void)
+pEmph :: Scriba Element (Inline a)
 pEmph = do
   matchTy "emph"
   c <- whileParsingElem "emph" $ allContentOf pInline
   pure $ Iemph $ Emph c
 
-pQuote :: Scriba Element (Inline Void)
+pQuote :: Scriba Element (Inline a)
 pQuote = do
   matchTy "q"
   c <- whileParsingElem "q" $ allContentOf pInline
   pure $ Iquote $ Quote c
 
 -- TODO: well-formedness checking?
-pPageMark :: Scriba Element (Inline Void)
+pPageMark :: Scriba Element (Inline a)
 pPageMark = do
   matchTy "physPage"
   t <- whileParsingElem "physPage" $ allContentOf simpleText
   pure $ IpageMark $ PageMark $ T.concat t
 
-pText :: Scriba Node (Inline Void)
+pText :: Scriba Node (Inline a)
 pText = Istr . Str <$> simpleText
 
-pMath :: Scriba Element (Inline Void)
+pMath :: Scriba Element (Inline a)
 pMath = do
   matchTy "math"
   ts <- whileParsingElem "math" $ allContentOf simpleText
@@ -1018,7 +1008,7 @@ pMath = do
 -- TODO: syntactic unification with pMath? it's probably better to
 -- have a single "display" parameter control both, and have dmath be a
 -- syntactic alias (in some way) for math {presentation|display}
-pFormula :: Scriba Element (Inline Void)
+pFormula :: Scriba Element (Inline a)
 pFormula = do
   matchTy "dmath"
   c <- whileParsingElem "dmath" $ allContentOf simpleText
@@ -1028,7 +1018,7 @@ pFormula = do
 -- here. E.g. could have a single dmath whose content is flexibly
 -- parsed, have Gathered be a list of math and not Text, that sort of
 -- thing.
-pGathered :: Scriba Element (Inline Void)
+pGathered :: Scriba Element (Inline a)
 pGathered = do
   matchTy "gathered"
   c <- whileParsingElem "gathered" $ allContent $ pOnlySpace *> many
@@ -1039,7 +1029,7 @@ pGathered = do
     matchTy "line"
     fmap T.concat $ whileParsingElem "line" $ allContentOf simpleText
 
-pCode :: Scriba Element (Inline Void)
+pCode :: Scriba Element (Inline a)
 pCode = do
   matchTy "code"
   t <- whileParsingElem "code" $ allContentOf simpleText

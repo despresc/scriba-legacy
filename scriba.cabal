@@ -36,6 +36,8 @@ library
     Text.Scriba.Markup.DisplayMath
     Text.Scriba.Markup.InlineCode
     Text.Scriba.Markup.PageMark
+    Text.Scriba.Markup.BlockCode
+    Text.Scriba.Markup.Paragraph
     Text.Scriba.Parse
     Text.Scriba.Decorate
     Text.Scriba.Render.Html
