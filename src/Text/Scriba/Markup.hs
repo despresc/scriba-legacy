@@ -317,8 +317,8 @@ data VariedVar
   | VariedNumber
   deriving (Eq, Ord, Show, Read, Generic)
 
-pVariedSeq :: Text -> Scriba [Node] [Varied]
-pVariedSeq t = firstSpace . concat <$> manyOf (pVaried t)
+pVariedSeq :: Scriba [Node] [Varied]
+pVariedSeq = firstSpace . concat <$> manyOf pVaried
  where
   firstSpace (VariedSpace : xs) = firstSpace xs
   firstSpace xs                 = midSpace xs
@@ -328,8 +328,8 @@ pVariedSeq t = firstSpace . concat <$> manyOf (pVaried t)
   midSpace (x : xs                        ) = x : midSpace xs
   midSpace []                               = []
 
-pVaried :: Text -> Scriba Node [Varied]
-pVaried t = pVariedText <|> pVariedVar t
+pVaried :: Scriba Node [Varied]
+pVaried = pVariedText <|> pVariedVar
 
 pVariedText :: Scriba Node [Varied]
 pVariedText = explodeText <$> simpleText
@@ -341,12 +341,12 @@ pVariedText = explodeText <$> simpleText
 -- TODO: improve error. I think I need a whileParsing here?
 -- TODO: this stripping of the prefix thing is bad. Remove it, and
 -- maybe add it back in if templates ever get more complex.
-pVariedVar :: Text -> Scriba Node [Varied]
-pVariedVar t = asNode $ do
+pVariedVar :: Scriba Node [Varied]
+pVariedVar = asNode $ do
   v <- ty $ do
     mty <- inspect
     case mty of
-      Just typ -> case T.stripPrefix ("$" <> t <> ".") typ of
+      Just typ -> case T.stripPrefix "$" typ of
         Just "titlePrefix" -> pure VariedPrefix
         Just "titleNote"   -> pure VariedNote
         Just "title"       -> pure VariedTitle
@@ -417,7 +417,7 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
       ty $ inspect >>= maybe (throwError $ Msg "a block type is required") pure
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
       pref          <- attrMaybe "prefix" $ allContentOf pInline
-      titleTemplate <- mattr "title" $ allContent (pVariedSeq t)
+      titleTemplate <- mattr "title" $ allContent pVariedSeq
       titleSep      <- attrMaybe "titleSep" $ allContentOf pInline
       numbering     <- attrMaybe "numbering" $ pCounterDepends
       concl         <- attrMaybe "conclusion" $ allContentOf pInline
@@ -441,7 +441,7 @@ pSectionConfig = whileParsingElem "sections" $ meta $ attrs $ allAttrsOf
       >>= maybe (throwError $ Msg "a section type is required") pure
     whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
       pref          <- attrMaybe "prefix" $ allContentOf pInline
-      titleTemplate <- mattr "title" $ allContent (pVariedSeq t)
+      titleTemplate <- mattr "title" $ allContent pVariedSeq
       numbering     <- attrMaybe "numbering" $ pCounterDepends
       let (counterDepends, ns) = unzips numbering
       pure

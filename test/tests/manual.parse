@@ -112,7 +112,7 @@ Doc
                                                           , sourceLine = Pos 14
                                                           , sourceColumn = Pos 14
                                                           }
-                                                    , etype = Just "$lemma.titlePrefix"
+                                                    , etype = Just "$titlePrefix"
                                                     , attrs = Attrs { getAttrs = fromList [] }
                                                     , args = []
                                                     , content = InlineNil
@@ -123,9 +123,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 14
-                                                          , sourceColumn = Pos 34
+                                                          , sourceColumn = Pos 28
                                                           }
-                                                    , etype = Just "$lemma.n"
+                                                    , etype = Just "$n"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -134,7 +134,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 14
-                                                                        , sourceColumn = Pos 43
+                                                                        , sourceColumn = Pos 31
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -146,7 +146,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 14
                                                                               , sourceColumn =
-                                                                                  Pos 51
+                                                                                  Pos 39
                                                                               }
                                                                             " "
                                                                         ]
@@ -163,9 +163,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 14
-                                                          , sourceColumn = Pos 54
+                                                          , sourceColumn = Pos 42
                                                           }
-                                                    , etype = Just "$lemma.titleNote"
+                                                    , etype = Just "$titleNote"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -174,7 +174,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 14
-                                                                        , sourceColumn = Pos 82
+                                                                        , sourceColumn = Pos 64
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -186,7 +186,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 14
                                                                               , sourceColumn =
-                                                                                  Pos 89
+                                                                                  Pos 71
                                                                               }
                                                                             ")"
                                                                         ]
@@ -196,7 +196,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 14
-                                                                        , sourceColumn = Pos 71
+                                                                        , sourceColumn = Pos 53
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -208,7 +208,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 14
                                                                               , sourceColumn =
-                                                                                  Pos 79
+                                                                                  Pos 61
                                                                               }
                                                                             " ("
                                                                         ]
@@ -362,7 +362,7 @@ Doc
                                                           , sourceLine = Pos 21
                                                           , sourceColumn = Pos 14
                                                           }
-                                                    , etype = Just "$proof.titlePrefix"
+                                                    , etype = Just "$titlePrefix"
                                                     , attrs = Attrs { getAttrs = fromList [] }
                                                     , args = []
                                                     , content = InlineNil
@@ -373,9 +373,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 21
-                                                          , sourceColumn = Pos 34
+                                                          , sourceColumn = Pos 28
                                                           }
-                                                    , etype = Just "$proof.titleNote"
+                                                    , etype = Just "$titleNote"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -384,7 +384,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 21
-                                                                        , sourceColumn = Pos 51
+                                                                        , sourceColumn = Pos 39
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -396,7 +396,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 21
                                                                               , sourceColumn =
-                                                                                  Pos 59
+                                                                                  Pos 47
                                                                               }
                                                                             " "
                                                                         ]
@@ -531,7 +531,7 @@ Doc
                                                           , sourceLine = Pos 7
                                                           , sourceColumn = Pos 14
                                                           }
-                                                    , etype = Just "$theorem.titlePrefix"
+                                                    , etype = Just "$titlePrefix"
                                                     , attrs = Attrs { getAttrs = fromList [] }
                                                     , args = []
                                                     , content = InlineNil
@@ -542,9 +542,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 7
-                                                          , sourceColumn = Pos 36
+                                                          , sourceColumn = Pos 28
                                                           }
-                                                    , etype = Just "$theorem.n"
+                                                    , etype = Just "$n"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -553,7 +553,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 7
-                                                                        , sourceColumn = Pos 47
+                                                                        , sourceColumn = Pos 31
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -565,7 +565,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 7
                                                                               , sourceColumn =
-                                                                                  Pos 55
+                                                                                  Pos 39
                                                                               }
                                                                             " "
                                                                         ]
@@ -582,9 +582,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 7
-                                                          , sourceColumn = Pos 58
+                                                          , sourceColumn = Pos 42
                                                           }
-                                                    , etype = Just "$theorem.titleNote"
+                                                    , etype = Just "$titleNote"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -593,7 +593,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 7
-                                                                        , sourceColumn = Pos 88
+                                                                        , sourceColumn = Pos 64
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -605,7 +605,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 7
                                                                               , sourceColumn =
-                                                                                  Pos 95
+                                                                                  Pos 71
                                                                               }
                                                                             ")"
                                                                         ]
@@ -615,7 +615,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 7
-                                                                        , sourceColumn = Pos 77
+                                                                        , sourceColumn = Pos 53
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -627,7 +627,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 7
                                                                               , sourceColumn =
-                                                                                  Pos 85
+                                                                                  Pos 61
                                                                               }
                                                                             " ("
                                                                         ]
@@ -770,7 +770,7 @@ Doc
                                                           , sourceLine = Pos 31
                                                           , sourceColumn = Pos 14
                                                           }
-                                                    , etype = Just "$section.titlePrefix"
+                                                    , etype = Just "$titlePrefix"
                                                     , attrs = Attrs { getAttrs = fromList [] }
                                                     , args = []
                                                     , content = InlineNil
@@ -781,9 +781,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 31
-                                                          , sourceColumn = Pos 36
+                                                          , sourceColumn = Pos 28
                                                           }
-                                                    , etype = Just "$section.n"
+                                                    , etype = Just "$n"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -792,7 +792,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 31
-                                                                        , sourceColumn = Pos 57
+                                                                        , sourceColumn = Pos 41
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -804,7 +804,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 31
                                                                               , sourceColumn =
-                                                                                  Pos 64
+                                                                                  Pos 48
                                                                               }
                                                                             ". "
                                                                         ]
@@ -814,7 +814,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 31
-                                                                        , sourceColumn = Pos 47
+                                                                        , sourceColumn = Pos 31
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -826,7 +826,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 31
                                                                               , sourceColumn =
-                                                                                  Pos 55
+                                                                                  Pos 39
                                                                               }
                                                                             " "
                                                                         ]
@@ -843,9 +843,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 31
-                                                          , sourceColumn = Pos 68
+                                                          , sourceColumn = Pos 52
                                                           }
-                                                    , etype = Just "$section.title"
+                                                    , etype = Just "$title"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -854,7 +854,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 31
-                                                                        , sourceColumn = Pos 83
+                                                                        , sourceColumn = Pos 59
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -866,7 +866,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 31
                                                                               , sourceColumn =
-                                                                                  Pos 91
+                                                                                  Pos 67
                                                                               }
                                                                             " "
                                                                         ]
@@ -963,7 +963,7 @@ Doc
                                                           , sourceLine = Pos 36
                                                           , sourceColumn = Pos 14
                                                           }
-                                                    , etype = Just "$subsection.n"
+                                                    , etype = Just "$n"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -972,7 +972,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 36
-                                                                        , sourceColumn = Pos 38
+                                                                        , sourceColumn = Pos 27
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -984,7 +984,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 36
                                                                               , sourceColumn =
-                                                                                  Pos 45
+                                                                                  Pos 34
                                                                               }
                                                                             ". "
                                                                         ]
@@ -994,7 +994,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 36
-                                                                        , sourceColumn = Pos 28
+                                                                        , sourceColumn = Pos 17
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -1006,7 +1006,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 36
                                                                               , sourceColumn =
-                                                                                  Pos 36
+                                                                                  Pos 25
                                                                               }
                                                                             " "
                                                                         ]
@@ -1023,9 +1023,9 @@ Doc
                                                         SourcePos
                                                           { sourceName = "manual.scb"
                                                           , sourceLine = Pos 36
-                                                          , sourceColumn = Pos 49
+                                                          , sourceColumn = Pos 38
                                                           }
-                                                    , etype = Just "$subsection.title"
+                                                    , etype = Just "$title"
                                                     , attrs =
                                                         Attrs
                                                           { getAttrs =
@@ -1034,7 +1034,7 @@ Doc
                                                                   , ( SourcePos
                                                                         { sourceName = "manual.scb"
                                                                         , sourceLine = Pos 36
-                                                                        , sourceColumn = Pos 67
+                                                                        , sourceColumn = Pos 45
                                                                         }
                                                                     , Attrs
                                                                         { getAttrs = fromList [] }
@@ -1046,7 +1046,7 @@ Doc
                                                                                   "manual.scb"
                                                                               , sourceLine = Pos 36
                                                                               , sourceColumn =
-                                                                                  Pos 75
+                                                                                  Pos 53
                                                                               }
                                                                             " "
                                                                         ]

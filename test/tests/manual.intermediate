@@ -135,7 +135,7 @@ NodeElem
                                                     }
                                                 , [ NodeElem
                                                       Element
-                                                        { eType = Just "$lemma.titlePrefix"
+                                                        { eType = Just "$titlePrefix"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
@@ -152,14 +152,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$lemma.n"
+                                                        { eType = Just "$n"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 14
-                                                                    , sourceColumn = Pos 34
+                                                                    , sourceColumn = Pos 28
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -173,7 +173,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 14
                                                                                   , sourceColumn =
-                                                                                      Pos 43
+                                                                                      Pos 31
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -187,7 +187,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 14
                                                                                 , sourceColumn =
-                                                                                    Pos 51
+                                                                                    Pos 39
                                                                                 }
                                                                               " "
                                                                           ]
@@ -200,14 +200,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$lemma.titleNote"
+                                                        { eType = Just "$titleNote"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 14
-                                                                    , sourceColumn = Pos 54
+                                                                    , sourceColumn = Pos 42
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -221,7 +221,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 14
                                                                                   , sourceColumn =
-                                                                                      Pos 82
+                                                                                      Pos 64
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -235,7 +235,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 14
                                                                                 , sourceColumn =
-                                                                                    Pos 89
+                                                                                    Pos 71
                                                                                 }
                                                                               ")"
                                                                           ]
@@ -250,7 +250,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 14
                                                                                   , sourceColumn =
-                                                                                      Pos 71
+                                                                                      Pos 53
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -264,7 +264,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 14
                                                                                 , sourceColumn =
-                                                                                    Pos 79
+                                                                                    Pos 61
                                                                                 }
                                                                               " ("
                                                                           ]
@@ -440,7 +440,7 @@ NodeElem
                                                     }
                                                 , [ NodeElem
                                                       Element
-                                                        { eType = Just "$proof.titlePrefix"
+                                                        { eType = Just "$titlePrefix"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
@@ -457,14 +457,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$proof.titleNote"
+                                                        { eType = Just "$titleNote"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 21
-                                                                    , sourceColumn = Pos 34
+                                                                    , sourceColumn = Pos 28
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -478,7 +478,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 21
                                                                                   , sourceColumn =
-                                                                                      Pos 51
+                                                                                      Pos 39
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -492,7 +492,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 21
                                                                                 , sourceColumn =
-                                                                                    Pos 59
+                                                                                    Pos 47
                                                                                 }
                                                                               " "
                                                                           ]
@@ -646,7 +646,7 @@ NodeElem
                                                     }
                                                 , [ NodeElem
                                                       Element
-                                                        { eType = Just "$theorem.titlePrefix"
+                                                        { eType = Just "$titlePrefix"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
@@ -663,14 +663,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$theorem.n"
+                                                        { eType = Just "$n"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 7
-                                                                    , sourceColumn = Pos 36
+                                                                    , sourceColumn = Pos 28
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -684,7 +684,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 7
                                                                                   , sourceColumn =
-                                                                                      Pos 47
+                                                                                      Pos 31
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -697,7 +697,7 @@ NodeElem
                                                                                     "manual.scb"
                                                                                 , sourceLine = Pos 7
                                                                                 , sourceColumn =
-                                                                                    Pos 55
+                                                                                    Pos 39
                                                                                 }
                                                                               " "
                                                                           ]
@@ -710,14 +710,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$theorem.titleNote"
+                                                        { eType = Just "$titleNote"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 7
-                                                                    , sourceColumn = Pos 58
+                                                                    , sourceColumn = Pos 42
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -731,7 +731,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 7
                                                                                   , sourceColumn =
-                                                                                      Pos 88
+                                                                                      Pos 64
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -744,7 +744,7 @@ NodeElem
                                                                                     "manual.scb"
                                                                                 , sourceLine = Pos 7
                                                                                 , sourceColumn =
-                                                                                    Pos 95
+                                                                                    Pos 71
                                                                                 }
                                                                               ")"
                                                                           ]
@@ -759,7 +759,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 7
                                                                                   , sourceColumn =
-                                                                                      Pos 77
+                                                                                      Pos 53
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -772,7 +772,7 @@ NodeElem
                                                                                     "manual.scb"
                                                                                 , sourceLine = Pos 7
                                                                                 , sourceColumn =
-                                                                                    Pos 85
+                                                                                    Pos 61
                                                                                 }
                                                                               " ("
                                                                           ]
@@ -934,7 +934,7 @@ NodeElem
                                                     }
                                                 , [ NodeElem
                                                       Element
-                                                        { eType = Just "$section.titlePrefix"
+                                                        { eType = Just "$titlePrefix"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
@@ -951,14 +951,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$section.n"
+                                                        { eType = Just "$n"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 31
-                                                                    , sourceColumn = Pos 36
+                                                                    , sourceColumn = Pos 28
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -972,7 +972,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 31
                                                                                   , sourceColumn =
-                                                                                      Pos 57
+                                                                                      Pos 41
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -986,7 +986,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 31
                                                                                 , sourceColumn =
-                                                                                    Pos 64
+                                                                                    Pos 48
                                                                                 }
                                                                               ". "
                                                                           ]
@@ -1001,7 +1001,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 31
                                                                                   , sourceColumn =
-                                                                                      Pos 47
+                                                                                      Pos 31
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -1015,7 +1015,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 31
                                                                                 , sourceColumn =
-                                                                                    Pos 55
+                                                                                    Pos 39
                                                                                 }
                                                                               " "
                                                                           ]
@@ -1028,14 +1028,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$section.title"
+                                                        { eType = Just "$title"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 31
-                                                                    , sourceColumn = Pos 68
+                                                                    , sourceColumn = Pos 52
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -1049,7 +1049,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 31
                                                                                   , sourceColumn =
-                                                                                      Pos 83
+                                                                                      Pos 59
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -1063,7 +1063,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 31
                                                                                 , sourceColumn =
-                                                                                    Pos 91
+                                                                                    Pos 67
                                                                                 }
                                                                               " "
                                                                           ]
@@ -1173,7 +1173,7 @@ NodeElem
                                                     }
                                                 , [ NodeElem
                                                       Element
-                                                        { eType = Just "$subsection.n"
+                                                        { eType = Just "$n"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
@@ -1194,7 +1194,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 36
                                                                                   , sourceColumn =
-                                                                                      Pos 38
+                                                                                      Pos 27
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -1208,7 +1208,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 36
                                                                                 , sourceColumn =
-                                                                                    Pos 45
+                                                                                    Pos 34
                                                                                 }
                                                                               ". "
                                                                           ]
@@ -1223,7 +1223,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 36
                                                                                   , sourceColumn =
-                                                                                      Pos 28
+                                                                                      Pos 17
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -1237,7 +1237,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 36
                                                                                 , sourceColumn =
-                                                                                    Pos 36
+                                                                                    Pos 25
                                                                                 }
                                                                               " "
                                                                           ]
@@ -1250,14 +1250,14 @@ NodeElem
                                                         }
                                                   , NodeElem
                                                       Element
-                                                        { eType = Just "$subsection.title"
+                                                        { eType = Just "$title"
                                                         , eMeta =
                                                             Meta
                                                               { loc =
                                                                   SourcePos
                                                                     { sourceName = "manual.scb"
                                                                     , sourceLine = Pos 36
-                                                                    , sourceColumn = Pos 49
+                                                                    , sourceColumn = Pos 38
                                                                     }
                                                               , sourcePres = AsInline
                                                               , metaAttrs =
@@ -1271,7 +1271,7 @@ NodeElem
                                                                                   , sourceLine =
                                                                                       Pos 36
                                                                                   , sourceColumn =
-                                                                                      Pos 67
+                                                                                      Pos 45
                                                                                   }
                                                                             , sourcePres = AsInline
                                                                             , metaAttrs =
@@ -1285,7 +1285,7 @@ NodeElem
                                                                                 , sourceLine =
                                                                                     Pos 36
                                                                                 , sourceColumn =
-                                                                                    Pos 75
+                                                                                    Pos 53
                                                                                 }
                                                                               " "
                                                                           ]

@@ -4,21 +4,21 @@
   {formalBlocks
     {theorem
       {prefix|Theorem}
-      {title|{$theorem.titlePrefix}{$theorem.n{before| }}{$theorem.titleNote{before| (}{after|)}}}
+      {title|{$titlePrefix}{$n{before| }}{$titleNote{before| (}{after|)}}}
       {titleSep|. }
       {numbering {relative@section}
                  {style@decimal}}
     }
     {lemma
       {prefix|Lemma}
-      {title|{$lemma.titlePrefix}{$lemma.n{before| }}{$lemma.titleNote{before| (}{after|)}}}
+      {title|{$titlePrefix}{$n{before| }}{$titleNote{before| (}{after|)}}}
       {titleSep|. }
       {numbering {share@theorem}
                  {style@decimal}}
     }
     {proof
       {prefix|Proof}
-      {title|{$proof.titlePrefix}{$proof.titleNote{before| }}}
+      {title|{$titlePrefix}{$titleNote{before| }}}
       {titleSep|. }
       {conclusion|∎}
       {numbering {share@theorem}
@@ -28,12 +28,12 @@
   {sections
     {section
       {prefix|Section}
-      {title|{$section.titlePrefix}{$section.n{before| }{after|. }}{$section.title{before| }}}
+      {title|{$titlePrefix}{$n{before| }{after|. }}{$title{before| }}}
       {numbering {absolute}
       		 {style@decimal}}
     }
     {subsection
-      {title|{$subsection.n{before| }{after|. }}{$subsection.title{before| }}}
+      {title|{$n{before| }{after|. }}{$title{before| }}}
       {numbering {relative@section}
       		 {style@decimal}}
     }
