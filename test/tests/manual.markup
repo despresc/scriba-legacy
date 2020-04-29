@@ -14,83 +14,87 @@ Doc
               fromList
                 [ ( "lemma"
                   , FormalConfig
-                      { fconfPrefix = Just [ Istr Str { getStr = "Lemma" } ]
-                      , fconfTitleTemplate =
-                          [ VariedVar "" VariedPrefix ""
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "" VariedNumber ""
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "(" VariedNote ")"
-                          ]
+                      { fconfTitleTemplate =
+                          Just
+                            TitleTemplate
+                              { ttemplatePrefix =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Just [ Istr Str { getStr = "Lemma" } ]
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateNumber =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateBody =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplatePrefixFirst = True
+                              }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
                       , fconfConcl = Nothing
                       }
                   )
                 , ( "proof"
                   , FormalConfig
-                      { fconfPrefix = Just [ Istr Str { getStr = "Proof" } ]
-                      , fconfTitleTemplate =
-                          [ VariedVar "" VariedPrefix ""
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "" VariedNote ""
-                          ]
+                      { fconfTitleTemplate =
+                          Just
+                            TitleTemplate
+                              { ttemplatePrefix =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Just [ Istr Str { getStr = "Proof" } ]
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateNumber =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateBody =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplatePrefixFirst = True
+                              }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
                       , fconfConcl = Just [ Istr Str { getStr = "\8718" } ]
                       }
                   )
                 , ( "theorem"
                   , FormalConfig
-                      { fconfPrefix = Just [ Istr Str { getStr = "Theorem" } ]
-                      , fconfTitleTemplate =
-                          [ VariedVar "" VariedPrefix ""
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "" VariedNumber ""
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "(" VariedNote ")"
-                          ]
+                      { fconfTitleTemplate =
+                          Just
+                            TitleTemplate
+                              { ttemplatePrefix =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Just [ Istr Str { getStr = "Theorem" } ]
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateNumber =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = [ Istr Str { getStr = "." } ]
+                                    }
+                              , ttemplateBody =
+                                  Surround
+                                    { surroundBefore = [ Istr Str { getStr = "(" } ]
+                                    , surroundMid = Nothing
+                                    , surroundAfter = [ Istr Str { getStr = ")" } ]
+                                    }
+                              , ttemplatePrefixFirst = True
+                              }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
                       , fconfConcl = Nothing
                       }
@@ -100,59 +104,56 @@ Doc
               fromList
                 [ ( "section"
                   , SectionConfig
-                      { sconfPrefix = Just [ Istr Str { getStr = "Section" } ]
-                      , sconfTitleTemplate =
-                          [ VariedVar "" VariedPrefix ""
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "" VariedNumber "."
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "" VariedTitleBody ""
-                          ]
+                      { sconfTitleTemplate =
+                          Just
+                            TitleTemplate
+                              { ttemplatePrefix =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Just [ Istr Str { getStr = "Section" } ]
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateNumber =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = [ Istr Str { getStr = "." } ]
+                                    }
+                              , ttemplateBody =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplatePrefixFirst = True
+                              }
                       }
                   )
                 , ( "subsection"
                   , SectionConfig
-                      { sconfPrefix = Nothing
-                      , sconfTitleTemplate =
-                          [ VariedVar "" VariedNumber ". "
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedSpace
-                          , VariedVar "" VariedTitleBody ""
-                          ]
+                      { sconfTitleTemplate =
+                          Just
+                            TitleTemplate
+                              { ttemplatePrefix =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplateNumber =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = [ Istr Str { getStr = "." } ]
+                                    }
+                              , ttemplateBody =
+                                  Surround
+                                    { surroundBefore = []
+                                    , surroundMid = Nothing
+                                    , surroundAfter = []
+                                    }
+                              , ttemplatePrefixFirst = True
+                              }
                       }
                   )
                 ]
@@ -160,9 +161,6 @@ Doc
     , docElemCounterRel =
         fromList
           [ ( ContainerName { unContainerName = "lemma" }
-            , CounterName { unCounterName = "theorem" }
-            )
-          , ( ContainerName { unContainerName = "proof" }
             , CounterName { unCounterName = "theorem" }
             )
           , ( ContainerName { unContainerName = "section" }
@@ -189,7 +187,6 @@ Doc
     , docNumberStyles =
         fromList
           [ ( "lemma" , Decimal )
-          , ( "proof" , Decimal )
           , ( "section" , Decimal )
           , ( "subsection" , Decimal )
           , ( "theorem" , Decimal )
@@ -235,7 +232,7 @@ Doc
                         , Istr Str { getStr = " " }
                         , ItitleComponent
                             (TitleComponent
-                               TitleBody
+                               TitleNote
                                []
                                [ Istr Str { getStr = "An introduction to the language" } ]
                                [])
@@ -259,11 +256,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "1.1" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody [] [ Istr Str { getStr = "Paragraphs" } ] [])
+                                             TitleNote [] [ Istr Str { getStr = "Paragraphs" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.1"
@@ -388,11 +385,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "1.2" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody [] [ Istr Str { getStr = "Sections" } ] [])
+                                             TitleNote [] [ Istr Str { getStr = "Sections" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.2"
@@ -502,11 +499,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "1.3" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody [] [ Istr Str { getStr = "Blocks" } ] [])
+                                             TitleNote [] [ Istr Str { getStr = "Blocks" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.3"
@@ -616,11 +613,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "1.4" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody
+                                             TitleNote
                                              []
                                              [ Istr Str { getStr = "Mathematics" } ]
                                              [])
@@ -748,11 +745,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "1.5" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody
+                                             TitleNote
                                              []
                                              [ Istr
                                                  Str { getStr = "The overall document structure" }
@@ -803,7 +800,7 @@ Doc
                         , Istr Str { getStr = " " }
                         , ItitleComponent
                             (TitleComponent
-                               TitleBody [] [ Istr Str { getStr = "Element reference" } ] [])
+                               TitleNote [] [ Istr Str { getStr = "Element reference" } ] [])
                         ]
                     }
             , secNum = Just "2"
@@ -824,11 +821,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "2.1" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody
+                                             TitleNote
                                              []
                                              [ Istr Str { getStr = "formalBlock" } ]
                                              [])
@@ -910,7 +907,7 @@ Doc
                                                        TitleNumber
                                                        []
                                                        [ Istr Str { getStr = "2.2" } ]
-                                                       [])
+                                                       [ Istr Str { getStr = "." } ])
                                                 , Istr Str { getStr = " " }
                                                 , ItitleComponent
                                                     (TitleComponent
@@ -936,7 +933,7 @@ Doc
                                     , Bformal
                                         Formal
                                           { fType = Just "proof"
-                                          , fNum = Just "2.3"
+                                          , fNum = Nothing
                                           , fTitle =
                                               Just
                                                 [ ItitleComponent
@@ -984,11 +981,11 @@ Doc
                                              TitleNumber
                                              []
                                              [ Istr Str { getStr = "2.2" } ]
-                                             [ Istr Str { getStr = ". " } ])
+                                             [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleBody [] [ Istr Str { getStr = "olist" } ] [])
+                                             TitleNote [] [ Istr Str { getStr = "olist" } ] [])
                                       ]
                                   }
                           , secNum = Just "2.2"

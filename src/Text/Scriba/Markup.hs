@@ -24,7 +24,8 @@ module Text.Scriba.Markup
   , unzips
   , unzips3
   , FormalConfig(..)
-  , runVariedInline
+  , runTemplate
+  , TitleTemplateStyle(..)
   , SectionConfig(..)
   , parseDoc
   , prettyScribaError
@@ -63,8 +64,10 @@ import           Control.Applicative            ( (<|>)
                                                 , empty
                                                 )
 import           Control.Monad.Except           ( MonadError(..) )
-import           Data.Char                      ( isSpace )
-import           Data.Functor                   ( ($>) )
+import           Data.Functor                   ( ($>)
+                                                , (<&>)
+                                                )
+import qualified Data.List                     as List
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
                                                 )
@@ -192,19 +195,81 @@ data TitlingConfig = TitlingConfig
   , tcSectionConfig :: Map Text SectionConfig
   } deriving (Eq, Ord, Show, Read, Generic)
 
+-- TODO: have this be a common type, and have TitlePart use it? Would
+-- need a middle bit that could be () to use in the title config. Or
+-- perhaps not.
+data Surround a = Surround
+  { surroundBefore :: [a]
+  , surroundMid :: Maybe [a]
+  , surroundAfter :: [a]
+  } deriving (Eq, Ord, Show, Read, Generic)
+
+emptySurround :: Surround a
+emptySurround = Surround [] Nothing []
+
+-- TODO: may want to restrict the inlines that can appear in a
+-- title. May also want to have a toc title and header/running title
+-- in here too. Also may want a richer title structure, say having
+-- titles, separators, subtitles, that sort of thing.
+newtype Title a = Title
+  { titleBody :: [a]
+  } deriving (Eq, Ord, Show, Read, Generic)
+
+-- TODO: might need more configuration related to component placement.
+-- Perhaps also for whitespace?
+-- TODO: I think a lot of these inline voids can be polymorphic, right?
+data TitleTemplate a = TitleTemplate
+  { ttemplatePrefix :: Surround a
+  , ttemplateNumber :: Surround a
+  , ttemplateBody :: Surround a
+  , ttemplatePrefixFirst :: Bool
+  } deriving (Eq, Ord, Show, Read, Generic)
+
+data TitleTemplateStyle
+  = FormalTemplate
+  | SectionTemplate
+  deriving (Eq, Ord, Show, Read, Generic)
+
+-- TODO: better way of giving the components?
+-- TODO: I could have both a titleNote and a titleBody. I suppose it
+-- would go prefix, number, body, note, by default?
+-- TODO: observe that this doesn't add the separator
+-- TODO: somewhat inelegant just accepting a maybe template.
+runTemplate
+  :: Maybe (TitleTemplate (Inline a))
+  -> TitleTemplateStyle
+  -> Maybe [Inline a]
+  -> Maybe [Inline a]
+  -> Maybe [Inline a]
+  -> Maybe [Inline a]
+runTemplate (Just template) ts tp tn tb =
+  Just $ List.intersperse (Istr $ Str " ") $ mapMaybe
+    mk
+    [ (TitlePrefix, ttemplatePrefix template, tp)
+    , (TitleNumber, ttemplateNumber template, tn)
+    , (fromTs     , ttemplateBody template  , tb)
+    ]
+ where
+  fromTs = case ts of
+    FormalTemplate  -> TitleNote
+    SectionTemplate -> TitleBody
+  mk :: (TitlePart, Surround (Inline a), Maybe [Inline a]) -> Maybe (Inline a)
+  mk (p, Surround b def a, mcomp) =
+    (mcomp <|> def) <&> \comp -> ItitleComponent $ TitleComponent p b comp a
+runTemplate Nothing _ _ _ _ = Nothing
+
 -- TODO: richer whitespace options not in the body of the template?
 -- E.g. stripping all whitespace, so that the template is a little
 -- more understandable.
+-- TODO: make the title template optional?
 data FormalConfig = FormalConfig
-  { fconfPrefix :: Maybe [Inline Void]
-  , fconfTitleTemplate :: [Varied]
+  { fconfTitleTemplate :: Maybe (TitleTemplate (Inline Void))
   , fconfTitleSep :: Maybe [Inline Void]
   , fconfConcl :: Maybe [Inline Void]
   } deriving (Eq, Ord, Show, Read, Generic)
 
-data SectionConfig = SectionConfig
-  { sconfPrefix :: Maybe [Inline Void]
-  , sconfTitleTemplate :: [Varied]
+newtype SectionConfig = SectionConfig
+  { sconfTitleTemplate :: Maybe (TitleTemplate (Inline Void))
   } deriving (Eq, Ord, Show, Read, Generic)
 
 -- | A section is a large-scale division of a document. For now it has
@@ -222,6 +287,12 @@ data SectionConfig = SectionConfig
 -- configured to be titled then any existing title becomes the
 -- body. It doesn't count as an override. Might want configuration for
 -- that.
+
+-- TODO: need section titles to have the following behaviour in source:
+-- 1. If titleFull is present, use that as the full title.
+-- 2. If title is present, put that into titleBody.
+-- 3. for title rendering, the precedence for TitleFull should be:
+-- title full, generated title, title body
 data Section = Section
   { secType :: Maybe Text
   , secTitleBody :: Maybe (Title (Inline Void))
@@ -239,19 +310,11 @@ emptySectionContent :: SectionContent
 emptySectionContent = SectionContent [] []
 
 data Block i
-  = Bformal (Formal Block i)
-  | Bcode BlockCode
-  | Bpar (Paragraph i)
-  | Blist (List Block i)
+  = Bformal !(Formal Block i)
+  | Bcode !BlockCode
+  | Bpar !(Paragraph i)
+  | Blist !(List Block i)
   deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: may want to restrict the inlines that can appear in a
--- title. May also want to have a toc title and header/running title
--- in here too. Also may want a richer title structure, say having
--- titles, separators, subtitles, that sort of thing.
-newtype Title a = Title
-  { titleBody :: [a]
-  } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: rename Math to InlineMath?
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
@@ -280,15 +343,15 @@ data Inline a
 stripMarkup :: (a -> [Text]) -> [Inline a] -> Text
 stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
  where
-  inlineToText (Istr         i ) = strToText i
-  inlineToText (Iemph        is) = emphToText inlineToText is
-  inlineToText (Iquote       is) = quoteToText inlineToText is
-  inlineToText (IinlineMath  t ) = inlineMathToText t
-  inlineToText (IdisplayMath d ) = displayMathToText d
-  inlineToText (Icode        t ) = inlineCodeToText t
-  inlineToText (IpageMark    t ) = pageMarkToText t
-  inlineToText (ItitleComponent  t ) = titleComponentToText inlineToText t
-  inlineToText (Iother       a ) = f a
+  inlineToText (Istr            i ) = strToText i
+  inlineToText (Iemph           is) = emphToText inlineToText is
+  inlineToText (Iquote          is) = quoteToText inlineToText is
+  inlineToText (IinlineMath     t ) = inlineMathToText t
+  inlineToText (IdisplayMath    d ) = displayMathToText d
+  inlineToText (Icode           t ) = inlineCodeToText t
+  inlineToText (IpageMark       t ) = pageMarkToText t
+  inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
+  inlineToText (Iother          a ) = f a
 
 -- * Element parsers
 
@@ -318,76 +381,6 @@ data VariedVar
   | VariedNumber
   deriving (Eq, Ord, Show, Read, Generic)
 
-pVariedSeq :: Scriba [Node] [Varied]
-pVariedSeq = concat <$> manyOf pVaried
-
-pVaried :: Scriba Node [Varied]
-pVaried = pVariedText <|> pVariedVar
-
-pVariedText :: Scriba Node [Varied]
-pVariedText = explodeText <$> simpleText
- where
-  explodeText = map toVaried . T.split isSpace
-  toVaried t | T.null t  = VariedSpace
-             | otherwise = VariedStr t
-
--- TODO: improve error. I think I need a whileParsing here?
--- TODO: this stripping of the prefix thing is bad. Remove it, and
--- maybe add it back in if templates ever get more complex.
-pVariedVar :: Scriba Node [Varied]
-pVariedVar = asNode $ do
-  v <- ty $ do
-    mty <- inspect
-    case mty of
-      Just "titlePrefix" -> pure VariedPrefix
-      Just "titleNote"   -> pure VariedNote
-      Just "titleBody"   -> pure VariedTitleBody
-      Just "n"           -> pure VariedNumber
-      _                  -> throwError $ Msg "unrecognized variable"
-  (b, a) <- whileParsingElem (printVar v) $ meta $ attrs $ do
-    bs <- mattr "before" $ allContentOf simpleText
-    as <- mattr "after" $ allContentOf simpleText
-    pure (T.concat bs, T.concat as)
-  pure [VariedVar b v a]
- where
-  printVar VariedPrefix    = "titlePrefix"
-  printVar VariedNote      = "titleNode"
-  printVar VariedTitleBody = "titleBody"
-  printVar VariedNumber    = "n"
-
--- TODO: simply ignores undefined variables right now.
--- TODO: use of Map seems a little wasteful at the moment.
--- TODO: probably needs to wrap its components in spans!
--- TODO: do the before/after things need to be in spans too?
--- TODO: whitespace configuration? Could have a general whitespace
--- normalization function at the end?
-runVariedInline :: Map Text [Inline a] -> [Varied] -> [Inline a]
-runVariedInline m = firstSpace . mapMaybe unVary
- where
-  firstSpace (Nothing : xs) = firstSpace xs
-  firstSpace xs             = midSpace xs
-
-  midSpace (Just x            : xs) = x : midSpace xs
-  midSpace (Nothing : Nothing : xs) = midSpace (Nothing : xs)
-  midSpace (Nothing : Just x  : xs) = Istr (Str " ") : x : midSpace xs
-  midSpace [Nothing               ] = []
-  midSpace []                       = []
-
-  mstr t | T.null t  = []
-         | otherwise = [Istr $ Str t]
-
-  unVary VariedSpace       = Just Nothing
-  unVary (VariedStr t    ) = Just $ Just $ Istr $ Str t
-  unVary (VariedVar b v a) = case unVaryVar v of
-    Just (componentTy, vi) -> Just $ Just $ ItitleComponent $ TitleComponent componentTy (mstr b) vi (mstr a)
-    Nothing -> Nothing
-  unVaryVar VariedPrefix =
-    (,) TitlePrefix <$> M.lookup "titlePrefix" m
-  unVaryVar VariedNote = (,) TitleNote <$> M.lookup "titleNote" m
-  unVaryVar VariedTitleBody =
-    (,) TitleBody <$> M.lookup "titleBody" m
-  unVaryVar VariedNumber = (,) TitleNumber <$> M.lookup "n" m
-
 -- TODO: write this. Will need to have options for how they are
 -- numbered, and how the title and conclusion are generated.
 -- TODO: should probably have "whileParsingAttr"
@@ -411,6 +404,14 @@ runVariedInline m = firstSpace . mapMaybe unVary
 -- TODO: should have a NumberingConfig, TitlingConfig, etc., I think,
 -- keyed by the type of the element. Then we can operate on numbered
 -- things somewhat uniformly internally.
+
+-- TODO: need to have the title template be a special "optional, but
+-- if present must be well-formed" type of attribute.
+
+-- TODO: reconside the name of "title" for the title
+-- template/configuration. Also reconsider the other configuration
+-- names. They should have the same name as the corresponding title
+-- attributes.
 pFormalConfig
   :: Scriba
        Element
@@ -422,15 +423,39 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
     t <-
       ty $ inspect >>= maybe (throwError $ Msg "a block type is required") pure
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
-      pref          <- attrMaybe "prefix" $ allContentOf pInline
-      titleTemplate <- mattr "title" $ allContent pVariedSeq
-      titleSep      <- attrMaybe "titleSep" $ allContentOf pInline
-      numbering     <- attrMaybe "numbering" $ pCounterDepends
-      concl         <- attrMaybe "conclusion" $ allContentOf pInline
+      titleTemplate <- attrMaybe "title" $ meta $ attrs
+        (pTitleTemplate FormalTemplate)
+      titleSep  <- attrMaybe "titleSep" $ allContentOf pInline
+      numbering <- attrMaybe "numbering" $ pCounterDepends
+      concl     <- attrMaybe "conclusion" $ allContentOf pInline
       let (counterDepends, ns) = unzips numbering
-      pure
-        $ (FormalConfig pref titleTemplate titleSep concl, counterDepends, ns)
+      pure $ (FormalConfig titleTemplate titleSep concl, counterDepends, ns)
 
+pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
+pTitleTemplate t = do
+  pref  <- attrDef "prefix" emptySurround $ pSurround
+  tnote <- attrDef tname emptySurround $ pSurround
+  tnum  <- attrDef "n" emptySurround $ pSurround
+  pure $ TitleTemplate pref tnum tnote True
+ where
+  tname = case t of
+    FormalTemplate  -> "note"
+    SectionTemplate -> "titleBody"
+
+
+-- TODO: can't distinguish between present-but-empty content, and
+-- absent content. Seems okay right now.
+pSurround :: Scriba Element (Surround (Inline a))
+pSurround = do
+  (b, a) <- meta $ attrs $ do
+    b <- mattr "before" $ allContentOf pInline
+    a <- mattr "after" $ allContentOf pInline
+    pure (b, a)
+  c <- allContentOf $ pInline
+  let c' = case c of
+        [] -> Nothing
+        x  -> Just x
+  pure $ Surround b c' a
 
 -- TODO: reduce duplication with pFormalConfig
 pSectionConfig
@@ -446,15 +471,11 @@ pSectionConfig = whileParsingElem "sections" $ meta $ attrs $ allAttrsOf
       $   inspect
       >>= maybe (throwError $ Msg "a section type is required") pure
     whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
-      pref          <- attrMaybe "prefix" $ allContentOf pInline
-      titleTemplate <- mattr "title" $ allContent pVariedSeq
-      numbering     <- attrMaybe "numbering" $ pCounterDepends
+      titleTemplate <- attrMaybe "title" $ meta $ attrs
+        (pTitleTemplate SectionTemplate)
+      numbering <- attrMaybe "numbering" $ pCounterDepends
       let (counterDepends, ns) = unzips numbering
-      pure
-        $ ( SectionConfig (fmap (fmap (fmap absurd)) pref) titleTemplate
-          , counterDepends
-          , ns
-          )
+      pure $ (SectionConfig titleTemplate, counterDepends, ns)
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an

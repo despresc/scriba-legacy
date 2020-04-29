@@ -333,17 +333,13 @@ genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
     fconf <- M.lookup t $ tcFormalConfig m
     let concl    = fconfConcl fconf
         tisep    = fconfTitleSep fconf
-        pref     = fconfPrefix fconf
         template = fconfTitleTemplate fconf
-        pushMaybe (x, y) = (,) x <$> y
         toInlStr = (: []) . Istr . Str
-        vars     = M.fromList $ mapMaybe
-          pushMaybe
-          [ ("titlePrefix", pref)
-          , ("titleNote"  , mnote)
-          , ("n"          , toInlStr <$> mnum)
-          ]
-    pure (tisep, pure $ runVariedInline vars template, concl)
+    pure
+      ( tisep
+      , runTemplate template FormalTemplate Nothing (toInlStr <$> mnum) mnote
+      , concl
+      )
 
 genListTitle
   :: TitlingConfig -> List Block (Inline Void) -> List Block (Inline Void)
@@ -363,19 +359,15 @@ genMixedBlockBodyTitle _ x              = x
 genSectionTitle :: TitlingConfig -> Section -> Section
 genSectionTitle m (Section mty mtbody mtfull mnum c) =
   let c' = genSecContentTitle m c
-  in  Section mty mtbody (mtfull <|> mtigen) mnum c'
+  in  Section mty mtbody (mtfull <|> mtigen <|> mtbody) mnum c'
  where
   mtigen = do
     t     <- mty
     sconf <- M.lookup t $ tcSectionConfig m
-    let pref     = sconfPrefix sconf
-        template = sconfTitleTemplate sconf
-        pushMaybe (x, y) = (,) x <$> y
+    let template = sconfTitleTemplate sconf
         toInlStr = (: []) . Istr . Str
-        vars     = M.fromList $ mapMaybe
-          pushMaybe
-          [ ("titlePrefix", pref)
-          , ("titleBody"  , titleBody <$> mtbody)
-          , ("n"          , toInlStr <$> mnum)
-          ]
-    pure $ Title $ runVariedInline vars template
+    Title <$> runTemplate template
+                          FormalTemplate
+                          Nothing
+                          (toInlStr <$> mnum)
+                          (titleBody <$> mtbody)

@@ -3,46 +3,41 @@
   {type|article}
   {formalBlocks
     {theorem
-      {prefix|Theorem}
-      {title|{titlePrefix}
-             {n}
-	     {titleNote{before|(}
-	               {after|)}}}
+      {title
+        {prefix|Theorem}
+        {note {before|(}
+                   {after|)}}
+        {n {after|.}}
+      }
       {titleSep|. }
       {numbering {relative@section}
                  {style@decimal}}
     }
     {lemma
-      {prefix|Lemma}
-      {title|{titlePrefix}
-             {n}
-	     {titleNote{before|(}
-	               {after|)}}}
+      {title
+        {prefix|Lemma}}
       {titleSep|. }
       {numbering {share@theorem}
                  {style@decimal}}
     }
     {proof
-      {prefix|Proof}
-      {title|{titlePrefix} {titleNote}}
+      {title
+        {prefix|Proof}}
       {titleSep|. }
       {conclusion|∎}
-      {numbering {share@theorem}
-                 {style@decimal}}
     }
   }
   {sections
     {section
-      {prefix|Section}
-      {title|{titlePrefix}
-             {n{after|.}}
-	     {titleBody}}
+      {title
+        {prefix|Section}
+        {n {after|.}}}
       {numbering {absolute}
       		 {style@decimal}}
     }
     {subsection
-      {title|{n{after|. }}
-             {titleBody}}
+      {title
+        {n {after|.}}}
       {numbering {relative@section}
       		 {style@decimal}}
     }

@@ -43,6 +43,8 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
   source comments should probably be left in-place instead of being
   stripped out.
 
+- Parse regions. I want "when parsing ..." errors.
+
 -}
 
 -- * Document syntax
