@@ -212,8 +212,9 @@ renderInlineWith _ (IinlineMath  s) = renderInlineMath s
 renderInlineWith _ (IdisplayMath s) = renderDisplayMath s
 renderInlineWith _ (Icode        s) = renderInlineCode s
 renderInlineWith _ (IpageMark    s) = renderPageMark s
-renderInlineWith f (ItitleParts  s) = renderTitleParts (renderInlineWith f) s
-renderInlineWith f (Iother       s) = f s
+renderInlineWith f (ItitleComponent s) =
+  renderTitleComponent (renderInlineWith f) s
+renderInlineWith f (Iother s) = f s
 
 renderInline :: Inline Void -> Render Html
 renderInline = renderInlineWith absurd
@@ -268,10 +269,21 @@ renderTitle (Title t) = do
     5 -> H.h5
     _ -> H.h6
 
-renderTitleParts :: (a -> Render Html) -> TitleParts a -> Render Html
-renderTitleParts f (TitlePrefix i) =
-  H.span ! A.class_ "titlePrefix" <$> foldBy f i
-renderTitleParts f (TitleNumber i) = H.span ! A.class_ "number" <$> foldBy f i
-renderTitleParts f (TitleNote i) = H.span ! A.class_ "titleNote" <$> foldBy f i
-renderTitleParts f (TitleSep i) = H.span ! A.class_ "titleSep" <$> foldBy f i
-renderTitleParts f (TitleBody i) = H.span ! A.class_ "titleBody" <$> foldBy f i
+renderTitleComponent :: (a -> Render Html) -> TitleComponent a -> Render Html
+renderTitleComponent f (TitleComponent t a v b) =
+  H.span ! A.class_ wrapClass <$> body
+ where
+  wrapClass = case t of
+    TitlePrefix -> "titlePrefix"
+    TitleNote   -> "titleNote"
+    TitleNumber -> "number"
+    TitleSep    -> "titleSep"
+    TitleBody   -> "titleBody"
+  body = do
+    a' <- foldBy f a
+    v' <- foldBy f v
+    b' <- foldBy f b
+    pure $ do
+      H.span ! A.class_ "before" $ a'
+      v'
+      H.span ! A.class_ "after" $ b'

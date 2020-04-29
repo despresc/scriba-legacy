@@ -41,7 +41,8 @@
       		 {style@decimal}}
     }
     {subsection
-      {title|{n{after|. }}{titleBody{before| }}}
+      {title|{n{after|. }}
+             {titleBody}}
       {numbering {relative@section}
       		 {style@decimal}}
     }

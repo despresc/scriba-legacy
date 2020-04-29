@@ -136,7 +136,22 @@ Doc
                       { sconfPrefix = Nothing
                       , sconfTitleTemplate =
                           [ VariedVar "" VariedNumber ". "
-                          , VariedVar " " VariedTitleBody ""
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedSpace
+                          , VariedVar "" VariedTitleBody ""
                           ]
                       }
                   )
@@ -207,14 +222,23 @@ Doc
                 Just
                   Title
                     { titleBody =
-                        [ ItitleParts (TitlePrefix [ Istr Str { getStr = "Section" } ])
+                        [ ItitleComponent
+                            (TitleComponent
+                               TitlePrefix [] [ Istr Str { getStr = "Section" } ] [])
                         , Istr Str { getStr = " " }
-                        , ItitleParts (TitleNumber [ Istr Str { getStr = "1" } ])
-                        , Istr Str { getStr = "." }
+                        , ItitleComponent
+                            (TitleComponent
+                               TitleNumber
+                               []
+                               [ Istr Str { getStr = "1" } ]
+                               [ Istr Str { getStr = "." } ])
                         , Istr Str { getStr = " " }
-                        , ItitleParts
-                            (TitleBody
-                               [ Istr Str { getStr = "An introduction to the language" } ])
+                        , ItitleComponent
+                            (TitleComponent
+                               TitleBody
+                               []
+                               [ Istr Str { getStr = "An introduction to the language" } ]
+                               [])
                         ]
                     }
             , secNum = Just "1"
@@ -230,11 +254,16 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "1.1" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "1.1" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts
-                                          (TitleBody [ Istr Str { getStr = "Paragraphs" } ])
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody [] [ Istr Str { getStr = "Paragraphs" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.1"
@@ -354,10 +383,16 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "1.2" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "1.2" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts (TitleBody [ Istr Str { getStr = "Sections" } ])
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody [] [ Istr Str { getStr = "Sections" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.2"
@@ -462,10 +497,16 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "1.3" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "1.3" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts (TitleBody [ Istr Str { getStr = "Blocks" } ])
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody [] [ Istr Str { getStr = "Blocks" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.3"
@@ -570,11 +611,19 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "1.4" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "1.4" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts
-                                          (TitleBody [ Istr Str { getStr = "Mathematics" } ])
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody
+                                             []
+                                             [ Istr Str { getStr = "Mathematics" } ]
+                                             [])
                                       ]
                                   }
                           , secNum = Just "1.4"
@@ -694,14 +743,21 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "1.5" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "1.5" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts
-                                          (TitleBody
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody
+                                             []
                                              [ Istr
                                                  Str { getStr = "The overall document structure" }
-                                             ])
+                                             ]
+                                             [])
                                       ]
                                   }
                           , secNum = Just "1.5"
@@ -734,13 +790,20 @@ Doc
                 Just
                   Title
                     { titleBody =
-                        [ ItitleParts (TitlePrefix [ Istr Str { getStr = "Section" } ])
+                        [ ItitleComponent
+                            (TitleComponent
+                               TitlePrefix [] [ Istr Str { getStr = "Section" } ] [])
                         , Istr Str { getStr = " " }
-                        , ItitleParts (TitleNumber [ Istr Str { getStr = "2" } ])
-                        , Istr Str { getStr = "." }
+                        , ItitleComponent
+                            (TitleComponent
+                               TitleNumber
+                               []
+                               [ Istr Str { getStr = "2" } ]
+                               [ Istr Str { getStr = "." } ])
                         , Istr Str { getStr = " " }
-                        , ItitleParts
-                            (TitleBody [ Istr Str { getStr = "Element reference" } ])
+                        , ItitleComponent
+                            (TitleComponent
+                               TitleBody [] [ Istr Str { getStr = "Element reference" } ] [])
                         ]
                     }
             , secNum = Just "2"
@@ -756,11 +819,19 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "2.1" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "2.1" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts
-                                          (TitleBody [ Istr Str { getStr = "formalBlock" } ])
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody
+                                             []
+                                             [ Istr Str { getStr = "formalBlock" } ]
+                                             [])
                                       ]
                                   }
                           , secNum = Just "2.1"
@@ -800,11 +871,19 @@ Doc
                                           , fNum = Just "2.1"
                                           , fTitle =
                                               Just
-                                                [ ItitleParts
-                                                    (TitlePrefix [ Istr Str { getStr = "Lemma" } ])
+                                                [ ItitleComponent
+                                                    (TitleComponent
+                                                       TitlePrefix
+                                                       []
+                                                       [ Istr Str { getStr = "Lemma" } ]
+                                                       [])
                                                 , Istr Str { getStr = " " }
-                                                , ItitleParts
-                                                    (TitleNumber [ Istr Str { getStr = "2.1" } ])
+                                                , ItitleComponent
+                                                    (TitleComponent
+                                                       TitleNumber
+                                                       []
+                                                       [ Istr Str { getStr = "2.1" } ]
+                                                       [])
                                                 ]
                                           , fNote = Nothing
                                           , fTitleSep = Just [ Istr Str { getStr = ". " } ]
@@ -819,19 +898,27 @@ Doc
                                           , fNum = Just "2.2"
                                           , fTitle =
                                               Just
-                                                [ ItitleParts
-                                                    (TitlePrefix
-                                                       [ Istr Str { getStr = "Theorem" } ])
+                                                [ ItitleComponent
+                                                    (TitleComponent
+                                                       TitlePrefix
+                                                       []
+                                                       [ Istr Str { getStr = "Theorem" } ]
+                                                       [])
                                                 , Istr Str { getStr = " " }
-                                                , ItitleParts
-                                                    (TitleNumber [ Istr Str { getStr = "2.2" } ])
+                                                , ItitleComponent
+                                                    (TitleComponent
+                                                       TitleNumber
+                                                       []
+                                                       [ Istr Str { getStr = "2.2" } ]
+                                                       [])
                                                 , Istr Str { getStr = " " }
-                                                , Istr Str { getStr = "(" }
-                                                , ItitleParts
-                                                    (TitleNote
+                                                , ItitleComponent
+                                                    (TitleComponent
+                                                       TitleNote
+                                                       [ Istr Str { getStr = "(" } ]
                                                        [ Istr Str { getStr = "an interesting one" }
-                                                       ])
-                                                , Istr Str { getStr = ")" }
+                                                       ]
+                                                       [ Istr Str { getStr = ")" } ])
                                                 ]
                                           , fNote =
                                               Just [ Istr Str { getStr = "an interesting one" } ]
@@ -852,16 +939,23 @@ Doc
                                           , fNum = Just "2.3"
                                           , fTitle =
                                               Just
-                                                [ ItitleParts
-                                                    (TitlePrefix [ Istr Str { getStr = "Proof" } ])
+                                                [ ItitleComponent
+                                                    (TitleComponent
+                                                       TitlePrefix
+                                                       []
+                                                       [ Istr Str { getStr = "Proof" } ]
+                                                       [])
                                                 , Istr Str { getStr = " " }
-                                                , ItitleParts
-                                                    (TitleNote
+                                                , ItitleComponent
+                                                    (TitleComponent
+                                                       TitleNote
+                                                       []
                                                        [ Istr
                                                            Str
                                                              { getStr = "of the interesting theorem"
                                                              }
-                                                       ])
+                                                       ]
+                                                       [])
                                                 ]
                                           , fNote =
                                               Just
@@ -885,10 +979,16 @@ Doc
                               Just
                                 Title
                                   { titleBody =
-                                      [ ItitleParts (TitleNumber [ Istr Str { getStr = "2.2" } ])
-                                      , Istr Str { getStr = ". " }
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "2.2" } ]
+                                             [ Istr Str { getStr = ". " } ])
                                       , Istr Str { getStr = " " }
-                                      , ItitleParts (TitleBody [ Istr Str { getStr = "olist" } ])
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody [] [ Istr Str { getStr = "olist" } ] [])
                                       ]
                                   }
                           , secNum = Just "2.2"

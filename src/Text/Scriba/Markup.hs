@@ -35,7 +35,8 @@ module Text.Scriba.Markup
   , DisplayMath(..)
   , InlineCode(..)
   , PageMark(..)
-  , TitleParts(..)
+  , TitlePart(..)
+  , TitleComponent(..)
   , Varied(..)
   , VariedVar(..)
   , BlockCode(..)
@@ -268,7 +269,7 @@ data Inline a
   | IdisplayMath !DisplayMath
   | Icode !InlineCode
   | IpageMark !PageMark
-  | ItitleParts !(TitleParts (Inline a))
+  | ItitleComponent !(TitleComponent (Inline a))
   | Iother !a
   deriving (Eq, Ord, Show, Read, Functor, Generic)
 
@@ -286,7 +287,7 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (IdisplayMath d ) = displayMathToText d
   inlineToText (Icode        t ) = inlineCodeToText t
   inlineToText (IpageMark    t ) = pageMarkToText t
-  inlineToText (ItitleParts  t ) = titlePartsToText inlineToText t
+  inlineToText (ItitleComponent  t ) = titleComponentToText inlineToText t
   inlineToText (Iother       a ) = f a
 
 -- * Element parsers
@@ -366,9 +367,9 @@ runVariedInline m = firstSpace . mapMaybe unVary
   firstSpace (Nothing : xs) = firstSpace xs
   firstSpace xs             = midSpace xs
 
-  midSpace (Just x            : xs) = x <> midSpace xs
+  midSpace (Just x            : xs) = x : midSpace xs
   midSpace (Nothing : Nothing : xs) = midSpace (Nothing : xs)
-  midSpace (Nothing : Just x  : xs) = Istr (Str " ") : (x <> midSpace xs)
+  midSpace (Nothing : Just x  : xs) = Istr (Str " ") : x : midSpace xs
   midSpace [Nothing               ] = []
   midSpace []                       = []
 
@@ -376,16 +377,16 @@ runVariedInline m = firstSpace . mapMaybe unVary
          | otherwise = [Istr $ Str t]
 
   unVary VariedSpace       = Just Nothing
-  unVary (VariedStr t    ) = Just $ Just [Istr $ Str t]
+  unVary (VariedStr t    ) = Just $ Just $ Istr $ Str t
   unVary (VariedVar b v a) = case unVaryVar v of
-    Just vi -> Just $ Just $ mstr b <> [vi] <> mstr a
+    Just (componentTy, vi) -> Just $ Just $ ItitleComponent $ TitleComponent componentTy (mstr b) vi (mstr a)
     Nothing -> Nothing
   unVaryVar VariedPrefix =
-    ItitleParts . TitlePrefix <$> M.lookup "titlePrefix" m
-  unVaryVar VariedNote = ItitleParts . TitleNote <$> M.lookup "titleNote" m
+    (,) TitlePrefix <$> M.lookup "titlePrefix" m
+  unVaryVar VariedNote = (,) TitleNote <$> M.lookup "titleNote" m
   unVaryVar VariedTitleBody =
-    ItitleParts . TitleBody <$> M.lookup "titleBody" m
-  unVaryVar VariedNumber = ItitleParts . TitleNumber <$> M.lookup "n" m
+    (,) TitleBody <$> M.lookup "titleBody" m
+  unVaryVar VariedNumber = (,) TitleNumber <$> M.lookup "n" m
 
 -- TODO: write this. Will need to have options for how they are
 -- numbered, and how the title and conclusion are generated.
