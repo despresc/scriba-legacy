@@ -35,8 +35,6 @@ import           Text.Megaparsec                ( SourcePos
                                                 , many
                                                 )
 
--- TODO: move this to its own module?
-
 -- | Simple state-error monad.
 
 newtype Scriba s a = Scriba
@@ -47,17 +45,15 @@ newtype Scriba s a = Scriba
              , MonadError ScribaError
              , MonadState s)
 
--- 1. If the first parser succeeds, use its output.
--- 2. If the first parser fails with an error other than
---    'WhileParsing', run the second parser and combine the two errors
---    if the second also fails.
--- 3. Otherwise the first parser will ignore the second.
+-- This instance makes a WhileParsing error in the first parser
+-- overwhelm a successful result in the second.
 instance Alternative (Scriba s) where
   empty = liftScriba $ \_ -> Left ErrorNil
   p <|> q = liftScriba $ \s -> case (runScriba p s, runScriba q s) of
-    (a@Right{}            , _  ) -> a
-    (Left e@WhileParsing{}, _  ) -> Left e
-    (Left e               , qea) -> either (Left . mappend e) Right qea
+    (a@Right{}              , _        ) -> a
+    (Left e                 , Left e'  ) -> Left $ e <> e'
+    (e@(Left WhileParsing{}), Right _  ) -> e
+    (Left _                 , a@Right{}) -> a
 
 instance MonadPlus (Scriba s) where
   mplus = (<|>)
