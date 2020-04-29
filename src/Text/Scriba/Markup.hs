@@ -77,7 +77,6 @@ import           Data.Void                      ( Void
                                                 , absurd
                                                 )
 import           GHC.Generics                   ( Generic )
-import           Text.Megaparsec                ( many )
 import qualified Text.Megaparsec               as MP
 
 {- TODO:
@@ -581,9 +580,9 @@ pInline :: Scriba Node (Inline a)
 pInline =
   asNode
       (   Iemph
-      <$> pEmph
+      <$> pEmph pInline
       <|> Iquote
-      <$> pQuote
+      <$> pQuote pInline
       <|> IpageMark
       <$> pPageMark
       <|> IinlineMath
@@ -597,58 +596,6 @@ pInline =
       )
     <|> Istr
     <$> pText
-
-pEmph :: Scriba Element (Emph (Inline a))
-pEmph = do
-  matchTy "emph"
-  c <- whileParsingElem "emph" $ allContentOf pInline
-  pure $ Emph c
-
-pQuote :: Scriba Element (Quote (Inline a))
-pQuote = do
-  matchTy "q"
-  c <- whileParsingElem "q" $ allContentOf pInline
-  pure $ Quote c
-
--- TODO: well-formedness checking?
-pPageMark :: Scriba Element PageMark
-pPageMark = do
-  matchTy "physPage"
-  t <- whileParsingElem "physPage" $ allContentOf simpleText
-  pure $ PageMark $ T.concat t
-
-pText :: Scriba Node Str
-pText = Str <$> simpleText
-
-pMath :: Scriba Element InlineMath
-pMath = do
-  matchTy "math"
-  ts <- whileParsingElem "math" $ allContentOf simpleText
-  pure $ InlineMath $ T.concat ts
-
--- TODO: syntactic unification with pMath? it's probably better to
--- have a single "display" parameter control both, and have dmath be a
--- syntactic alias (in some way) for math {presentation|display}
-pFormula :: Scriba Element DisplayMath
-pFormula = do
-  matchTy "dmath"
-  c <- whileParsingElem "dmath" $ allContentOf simpleText
-  pure $ Formula $ T.concat c
-
--- TODO: syntact unification with formula? May want to consider design
--- here. E.g. could have a single dmath whose content is flexibly
--- parsed, have Gathered be a list of math and not Text, that sort of
--- thing.
-pGathered :: Scriba Element DisplayMath
-pGathered = do
-  matchTy "gathered"
-  c <- whileParsingElem "gathered" $ allContent $ pOnlySpace *> many
-    (one pLine <* pOnlySpace)
-  pure $ Gathered c
- where
-  pLine = asNode $ do
-    matchTy "line"
-    fmap T.concat $ whileParsingElem "line" $ allContentOf simpleText
 
 pCode :: Scriba Element InlineCode
 pCode = do

@@ -4,6 +4,7 @@ module Text.Scriba.Markup.Str where
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
+import           Text.Scriba.Intermediate
 
 newtype Str = Str
   { getStr :: Text
@@ -11,3 +12,6 @@ newtype Str = Str
 
 strToText :: Str -> [Text]
 strToText (Str t) = [t]
+
+pText :: Scriba Node Str
+pText = Str <$> simpleText
