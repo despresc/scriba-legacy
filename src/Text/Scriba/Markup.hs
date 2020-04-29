@@ -44,7 +44,6 @@ where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
-import           Text.Scriba.ParseIntermediate
 import           Text.Scriba.Markup.DisplayMath
 import           Text.Scriba.Markup.Emph
 import           Text.Scriba.Markup.InlineCode

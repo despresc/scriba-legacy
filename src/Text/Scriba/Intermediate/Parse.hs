@@ -3,12 +3,9 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.ParseIntermediate where
+module Text.Scriba.Intermediate.Parse where
 
--- TODO: I think this should be in Intermediate.Parse, and have the
--- current Intermediate be Intermediate.Something
-
-import           Text.Scriba.Intermediate
+import           Text.Scriba.Intermediate.Node
 
 import           Control.Applicative            ( (<|>)
                                                 , Alternative
