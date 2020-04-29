@@ -75,22 +75,16 @@ testRenderingWith f name src gold = goldenWith go name src gold
     t
 
 -- TODO: one single test block for the manual?
+-- TODO: make sure the README example parses _correctly_.
 tests :: TestTree
 tests = testGroup
   "tests"
-  [ inTests testParse "README example parses" "bayes.sml" "bayes.parse"
-  , inTests testParse
-            "verbatim block parses"
-            "block-verbatim.sml"
-            "block-verbatim.parse"
-  , inTests testMarkup
-            "simple markup parses correctly"
-            "simple.sml"
-            "simple.markup"
-  , testParse "manual parses" "./doc/manual.scb" "./test/tests/manual.parse"
-  , testIntermediate "manual parses into the node format"
-                     "./doc/manual.scb"
-                     "./test/tests/manual.intermediate"
+  [ inTests testParse "README example parses" "bayes.scb"  "bayes.parse"
+  , inTests testParse "simple markup parses"  "simple.scb" "simple.parse"
+  , inTests testIntermediate
+            "simple markup parses into the node format"
+            "simple.scb"
+            "simple.intermediate"
   , testMarkup "manual parses into internal markup"
                "./doc/manual.scb"
                "./test/tests/manual.markup"

@@ -219,7 +219,7 @@ pParaText =
   insigNewline = MP.try $ MP.chunk "\n" <* MP.notFollowedBy pBlankLine
 
 -- | Argument text is inline text except that it cannot contain spaces
--- or the @|@ character.
+-- or a character from @|&`@.
 pArgText :: Parser Text
 -- TODO: is the try required?
 pArgText =
@@ -230,7 +230,7 @@ pArgText =
     <|> MP.try pBackslashToks
  where
   insigChar =
-    MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|" || isSpace c
+    MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c
 
 -- | Parses the recognized backslash tokens in plain text. These are
 -- @\\@ followed by one of @{}\\@ standing for that following

@@ -1,0 +1,31 @@
+{scriba
+  {someInterestingNode}}
+
+  # section {thing@other}
+
+## subsection {foo {bar} @ other | stuff }
+
+  &{codeBlockDemonstration `
+        Things in here.
+  and
+    more
+ `}
+
+  {`&\{}`} verbatim testing and {code {lang|thing} @ 2o3info32inf ` content `}
+
+&{paragraphedBlock&
+&{one}
+
+Two
+
+&{unparagraphed|of things}
+}
+
+A {emph|simple} paragraph with a {physPage|24} marker and some
+math {math`2+2=5`} and a little more math {math|5×9=42}.
+
+{`&`} some verbatim testing.
+
+&{formalBlock {type|theorem} {title|Theorem 5 (an interesting one)} {conclusion|QED}|
+The statement of an interesting theorem.
+}
