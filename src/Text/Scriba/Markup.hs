@@ -580,73 +580,81 @@ pMixedBlockBody = allContent (MixedBlock <$> manyOf pBlock)
 pInline :: Scriba Node (Inline a)
 pInline =
   asNode
-      (   pEmph
-      <|> pQuote
-      <|> pPageMark
-      <|> pMath
-      <|> pFormula
-      <|> pGathered
-      <|> pCode
+      (   Iemph
+      <$> pEmph
+      <|> Iquote
+      <$> pQuote
+      <|> IpageMark
+      <$> pPageMark
+      <|> IinlineMath
+      <$> pMath
+      <|> IdisplayMath
+      <$> pFormula
+      <|> IdisplayMath
+      <$> pGathered
+      <|> Icode
+      <$> pCode
       )
-    <|> pText
+    <|> Istr
+    <$> pText
 
-pEmph :: Scriba Element (Inline a)
+pEmph :: Scriba Element (Emph (Inline a))
 pEmph = do
   matchTy "emph"
   c <- whileParsingElem "emph" $ allContentOf pInline
-  pure $ Iemph $ Emph c
+  pure $ Emph c
 
-pQuote :: Scriba Element (Inline a)
+pQuote :: Scriba Element (Quote (Inline a))
 pQuote = do
   matchTy "q"
   c <- whileParsingElem "q" $ allContentOf pInline
-  pure $ Iquote $ Quote c
+  pure $ Quote c
 
 -- TODO: well-formedness checking?
-pPageMark :: Scriba Element (Inline a)
+pPageMark :: Scriba Element PageMark
 pPageMark = do
   matchTy "physPage"
   t <- whileParsingElem "physPage" $ allContentOf simpleText
-  pure $ IpageMark $ PageMark $ T.concat t
+  pure $ PageMark $ T.concat t
 
-pText :: Scriba Node (Inline a)
-pText = Istr . Str <$> simpleText
+pText :: Scriba Node Str
+pText = Str <$> simpleText
 
-pMath :: Scriba Element (Inline a)
+pMath :: Scriba Element InlineMath
 pMath = do
   matchTy "math"
   ts <- whileParsingElem "math" $ allContentOf simpleText
-  pure $ IinlineMath $ InlineMath $ T.concat ts
+  pure $ InlineMath $ T.concat ts
 
 -- TODO: syntactic unification with pMath? it's probably better to
 -- have a single "display" parameter control both, and have dmath be a
 -- syntactic alias (in some way) for math {presentation|display}
-pFormula :: Scriba Element (Inline a)
+pFormula :: Scriba Element DisplayMath
 pFormula = do
   matchTy "dmath"
   c <- whileParsingElem "dmath" $ allContentOf simpleText
-  pure $ IdisplayMath $ Formula $ T.concat c
+  pure $ Formula $ T.concat c
 
 -- TODO: syntact unification with formula? May want to consider design
 -- here. E.g. could have a single dmath whose content is flexibly
 -- parsed, have Gathered be a list of math and not Text, that sort of
 -- thing.
-pGathered :: Scriba Element (Inline a)
+pGathered :: Scriba Element DisplayMath
 pGathered = do
   matchTy "gathered"
   c <- whileParsingElem "gathered" $ allContent $ pOnlySpace *> many
     (one pLine <* pOnlySpace)
-  pure $ IdisplayMath $ Gathered c
+  pure $ Gathered c
  where
   pLine = asNode $ do
     matchTy "line"
     fmap T.concat $ whileParsingElem "line" $ allContentOf simpleText
 
-pCode :: Scriba Element (Inline a)
+pCode :: Scriba Element InlineCode
 pCode = do
   matchTy "code"
   t <- whileParsingElem "code" $ allContentOf simpleText
-  pure $ Icode $ InlineCode $ T.concat t
+  pure $ InlineCode $ T.concat t
 
 -- ** Section parsing
 
