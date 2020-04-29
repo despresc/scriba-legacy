@@ -235,6 +235,7 @@ data TitleTemplateStyle
 -- would go prefix, number, body, note, by default?
 -- TODO: observe that this doesn't add the separator
 -- TODO: somewhat inelegant just accepting a maybe template.
+-- TODO: put the template style in the template itself?
 runTemplate
   :: Maybe (TitleTemplate (Inline a))
   -> TitleTemplateStyle
@@ -243,17 +244,19 @@ runTemplate
   -> Maybe [Inline a]
   -> Maybe [Inline a]
 runTemplate (Just template) ts tp tn tb =
-  Just $ List.intersperse (Istr $ Str " ") $ mapMaybe
-    mk
-    [ (TitlePrefix, ttemplatePrefix template, tp)
-    , (TitleNumber, ttemplateNumber template, tn)
-    , (fromTs     , ttemplateBody template  , tb)
-    ]
+  Just
+    $  List.intersperse (Istr $ Str " ")
+    $  mapMaybe mk
+    $  condSwap (TitlePrefix, ttemplatePrefix template, tp)
+                (TitleNumber, ttemplateNumber template, tn)
+    <> [(fromTs, ttemplateBody template, tb)]
  where
+  condSwap x y = case ttemplatePrefixFirst template of
+    True  -> [x, y]
+    False -> [y, x]
   fromTs = case ts of
     FormalTemplate  -> TitleNote
     SectionTemplate -> TitleBody
-  mk :: (TitlePart, Surround (Inline a), Maybe [Inline a]) -> Maybe (Inline a)
   mk (p, Surround b def a, mcomp) =
     (mcomp <|> def) <&> \comp -> ItitleComponent $ TitleComponent p b comp a
 runTemplate Nothing _ _ _ _ = Nothing
@@ -431,17 +434,22 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
       let (counterDepends, ns) = unzips numbering
       pure $ (FormalConfig titleTemplate titleSep concl, counterDepends, ns)
 
+-- TODO: more exotic orderings. Perhaps make prefix/numberFirst
+-- exclusive as well. Also options for suppressing particular
+-- components, if, say, you wanted something numbered but not have it
+-- actually appear in the title.
 pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
 pTitleTemplate t = do
   pref  <- attrDef "prefix" emptySurround $ pSurround
   tnote <- attrDef tname emptySurround $ pSurround
   tnum  <- attrDef "n" emptySurround $ pSurround
-  pure $ TitleTemplate pref tnum tnote True
+  prefixFirst <- attrMaybe "prefixFirst" $ pure True
+  numberFirst <- attrMaybe "numberFirst" $ pure False
+  pure $ TitleTemplate pref tnum tnote (fromMaybe True $ prefixFirst <|> numberFirst)
  where
   tname = case t of
     FormalTemplate  -> "note"
     SectionTemplate -> "titleBody"
-
 
 -- TODO: can't distinguish between present-but-empty content, and
 -- absent content. Seems okay right now.

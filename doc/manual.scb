@@ -15,6 +15,7 @@
     }
     {lemma
       {title
+        {numberFirst}
         {prefix|Lemma}}
       {titleSep|. }
       {numbering {share@theorem}

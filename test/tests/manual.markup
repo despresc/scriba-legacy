@@ -35,7 +35,7 @@ Doc
                                     , surroundMid = Nothing
                                     , surroundAfter = []
                                     }
-                              , ttemplatePrefixFirst = True
+                              , ttemplatePrefixFirst = False
                               }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
                       , fconfConcl = Nothing
@@ -870,16 +870,16 @@ Doc
                                               Just
                                                 [ ItitleComponent
                                                     (TitleComponent
-                                                       TitlePrefix
+                                                       TitleNumber
                                                        []
-                                                       [ Istr Str { getStr = "Lemma" } ]
+                                                       [ Istr Str { getStr = "2.1" } ]
                                                        [])
                                                 , Istr Str { getStr = " " }
                                                 , ItitleComponent
                                                     (TitleComponent
-                                                       TitleNumber
+                                                       TitlePrefix
                                                        []
-                                                       [ Istr Str { getStr = "2.1" } ]
+                                                       [ Istr Str { getStr = "Lemma" } ]
                                                        [])
                                                 ]
                                           , fNote = Nothing
