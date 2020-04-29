@@ -28,31 +28,13 @@ Doc
                                       [ ( "numbering"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 21
+                                              , sourceLine = Pos 22
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs
                                               { getAttrs =
                                                   fromList
                                                     [ ( "share"
-                                                      , ( SourcePos
-                                                            { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 21
-                                                            , sourceColumn = Pos 18
-                                                            }
-                                                        , Attrs { getAttrs = fromList [] }
-                                                        , [ InlineText
-                                                              SourcePos
-                                                                { sourceName = "manual.scb"
-                                                                , sourceLine = Pos 21
-                                                                , sourceColumn = Pos 25
-                                                                }
-                                                              "theorem"
-                                                          ]
-                                                        , InlineNil
-                                                        )
-                                                      )
-                                                    , ( "style"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
                                                             , sourceLine = Pos 22
@@ -63,6 +45,24 @@ Doc
                                                               SourcePos
                                                                 { sourceName = "manual.scb"
                                                                 , sourceLine = Pos 22
+                                                                , sourceColumn = Pos 25
+                                                                }
+                                                              "theorem"
+                                                          ]
+                                                        , InlineNil
+                                                        )
+                                                      )
+                                                    , ( "style"
+                                                      , ( SourcePos
+                                                            { sourceName = "manual.scb"
+                                                            , sourceLine = Pos 23
+                                                            , sourceColumn = Pos 18
+                                                            }
+                                                        , Attrs { getAttrs = fromList [] }
+                                                        , [ InlineText
+                                                              SourcePos
+                                                                { sourceName = "manual.scb"
+                                                                , sourceLine = Pos 23
                                                                 , sourceColumn = Pos 25
                                                                 }
                                                               "decimal"
@@ -85,7 +85,46 @@ Doc
                                           , Attrs
                                               { getAttrs =
                                                   fromList
-                                                    [ ( "numberFirst"
+                                                    [ ( "n"
+                                                      , ( SourcePos
+                                                            { sourceName = "manual.scb"
+                                                            , sourceLine = Pos 20
+                                                            , sourceColumn = Pos 9
+                                                            }
+                                                        , Attrs
+                                                            { getAttrs =
+                                                                fromList
+                                                                  [ ( "after"
+                                                                    , ( SourcePos
+                                                                          { sourceName =
+                                                                              "manual.scb"
+                                                                          , sourceLine = Pos 20
+                                                                          , sourceColumn = Pos 12
+                                                                          }
+                                                                      , Attrs
+                                                                          { getAttrs = fromList [] }
+                                                                      , []
+                                                                      , InlineSequence
+                                                                          [ InlineText
+                                                                              SourcePos
+                                                                                { sourceName =
+                                                                                    "manual.scb"
+                                                                                , sourceLine =
+                                                                                    Pos 20
+                                                                                , sourceColumn =
+                                                                                    Pos 19
+                                                                                }
+                                                                              "."
+                                                                          ]
+                                                                      )
+                                                                    )
+                                                                  ]
+                                                            }
+                                                        , []
+                                                        , InlineNil
+                                                        )
+                                                      )
+                                                    , ( "numberFirst"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
                                                             , sourceLine = Pos 18
@@ -124,7 +163,7 @@ Doc
                                       , ( "titleSep"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 20
+                                              , sourceLine = Pos 21
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs { getAttrs = fromList [] }
@@ -133,7 +172,7 @@ Doc
                                               [ InlineText
                                                   SourcePos
                                                     { sourceName = "manual.scb"
-                                                    , sourceLine = Pos 20
+                                                    , sourceLine = Pos 21
                                                     , sourceColumn = Pos 17
                                                     }
                                                   ". "
@@ -149,7 +188,7 @@ Doc
                         , ( "proof"
                           , ( SourcePos
                                 { sourceName = "manual.scb"
-                                , sourceLine = Pos 24
+                                , sourceLine = Pos 25
                                 , sourceColumn = Pos 5
                                 }
                             , Attrs
@@ -158,7 +197,7 @@ Doc
                                       [ ( "conclusion"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 28
+                                              , sourceLine = Pos 29
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs { getAttrs = fromList [] }
@@ -167,7 +206,7 @@ Doc
                                               [ InlineText
                                                   SourcePos
                                                     { sourceName = "manual.scb"
-                                                    , sourceLine = Pos 28
+                                                    , sourceLine = Pos 29
                                                     , sourceColumn = Pos 19
                                                     }
                                                   "\8718"
@@ -177,7 +216,7 @@ Doc
                                       , ( "title"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 25
+                                              , sourceLine = Pos 26
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs
@@ -186,7 +225,7 @@ Doc
                                                     [ ( "prefix"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 26
+                                                            , sourceLine = Pos 27
                                                             , sourceColumn = Pos 9
                                                             }
                                                         , Attrs { getAttrs = fromList [] }
@@ -195,7 +234,7 @@ Doc
                                                             [ InlineText
                                                                 SourcePos
                                                                   { sourceName = "manual.scb"
-                                                                  , sourceLine = Pos 26
+                                                                  , sourceLine = Pos 27
                                                                   , sourceColumn = Pos 17
                                                                   }
                                                                 "Proof"
@@ -211,7 +250,7 @@ Doc
                                       , ( "titleSep"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 27
+                                              , sourceLine = Pos 28
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs { getAttrs = fromList [] }
@@ -220,7 +259,7 @@ Doc
                                               [ InlineText
                                                   SourcePos
                                                     { sourceName = "manual.scb"
-                                                    , sourceLine = Pos 27
+                                                    , sourceLine = Pos 28
                                                     , sourceColumn = Pos 17
                                                     }
                                                   ". "
@@ -461,7 +500,7 @@ Doc
           , ( "sections"
             , ( SourcePos
                   { sourceName = "manual.scb"
-                  , sourceLine = Pos 31
+                  , sourceLine = Pos 32
                   , sourceColumn = Pos 3
                   }
               , Attrs
@@ -470,7 +509,7 @@ Doc
                         [ ( "section"
                           , ( SourcePos
                                 { sourceName = "manual.scb"
-                                , sourceLine = Pos 32
+                                , sourceLine = Pos 33
                                 , sourceColumn = Pos 5
                                 }
                             , Attrs
@@ -479,7 +518,7 @@ Doc
                                       [ ( "numbering"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 36
+                                              , sourceLine = Pos 37
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs
@@ -488,7 +527,7 @@ Doc
                                                     [ ( "absolute"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 36
+                                                            , sourceLine = Pos 37
                                                             , sourceColumn = Pos 18
                                                             }
                                                         , Attrs { getAttrs = fromList [] }
@@ -499,14 +538,14 @@ Doc
                                                     , ( "style"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 37
+                                                            , sourceLine = Pos 38
                                                             , sourceColumn = Pos 18
                                                             }
                                                         , Attrs { getAttrs = fromList [] }
                                                         , [ InlineText
                                                               SourcePos
                                                                 { sourceName = "manual.scb"
-                                                                , sourceLine = Pos 37
+                                                                , sourceLine = Pos 38
                                                                 , sourceColumn = Pos 25
                                                                 }
                                                               "decimal"
@@ -523,7 +562,7 @@ Doc
                                       , ( "title"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 33
+                                              , sourceLine = Pos 34
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs
@@ -532,7 +571,7 @@ Doc
                                                     [ ( "n"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 35
+                                                            , sourceLine = Pos 36
                                                             , sourceColumn = Pos 9
                                                             }
                                                         , Attrs
@@ -542,7 +581,7 @@ Doc
                                                                     , ( SourcePos
                                                                           { sourceName =
                                                                               "manual.scb"
-                                                                          , sourceLine = Pos 35
+                                                                          , sourceLine = Pos 36
                                                                           , sourceColumn = Pos 12
                                                                           }
                                                                       , Attrs
@@ -554,7 +593,7 @@ Doc
                                                                                 { sourceName =
                                                                                     "manual.scb"
                                                                                 , sourceLine =
-                                                                                    Pos 35
+                                                                                    Pos 36
                                                                                 , sourceColumn =
                                                                                     Pos 19
                                                                                 }
@@ -571,7 +610,7 @@ Doc
                                                     , ( "prefix"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 34
+                                                            , sourceLine = Pos 35
                                                             , sourceColumn = Pos 9
                                                             }
                                                         , Attrs { getAttrs = fromList [] }
@@ -580,7 +619,7 @@ Doc
                                                             [ InlineText
                                                                 SourcePos
                                                                   { sourceName = "manual.scb"
-                                                                  , sourceLine = Pos 34
+                                                                  , sourceLine = Pos 35
                                                                   , sourceColumn = Pos 17
                                                                   }
                                                                 "Section"
@@ -602,7 +641,7 @@ Doc
                         , ( "subsection"
                           , ( SourcePos
                                 { sourceName = "manual.scb"
-                                , sourceLine = Pos 39
+                                , sourceLine = Pos 40
                                 , sourceColumn = Pos 5
                                 }
                             , Attrs
@@ -611,31 +650,13 @@ Doc
                                       [ ( "numbering"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 42
+                                              , sourceLine = Pos 43
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs
                                               { getAttrs =
                                                   fromList
                                                     [ ( "relative"
-                                                      , ( SourcePos
-                                                            { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 42
-                                                            , sourceColumn = Pos 18
-                                                            }
-                                                        , Attrs { getAttrs = fromList [] }
-                                                        , [ InlineText
-                                                              SourcePos
-                                                                { sourceName = "manual.scb"
-                                                                , sourceLine = Pos 42
-                                                                , sourceColumn = Pos 28
-                                                                }
-                                                              "section"
-                                                          ]
-                                                        , InlineNil
-                                                        )
-                                                      )
-                                                    , ( "style"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
                                                             , sourceLine = Pos 43
@@ -646,6 +667,24 @@ Doc
                                                               SourcePos
                                                                 { sourceName = "manual.scb"
                                                                 , sourceLine = Pos 43
+                                                                , sourceColumn = Pos 28
+                                                                }
+                                                              "section"
+                                                          ]
+                                                        , InlineNil
+                                                        )
+                                                      )
+                                                    , ( "style"
+                                                      , ( SourcePos
+                                                            { sourceName = "manual.scb"
+                                                            , sourceLine = Pos 44
+                                                            , sourceColumn = Pos 18
+                                                            }
+                                                        , Attrs { getAttrs = fromList [] }
+                                                        , [ InlineText
+                                                              SourcePos
+                                                                { sourceName = "manual.scb"
+                                                                , sourceLine = Pos 44
                                                                 , sourceColumn = Pos 25
                                                                 }
                                                               "decimal"
@@ -662,7 +701,7 @@ Doc
                                       , ( "title"
                                         , ( SourcePos
                                               { sourceName = "manual.scb"
-                                              , sourceLine = Pos 40
+                                              , sourceLine = Pos 41
                                               , sourceColumn = Pos 7
                                               }
                                           , Attrs
@@ -671,7 +710,7 @@ Doc
                                                     [ ( "n"
                                                       , ( SourcePos
                                                             { sourceName = "manual.scb"
-                                                            , sourceLine = Pos 41
+                                                            , sourceLine = Pos 42
                                                             , sourceColumn = Pos 9
                                                             }
                                                         , Attrs
@@ -681,7 +720,7 @@ Doc
                                                                     , ( SourcePos
                                                                           { sourceName =
                                                                               "manual.scb"
-                                                                          , sourceLine = Pos 41
+                                                                          , sourceLine = Pos 42
                                                                           , sourceColumn = Pos 12
                                                                           }
                                                                       , Attrs
@@ -693,7 +732,7 @@ Doc
                                                                                 { sourceName =
                                                                                     "manual.scb"
                                                                                 , sourceLine =
-                                                                                    Pos 41
+                                                                                    Pos 42
                                                                                 , sourceColumn =
                                                                                     Pos 19
                                                                                 }
@@ -769,13 +808,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 48
+           , sourceLine = Pos 49
            , sourceColumn = Pos 1
            }
          [ InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 48
+               , sourceLine = Pos 49
                , sourceColumn = Pos 1
                }
              " TODO:\n\n- Gather TODOs that pertain to design from the subsections and put\n  them here.\n\n- Rework the bits of these sections that talk about permissible\n  content. They're too technical for what should be a gentler\n  discussion of the language, I think.\n\nA disussion of macros and aliases:\n\nOkay. Macros and aliases.\n\nSay I want to have a \"theorem\" block. It's a fancy type of\nFormal. It's numbered in some way. There might be a `comment` or a\n`name` attribute in it, and the title ought to be rendered as\n\nTheorem <number> <if name then \"(<name>)\">\n\npossibly with a period at the end, though that might be considered a\nstyle thing.\n\nHow is that reflected in the internal representation?\n\nDo we wrap it in a (CustomBlock \"theorem\"), maybe? Or maybe formal\nblocks have an optional `type` attribute associated with them, so that\ncan be put there, and the custom theorem block can instead be a user\nfunction.\n\nThings that can be numbered and referenced ought to have some kind of\na type, at least, for numbering purposes. Even a notional or built-in\none, like \"equation\".\n\nIf these have a type, what about elements that can appear as an inline\nor a block? I'm thinking of Gauss' inline propositions, which are\nunnumbered. For now, that could be covered by an inline \"formal\nstatement\" element, I suppose, that would be untyped. Otherwise we\ncould have a unified \"formal statement\" kind of element, but we'd need\nto be able to control numbering on such things, notably to disable\ntheir numbering if they appear inline.\n\nSomething like formalStmt?\n\nOkay, but what about figures? I suppose they can have types too, just\nlike the rest. Maybe everything has an implicit type at the outset?\nFigures have a default \"figure\" type for the purposes of numbering.\nNow, figures have content, a caption, and a caption title, but this\ncan be handled like formal blocks, with some kind of template thing.\n\nOf course we still need to develop a numbering specification system,\nbut that can wait, perhaps.\n\nTables can have captions. Not sure what to do about that. Obviously\npeople would expect to have their tables say \"Table 6: ...\" by\ndefault, not \"Figure 6: ...\"\n\n"
@@ -784,13 +823,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 106
+           , sourceLine = Pos 107
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 106
+               , sourceLine = Pos 107
                , sourceColumn = Pos 1
                }
              "Scriba is a plain text markup language emphasizing extensibility,\nclarity, and ease of use. It is also a compiler, taking source scriba\ndocuments and rendering them to multi-page HTML, EPUB, and TeX. The\nformat includes flexible markup constructs designed to represent a\nrange of historical scientific material, but these can be used equally\nwell for new publications."
@@ -800,7 +839,7 @@ Doc
          1
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 113
+           , sourceLine = Pos 114
            , sourceColumn = Pos 1
            }
          (Just "section")
@@ -810,7 +849,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 113
+                         , sourceLine = Pos 114
                          , sourceColumn = Pos 11
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -819,7 +858,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 113
+                               , sourceLine = Pos 114
                                , sourceColumn = Pos 18
                                }
                              "An introduction to the language"
@@ -834,7 +873,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 115
+           , sourceLine = Pos 116
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -844,7 +883,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 115
+                         , sourceLine = Pos 116
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -853,7 +892,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 115
+                               , sourceLine = Pos 116
                                , sourceColumn = Pos 22
                                }
                              "Paragraphs"
@@ -867,13 +906,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 117
+           , sourceLine = Pos 118
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 117
+               , sourceLine = Pos 118
                , sourceColumn = Pos 1
                }
              "The bulk of your document will most likely be paragraphs, sequences of\nnormal text and marked-up content representing a single idea in your\nwriting. A paragraph in scriba is a type of "
@@ -882,7 +921,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 119
+                     , sourceLine = Pos 120
                      , sourceColumn = Pos 45
                      }
                , etype = Just "emph"
@@ -893,7 +932,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 119
+                           , sourceLine = Pos 120
                            , sourceColumn = Pos 51
                            }
                          "block"
@@ -902,7 +941,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 119
+               , sourceLine = Pos 120
                , sourceColumn = Pos 57
                }
              ", and contains\n"
@@ -911,7 +950,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 120
+                     , sourceLine = Pos 121
                      , sourceColumn = Pos 1
                      }
                , etype = Just "emph"
@@ -922,7 +961,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 120
+                           , sourceLine = Pos 121
                            , sourceColumn = Pos 7
                            }
                          "paragraph text"
@@ -931,7 +970,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 120
+               , sourceLine = Pos 121
                , sourceColumn = Pos 22
                }
              " and "
@@ -940,7 +979,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 120
+                     , sourceLine = Pos 121
                      , sourceColumn = Pos 27
                      }
                , etype = Just "emph"
@@ -951,7 +990,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 120
+                           , sourceLine = Pos 121
                            , sourceColumn = Pos 33
                            }
                          "elements"
@@ -960,7 +999,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 120
+               , sourceLine = Pos 121
                , sourceColumn = Pos 42
                }
              ". Two sample paragraphs are\ngiven below:"
@@ -971,7 +1010,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 123
+                 , sourceLine = Pos 124
                  , sourceColumn = Pos 1
                  }
            , etype = Just "codeBlock"
@@ -982,7 +1021,7 @@ Doc
                        [ ( "language"
                          , ( SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 123
+                               , sourceLine = Pos 124
                                , sourceColumn = Pos 13
                                }
                            , Attrs { getAttrs = fromList [] }
@@ -991,7 +1030,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "manual.scb"
-                                     , sourceLine = Pos 123
+                                     , sourceLine = Pos 124
                                      , sourceColumn = Pos 23
                                      }
                                    "scriba"
@@ -1005,7 +1044,7 @@ Doc
                BlockVerbatim
                  SourcePos
                    { sourceName = "manual.scb"
-                   , sourceLine = Pos 123
+                   , sourceLine = Pos 124
                    , sourceColumn = Pos 30
                    }
                  "  There was nothing so very remarkable in that; nor did Alice think\n  it so very much out of the way to hear the Rabbit say to itself,\n  {q|Oh dear! Oh dear! I shall be late!} (when she thought it over\n  afterwards, it occurred to her that she ought to have wondered at\n  this, but at the time it all seemed quite natural); but when the\n  Rabbit actually {emph|took a watch out of its waistcoat-pocket},\n  and looked at it, and then hurried on, Alice started to her feet,\n  for it flashed across her mind that she had never before seen a\n  rabbit with either a waistcoat-pocket, or a watch to take out of\n  it, and burning with curiosity, she ran across the field after it,\n  and fortunately was just in time to see it pop down a large\n  rabbit-hole under the hedge.\n\n  In another moment down went Alice after it, never once considering\n  how in the world she was to get out again."
@@ -1014,13 +1053,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 141
+           , sourceLine = Pos 142
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 141
+               , sourceLine = Pos 142
                , sourceColumn = Pos 1
                }
              "Plain paragraph text is any span of unicode characters other than\n"
@@ -1029,7 +1068,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 142
+                     , sourceLine = Pos 143
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -1039,7 +1078,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 142
+                       , sourceLine = Pos 143
                        , sourceColumn = Pos 6
                        }
                      "\\"
@@ -1047,7 +1086,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 142
+               , sourceLine = Pos 143
                , sourceColumn = Pos 10
                }
              ", "
@@ -1056,7 +1095,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 142
+                     , sourceLine = Pos 143
                      , sourceColumn = Pos 12
                      }
                , etype = Just "code"
@@ -1066,7 +1105,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 142
+                       , sourceLine = Pos 143
                        , sourceColumn = Pos 17
                        }
                      "{"
@@ -1074,7 +1113,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 142
+               , sourceLine = Pos 143
                , sourceColumn = Pos 21
                }
              ", or "
@@ -1083,7 +1122,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 142
+                     , sourceLine = Pos 143
                      , sourceColumn = Pos 26
                      }
                , etype = Just "code"
@@ -1093,7 +1132,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 142
+                       , sourceLine = Pos 143
                        , sourceColumn = Pos 31
                        }
                      "}"
@@ -1101,7 +1140,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 142
+               , sourceLine = Pos 143
                , sourceColumn = Pos 35
                }
              ", with the additional restriction\nthat paragraph text cannot contain blank lines; like in the example\nabove, these signal the end of the paragraph. Those three characters\ncan be represented in paragraph text using the sequences "
@@ -1110,7 +1149,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 145
+                     , sourceLine = Pos 146
                      , sourceColumn = Pos 58
                      }
                , etype = Just "code"
@@ -1120,7 +1159,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 145
+                       , sourceLine = Pos 146
                        , sourceColumn = Pos 63
                        }
                      "\\\\"
@@ -1128,7 +1167,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 145
+               , sourceLine = Pos 146
                , sourceColumn = Pos 68
                }
              ",\n"
@@ -1137,7 +1176,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 146
+                     , sourceLine = Pos 147
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -1147,7 +1186,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 146
+                       , sourceLine = Pos 147
                        , sourceColumn = Pos 6
                        }
                      "\\{"
@@ -1155,7 +1194,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 146
+               , sourceLine = Pos 147
                , sourceColumn = Pos 11
                }
              ", and "
@@ -1164,7 +1203,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 146
+                     , sourceLine = Pos 147
                      , sourceColumn = Pos 17
                      }
                , etype = Just "code"
@@ -1174,7 +1213,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 146
+                       , sourceLine = Pos 147
                        , sourceColumn = Pos 22
                        }
                      "\\}"
@@ -1182,14 +1221,14 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 146
+               , sourceLine = Pos 147
                , sourceColumn = Pos 27
                }
              ", should you need them in text. "
          , InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 146
+               , sourceLine = Pos 147
                , sourceColumn = Pos 59
                }
              "TODO:\nmention paragraphs not starting with &"
@@ -1198,13 +1237,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 149
+           , sourceLine = Pos 150
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 149
+               , sourceLine = Pos 150
                , sourceColumn = Pos 1
                }
              "The other feature of paragraph markup is "
@@ -1213,7 +1252,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 149
+                     , sourceLine = Pos 150
                      , sourceColumn = Pos 42
                      }
                , etype = Just "emph"
@@ -1224,7 +1263,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 149
+                           , sourceLine = Pos 150
                            , sourceColumn = Pos 48
                            }
                          "inline elements"
@@ -1233,21 +1272,21 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 149
+               , sourceLine = Pos 150
                , sourceColumn = Pos 64
                }
              ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
          , InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 151
+               , sourceLine = Pos 152
                , sourceColumn = Pos 15
                }
              "TODO: link here when this section is writtten"
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 151
+               , sourceLine = Pos 152
                , sourceColumn = Pos 64
                }
              " Simple\nelements start with "
@@ -1256,7 +1295,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 152
+                     , sourceLine = Pos 153
                      , sourceColumn = Pos 21
                      }
                , etype = Just "code"
@@ -1266,7 +1305,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 152
+                       , sourceLine = Pos 153
                        , sourceColumn = Pos 26
                        }
                      "{tag|"
@@ -1274,7 +1313,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 152
+               , sourceLine = Pos 153
                , sourceColumn = Pos 34
                }
              " and end with "
@@ -1283,7 +1322,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 152
+                     , sourceLine = Pos 153
                      , sourceColumn = Pos 48
                      }
                , etype = Just "code"
@@ -1293,7 +1332,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 152
+                       , sourceLine = Pos 153
                        , sourceColumn = Pos 53
                        }
                      "}"
@@ -1301,7 +1340,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 152
+               , sourceLine = Pos 153
                , sourceColumn = Pos 57
                }
              ". The\nparagraphs above have a "
@@ -1310,7 +1349,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 153
+                     , sourceLine = Pos 154
                      , sourceColumn = Pos 25
                      }
                , etype = Just "code"
@@ -1320,7 +1359,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 153
+                       , sourceLine = Pos 154
                        , sourceColumn = Pos 30
                        }
                      "q"
@@ -1328,7 +1367,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 153
+               , sourceLine = Pos 154
                , sourceColumn = Pos 34
                }
              " element, representing quoted text\nand likely to be rendered between quotation marks, and an "
@@ -1337,7 +1376,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 154
+                     , sourceLine = Pos 155
                      , sourceColumn = Pos 59
                      }
                , etype = Just "code"
@@ -1347,7 +1386,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 154
+                       , sourceLine = Pos 155
                        , sourceColumn = Pos 64
                        }
                      "emph"
@@ -1355,7 +1394,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 154
+               , sourceLine = Pos 155
                , sourceColumn = Pos 71
                }
              "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
@@ -1365,7 +1404,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 158
+           , sourceLine = Pos 159
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -1375,7 +1414,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 158
+                         , sourceLine = Pos 159
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -1384,7 +1423,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 158
+                               , sourceLine = Pos 159
                                , sourceColumn = Pos 22
                                }
                              "Sections"
@@ -1398,13 +1437,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 160
+           , sourceLine = Pos 161
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 160
+               , sourceLine = Pos 161
                , sourceColumn = Pos 1
                }
              "The content of your document can be organized into "
@@ -1413,7 +1452,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 160
+                     , sourceLine = Pos 161
                      , sourceColumn = Pos 52
                      }
                , etype = Just "emph"
@@ -1424,7 +1463,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 160
+                           , sourceLine = Pos 161
                            , sourceColumn = Pos 58
                            }
                          "sections"
@@ -1433,7 +1472,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 160
+               , sourceLine = Pos 161
                , sourceColumn = Pos 67
                }
              ",\nrepresenting self-contained units of discussion. These have types,\ntitles, and a body of blocks and subsections. Sections look like this:"
@@ -1444,7 +1483,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 164
+                 , sourceLine = Pos 165
                  , sourceColumn = Pos 1
                  }
            , etype = Just "codeBlock"
@@ -1455,7 +1494,7 @@ Doc
                        [ ( "language"
                          , ( SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 164
+                               , sourceLine = Pos 165
                                , sourceColumn = Pos 13
                                }
                            , Attrs { getAttrs = fromList [] }
@@ -1464,7 +1503,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "manual.scb"
-                                     , sourceLine = Pos 164
+                                     , sourceLine = Pos 165
                                      , sourceColumn = Pos 23
                                      }
                                    "scriba"
@@ -1478,7 +1517,7 @@ Doc
                BlockVerbatim
                  SourcePos
                    { sourceName = "manual.scb"
-                   , sourceLine = Pos 164
+                   , sourceLine = Pos 165
                    , sourceColumn = Pos 31
                    }
                  "  # {title|An introduction to the language}\n\n  ## {title|Paragraphs}\n\n  The bulk of your document \8230"
@@ -1487,13 +1526,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 172
+           , sourceLine = Pos 173
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 172
+               , sourceLine = Pos 173
                , sourceColumn = Pos 1
                }
              "The first component of a section is its "
@@ -1502,7 +1541,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 172
+                     , sourceLine = Pos 173
                      , sourceColumn = Pos 41
                      }
                , etype = Just "emph"
@@ -1513,7 +1552,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 172
+                           , sourceLine = Pos 173
                            , sourceColumn = Pos 47
                            }
                          "header"
@@ -1522,7 +1561,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 172
+               , sourceLine = Pos 173
                , sourceColumn = Pos 54
                }
              ". The section\nheader starts with "
@@ -1531,7 +1570,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 173
+                     , sourceLine = Pos 174
                      , sourceColumn = Pos 20
                      }
                , etype = Just "code"
@@ -1541,7 +1580,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 173
+                       , sourceLine = Pos 174
                        , sourceColumn = Pos 25
                        }
                      "# sectionType"
@@ -1549,7 +1588,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 173
+               , sourceLine = Pos 174
                , sourceColumn = Pos 41
                }
              ", the number of consecutive\n"
@@ -1558,7 +1597,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 174
+                     , sourceLine = Pos 175
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -1568,7 +1607,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 174
+                       , sourceLine = Pos 175
                        , sourceColumn = Pos 6
                        }
                      "#"
@@ -1576,7 +1615,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 174
+               , sourceLine = Pos 175
                , sourceColumn = Pos 10
                }
              " becoming the overall "
@@ -1585,7 +1624,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 174
+                     , sourceLine = Pos 175
                      , sourceColumn = Pos 32
                      }
                , etype = Just "emph"
@@ -1596,7 +1635,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 174
+                           , sourceLine = Pos 175
                            , sourceColumn = Pos 38
                            }
                          "level"
@@ -1605,7 +1644,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 174
+               , sourceLine = Pos 175
                , sourceColumn = Pos 44
                }
              " of the section. The\nsection content begins after the attributes of the section and at\nleast one blank line, and continues until a section of at most that\nlevel, or the end of the document, is reached. In the example above,\nthe "
@@ -1614,7 +1653,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 178
+                     , sourceLine = Pos 179
                      , sourceColumn = Pos 5
                      }
                , etype = Just "q"
@@ -1625,7 +1664,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 178
+                           , sourceLine = Pos 179
                            , sourceColumn = Pos 8
                            }
                          "Paragraphs"
@@ -1634,7 +1673,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 178
+               , sourceLine = Pos 179
                , sourceColumn = Pos 19
                }
              " section would continue until a level 2 or level 1\nsection were encountered. The section type is optional; section types\nclassify the section, can denote built-in document structure, and can\ninfluence processing and rendering behaviour. Sections without a type\nbecome a generic "
@@ -1643,7 +1682,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 182
+                     , sourceLine = Pos 183
                      , sourceColumn = Pos 18
                      }
                , etype = Just "code"
@@ -1653,7 +1692,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 182
+                       , sourceLine = Pos 183
                        , sourceColumn = Pos 23
                        }
                      "section"
@@ -1661,7 +1700,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 182
+               , sourceLine = Pos 183
                , sourceColumn = Pos 33
                }
              "."
@@ -1670,13 +1709,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 184
+           , sourceLine = Pos 185
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 184
+               , sourceLine = Pos 185
                , sourceColumn = Pos 1
                }
              "Sections, like other elements, can have "
@@ -1685,7 +1724,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 184
+                     , sourceLine = Pos 185
                      , sourceColumn = Pos 41
                      }
                , etype = Just "emph"
@@ -1696,7 +1735,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 184
+                           , sourceLine = Pos 185
                            , sourceColumn = Pos 47
                            }
                          "attributes"
@@ -1705,7 +1744,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 184
+               , sourceLine = Pos 185
                , sourceColumn = Pos 58
                }
              ". The only\nrecognized attribute of a section, for now, is its title. In future,\nsections will have many attributes, like number, language, alternate\ntitles for the table of contents or page header, and so on. The\nattributes of sections can be listed on multiple consecutive lines, as\nlong as no blank line occurs between them."
@@ -1715,7 +1754,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 191
+           , sourceLine = Pos 192
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -1725,7 +1764,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 191
+                         , sourceLine = Pos 192
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -1734,7 +1773,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 191
+                               , sourceLine = Pos 192
                                , sourceColumn = Pos 22
                                }
                              "Blocks"
@@ -1748,13 +1787,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 193
+           , sourceLine = Pos 194
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 193
+               , sourceLine = Pos 194
                , sourceColumn = Pos 1
                }
              "The other type of syntactic form in scriba is the "
@@ -1763,7 +1802,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 193
+                     , sourceLine = Pos 194
                      , sourceColumn = Pos 51
                      }
                , etype = Just "emph"
@@ -1774,7 +1813,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 193
+                           , sourceLine = Pos 194
                            , sourceColumn = Pos 57
                            }
                          "block"
@@ -1783,7 +1822,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 193
+               , sourceLine = Pos 194
                , sourceColumn = Pos 63
                }
              "\nelement. Blocks group their content and give it extra meaning, and can\nappear wherever paragraphs or section headers can. Some blocks are\nshown in the following code sample:"
@@ -1794,7 +1833,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 198
+                 , sourceLine = Pos 199
                  , sourceColumn = Pos 1
                  }
            , etype = Just "codeBlock"
@@ -1805,7 +1844,7 @@ Doc
                        [ ( "language"
                          , ( SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 198
+                               , sourceLine = Pos 199
                                , sourceColumn = Pos 13
                                }
                            , Attrs { getAttrs = fromList [] }
@@ -1814,7 +1853,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "manual.scb"
-                                     , sourceLine = Pos 198
+                                     , sourceLine = Pos 199
                                      , sourceColumn = Pos 23
                                      }
                                    "scriba"
@@ -1828,7 +1867,7 @@ Doc
                BlockVerbatim
                  SourcePos
                    { sourceName = "manual.scb"
-                   , sourceLine = Pos 198
+                   , sourceLine = Pos 199
                    , sourceColumn = Pos 31
                    }
                  "  &{codeBlock {language|scriba} `\n    An {emph|interesting} proposition.\n  `}\n\n  &{olist|\n  {item|First item}\n  {item|Second item}\n  }"
@@ -1837,13 +1876,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 209
+           , sourceLine = Pos 210
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 209
+               , sourceLine = Pos 210
                , sourceColumn = Pos 1
                }
              "Blocks are written like inline elements, complete with attributes and\narguments, except they are preceded by a "
@@ -1852,7 +1891,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 210
+                     , sourceLine = Pos 211
                      , sourceColumn = Pos 42
                      }
                , etype = Just "code"
@@ -1862,7 +1901,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 210
+                       , sourceLine = Pos 211
                        , sourceColumn = Pos 47
                        }
                      "&"
@@ -1870,7 +1909,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 210
+               , sourceLine = Pos 211
                , sourceColumn = Pos 51
                }
              ". They differ from\ninline elements in their content: blocks have "
@@ -1879,7 +1918,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 211
+                     , sourceLine = Pos 212
                      , sourceColumn = Pos 47
                      }
                , etype = Just "emph"
@@ -1890,7 +1929,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 211
+                           , sourceLine = Pos 212
                            , sourceColumn = Pos 53
                            }
                          "verbatim"
@@ -1899,7 +1938,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 211
+               , sourceLine = Pos 212
                , sourceColumn = Pos 62
                }
              ",\n"
@@ -1908,7 +1947,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 212
+                     , sourceLine = Pos 213
                      , sourceColumn = Pos 1
                      }
                , etype = Just "emph"
@@ -1919,7 +1958,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 212
+                           , sourceLine = Pos 213
                            , sourceColumn = Pos 7
                            }
                          "block"
@@ -1928,7 +1967,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 212
+               , sourceLine = Pos 213
                , sourceColumn = Pos 13
                }
              ", and "
@@ -1937,7 +1976,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 212
+                     , sourceLine = Pos 213
                      , sourceColumn = Pos 19
                      }
                , etype = Just "emph"
@@ -1948,7 +1987,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 212
+                           , sourceLine = Pos 213
                            , sourceColumn = Pos 25
                            }
                          "inline"
@@ -1957,7 +1996,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 212
+               , sourceLine = Pos 213
                , sourceColumn = Pos 32
                }
              " content. Verbatim content is signalled\nby a "
@@ -1966,7 +2005,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 213
+                     , sourceLine = Pos 214
                      , sourceColumn = Pos 6
                      }
                , etype = Just "code"
@@ -1977,7 +2016,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 213
+                           , sourceLine = Pos 214
                            , sourceColumn = Pos 12
                            }
                          "`"
@@ -1986,7 +2025,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 213
+               , sourceLine = Pos 214
                , sourceColumn = Pos 14
                }
              " (backtick) character, starts on the next line, then runs\nuntil the sequence "
@@ -1995,7 +2034,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 214
+                     , sourceLine = Pos 215
                      , sourceColumn = Pos 20
                      }
                , etype = Just "code"
@@ -2006,7 +2045,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 214
+                           , sourceLine = Pos 215
                            , sourceColumn = Pos 26
                            }
                          "`}"
@@ -2015,7 +2054,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 214
+               , sourceLine = Pos 215
                , sourceColumn = Pos 30
                }
              " appears on a line indented by at most as\nmuch as the start-of-block "
@@ -2024,7 +2063,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 215
+                     , sourceLine = Pos 216
                      , sourceColumn = Pos 28
                      }
                , etype = Just "code"
@@ -2035,7 +2074,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 215
+                           , sourceLine = Pos 216
                            , sourceColumn = Pos 34
                            }
                          "&"
@@ -2044,7 +2083,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 215
+               , sourceLine = Pos 216
                , sourceColumn = Pos 36
                }
              " character is. The content itself\nbecomes plain text; no control characters are recognized in it. Block\ncontent is signalled by a "
@@ -2053,7 +2092,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 217
+                     , sourceLine = Pos 218
                      , sourceColumn = Pos 27
                      }
                , etype = Just "code"
@@ -2064,7 +2103,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 217
+                           , sourceLine = Pos 218
                            , sourceColumn = Pos 33
                            }
                          "&"
@@ -2073,7 +2112,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 217
+               , sourceLine = Pos 218
                , sourceColumn = Pos 35
                }
              " character, and consists of a\nsequence of blocks and paragraphs, like section content without\nsection headers. Finally, inline content is signalled by a "
@@ -2082,7 +2121,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 219
+                     , sourceLine = Pos 220
                      , sourceColumn = Pos 60
                      }
                , etype = Just "code"
@@ -2093,7 +2132,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 219
+                           , sourceLine = Pos 220
                            , sourceColumn = Pos 66
                            }
                          "|"
@@ -2102,7 +2141,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 219
+               , sourceLine = Pos 220
                , sourceColumn = Pos 68
                }
              "\nand can contain text and inline elements."
@@ -2112,7 +2151,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 222
+           , sourceLine = Pos 223
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -2122,7 +2161,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 222
+                         , sourceLine = Pos 223
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -2131,7 +2170,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 222
+                               , sourceLine = Pos 223
                                , sourceColumn = Pos 22
                                }
                              "Mathematics"
@@ -2145,13 +2184,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 224
+           , sourceLine = Pos 225
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 224
+               , sourceLine = Pos 225
                , sourceColumn = Pos 1
                }
              "Formal mathematical content can be included in a document with\nparticular inline elements. Inline formulas like "
@@ -2160,7 +2199,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 225
+                     , sourceLine = Pos 226
                      , sourceColumn = Pos 50
                      }
                , etype = Just "math"
@@ -2170,7 +2209,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 225
+                       , sourceLine = Pos 226
                        , sourceColumn = Pos 55
                        }
                      "f(x, y) =\nx^{y+6}"
@@ -2178,7 +2217,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 226
+               , sourceLine = Pos 227
                , sourceColumn = Pos 10
                }
              ", and displayed formulas like\n"
@@ -2187,7 +2226,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 227
+                     , sourceLine = Pos 228
                      , sourceColumn = Pos 1
                      }
                , etype = Just "dmath"
@@ -2197,7 +2236,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 227
+                       , sourceLine = Pos 228
                        , sourceColumn = Pos 7
                        }
                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
@@ -2205,7 +2244,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 231
+               , sourceLine = Pos 232
                , sourceColumn = Pos 3
                }
              "\nare available, among other more complex constructs. The formulas\nthemselves are written in TeX syntax by default, and rendering in HTML\nis handled with MathJax. Be aware that amsmath-style environments like\n"
@@ -2214,7 +2253,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 235
+                     , sourceLine = Pos 236
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -2225,7 +2264,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 235
+                           , sourceLine = Pos 236
                            , sourceColumn = Pos 7
                            }
                          "gathered"
@@ -2234,7 +2273,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 235
+               , sourceLine = Pos 236
                , sourceColumn = Pos 16
                }
              " or "
@@ -2243,7 +2282,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 235
+                     , sourceLine = Pos 236
                      , sourceColumn = Pos 20
                      }
                , etype = Just "code"
@@ -2254,7 +2293,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 235
+                           , sourceLine = Pos 236
                            , sourceColumn = Pos 26
                            }
                          "alignedat"
@@ -2263,7 +2302,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 235
+               , sourceLine = Pos 236
                , sourceColumn = Pos 36
                }
              " should not be used inside\n"
@@ -2272,7 +2311,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 236
+                     , sourceLine = Pos 237
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -2283,7 +2322,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 236
+                           , sourceLine = Pos 237
                            , sourceColumn = Pos 7
                            }
                          "math"
@@ -2292,7 +2331,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 236
+               , sourceLine = Pos 237
                , sourceColumn = Pos 12
                }
              " or "
@@ -2301,7 +2340,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 236
+                     , sourceLine = Pos 237
                      , sourceColumn = Pos 16
                      }
                , etype = Just "code"
@@ -2312,7 +2351,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 236
+                           , sourceLine = Pos 237
                            , sourceColumn = Pos 22
                            }
                          "dmath"
@@ -2321,7 +2360,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 236
+               , sourceLine = Pos 237
                , sourceColumn = Pos 28
                }
              " elements themselves. Scriba itself\nimplements some of these environments as elements, so that they can\ninteract with its built-in numbering and referencing capabilities."
@@ -2330,13 +2369,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 240
+           , sourceLine = Pos 241
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 240
+               , sourceLine = Pos 241
                , sourceColumn = Pos 1
                }
              "The examples of formulas above were entered into the source like so:"
@@ -2347,7 +2386,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 242
+                 , sourceLine = Pos 243
                  , sourceColumn = Pos 1
                  }
            , etype = Just "codeBlock"
@@ -2358,7 +2397,7 @@ Doc
                        [ ( "language"
                          , ( SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 242
+                               , sourceLine = Pos 243
                                , sourceColumn = Pos 13
                                }
                            , Attrs { getAttrs = fromList [] }
@@ -2367,7 +2406,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "manual.scb"
-                                     , sourceLine = Pos 242
+                                     , sourceLine = Pos 243
                                      , sourceColumn = Pos 23
                                      }
                                    "scriba"
@@ -2381,7 +2420,7 @@ Doc
                BlockVerbatim
                  SourcePos
                    { sourceName = "manual.scb"
-                   , sourceLine = Pos 242
+                   , sourceLine = Pos 243
                    , sourceColumn = Pos 31
                    }
                  "  Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like\n  {dmath`\n    \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n    \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n    \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n  `}\n  are available, among \8230"
@@ -2390,13 +2429,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 252
+           , sourceLine = Pos 253
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 252
+               , sourceLine = Pos 253
                , sourceColumn = Pos 1
                }
              "Since TeX syntax is heavily reliant on braces and backlashes, it will\noften be necessary for you to escape them in some way when entering\nmath in that notation. In the inline example math example above, an\n"
@@ -2405,7 +2444,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 255
+                     , sourceLine = Pos 256
                      , sourceColumn = Pos 1
                      }
                , etype = Just "emph"
@@ -2416,7 +2455,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 255
+                           , sourceLine = Pos 256
                            , sourceColumn = Pos 7
                            }
                          "inline verbatim body"
@@ -2425,7 +2464,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 255
+               , sourceLine = Pos 256
                , sourceColumn = Pos 28
                }
              " was used for this purpose. Like block\nverbatim content, such a body starts with a "
@@ -2434,7 +2473,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 256
+                     , sourceLine = Pos 257
                      , sourceColumn = Pos 45
                      }
                , etype = Just "code"
@@ -2445,7 +2484,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 256
+                           , sourceLine = Pos 257
                            , sourceColumn = Pos 51
                            }
                          "`"
@@ -2454,7 +2493,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 256
+               , sourceLine = Pos 257
                , sourceColumn = Pos 53
                }
              " character instead\nof a "
@@ -2463,7 +2502,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 257
+                     , sourceLine = Pos 258
                      , sourceColumn = Pos 6
                      }
                , etype = Just "code"
@@ -2474,7 +2513,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 257
+                           , sourceLine = Pos 258
                            , sourceColumn = Pos 12
                            }
                          "|"
@@ -2483,7 +2522,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 257
+               , sourceLine = Pos 258
                , sourceColumn = Pos 14
                }
              ". Inline verbatim content runs until it encounters a\n"
@@ -2492,7 +2531,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 258
+                     , sourceLine = Pos 259
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -2502,7 +2541,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 258
+                       , sourceLine = Pos 259
                        , sourceColumn = Pos 6
                        }
                      "`}"
@@ -2510,7 +2549,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 258
+               , sourceLine = Pos 259
                , sourceColumn = Pos 12
                }
              ", and inside it any double-backtick "
@@ -2519,7 +2558,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 258
+                     , sourceLine = Pos 259
                      , sourceColumn = Pos 48
                      }
                , etype = Just "code"
@@ -2530,7 +2569,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 258
+                           , sourceLine = Pos 259
                            , sourceColumn = Pos 54
                            }
                          "``"
@@ -2539,7 +2578,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 258
+               , sourceLine = Pos 259
                , sourceColumn = Pos 57
                }
              " sequences\ncollapse to a single backtick. The effect of this is to disable any\nother special character processing, even comments, so that the syntax\nof other languages can be included into scriba without too much\noverhead. This is only a syntactic convenience in this case; the\ninline example above could equally well have been written\n"
@@ -2548,7 +2587,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 264
+                     , sourceLine = Pos 265
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -2558,7 +2597,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 264
+                       , sourceLine = Pos 265
                        , sourceColumn = Pos 6
                        }
                      "{math|f(x, y) = x^\\{y+6\\}}"
@@ -2566,7 +2605,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 264
+               , sourceLine = Pos 265
                , sourceColumn = Pos 35
                }
              "."
@@ -2575,13 +2614,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 266
+           , sourceLine = Pos 267
            , sourceColumn = Pos 1
            }
          [ InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 266
+               , sourceLine = Pos 267
                , sourceColumn = Pos 1
                }
              "TODO: \n\n- link to amsmath, sections on numbering and referencing, maybe\n  whatever manual section discusses mathematics in more detail.\n\n- link to the block section's discussion of block verbatim content\n\n- some kind of codeFigure custom block?\n\n- Maybe have some kind of fancy rendering of TeX?\n\n- Move the inline verbatim discussion to a section on inline elements?\n  The mention of the start-of-paragraph & issue could be included\n  there too.\n\n"
@@ -2590,13 +2629,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 283
+           , sourceLine = Pos 284
            , sourceColumn = Pos 1
            }
          [ InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 283
+               , sourceLine = Pos 284
                , sourceColumn = Pos 1
                }
              "TODO: Notes on amsthm-style formal blocks "
@@ -2606,7 +2645,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 285
+           , sourceLine = Pos 286
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -2616,7 +2655,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 285
+                         , sourceLine = Pos 286
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -2625,7 +2664,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 285
+                               , sourceLine = Pos 286
                                , sourceColumn = Pos 22
                                }
                              "The overall document structure"
@@ -2639,13 +2678,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 287
+           , sourceLine = Pos 288
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 287
+               , sourceLine = Pos 288
                , sourceColumn = Pos 1
                }
              "Will contain a description of documents as a whole."
@@ -2655,7 +2694,7 @@ Doc
          1
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 289
+           , sourceLine = Pos 290
            , sourceColumn = Pos 1
            }
          (Just "section")
@@ -2665,7 +2704,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 289
+                         , sourceLine = Pos 290
                          , sourceColumn = Pos 11
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -2674,7 +2713,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 289
+                               , sourceLine = Pos 290
                                , sourceColumn = Pos 18
                                }
                              "Element reference"
@@ -2688,13 +2727,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 291
+           , sourceLine = Pos 292
            , sourceColumn = Pos 1
            }
          [ InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 291
+               , sourceLine = Pos 292
                , sourceColumn = Pos 1
                }
              " TODO:\n\n- Might be nice to have a precis here, once we have those.\n\n- Should this entries be definition lists? Not sure exactly how to\n  represent a data sheet.\n\n- Should have examples, indicate how everything will get processed and\n  rendered, and indicate the permitted locations of elements.\n\n- The examples should be in a figure block. Possibly a two-part block,\n  with the code and the rendered output.\n\n- Perhaps this should be an appendix?\n\n- This might make an interesting macro/template test section, since a\n  lot of this content is very regular. Automatic importing of the spec\n  that gets generated from the node parsers and putting that at the\n  end of the section, that sort of thing. There could be a custom\n  element that takes an element name and inserts that name\n  code-formatted and with a link to to the relevant element reference\n  section. Could we express a macro for the example/code sample figure\n  that I want in each section?\n\n"
@@ -2704,7 +2743,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 317
+           , sourceLine = Pos 318
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -2714,7 +2753,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 317
+                         , sourceLine = Pos 318
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -2723,7 +2762,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 317
+                               , sourceLine = Pos 318
                                , sourceColumn = Pos 22
                                }
                              "formalBlock"
@@ -2737,13 +2776,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 319
+           , sourceLine = Pos 320
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 319
+               , sourceLine = Pos 320
                , sourceColumn = Pos 1
                }
              "The "
@@ -2752,7 +2791,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 319
+                     , sourceLine = Pos 320
                      , sourceColumn = Pos 5
                      }
                , etype = Just "code"
@@ -2763,7 +2802,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 319
+                           , sourceLine = Pos 320
                            , sourceColumn = Pos 11
                            }
                          "formalBlock"
@@ -2772,7 +2811,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 319
+               , sourceLine = Pos 320
                , sourceColumn = Pos 23
                }
              " element represents a formal part of the\ndocument, with optional "
@@ -2781,7 +2820,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 320
+                     , sourceLine = Pos 321
                      , sourceColumn = Pos 25
                      }
                , etype = Just "code"
@@ -2792,7 +2831,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 320
+                           , sourceLine = Pos 321
                            , sourceColumn = Pos 31
                            }
                          "title"
@@ -2801,7 +2840,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 320
+               , sourceLine = Pos 321
                , sourceColumn = Pos 37
                }
              ", "
@@ -2810,7 +2849,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 320
+                     , sourceLine = Pos 321
                      , sourceColumn = Pos 39
                      }
                , etype = Just "code"
@@ -2821,7 +2860,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 320
+                           , sourceLine = Pos 321
                            , sourceColumn = Pos 45
                            }
                          "conclusion"
@@ -2830,7 +2869,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 320
+               , sourceLine = Pos 321
                , sourceColumn = Pos 56
                }
              ", and\n"
@@ -2839,7 +2878,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 321
+                     , sourceLine = Pos 322
                      , sourceColumn = Pos 1
                      }
                , etype = Just "code"
@@ -2850,7 +2889,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 321
+                           , sourceLine = Pos 322
                            , sourceColumn = Pos 7
                            }
                          "type"
@@ -2859,7 +2898,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 321
+               , sourceLine = Pos 322
                , sourceColumn = Pos 12
                }
              " attributes. It can contain block or inline content. It can\nbe used to represent theorems, propositions, exercises, proofs, and\nother amsthm-style elements."
@@ -2868,13 +2907,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 325
+           , sourceLine = Pos 326
            , sourceColumn = Pos 1
            }
          [ InlineComment
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 325
+               , sourceLine = Pos 326
                , sourceColumn = Pos 1
                }
              " TODO: Title templating might be nice here. Sort of unfortunate that\nthe period and space need to be added manually. Though that can be\nfixed by custom CSS, which is also not supported. "
@@ -2883,13 +2922,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 329
+           , sourceLine = Pos 330
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 329
+               , sourceLine = Pos 330
                , sourceColumn = Pos 1
                }
              "Some examples:"
@@ -2900,7 +2939,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 331
+                 , sourceLine = Pos 332
                  , sourceColumn = Pos 1
                  }
            , etype = Just "formalBlock"
@@ -2911,7 +2950,7 @@ Doc
                        [ ( "type"
                          , ( SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 332
+                               , sourceLine = Pos 333
                                , sourceColumn = Pos 4
                                }
                            , Attrs { getAttrs = fromList [] }
@@ -2920,7 +2959,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "manual.scb"
-                                     , sourceLine = Pos 332
+                                     , sourceLine = Pos 333
                                      , sourceColumn = Pos 10
                                      }
                                    "lemma"
@@ -2935,7 +2974,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 333
+                       , sourceLine = Pos 334
                        , sourceColumn = Pos 2
                        }
                      "A preliminary lemma.\n"
@@ -2947,7 +2986,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 336
+                 , sourceLine = Pos 337
                  , sourceColumn = Pos 1
                  }
            , etype = Just "formalBlock"
@@ -2956,6 +2995,25 @@ Doc
                  { getAttrs =
                      fromList
                        [ ( "titleNote"
+                         , ( SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 339
+                               , sourceColumn = Pos 4
+                               }
+                           , Attrs { getAttrs = fromList [] }
+                           , []
+                           , InlineSequence
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "manual.scb"
+                                     , sourceLine = Pos 339
+                                     , sourceColumn = Pos 15
+                                     }
+                                   "an interesting one"
+                               ]
+                           )
+                         )
+                       , ( "type"
                          , ( SourcePos
                                { sourceName = "manual.scb"
                                , sourceLine = Pos 338
@@ -2968,25 +3026,6 @@ Doc
                                    SourcePos
                                      { sourceName = "manual.scb"
                                      , sourceLine = Pos 338
-                                     , sourceColumn = Pos 15
-                                     }
-                                   "an interesting one"
-                               ]
-                           )
-                         )
-                       , ( "type"
-                         , ( SourcePos
-                               { sourceName = "manual.scb"
-                               , sourceLine = Pos 337
-                               , sourceColumn = Pos 4
-                               }
-                           , Attrs { getAttrs = fromList [] }
-                           , []
-                           , InlineSequence
-                               [ InlineText
-                                   SourcePos
-                                     { sourceName = "manual.scb"
-                                     , sourceLine = Pos 337
                                      , sourceColumn = Pos 10
                                      }
                                    "theorem"
@@ -3001,7 +3040,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 339
+                       , sourceLine = Pos 340
                        , sourceColumn = Pos 2
                        }
                      "The statement of some theorem of interest.\n"
@@ -3013,7 +3052,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 342
+                 , sourceLine = Pos 343
                  , sourceColumn = Pos 1
                  }
            , etype = Just "formalBlock"
@@ -3022,6 +3061,25 @@ Doc
                  { getAttrs =
                      fromList
                        [ ( "titleNote"
+                         , ( SourcePos
+                               { sourceName = "manual.scb"
+                               , sourceLine = Pos 345
+                               , sourceColumn = Pos 5
+                               }
+                           , Attrs { getAttrs = fromList [] }
+                           , []
+                           , InlineSequence
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "manual.scb"
+                                     , sourceLine = Pos 345
+                                     , sourceColumn = Pos 16
+                                     }
+                                   "of the interesting theorem"
+                               ]
+                           )
+                         )
+                       , ( "type"
                          , ( SourcePos
                                { sourceName = "manual.scb"
                                , sourceLine = Pos 344
@@ -3034,25 +3092,6 @@ Doc
                                    SourcePos
                                      { sourceName = "manual.scb"
                                      , sourceLine = Pos 344
-                                     , sourceColumn = Pos 16
-                                     }
-                                   "of the interesting theorem"
-                               ]
-                           )
-                         )
-                       , ( "type"
-                         , ( SourcePos
-                               { sourceName = "manual.scb"
-                               , sourceLine = Pos 343
-                               , sourceColumn = Pos 5
-                               }
-                           , Attrs { getAttrs = fromList [] }
-                           , []
-                           , InlineSequence
-                               [ InlineText
-                                   SourcePos
-                                     { sourceName = "manual.scb"
-                                     , sourceLine = Pos 343
                                      , sourceColumn = Pos 11
                                      }
                                    "proof"
@@ -3067,7 +3106,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 345
+                       , sourceLine = Pos 346
                        , sourceColumn = Pos 2
                        }
                      "Details of the proof\n"
@@ -3078,7 +3117,7 @@ Doc
          2
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 348
+           , sourceLine = Pos 349
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -3088,7 +3127,7 @@ Doc
                  [ ( "title"
                    , ( SourcePos
                          { sourceName = "manual.scb"
-                         , sourceLine = Pos 348
+                         , sourceLine = Pos 349
                          , sourceColumn = Pos 15
                          }
                      , Attrs { getAttrs = fromList [] }
@@ -3097,7 +3136,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "manual.scb"
-                               , sourceLine = Pos 348
+                               , sourceLine = Pos 349
                                , sourceColumn = Pos 22
                                }
                              "olist"
@@ -3111,13 +3150,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 350
+           , sourceLine = Pos 351
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 350
+               , sourceLine = Pos 351
                , sourceColumn = Pos 1
                }
              "The "
@@ -3126,7 +3165,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 350
+                     , sourceLine = Pos 351
                      , sourceColumn = Pos 5
                      }
                , etype = Just "code"
@@ -3137,7 +3176,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 350
+                           , sourceLine = Pos 351
                            , sourceColumn = Pos 11
                            }
                          "olist"
@@ -3146,7 +3185,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 350
+               , sourceLine = Pos 351
                , sourceColumn = Pos 17
                }
              " block element represents an ordered list. It contains\na whitespace-separated list of "
@@ -3155,7 +3194,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "manual.scb"
-                     , sourceLine = Pos 351
+                     , sourceLine = Pos 352
                      , sourceColumn = Pos 32
                      }
                , etype = Just "code"
@@ -3166,7 +3205,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "manual.scb"
-                           , sourceLine = Pos 351
+                           , sourceLine = Pos 352
                            , sourceColumn = Pos 38
                            }
                          "item"
@@ -3175,7 +3214,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 351
+               , sourceLine = Pos 352
                , sourceColumn = Pos 43
                }
              " elements."
@@ -3184,13 +3223,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "manual.scb"
-           , sourceLine = Pos 353
+           , sourceLine = Pos 354
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "manual.scb"
-               , sourceLine = Pos 353
+               , sourceLine = Pos 354
                , sourceColumn = Pos 1
                }
              "An example:"
@@ -3201,7 +3240,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "manual.scb"
-                 , sourceLine = Pos 355
+                 , sourceLine = Pos 356
                  , sourceColumn = Pos 1
                  }
            , etype = Just "olist"
@@ -3212,37 +3251,8 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "manual.scb"
-                       , sourceLine = Pos 355
-                       , sourceColumn = Pos 9
-                       }
-                     "\n"
-                 , InlineBraced
-                     Element
-                       { srcPos =
-                           SourcePos
-                             { sourceName = "manual.scb"
-                             , sourceLine = Pos 356
-                             , sourceColumn = Pos 1
-                             }
-                       , etype = Just "item"
-                       , attrs = Attrs { getAttrs = fromList [] }
-                       , args = []
-                       , content =
-                           InlineSequence
-                             [ InlineText
-                                 SourcePos
-                                   { sourceName = "manual.scb"
-                                   , sourceLine = Pos 356
-                                   , sourceColumn = Pos 7
-                                   }
-                                 "First element"
-                             ]
-                       }
-                 , InlineText
-                     SourcePos
-                       { sourceName = "manual.scb"
                        , sourceLine = Pos 356
-                       , sourceColumn = Pos 21
+                       , sourceColumn = Pos 9
                        }
                      "\n"
                  , InlineBraced
@@ -3264,14 +3274,14 @@ Doc
                                    , sourceLine = Pos 357
                                    , sourceColumn = Pos 7
                                    }
-                                 "Second element"
+                                 "First element"
                              ]
                        }
                  , InlineText
                      SourcePos
                        { sourceName = "manual.scb"
                        , sourceLine = Pos 357
-                       , sourceColumn = Pos 22
+                       , sourceColumn = Pos 21
                        }
                      "\n"
                  , InlineBraced
@@ -3293,13 +3303,42 @@ Doc
                                    , sourceLine = Pos 358
                                    , sourceColumn = Pos 7
                                    }
-                                 "Third element"
+                                 "Second element"
                              ]
                        }
                  , InlineText
                      SourcePos
                        { sourceName = "manual.scb"
                        , sourceLine = Pos 358
+                       , sourceColumn = Pos 22
+                       }
+                     "\n"
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "manual.scb"
+                             , sourceLine = Pos 359
+                             , sourceColumn = Pos 1
+                             }
+                       , etype = Just "item"
+                       , attrs = Attrs { getAttrs = fromList [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "manual.scb"
+                                   , sourceLine = Pos 359
+                                   , sourceColumn = Pos 7
+                                   }
+                                 "Third element"
+                             ]
+                       }
+                 , InlineText
+                     SourcePos
+                       { sourceName = "manual.scb"
+                       , sourceLine = Pos 359
                        , sourceColumn = Pos 21
                        }
                      "\n"

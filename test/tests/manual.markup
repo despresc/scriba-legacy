@@ -27,7 +27,7 @@ Doc
                                   Surround
                                     { surroundBefore = []
                                     , surroundMid = Nothing
-                                    , surroundAfter = []
+                                    , surroundAfter = [ Istr Str { getStr = "." } ]
                                     }
                               , ttemplateBody =
                                   Surround
@@ -873,7 +873,7 @@ Doc
                                                        TitleNumber
                                                        []
                                                        [ Istr Str { getStr = "2.1" } ]
-                                                       [])
+                                                       [ Istr Str { getStr = "." } ])
                                                 , Istr Str { getStr = " " }
                                                 , ItitleComponent
                                                     (TitleComponent

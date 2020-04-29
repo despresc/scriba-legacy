@@ -16,7 +16,8 @@
     {lemma
       {title
         {numberFirst}
-        {prefix|Lemma}}
+        {prefix|Lemma}
+	{n {after|.}}}
       {titleSep|. }
       {numbering {share@theorem}
                  {style@decimal}}
