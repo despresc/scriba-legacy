@@ -312,21 +312,13 @@ data Varied
 -- use the same pVaried for formal blocks and sections.
 data VariedVar
   = VariedNote
-  | VariedTitle
+  | VariedTitleBody
   | VariedPrefix
   | VariedNumber
   deriving (Eq, Ord, Show, Read, Generic)
 
 pVariedSeq :: Scriba [Node] [Varied]
-pVariedSeq = firstSpace . concat <$> manyOf pVaried
- where
-  firstSpace (VariedSpace : xs) = firstSpace xs
-  firstSpace xs                 = midSpace xs
-  midSpace (VariedSpace : VariedSpace : xs) = midSpace (VariedSpace : xs)
-  midSpace (VariedSpace : x           : xs) = VariedSpace : midSpace (x : xs)
-  midSpace [VariedSpace                   ] = []
-  midSpace (x : xs                        ) = x : midSpace xs
-  midSpace []                               = []
+pVariedSeq = concat <$> manyOf pVaried
 
 pVaried :: Scriba Node [Varied]
 pVaried = pVariedText <|> pVariedVar
@@ -346,40 +338,53 @@ pVariedVar = asNode $ do
   v <- ty $ do
     mty <- inspect
     case mty of
-      Just typ -> case T.stripPrefix "$" typ of
-        Just "titlePrefix" -> pure VariedPrefix
-        Just "titleNote"   -> pure VariedNote
-        Just "title"       -> pure VariedTitle
-        Just "n"           -> pure VariedNumber
-        _                  -> throwError $ Msg "unrecognized variable"
-      _ -> throwError $ Msg "unrecognized variable"
+      Just "titlePrefix" -> pure VariedPrefix
+      Just "titleNote"   -> pure VariedNote
+      Just "titleBody"   -> pure VariedTitleBody
+      Just "n"           -> pure VariedNumber
+      _                  -> throwError $ Msg "unrecognized variable"
   (b, a) <- whileParsingElem (printVar v) $ meta $ attrs $ do
     bs <- mattr "before" $ allContentOf simpleText
     as <- mattr "after" $ allContentOf simpleText
     pure (T.concat bs, T.concat as)
   pure [VariedVar b v a]
  where
-  printVar VariedPrefix = "titlePrefix"
-  printVar VariedNote   = "titleNode"
-  printVar VariedTitle  = "title"
-  printVar VariedNumber = "n"
+  printVar VariedPrefix    = "titlePrefix"
+  printVar VariedNote      = "titleNode"
+  printVar VariedTitleBody = "titleBody"
+  printVar VariedNumber    = "n"
 
 -- TODO: simply ignores undefined variables right now.
 -- TODO: use of Map seems a little wasteful at the moment.
 -- TODO: probably needs to wrap its components in spans!
 -- TODO: do the before/after things need to be in spans too?
+-- TODO: whitespace configuration? Could have a general whitespace
+-- normalization function at the end?
 runVariedInline :: Map Text [Inline a] -> [Varied] -> [Inline a]
-runVariedInline m = concatMap unVary
+runVariedInline m = firstSpace . mapMaybe unVary
  where
-  unVary VariedSpace       = [Istr $ Str " "]
-  unVary (VariedStr t    ) = [Istr $ Str t]
+  firstSpace (Nothing : xs) = firstSpace xs
+  firstSpace xs             = midSpace xs
+
+  midSpace (Just x            : xs) = x <> midSpace xs
+  midSpace (Nothing : Nothing : xs) = midSpace (Nothing : xs)
+  midSpace (Nothing : Just x  : xs) = Istr (Str " ") : (x <> midSpace xs)
+  midSpace [Nothing               ] = []
+  midSpace []                       = []
+
+  mstr t | T.null t  = []
+         | otherwise = [Istr $ Str t]
+
+  unVary VariedSpace       = Just Nothing
+  unVary (VariedStr t    ) = Just $ Just [Istr $ Str t]
   unVary (VariedVar b v a) = case unVaryVar v of
-    Just vi -> [Istr $ Str b, vi, Istr $ Str a]
-    Nothing -> []
+    Just vi -> Just $ Just $ mstr b <> [vi] <> mstr a
+    Nothing -> Nothing
   unVaryVar VariedPrefix =
     ItitleParts . TitlePrefix <$> M.lookup "titlePrefix" m
-  unVaryVar VariedNote   = ItitleParts . TitleNote <$> M.lookup "titleNote" m
-  unVaryVar VariedTitle  = ItitleParts . TitleBody <$> M.lookup "titleBody" m
+  unVaryVar VariedNote = ItitleParts . TitleNote <$> M.lookup "titleNote" m
+  unVaryVar VariedTitleBody =
+    ItitleParts . TitleBody <$> M.lookup "titleBody" m
   unVaryVar VariedNumber = ItitleParts . TitleNumber <$> M.lookup "n" m
 
 -- TODO: write this. Will need to have options for how they are

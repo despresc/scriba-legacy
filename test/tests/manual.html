@@ -4,7 +4,7 @@ clarity, and ease of use. It is also a compiler, taking source scriba
 documents and rendering them to multi-page HTML, EPUB, and TeX. The
 format includes flexible markup constructs designed to represent a
 range of historical scientific material, but these can be used equally
-well for new publications.</p><section><h2><span class="titlePrefix">Section</span> <span class="number">1</span>.  <span class="titleBody">An introduction to the language</span></h2><div class="sectionContent"><section><h3> <span class="number">1.1</span>.  <span class="titleBody">Paragraphs</span></h3><div class="sectionContent"><p>The bulk of your document will most likely be paragraphs, sequences of
+well for new publications.</p><section><h2><span class="titlePrefix">Section</span> <span class="number">1</span>. <span class="titleBody">An introduction to the language</span></h2><div class="sectionContent"><section><h3><span class="number">1.1</span>.  <span class="titleBody">Paragraphs</span></h3><div class="sectionContent"><p>The bulk of your document will most likely be paragraphs, sequences of
 normal text and marked-up content representing a single idea in your
 writing. A paragraph in scriba is a type of <em>block</em>, and contains
 <em>paragraph text</em> and <em>elements</em>. Two sample paragraphs are
@@ -34,7 +34,7 @@ elements start with <code>{tag|</code> and end with <code>}</code>. The
 paragraphs above have a <code>q</code> element, representing quoted text
 and likely to be rendered between quotation marks, and an <code>emph</code>
 element, representing emphasized text and likely to be rendered in
-italic type.</p></div></section><section><h3> <span class="number">1.2</span>.  <span class="titleBody">Sections</span></h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
+italic type.</p></div></section><section><h3><span class="number">1.2</span>.  <span class="titleBody">Sections</span></h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
 representing self-contained units of discussion. These have types,
 titles, and a body of blocks and subsections. Sections look like this:</p><div class="codeBlock"><pre><code># {title|An introduction to the language}
 
@@ -55,7 +55,7 @@ recognized attribute of a section, for now, is its title. In future,
 sections will have many attributes, like number, language, alternate
 titles for the table of contents or page header, and so on. The
 attributes of sections can be listed on multiple consecutive lines, as
-long as no blank line occurs between them.</p></div></section><section><h3> <span class="number">1.3</span>.  <span class="titleBody">Blocks</span></h3><div class="sectionContent"><p>The other type of syntactic form in scriba is the <em>block</em>
+long as no blank line occurs between them.</p></div></section><section><h3><span class="number">1.3</span>.  <span class="titleBody">Blocks</span></h3><div class="sectionContent"><p>The other type of syntactic form in scriba is the <em>block</em>
 element. Blocks group their content and give it extra meaning, and can
 appear wherever paragraphs or section headers can. Some blocks are
 shown in the following code sample:</p><div class="codeBlock"><pre><code>&amp;{codeBlock {language|scriba} `
@@ -76,7 +76,7 @@ becomes plain text; no control characters are recognized in it. Block
 content is signalled by a <code>&amp;</code> character, and consists of a
 sequence of blocks and paragraphs, like section content without
 section headers. Finally, inline content is signalled by a <code>|</code>
-and can contain text and inline elements.</p></div></section><section><h3> <span class="number">1.4</span>.  <span class="titleBody">Mathematics</span></h3><div class="sectionContent"><p>Formal mathematical content can be included in a document with
+and can contain text and inline elements.</p></div></section><section><h3><span class="number">1.4</span>.  <span class="titleBody">Mathematics</span></h3><div class="sectionContent"><p>Formal mathematical content can be included in a document with
 particular inline elements. Inline formulas like <span class="math inline">\(f(x, y) =
 x^{y+6}\)</span>, and displayed formulas like
 <span class="math display">\[
@@ -108,12 +108,12 @@ other special character processing, even comments, so that the syntax
 of other languages can be included into scriba without too much
 overhead. This is only a syntactic convenience in this case; the
 inline example above could equally well have been written
-<code>{math|f(x, y) = x^\{y+6\}}</code>.</p></div></section><section><h3> <span class="number">1.5</span>.  <span class="titleBody">The overall document structure</span></h3><div class="sectionContent"><p>Will contain a description of documents as a whole.</p></div></section></div></section><section><h2><span class="titlePrefix">Section</span> <span class="number">2</span>.  <span class="titleBody">Element reference</span></h2><div class="sectionContent"><section><h3> <span class="number">2.1</span>.  <span class="titleBody">formalBlock</span></h3><div class="sectionContent"><p>The <code>formalBlock</code> element represents a formal part of the
+<code>{math|f(x, y) = x^\{y+6\}}</code>.</p></div></section><section><h3><span class="number">1.5</span>.  <span class="titleBody">The overall document structure</span></h3><div class="sectionContent"><p>Will contain a description of documents as a whole.</p></div></section></div></section><section><h2><span class="titlePrefix">Section</span> <span class="number">2</span>. <span class="titleBody">Element reference</span></h2><div class="sectionContent"><section><h3><span class="number">2.1</span>.  <span class="titleBody">formalBlock</span></h3><div class="sectionContent"><p>The <code>formalBlock</code> element represents a formal part of the
 document, with optional <code>title</code>, <code>conclusion</code>, and
 <code>type</code> attributes. It can contain block or inline content. It can
 be used to represent theorems, propositions, exercises, proofs, and
 other amsthm-style elements.</p><p>Some examples:</p><div class="formalBlock lemma"><span class="title"><span class="titlePrefix">Lemma</span> <span class="number">2.1</span></span><span class="titleSep">. </span><span class="body">A preliminary lemma.
 </span></div><div class="formalBlock theorem"><span class="title"><span class="titlePrefix">Theorem</span> <span class="number">2.2</span> (<span class="titleNote">an interesting one</span>)</span><span class="titleSep">. </span><span class="body">The statement of some theorem of interest.
 </span></div><div class="formalBlock proof"><span class="title"><span class="titlePrefix">Proof</span> <span class="titleNote">of the interesting theorem</span></span><span class="titleSep">. </span><span class="body">Details of the proof
-</span><span class="conclusion">∎</span></div></div></section><section><h3> <span class="number">2.2</span>.  <span class="titleBody">olist</span></h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
+</span><span class="conclusion">∎</span></div></div></section><section><h3><span class="number">2.2</span>.  <span class="titleBody">olist</span></h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
 a whitespace-separated list of <code>item</code> elements.</p><p>An example:</p><ol><li>First element</li><li>Second element</li><li>Third element</li></ol></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

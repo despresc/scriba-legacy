@@ -4,21 +4,27 @@
   {formalBlocks
     {theorem
       {prefix|Theorem}
-      {title|{$titlePrefix}{$n{before| }}{$titleNote{before| (}{after|)}}}
+      {title|{titlePrefix}
+             {n}
+	     {titleNote{before|(}
+	               {after|)}}}
       {titleSep|. }
       {numbering {relative@section}
                  {style@decimal}}
     }
     {lemma
       {prefix|Lemma}
-      {title|{$titlePrefix}{$n{before| }}{$titleNote{before| (}{after|)}}}
+      {title|{titlePrefix}
+             {n}
+	     {titleNote{before|(}
+	               {after|)}}}
       {titleSep|. }
       {numbering {share@theorem}
                  {style@decimal}}
     }
     {proof
       {prefix|Proof}
-      {title|{$titlePrefix}{$titleNote{before| }}}
+      {title|{titlePrefix} {titleNote}}
       {titleSep|. }
       {conclusion|∎}
       {numbering {share@theorem}
@@ -28,12 +34,14 @@
   {sections
     {section
       {prefix|Section}
-      {title|{$titlePrefix}{$n{before| }{after|. }}{$title{before| }}}
+      {title|{titlePrefix}
+             {n{after|.}}
+	     {titleBody}}
       {numbering {absolute}
       		 {style@decimal}}
     }
     {subsection
-      {title|{$n{before| }{after|. }}{$title{before| }}}
+      {title|{n{after|. }}{titleBody{before| }}}
       {numbering {relative@section}
       		 {style@decimal}}
     }
