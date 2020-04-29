@@ -36,6 +36,8 @@ byteShow :: Show a => a -> BL.ByteString
 byteShow = TLE.encodeUtf8 . TL.pack . Pretty.ppShow
 
 -- TODO: findByExtension?
+-- TODO: find a way to suppress the SourcePos output of these
+-- tests. Should make the diffs a little more sane.
 goldenWith
   :: (Text -> BL.ByteString) -> String -> FilePath -> FilePath -> TestTree
 goldenWith f name src gold = goldenVsString name gold $ do
