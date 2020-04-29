@@ -597,12 +597,6 @@ pInline =
     <|> Istr
     <$> pText
 
-pCode :: Scriba Element InlineCode
-pCode = do
-  matchTy "code"
-  t <- whileParsingElem "code" $ allContentOf simpleText
-  pure $ InlineCode $ T.concat t
-
 -- ** Section parsing
 
 -- For now, all things presented as sections become sections.
