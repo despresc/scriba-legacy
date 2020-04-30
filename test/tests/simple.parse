@@ -531,4 +531,173 @@ Doc
                      "\nThe statement of an interesting theorem.\n"
                  ]
            })
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 33
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 33
+               , sourceColumn = Pos 1
+               }
+             "Insignificant \\backslash and a \\"
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 33
+                     , sourceColumn = Pos 34
+                     }
+               , etype = Just "elem"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 33
+                           , sourceColumn = Pos 40
+                           }
+                         "significant one"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 33
+               , sourceColumn = Pos 56
+               }
+             " and "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 33
+                     , sourceColumn = Pos 61
+                     }
+               , etype = Just "elem"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args =
+                   [ InlineText
+                       SourcePos
+                         { sourceName = "simple.scb"
+                         , sourceLine = Pos 33
+                         , sourceColumn = Pos 67
+                         }
+                       "more{"
+                   ]
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 33
+                           , sourceColumn = Pos 74
+                           }
+                         "test"
+                     ]
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 33
+               , sourceColumn = Pos 79
+               }
+             "\nand "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 34
+                     , sourceColumn = Pos 5
+                     }
+               , etype = Just "elem2"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args =
+                   [ InlineText
+                       SourcePos
+                         { sourceName = "simple.scb"
+                         , sourceLine = Pos 34
+                         , sourceColumn = Pos 12
+                         }
+                       "more\\"
+                   ]
+               , content =
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 34
+                           , sourceColumn = Pos 18
+                           }
+                         "test"
+                     ]
+               }
+         ])
+  , SecHeaderNode
+      (SecHeader
+         1
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 36
+           , sourceColumn = Pos 1
+           }
+         (Just "sec2")
+         Attrs
+           { getAttrs =
+               fromList
+                 [ ( "attr1"
+                   , ( SourcePos
+                         { sourceName = "simple.scb"
+                         , sourceLine = Pos 36
+                         , sourceColumn = Pos 8
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineNil
+                     )
+                   )
+                 , ( "attr2"
+                   , ( SourcePos
+                         { sourceName = "simple.scb"
+                         , sourceLine = Pos 37
+                         , sourceColumn = Pos 8
+                         }
+                     , Attrs { getAttrs = fromList [] }
+                     , []
+                     , InlineNil
+                     )
+                   )
+                 ]
+           }
+         [])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 39
+           , sourceColumn = Pos 1
+           }
+         [ InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 39
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Just "attr3"
+               , attrs = Attrs { getAttrs = fromList [] }
+               , args = []
+               , content = InlineNil
+               }
+         ])
   ]

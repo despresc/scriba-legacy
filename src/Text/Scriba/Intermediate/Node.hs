@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -14,6 +13,7 @@ import qualified Text.Scriba.Parse             as P
 import           Data.Char                      ( isSpace )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
+import           Data.Maybe                     ( mapMaybe )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
@@ -21,25 +21,9 @@ import           Text.Megaparsec                ( SourcePos )
 
 {- TODO:
 
-- Perhaps a richer json-esque value type for attributes?
-
 - Might want a better type for the source position. E.g. could have a
-  type to annotate nodes coming from filters
-
-- There may need to be more source information in the meta. Say, how
-  the element was defined in source. We might want to strip off the
-  indent in verbatim blocks here, too.
-
-- Doesn't expand anonymous elements at all. Is this wise?
-
-- Might want to have a ToIntermediate type class here
-
-- For section nodes, maybe we should uniformly convert them to a node
-  of type "section" with an attribute "type=ty". Though if we include
-  the source presentation in the Meta, then this should become
-  unnecessary, since we can just do that conversion later.
-
-- Some of these might be better as (a -> Element).
+  type to annotate nodes coming from filters. This would apply to
+  SourcePresentation too.
 
 -}
 
@@ -76,15 +60,28 @@ data Node
 nodeElement :: Maybe Text -> Meta -> [Node] -> Node
 nodeElement t m = NodeElem . Element t m
 
+class HasPos s where
+  getPos :: s -> SourcePos
+
+instance HasPos Meta where
+  getPos = loc
+
+instance HasPos Element where
+  getPos = loc . eMeta
+
+instance HasPos Node where
+  getPos (NodeElem e  ) = getPos e
+  getPos (NodeText p _) = p
+
+showNodeType :: Node -> Text
+showNodeType NodeElem{} = "element"
+showNodeType NodeText{} = "text"
+
 -- * Meta conversion
 
--- TODO: If the attributes and arguments to element arguments become
--- relevant in a way where it's possible for those of an anonymous
--- inline verbatim to matter, then we should write a separate
--- fromInlineNode function for use in the arguments here.
 fromAttr :: P.Attr -> Attr
 fromAttr (s, at, ar, con) =
-  ( Meta s AsInline (fromAttrs at) (concatMap fromInlineNode ar)
+  ( Meta s AsInline (fromAttrs at) (mapMaybe fromInlineNode ar)
   , fromInlineContent con
   )
 
@@ -99,26 +96,26 @@ fromInlineContent (InlineVerbatim src t) = [NodeText src t]
 fromInlineContent InlineNil              = []
 
 
+-- | Convert a source inline element into an intermediate node. This
+-- unconditionally expands anonymous inline verbatim elements into
+-- their text content.
 fromInlineElement :: InlineElement -> Node
--- TODO: warn on inline verbatim with arguments?
--- TODO: should the source position of an expanded anonymous inline
--- verbatim be the position of the brace, or the position of the
--- interior? It's the interior for now.
 fromInlineElement (P.Element _ Nothing _ _ (InlineVerbatim s t)) = NodeText s t
 fromInlineElement (P.Element s t at ar c) =
   NodeElem
     $ Element t (Meta s AsInline (fromAttrs at) (fromInlineNodes ar))
     $ fromInlineContent c
 
--- This only produces at most one node. This is important, for
--- instance, in the arguments to functions.
-fromInlineNode :: InlineNode -> [Node]
-fromInlineNode (InlineBraced e) = [fromInlineElement e]
-fromInlineNode (InlineText s t) = [NodeText s t]
-fromInlineNode InlineComment{}  = []
+-- | Converts a source inline node other than a comment into @Just@ an
+-- intermediate inline node, and converts an inline comment into
+-- @Nothing@.
+fromInlineNode :: InlineNode -> Maybe Node
+fromInlineNode (InlineBraced e) = Just $ fromInlineElement e
+fromInlineNode (InlineText s t) = Just $ NodeText s t
+fromInlineNode InlineComment{}  = Nothing
 
 fromInlineNodes :: [InlineNode] -> [Node]
-fromInlineNodes = concatMap fromInlineNode
+fromInlineNodes = mapMaybe fromInlineNode
 
 -- * Block conversion
 
@@ -128,16 +125,14 @@ fromBlockContent (BlockInlines b   ) = fromInlineNodes b
 fromBlockContent (BlockVerbatim s t) = [NodeText s t]
 fromBlockContent BlockNil            = []
 
--- TODO: document that this defaults to a `p` paragraph. Also the
--- empty paragraph stripping is a little inelegant. It exists to
--- support comments occurring between blocks, which happen to parse as
--- paragraphs full of comments and whitespace. The 'fromInlineNodes'
--- removes the comments, leaving just malformed whitespace paragraphs.
+-- | Converts a source block node into an intermediate node. This
+-- function also strips out any syntactic paragraphs full of only
+-- whitespace and comments.
 fromBlockNode :: P.BlockNode -> [Node]
 fromBlockNode (P.BlockBlock b) = [NodeElem $ fromBlockElement b]
 fromBlockNode (P.BlockPar sp i)
   | isEmpty i' = []
-  | otherwise  = [nodeElement (Just "p") (Meta sp AsPara mempty mempty) i']
+  | otherwise  = [nodeElement Nothing (Meta sp AsPara mempty mempty) i']
  where
   i' = fromInlineNodes i
   isWhitespace (NodeText _ t) = T.all isSpace t

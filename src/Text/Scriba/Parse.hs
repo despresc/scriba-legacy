@@ -199,7 +199,7 @@ pInlineText =
     $   fmap T.concat
     $   MP.some
     $   insigChar
-    <|> MP.try pBackslashToks
+    <|> pBackslashToks
   where insigChar = MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}"
 
 -- | Paragraph text is inline text, with the additional restriction
@@ -215,19 +215,17 @@ pParaText =
     <|> pBackslashToks
  where
   insigChar    = MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}\n"
-  -- TODO: is the try required?
   insigNewline = MP.try $ MP.chunk "\n" <* MP.notFollowedBy pBlankLine
 
 -- | Argument text is inline text except that it cannot contain spaces
 -- or a character from @|&`@.
 pArgText :: Parser Text
--- TODO: is the try required?
 pArgText =
   MP.label "argument text"
     $   fmap T.concat
     $   MP.some
     $   insigChar
-    <|> MP.try pBackslashToks
+    <|> pBackslashToks
  where
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c
@@ -278,13 +276,12 @@ pBlockVerbText indentLvl = pVerbText <* "\n" <* MP.takeWhileP Nothing (== ' ')
 
 -- ** Components of elements
 
--- | An element type is a sequence of alphanumeric characters. This
--- may be changed in future. Not lexemic.
-
--- TODO: improve
+-- | An element type is a sequence of alphanumeric characters,
+-- underscores, and periods. This may be changed in future. Not
+-- lexemic.
 pElemTy :: Parser Text
 pElemTy = MP.takeWhile1P Nothing isTyChar <?> "element type"
-  where isTyChar x = isAlphaNum x || x == '_' || x == '.' || x == '$'
+  where isTyChar x = isAlphaNum x || x == '_' || x == '.'
 
 -- | Parses a literal @\@@, the start of the arguments of an
 -- element. Not lexemic.
@@ -301,13 +298,23 @@ pInlineBodyStart = "|" <?> "start of inline body"
 pBlockBodyStart :: Parser Text
 pBlockBodyStart = "&" <?> "start of block body"
 
+-- | Parses a literal @`@, the start of a verbatim body.
+pVerbatimBodyStart :: Parser Text
+pVerbatimBodyStart = "`" <?> "start of verbatim body"
+
+-- | Parses a literal @`@, the end of a verbatim body.
+pVerbatimBodyEnd :: Parser Text
+pVerbatimBodyEnd = "`" <?> "end of verbatim body"
+
 -- | Token for the start of a block.
 pBlockMark :: Parser ()
-pBlockMark = lexemeAny (void "&") <?> "start of paragraphed block"
+pBlockMark = lexemeAny (void "&") <?> "block marker"
 
--- | Parses something between the start and end inline element braces.
-pBraced :: Parser a -> Parser a
-pBraced = MP.between "{" "}"
+-- | Parses something between the start and end inline element
+-- braces. Also takes a description of what the thing is, for
+-- labelling the braces.
+pBraced :: String -> Parser a -> Parser a
+pBraced t = MP.between ("{" <?> "start of " <> t) ("}" <?> "end of " <> t)
 
 -- | Parse the body of an element with the given components. The
 -- @space@ parser is used for inter-component space consumption, and
@@ -334,7 +341,7 @@ pAttrs sc = fmap attrsFromList . MP.many . MP.label "attribute" $ do
   Element s t at ar con <- pAttr <*> pure src
   void sc
   pure (t, (s, at, ar, con))
-  where pAttr = pBraced $ pElement pSpace pElemTy pInlineContent
+  where pAttr = pBraced "attribute" $ pElement pSpace pElemTy pInlineContent
 
 -- | Parse the arguments of an element, which is a sequence of
 -- argument nodes starting with a @\@@ marker.
@@ -360,7 +367,8 @@ pInlineNodeWith pText = do
     Right (Right t) -> InlineText src t
 
 pInlineElement :: Parser (SourcePos -> InlineElement)
-pInlineElement = pBraced $ pElement pSpace (MP.optional pElemTy) pInlineContent
+pInlineElement = pBraced "inline element"
+  $ pElement pSpace (MP.optional pElemTy) pInlineContent
 
 pInlineContent :: Parser InlineContent
 pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
@@ -370,7 +378,8 @@ pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
   pInlineVerbBody = do
     src <- MP.getSourcePos
     -- TODO: better label?
-    InlineVerbatim src <$> MP.between "`" "`" pInlineVerbText
+    InlineVerbatim src
+      <$> MP.between pVerbatimBodyStart pVerbatimBodyEnd pInlineVerbText
 
 -- ** Block elements
 
@@ -386,10 +395,12 @@ pParagraph :: Parser [InlineNode]
 -- TODO: add the paragraph header form.
 pParagraph = MP.some pParaNode where pParaNode = pInlineNodeWith pParaText
 
--- The Int is the position of the start of the block, to be passed to pBlockVerbContent
+-- | Parse a block element. The given @Int@ is the position of the
+-- start of the block on the line, to be passed to
+-- 'pBlockVerbContent'.
 pBlockElement :: Int -> Parser (SourcePos -> BlockElement)
 pBlockElement indentLvl = pBlockMark
-  >> pBraced (pElement pSpace (MP.optional pElemTy) pContent)
+  >> pBraced "block element" (pElement pSpace (MP.optional pElemTy) pContent)
  where
   pContent =
     MP.option BlockNil
@@ -408,10 +419,10 @@ pBlockParContent = do
 pBlockVerbContent :: Int -> Parser BlockContent
 pBlockVerbContent indentLvl = do
   src <- MP.getSourcePos
-  void "`" -- TODO: label?
+  void pVerbatimBodyStart
   pBlankLine
   t <- pBlockVerbText indentLvl
-  void "`"
+  void pVerbatimBodyEnd
   pure $ BlockVerbatim src t
 
 pBlockUnparContent :: Parser BlockContent
@@ -454,14 +465,13 @@ pSecHeader = do
   pure $ toHeader . f
  where
   pNumberRun        = lexemeLine $ T.length <$> MP.takeWhile1P Nothing (== '#')
-  -- TODO: is this right?
   pAtMostOneNewline = pLineSpace >> MP.optional ("\n" >> pLineSpace)
 
 -- ** Full document
 
 -- TODO: duplication, perhaps.
 pDocAttrs :: Parser Attrs
-pDocAttrs = pBraced $ do
+pDocAttrs = pBraced "scriba element (document meta)" $ do
   pSpace
   void $ "scriba"
   pSpace

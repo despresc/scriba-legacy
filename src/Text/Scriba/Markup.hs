@@ -74,18 +74,15 @@ import           Data.Maybe                     ( mapMaybe
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Set                       ( Set )
-import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Void                      ( Void
                                                 , absurd
                                                 )
 import           GHC.Generics                   ( Generic )
-import qualified Text.Megaparsec               as MP
+import           Text.Megaparsec                ( eitherP )
 
 {- TODO:
-
-- Actually finish this
 
 - Better errors everywhere (use source positions, for one thing)
 
@@ -408,9 +405,6 @@ data VariedVar
 -- keyed by the type of the element. Then we can operate on numbered
 -- things somewhat uniformly internally.
 
--- TODO: need to have the title template be a special "optional, but
--- if present must be well-formed" type of attribute.
-
 -- TODO: reconside the name of "title" for the title
 -- template/configuration. Also reconsider the other configuration
 -- names. They should have the same name as the corresponding title
@@ -419,8 +413,7 @@ pFormalConfig
   :: Scriba
        Element
        (Map Text (FormalConfig, Maybe ContainerRelation, Maybe NumberStyle))
-pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
-  pFormalSpec
+pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
  where
   pFormalSpec = do
     t <-
@@ -440,12 +433,15 @@ pFormalConfig = whileParsingElem "formalBlocks" $ meta $ attrs $ allAttrsOf
 -- actually appear in the title.
 pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
 pTitleTemplate t = do
-  pref  <- attrDef "prefix" emptySurround $ pSurround
-  tnote <- attrDef tname emptySurround $ pSurround
-  tnum  <- attrDef "n" emptySurround $ pSurround
+  pref        <- attrDef "prefix" emptySurround $ pSurround
+  tnote       <- attrDef tname emptySurround $ pSurround
+  tnum        <- attrDef "n" emptySurround $ pSurround
   prefixFirst <- attrMaybe "prefixFirst" $ pure True
   numberFirst <- attrMaybe "numberFirst" $ pure False
-  pure $ TitleTemplate pref tnum tnote (fromMaybe True $ prefixFirst <|> numberFirst)
+  pure $ TitleTemplate pref
+                       tnum
+                       tnote
+                       (fromMaybe True $ prefixFirst <|> numberFirst)
  where
   tname = case t of
     FormalTemplate  -> "note"
@@ -470,8 +466,7 @@ pSectionConfig
   :: Scriba
        Element
        (Map Text (SectionConfig, Maybe ContainerRelation, Maybe NumberStyle))
-pSectionConfig = whileParsingElem "sections" $ meta $ attrs $ allAttrsOf
-  pSectionSpec
+pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
  where
   pSectionSpec = do
     t <-
@@ -600,9 +595,19 @@ pListItem = asNode pItem
 
 pParagraph :: Scriba Element (Paragraph (Inline a))
 pParagraph = do
-  matchTy "p"
-  c <- whileParsingElem "p" $ allContentOf pInline
+  etp <- eitherP (matchTy "p") presentedAsParagraph
+  let e = case etp of
+        Left  _ -> "p"
+        Right _ -> "paragraph block"
+  c <- whileParsingElem e $ allContentOf pInline
   pure $ Paragraph c
+ where
+  presentedAsParagraph = do
+    meta $ do
+      Meta _ pres _ _ <- inspect
+      case pres of
+        AsPara -> pure ()
+        _      -> empty
 
 pMixedBlockBody :: Scriba Element (MixedBody Block (Inline a))
 pMixedBlockBody = allContent (MixedBlock <$> manyOf pBlock)
@@ -740,27 +745,3 @@ pDoc = do
 
 parseDoc :: Node -> Either ScribaError Doc
 parseDoc = fmap snd . runScriba (asNode pDoc)
-
--- TODO: improve, especially the expectations.
--- TODO: might want to lock multiple "while parsing" lines behind a
--- --trace option in a standalone program.
-
--- TODO: having the source position be optional in the Expecting makes
--- the errors a little weird.
-prettyScribaError :: ScribaError -> Text
-prettyScribaError (WhileParsing msp t e) =
-  prettyScribaError e <> "\n" <> errline
- where
-  errAt =
-    " at " <> maybe "<unknown position>" (T.pack . MP.sourcePosPretty) msp
-  errline = "while parsing " <> t <> errAt
-prettyScribaError (Expecting e mspt) = ex <> got
- where
-  got = case mspt of
-    Nothing      -> ""
-    Just (sp, t) -> "got: " <> t <> "\nat " <> T.pack (MP.sourcePosPretty sp)
-  ex = "expecting one of: " <> prettyExpectations e <> "\n"
-  prettyExpectations =
-    T.intercalate ", " . map fromExpectation . Set.toAscList . getExpectations
-prettyScribaError (Msg t)  = "error: " <> t
-prettyScribaError ErrorNil = "unknown error"

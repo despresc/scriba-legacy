@@ -164,7 +164,7 @@ NodeElem
                                   }
                             , NodeElem
                                 Element
-                                  { eType = Just "p"
+                                  { eType = Nothing
                                   , eMeta =
                                       Meta
                                         { loc =
@@ -286,7 +286,7 @@ NodeElem
                                             }
                                       , NodeElem
                                           Element
-                                            { eType = Just "p"
+                                            { eType = Nothing
                                             , eMeta =
                                                 Meta
                                                   { loc =
@@ -338,7 +338,7 @@ NodeElem
                                   }
                             , NodeElem
                                 Element
-                                  { eType = Just "p"
+                                  { eType = Nothing
                                   , eMeta =
                                       Meta
                                         { loc =
@@ -491,7 +491,7 @@ NodeElem
                                   }
                             , NodeElem
                                 Element
-                                  { eType = Just "p"
+                                  { eType = Nothing
                                   , eMeta =
                                       Meta
                                         { loc =
@@ -613,6 +613,221 @@ NodeElem
                                             }
                                           "\nThe statement of an interesting theorem.\n"
                                       ]
+                                  }
+                            , NodeElem
+                                Element
+                                  { eType = Nothing
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "simple.scb"
+                                              , sourceLine = Pos 33
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsPara
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody =
+                                      [ NodeText
+                                          SourcePos
+                                            { sourceName = "simple.scb"
+                                            , sourceLine = Pos 33
+                                            , sourceColumn = Pos 1
+                                            }
+                                          "Insignificant \\backslash and a \\"
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "elem"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "simple.scb"
+                                                        , sourceLine = Pos 33
+                                                        , sourceColumn = Pos 34
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 33
+                                                      , sourceColumn = Pos 40
+                                                      }
+                                                    "significant one"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "simple.scb"
+                                            , sourceLine = Pos 33
+                                            , sourceColumn = Pos 56
+                                            }
+                                          " and "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "elem"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "simple.scb"
+                                                        , sourceLine = Pos 33
+                                                        , sourceColumn = Pos 61
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs =
+                                                      [ NodeText
+                                                          SourcePos
+                                                            { sourceName = "simple.scb"
+                                                            , sourceLine = Pos 33
+                                                            , sourceColumn = Pos 67
+                                                            }
+                                                          "more{"
+                                                      ]
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 33
+                                                      , sourceColumn = Pos 74
+                                                      }
+                                                    "test"
+                                                ]
+                                            }
+                                      , NodeText
+                                          SourcePos
+                                            { sourceName = "simple.scb"
+                                            , sourceLine = Pos 33
+                                            , sourceColumn = Pos 79
+                                            }
+                                          "\nand "
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "elem2"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "simple.scb"
+                                                        , sourceLine = Pos 34
+                                                        , sourceColumn = Pos 5
+                                                        }
+                                                  , sourcePres = AsInline
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs =
+                                                      [ NodeText
+                                                          SourcePos
+                                                            { sourceName = "simple.scb"
+                                                            , sourceLine = Pos 34
+                                                            , sourceColumn = Pos 12
+                                                            }
+                                                          "more\\"
+                                                      ]
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 34
+                                                      , sourceColumn = Pos 18
+                                                      }
+                                                    "test"
+                                                ]
+                                            }
+                                      ]
+                                  }
+                            ]
+                        }
+                  ]
+              }
+        , NodeElem
+            Element
+              { eType = Just "sec2"
+              , eMeta =
+                  Meta
+                    { loc =
+                        SourcePos
+                          { sourceName = "simple.scb"
+                          , sourceLine = Pos 36
+                          , sourceColumn = Pos 1
+                          }
+                    , sourcePres = AsSection 1
+                    , metaAttrs =
+                        fromList
+                          [ ( "attr1"
+                            , ( Meta
+                                  { loc =
+                                      SourcePos
+                                        { sourceName = "simple.scb"
+                                        , sourceLine = Pos 36
+                                        , sourceColumn = Pos 8
+                                        }
+                                  , sourcePres = AsInline
+                                  , metaAttrs = fromList []
+                                  , metaArgs = []
+                                  }
+                              , []
+                              )
+                            )
+                          , ( "attr2"
+                            , ( Meta
+                                  { loc =
+                                      SourcePos
+                                        { sourceName = "simple.scb"
+                                        , sourceLine = Pos 37
+                                        , sourceColumn = Pos 8
+                                        }
+                                  , sourcePres = AsInline
+                                  , metaAttrs = fromList []
+                                  , metaArgs = []
+                                  }
+                              , []
+                              )
+                            )
+                          ]
+                    , metaArgs = []
+                    }
+              , eBody =
+                  [ NodeElem
+                      Element
+                        { eType = Nothing
+                        , eMeta =
+                            Meta
+                              { loc =
+                                  SourcePos
+                                    { sourceName = "simple.scb"
+                                    , sourceLine = Pos 39
+                                    , sourceColumn = Pos 1
+                                    }
+                              , sourcePres = AsPara
+                              , metaAttrs = fromList []
+                              , metaArgs = []
+                              }
+                        , eBody =
+                            [ NodeElem
+                                Element
+                                  { eType = Just "attr3"
+                                  , eMeta =
+                                      Meta
+                                        { loc =
+                                            SourcePos
+                                              { sourceName = "simple.scb"
+                                              , sourceLine = Pos 39
+                                              , sourceColumn = Pos 1
+                                              }
+                                        , sourcePres = AsInline
+                                        , metaAttrs = fromList []
+                                        , metaArgs = []
+                                        }
+                                  , eBody = []
                                   }
                             ]
                         }

@@ -23,7 +23,9 @@ import qualified Control.Monad.Except          as E
 import           Data.Char                      ( isSpace )
 import           Data.Foldable                  ( foldl' )
 import           Data.Functor.Compose           ( Compose(..) )
-import           Data.Maybe                     ( mapMaybe )
+import           Data.Maybe                     ( mapMaybe
+                                                , fromMaybe
+                                                )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Set                       ( Set )
@@ -33,6 +35,7 @@ import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( SourcePos
                                                 , many
+                                                , sourcePosPretty
                                                 )
 
 -- | Simple state-error monad.
@@ -177,22 +180,11 @@ manyOf = many . one
 inspect :: Scriba s s
 inspect = Scriba S.get
 
--- TODO: start here. I think I just want projection functions for all
--- of the element attributes (type, meta, content). Is there a (Scriba
--- a b -> Scriba b c -> Scriba a c) combinator too, incidentally? I
--- think so, but should it produce a parser that changes a at all? I
--- guess?
 content :: Scriba [Node] a -> Scriba Element a
 content act = liftScriba $ \(Element mty met con) -> do
   (con', a) <- runScriba act con
   pure (Element mty met con', a)
 
--- TODO: improve the error
--- TODO: instead of allContent . manyOf we could instead have a
--- combinator that traverses the content, which should preserve
--- expectations. Right now if we fail to parse a block we simply get
--- this "unexpected element" error instead of what we should get,
--- which is a "failed to parse" error.
 -- TODO: Should generalize this.
 allContent :: Scriba [Node] a -> Scriba Element a
 allContent p = content $ do
@@ -200,7 +192,7 @@ allContent p = content $ do
   ns <- inspect
   case ns of
     []    -> pure a
-    n : _ -> throwError $ Msg $ T.pack $ show n
+    n : _ -> expectsGotAt ["end of content"] (getPos n) (showNodeType n)
 
 -- TODO: monoid?
 remaining :: (Monoid (t s), Traversable t) => Scriba s a -> Scriba (t s) (t a)
@@ -246,27 +238,26 @@ allAttrsOf act = liftScriba $ \m -> do
 
 -- TODO: little odd to be reconstituting an element here. Maybe an
 -- element body type? Also an infix combinator might be welcome.
--- TODO: should have one of these that takes a default and returns an
--- `a`, I think. Maybe one for monoidal values too.
--- TODO: better error here.
-attr :: Text -> Scriba Element a -> Scriba Attrs a
-attr k act = liftScriba $ fmap flop . getCompose . M.alterF go k
- where
-  go Nothing       = Compose $ Left $ Msg $ "present attribute " <> k
-  go (Just (m, n)) = case runScriba act $ Element (Just k) m n of
-    Left  e                    -> Compose $ Left e
-    Right (Element _ m' n', a) -> Compose $ Right (a, Just (m', n'))
-  flop (x, y) = (y, x)
-
--- TODO: I think I need an attr parser that succeeds on a variable
--- that isn't present, and fails if a malformed attribute is
--- present. Necessary for variable templates, for instance.
-
+-- TODO: document the whileParsing wrapping behaviour.
 attrMaybe :: Text -> Scriba Element a -> Scriba Attrs (Maybe a)
-attrMaybe k act = Just <$> attr k act <|> pure Nothing
+attrMaybe k act = liftScriba $ fmap flop . getCompose . M.alterF go k
+ where
+  go Nothing       = Compose $ Right (Nothing, Nothing)
+  go (Just (m, n)) = case runScriba act' $ Element (Just k) m n of
+    Left  e                    -> Compose $ Left e
+    Right (Element _ m' n', a) -> Compose $ Right (Just a, Just (m', n'))
+  flop (x, y) = (y, x)
+  act' = whileParsingElem k act
+
+attr :: Text -> Scriba Element a -> Scriba Attrs a
+attr k act = do
+  ma <- attrMaybe k act
+  case ma of
+    Nothing -> throwError $ Msg $ "present attribute " <> k
+    Just a  -> pure a
 
 attrDef :: Text -> a -> Scriba Element a -> Scriba Attrs a
-attrDef k a act = attr k act <|> pure a
+attrDef k a act = fromMaybe a <$> attrMaybe k act
 
 mattr :: Monoid c => Text -> Scriba Element c -> Scriba Attrs c
 mattr k act = attr k act <|> pure mempty
@@ -290,15 +281,12 @@ asNode act = liftScriba $ \n -> case n of
     pure (NodeElem e', a)
   NodeText sp _ -> expectsGotAt ["element"] sp "text node"
 
--- TODO: should really unify this with match...
--- TODO: should really add source position lens/getter
--- TODO: here, or elsewhere, should say "unrecognized element"
 matchTy :: Text -> Scriba Element ()
 matchTy t = do
   Element mty (Meta sp _ _ _) _ <- inspect
   if mty == Just t
     then pure ()
-    else expectsGotAt [t] sp $ maybe "untyped element" ("element " <>) mty
+    else expectsGotAt [t] sp $ maybe "<untyped element>" ("element " <>) mty
 
 -- TODO: have one that just returns the text?
 -- And maybe a "symbol" one that strips leading and trailing whitespace
@@ -322,13 +310,9 @@ unzips3 x = (fmap fst' x, fmap snd' x, fmap thd' x)
   thd' (_, _, c) = c
 
 -- TODO: no tab support yet. Should document.
--- TODO: does this strip off a single trailing newline, by using
--- lines? If so, might want to fix that.
 -- TODO: should document the blank line behaviour.
--- TODO: test this function
-
--- TODO: should this even be done in Intermediate? it sort of throws
--- off the source positioning... People can always call this on their
+-- TODO: the list of lines only needs to be traversed once, probably,
+-- with time travel.
 commonIndentStrip :: Text -> Text
 commonIndentStrip txt =
   correctNewline
@@ -338,9 +322,6 @@ commonIndentStrip txt =
     . T.lines
     $ txt
  where
-  -- TODO: the list only needs to be traversed once, probably, with
-  -- time travel.
-  -- This assumes t is not null
   getIndent = T.length . T.takeWhile (== ' ')
   findFirstInhabited (t : ts) | not (T.null t) = Just (getIndent t, ts)
                               | otherwise      = findFirstInhabited ts
@@ -358,10 +339,6 @@ commonIndentStrip txt =
 -- | Consumes whitespace up to the first element or end of
 -- input. Throws an error if a text element with a non-whitespace
 -- character in it is encountered.
-
--- TODO: some kind of whitespace-separated list combinator? Scriba
--- Node a -> Scriba [Node] a, essentially. Or Scriba Element a ->
--- Scriba [Node] a in this case.
 pOnlySpace :: Scriba [Node] ()
 pOnlySpace = do
   ns <- get
@@ -372,3 +349,28 @@ pOnlySpace = do
         then S.put ns' >> pOnlySpace
         else expectsGotAt ["element", "whitespace"] sp "text"
     _ -> pure ()
+
+
+-- TODO: improve, especially the expectations.
+-- TODO: might want to lock multiple "while parsing" lines behind a
+-- --trace option in a standalone program.
+
+-- TODO: having the source position be optional in the Expecting makes
+-- the errors a little weird.
+prettyScribaError :: ScribaError -> Text
+prettyScribaError (WhileParsing msp t e) =
+  prettyScribaError e <> "\n" <> errline
+ where
+  errAt =
+    " at " <> maybe "<unknown position>" (T.pack . sourcePosPretty) msp
+  errline = "while parsing " <> t <> errAt
+prettyScribaError (Expecting e mspt) = ex <> got
+ where
+  got = case mspt of
+    Nothing      -> ""
+    Just (sp, t) -> "got: " <> t <> "\nat " <> T.pack (sourcePosPretty sp)
+  ex = "expecting one of: " <> prettyExpectations e <> "\n"
+  prettyExpectations =
+    T.intercalate ", " . map fromExpectation . Set.toAscList . getExpectations
+prettyScribaError (Msg t)  = "error: " <> t
+prettyScribaError ErrorNil = "unknown error"

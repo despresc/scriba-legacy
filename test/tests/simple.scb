@@ -29,3 +29,11 @@ math {math`2+2=5`} and a little more math {math|5×9=42}.
 &{formalBlock {type|theorem} {title|Theorem 5 (an interesting one)} {conclusion|QED}|
 The statement of an interesting theorem.
 }
+
+Insignificant \backslash and a \\{elem|significant one} and {elem@more\{|test}
+and {elem2@more\|test}
+
+# sec2 {attr1}
+       {attr2}
+
+{attr3}
