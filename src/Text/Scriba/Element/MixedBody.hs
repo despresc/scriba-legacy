@@ -1,5 +1,6 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Text.Scriba.Element.MixedBody where
 
@@ -10,11 +11,4 @@ import           GHC.Generics                   ( Generic )
 data MixedBody b i
   = MixedInline [i]
   | MixedBlock [b i]
-  deriving (Eq, Ord, Show, Read, Generic)
-
--- * Numbering
-
-numMixedBody
-  :: Numbers [b i] -> Numbers [i] -> Numbers (MixedBody b i)
-numMixedBody _ g (MixedInline p) = MixedInline <$> g p
-numMixedBody f _ (MixedBlock  b) = MixedBlock <$> f b
+  deriving (Eq, Ord, Show, Read, Generic, Numbering)

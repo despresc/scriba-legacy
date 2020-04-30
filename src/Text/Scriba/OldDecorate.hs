@@ -1,14 +1,18 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Text.Scriba.OldDecorate where
+module Text.Scriba.OldDecorate
+  ( decorate
+  )
+where
 
 -- Decorate the internal representation in various ways.
 
 import           Text.Scriba.Markup
 import           Text.Scriba.Numbering
-import           Text.Scriba.Element
 
 import           Control.Applicative            ( (<|>) )
 import           Control.Monad                  ( join )
@@ -49,38 +53,9 @@ defaultNumberState da = NumberState initCounters
                                     (docElemCounterRel da)
   where initCounters = docCounterRel da $> 1
 
-runNumDoc :: Doc Block (Inline a) -> Doc Block (Inline a)
+runNumDoc :: Numbering a => Doc Block (Inline a) -> Doc Block (Inline a)
 runNumDoc d@(Doc da _ _ _) =
-  flip runNumbering (defaultNumberState da) $ numDoc numBlocks numInlines d
-
-numBlocks :: [Block (Inline a)] -> Numbering [Block (Inline a)]
-numBlocks = traverse numBlock
-
-numSections
-  :: [Section Block (Inline i)] -> Numbering [Section Block (Inline i)]
-numSections = traverse (numSection numBlocks numInlines)
-
--- TODO: integrate list numbering into all of this.
-numBlock :: Block (Inline a) -> Numbering (Block (Inline a))
-numBlock (Bformal formal) =
-  Bformal <$> numFormal (numMixedBody numBlocks numInlines) numInlines formal
-numBlock (Blist l) = Blist <$> numList (numMixedBody numBlocks numInlines) l
-numBlock x         = pure x
-
-
--- TODO: we don't descend into Iother, even though it might be
--- possible to have numbered inline things.
-numTitle :: Title a -> Numbering (Title a)
-numTitle = pure
-
-numInlinesWith :: (a -> Numbering a) -> [Inline a] -> Numbering [Inline a]
-numInlinesWith _ = pure
-
-numInlines :: [Inline a] -> Numbering [Inline a]
-numInlines = numInlinesWith pure
-
-numInline :: Inline a -> Numbering (Inline a)
-numInline = pure
+  flip runNumberM (defaultNumberState da) $ numbering d
 
 -- * Generating titles
 

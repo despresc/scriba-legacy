@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -47,7 +48,7 @@ where
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Element
-import           Text.Scriba.Numbering          ( NumberStyle(..) )
+import           Text.Scriba.Numbering          ( NumberStyle(..) , Numbering)
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Functor                   ( ($>) )
@@ -165,7 +166,7 @@ data Block i
   | Bcode !BlockCode
   | Bpar !(Paragraph i)
   | Blist !(List Block i)
-  deriving (Eq, Ord, Show, Read, Generic)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering)
 
 -- TODO: rename Math to InlineMath?
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
@@ -185,7 +186,7 @@ data Inline a
   | IpageMark !PageMark
   | ItitleComponent !(TitleComponent (Inline a))
   | Iother !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
 -- | Strip out the markup in a sequence of inlines, leaving only the
 -- plain text. Very lossy, naturally. This doesn't add any textual

@@ -5,6 +5,7 @@
 module Text.Scriba.Element.BlockCode where
 
 import           Text.Scriba.Intermediate
+import           Text.Scriba.Numbering
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -19,6 +20,8 @@ import           GHC.Generics                   ( Generic )
 newtype BlockCode = BlockCode
   { getBlockCode :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
+
+instance Numbering BlockCode
 
 blockCodeToText :: BlockCode -> [Text]
 blockCodeToText (BlockCode t) = [t]

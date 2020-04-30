@@ -3,15 +3,19 @@
 
 module Text.Scriba.Element.DisplayMath where
 
+import           Text.Scriba.Intermediate
+import           Text.Scriba.Numbering
+
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
-import           Text.Scriba.Intermediate
 
 data DisplayMath
   = Formula Text
   | Gathered [Text]
   deriving (Eq, Ord, Show, Read, Generic)
+
+instance Numbering DisplayMath
 
 -- TODO: have these be classes somewhere
 

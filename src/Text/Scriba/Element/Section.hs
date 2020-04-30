@@ -1,12 +1,14 @@
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.Section where
 
-import Text.Scriba.Numbering
+import           Text.Scriba.Numbering
 
-import Control.Applicative ((<|>))
+import           Control.Applicative            ( (<|>) )
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
 
@@ -42,38 +44,30 @@ data Section b i = Section
 data SectionContent b i = SectionContent
   { secPreamble :: [b i]
   , secChildren :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Numbering)
 
 -- TODO: may want to restrict the inlines that can appear in a
 -- title. May also want to have a toc title and header/running title
 -- in here too. Also may want a richer title structure, say having
 -- titles, separators, subtitles, that sort of thing.
 -- TODO: Might want this to be in its own module, and create a Heading type as well.
-newtype Title a = Title
-  { titleBody :: [a]
+newtype Title i = Title
+  { titleBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic)
+    deriving anyclass Numbering
 
 emptySectionContent :: SectionContent b i
 emptySectionContent = SectionContent [] []
 
 -- * Numbering
 
-numTitle :: Numbers [i] -> Numbers (Title i)
+numTitle :: Numbers' [i] -> Numbers' (Title i)
 numTitle f (Title i) = Title <$> f i
 
-numSectionContent
-  :: Numbers [b i]
-  -> Numbers [i]
-  -> Numbers (SectionContent b i)
-numSectionContent numBlocks numInls (SectionContent p c) = do
-  p' <- numBlocks p
-  c' <- traverse (numSection numBlocks numInls) c
-  pure $ SectionContent p' c'
-
-numSection :: Numbers [b i] -> Numbers [i] -> Numbers (Section b i)
-numSection numBlocks numInls (Section mty tbody tfull mnum c) =
-  bracketNumbering mty $ \mnumgen -> do
-    tbody' <- traverse (numTitle numInls) tbody
-    tfull' <- traverse (numTitle numInls) tfull
-    c'     <- numSectionContent numBlocks numInls c
-    pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'
+instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
+  numbering (Section mty tbody tfull mnum c) =
+    bracketNumbering mty $ \mnumgen -> do
+      tbody' <- numbering tbody
+      tfull' <- numbering tfull
+      c'     <- numbering c
+      pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'

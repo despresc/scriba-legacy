@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -6,7 +6,7 @@ module Text.Scriba.Element.List where
 
 import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Intermediate
-import Text.Scriba.Numbering
+import           Text.Scriba.Numbering
 
 
 import           GHC.Generics                   ( Generic )
@@ -22,7 +22,7 @@ import           GHC.Generics                   ( Generic )
 data List b i
   = Ulist [MixedBody b i]
   | Olist [MixedBody b i]
-  deriving (Eq, Ord, Show, Read, Generic)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering)
 
 
 pList :: Scriba [Node] (MixedBody b i) -> Scriba Element (List b i)
@@ -48,9 +48,3 @@ pListItem p = asNode pItem
   pItem = do
     matchTy "item"
     whileParsingElem "item" $ content p
-
--- * Numbering
-
-numList :: Numbers (MixedBody b i) -> Numbers (List b i)
-numList n (Ulist l) = Ulist <$> traverse n l
-numList n (Olist l) = Olist <$> traverse n l

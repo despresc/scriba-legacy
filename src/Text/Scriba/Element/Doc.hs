@@ -124,9 +124,9 @@ runTemplate Nothing _ _ _ _ _ _ = Nothing
 -- * Numbering
 
 -- TODO: Doesn't number anything in the config. Should it?
-numDoc :: Numbers [b i] -> Numbers [i] -> Numbers (Doc b i)
-numDoc numBlocks numInls (Doc da f m b) = do
-  f' <- numSectionContent numBlocks numInls f
-  m' <- numSectionContent numBlocks numInls m
-  b' <- numSectionContent numBlocks numInls b
-  pure $ Doc da f' m' b'
+instance (Numbering (b i), Numbering i) => Numbering (Doc b i) where
+  numbering (Doc da f m b) = do
+    f' <- numbering f
+    m' <- numbering m
+    b' <- numbering b
+    pure $ Doc da f' m' b'

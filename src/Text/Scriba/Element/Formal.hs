@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.Formal where
@@ -76,12 +77,12 @@ pFormal pBody pInl = whileMatchTy "formalBlock" $ do
 
 -- TODO: we don't skip numbering a formal block when it already has a
 -- number. Should have config for that sort of thing.
-numFormal :: Numbers (MixedBody b i) -> Numbers [i] -> Numbers (Formal b i)
-numFormal numBody numInls (Formal mty mnum ti note tsep cont concl) =
-  bracketNumbering mty $ \mnumgen -> do
-    ti'    <- traverse numInls ti
-    note'  <- traverse numInls note
-    tsep'  <- traverse numInls tsep
-    cont'  <- numBody cont
-    concl' <- traverse numInls concl
-    pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'
+instance (Numbering (b i), Numbering i) => Numbering (Formal b i) where
+  numbering (Formal mty mnum ti note tsep cont concl) =
+    bracketNumbering mty $ \mnumgen -> do
+      ti'    <- numbering ti
+      note'  <- numbering note
+      tsep'  <- numbering tsep
+      cont'  <- numbering cont
+      concl' <- numbering concl
+      pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'

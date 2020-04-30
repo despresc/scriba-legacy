@@ -1,16 +1,22 @@
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.Quote where
 
+import           Text.Scriba.Intermediate
+import           Text.Scriba.Numbering
+
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
-import           Text.Scriba.Intermediate
+
 
 newtype Quote i = Quote
   { getQuote :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
+    deriving anyclass Numbering
 
 quoteToText :: (i -> [Text]) -> Quote i -> [Text]
 quoteToText f (Quote i) = concatMap f i

@@ -1,16 +1,22 @@
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.Emph where
 
+import           Text.Scriba.Intermediate
+import           Text.Scriba.Numbering
+
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
-import           Text.Scriba.Intermediate
+
 
 newtype Emph i = Emph
   { getEmph :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
+    deriving anyclass Numbering
 
 emphToText :: (i -> [Text]) -> Emph i -> [Text]
 emphToText f (Emph i) = concatMap f i
