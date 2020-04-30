@@ -168,7 +168,6 @@ fromGroupedSecNodes ((sh@(P.SecHeader lvl _ _ _ _), preblks) : nodes) =
       secs                 = fromGroupedSecNodes nodes'
   in  NodeElem (fromSecHeader sh preblks secContent) : secs
  where
-  -- TODO: reduce duplication with this, the where, and fromSecNodes
   getSections ambient shs
     | (ssh@(P.SecHeader n _ _ _ _), b) : rest <- shs
     , n > ambient
