@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.Markup.Quote where
+module Text.Scriba.Element.Quote where
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
@@ -16,7 +16,4 @@ quoteToText :: (i -> [Text]) -> Quote i -> [Text]
 quoteToText f (Quote i) = concatMap f i
 
 pQuote :: Scriba Node a -> Scriba Element (Quote a)
-pQuote p = do
-  matchTy "q"
-  c <- whileParsingElem "q" $ allContentOf p
-  pure $ Quote c
+pQuote = fmap Quote . whileMatchTy "q" . allContentOf

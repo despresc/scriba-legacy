@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.Markup.InlineMath where
+module Text.Scriba.Element.InlineMath where
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -17,7 +17,5 @@ inlineMathToText :: InlineMath -> [Text]
 inlineMathToText (InlineMath t) = [t]
 
 pMath :: Scriba Element InlineMath
-pMath = do
-  matchTy "math"
-  ts <- whileParsingElem "math" $ allContentOf simpleText
-  pure $ InlineMath $ T.concat ts
+pMath = InlineMath . T.concat <$> whileMatchTy "math" (allContentOf simpleText)
+

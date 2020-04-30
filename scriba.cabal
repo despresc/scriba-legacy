@@ -17,6 +17,8 @@ common base
   ghc-options: -Wall
   build-depends: base >=4.13 && <5
 
+-- TODO: remove OldDecorate
+
 library
   import: base
   hs-source-dirs: src
@@ -27,26 +29,28 @@ library
                , blaze-html
   exposed-modules:
     Text.Scriba.Counters
+    Text.Scriba.Decorate
+    Text.Scriba.OldDecorate
+    Text.Scriba.Element
+    Text.Scriba.Element.Str
+    Text.Scriba.Element.Emph
+    Text.Scriba.Element.Quote
+    Text.Scriba.Element.InlineMath
+    Text.Scriba.Element.DisplayMath
+    Text.Scriba.Element.InlineCode
+    Text.Scriba.Element.PageMark
+    Text.Scriba.Element.BlockCode
+    Text.Scriba.Element.Paragraph
+    Text.Scriba.Element.MixedBody
+    Text.Scriba.Element.List
+    Text.Scriba.Element.TitleParts
+    Text.Scriba.Element.Formal
     Text.Scriba.Intermediate
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
-    Text.Scriba.Markup.Str
-    Text.Scriba.Markup.Emph
-    Text.Scriba.Markup.Quote
-    Text.Scriba.Markup.InlineMath
-    Text.Scriba.Markup.DisplayMath
-    Text.Scriba.Markup.InlineCode
-    Text.Scriba.Markup.PageMark
-    Text.Scriba.Markup.BlockCode
-    Text.Scriba.Markup.Paragraph
-    Text.Scriba.Markup.MixedBody
-    Text.Scriba.Markup.List
-    Text.Scriba.Markup.TitleParts
-    Text.Scriba.Markup.Formal
+    Text.Scriba.Numbering
     Text.Scriba.Parse
-
-    Text.Scriba.Decorate
     Text.Scriba.Render.Html
 
 test-suite scriba-test

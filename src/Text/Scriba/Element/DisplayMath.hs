@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.Markup.DisplayMath where
+module Text.Scriba.Element.DisplayMath where
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -23,22 +23,17 @@ displayMathToText (Gathered ts) = ts
 -- have a single "display" parameter control both, and have dmath be a
 -- syntactic alias (in some way) for math {presentation|display}
 pFormula :: Scriba Element DisplayMath
-pFormula = do
-  matchTy "dmath"
-  c <- whileParsingElem "dmath" $ allContentOf simpleText
-  pure $ Formula $ T.concat c
+pFormula =
+  Formula . T.concat <$> whileMatchTy "dmath" (allContentOf simpleText)
 
 -- TODO: syntact unification with formula? May want to consider design
 -- here. E.g. could have a single dmath whose content is flexibly
 -- parsed, have Gathered be a list of math and not Text, that sort of
 -- thing.
 pGathered :: Scriba Element DisplayMath
-pGathered = do
-  matchTy "gathered"
-  c <- whileParsingElem "gathered" $ allContent $ pOnlySpace *> many
-    (one pLine <* pOnlySpace)
-  pure $ Gathered c
+pGathered = Gathered
+  <$> whileMatchTy "gathered" (allContent $ pOnlySpace *> many pLines)
  where
-  pLine = asNode $ do
-    matchTy "line"
-    fmap T.concat $ whileParsingElem "line" $ allContentOf simpleText
+  pLines = one pLine <* pOnlySpace
+  pLine =
+    fmap T.concat $ asNode $ whileMatchTy "line" $ allContentOf simpleText

@@ -3,7 +3,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-import qualified Text.Scriba.Decorate          as SD
+import qualified Text.Scriba.OldDecorate       as SD
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
 import qualified Text.Scriba.Parse             as SP

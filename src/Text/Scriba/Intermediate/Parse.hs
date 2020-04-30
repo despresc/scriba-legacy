@@ -38,6 +38,13 @@ import           Text.Megaparsec                ( SourcePos
                                                 , sourcePosPretty
                                                 )
 
+{- TODO:
+
+- a combinator for inspecting the presentation of a node? (used for
+  paragraphs and sections)
+
+-}
+
 -- | Simple state-error monad.
 
 newtype Scriba s a = Scriba
@@ -287,6 +294,9 @@ matchTy t = do
   if mty == Just t
     then pure ()
     else expectsGotAt [t] sp $ maybe "<untyped element>" ("element " <>) mty
+
+whileMatchTy :: Text -> Scriba Element a -> Scriba Element a
+whileMatchTy t act = matchTy t >> whileParsingElem t act
 
 -- TODO: have one that just returns the text?
 -- And maybe a "symbol" one that strips leading and trailing whitespace

@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.Markup.PageMark where
+module Text.Scriba.Element.PageMark where
 
 import           Data.Text                      ( Text )
 import qualified Data.Text as T
@@ -18,7 +18,5 @@ pageMarkToText (PageMark t) = [t]
 
 -- TODO: well-formedness checking?
 pPageMark :: Scriba Element PageMark
-pPageMark = do
-  matchTy "physPage"
-  t <- whileParsingElem "physPage" $ allContentOf simpleText
-  pure $ PageMark $ T.concat t
+pPageMark = PageMark . T.concat <$> whileMatchTy "physPage" (allContentOf simpleText)
+

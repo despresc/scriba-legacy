@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Text.Scriba.Markup.Str where
+module Text.Scriba.Element.Str where
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )

@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.Markup.InlineCode where
+module Text.Scriba.Element.InlineCode where
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -17,7 +17,4 @@ inlineCodeToText :: InlineCode -> [Text]
 inlineCodeToText (InlineCode t) = [t]
 
 pCode :: Scriba Element InlineCode
-pCode = do
-  matchTy "code"
-  t <- whileParsingElem "code" $ allContentOf simpleText
-  pure $ InlineCode $ T.concat t
+pCode = InlineCode . T.concat <$> whileMatchTy "code" (allContentOf simpleText)

@@ -1,7 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Text.Scriba.Markup.MixedBody where
+module Text.Scriba.Element.MixedBody where
 
 import           GHC.Generics                   ( Generic )
 

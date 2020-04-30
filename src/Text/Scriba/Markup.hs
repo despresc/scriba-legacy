@@ -46,23 +46,8 @@ where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
-import           Text.Scriba.Markup.DisplayMath
-import           Text.Scriba.Markup.Emph
-import           Text.Scriba.Markup.InlineCode
-import           Text.Scriba.Markup.InlineMath
-import           Text.Scriba.Markup.PageMark
-import           Text.Scriba.Markup.Quote
-import           Text.Scriba.Markup.Str
-import           Text.Scriba.Markup.BlockCode
-import           Text.Scriba.Markup.Paragraph
-import           Text.Scriba.Markup.List
-import           Text.Scriba.Markup.MixedBody
-import           Text.Scriba.Markup.TitleParts
-import           Text.Scriba.Markup.Formal
+import           Text.Scriba.Element
 
-import           Control.Applicative            ( (<|>)
-                                                , empty
-                                                )
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Functor                   ( ($>)
                                                 , (<&>)
@@ -80,7 +65,6 @@ import           Data.Void                      ( Void
                                                 , absurd
                                                 )
 import           GHC.Generics                   ( Generic )
-import           Text.Megaparsec                ( eitherP )
 
 {- TODO:
 
@@ -168,6 +152,15 @@ import           Text.Megaparsec                ( eitherP )
   in amsmath, perhaps custom ones too. What these entail could be
   configurable through css and the tex header.
 
+- For lists, and numbered things generally, we should assume a default
+  numbering style, so that references to numbered list items can still
+  be rendered visually in HTML. Alternate styles could still be set,
+  but this would have to be done in-document, and it would be the
+  responsibility of the user (if not using whatever standalone
+  rendering we support) to ensure that the CSS matches what the
+  document assumes. We could still ship with CSS styles for the
+  numbers, and simply put different classes on the rendered lists, of
+  course.
 -}
 
 -- | A document with front matter, main matter, and end matter.
@@ -507,111 +500,22 @@ pBlock :: Scriba Node (Block (Inline a))
 pBlock =
   asNode
     $   Bformal
-    <$> pFormal
+    <$> pFormal pMixedBody pInlineBody
     <|> Bpar
-    <$> pParagraph
-    <|> pCodeBlock
+    <$> pParagraph pInlineBody
+    <|> Bcode
+    <$> pBlockCode
     <|> Blist
-    <$> pList
+    <$> pList pMixedBody
 
--- TODO: no formal block type validation
--- TODO: sort of a hack allowing simple inline content: we just wrap
--- bare content in a paragraph. Might want a Plain-type block after
--- all?  Some kind of reusable thing that signals that the content of
--- a block can be bare.
+pBlockBody :: Scriba [Node] [Block (Inline a)]
+pBlockBody = remaining pBlock
 
--- TODO: For rendering, consider whether the title or conclusion
--- should be inserted inside the body! E.g. if the first block in the
--- FormalBlock is a paragraph, perhaps we should put that in the
--- paragraph? Might not be necessary with something like the "display:
--- inline" property on the first paragraph (or first paragraph after
--- the title).
+pInlineBody :: Scriba [Node] [Inline a]
+pInlineBody = remaining pInline
 
--- TODO: In the body parser I formerly had a single allContent $
--- ... invocation, with the choice inside. That didn't work, because
--- the manyOf can always succeed. Maybe I can preserve the behaviour
--- by having the first one be a someOf?
-pFormal :: Scriba Element (Formal Block (Inline i))
-pFormal = do
-  matchTy "formalBlock"
-  whileParsingElem "formalBlock" $ do
-    (mty, mnumber, title, note, tsep, concl) <- meta $ attrs $ do
-      mty     <- attrMaybe "type" $ allContentOf simpleText
-      mnumber <- attrMaybe "n" $ allContentOf simpleText
-      title   <- attrMaybe "title" $ allContentOf pInline
-      note    <- attrMaybe "titleNote" $ allContentOf pInline
-      tsep    <- attrMaybe "titleSep" $ allContentOf pInline
-      concl   <- attrMaybe "conclusion" $ allContentOf pInline
-      pure (mty, mnumber, title, note, tsep, concl)
-    body <- pMixedBlockBody
-    pure $ Formal (T.concat <$> mty)
-                  (T.concat <$> mnumber)
-                  (fmap (fmap (fmap absurd)) title)
-                  note
-                  tsep
-                  body
-                  concl
-
--- TODO: no language attributes recognized. This is also a problem
--- with the code inline.
-pCodeBlock :: Scriba Element (Block i)
-pCodeBlock = do
-  matchTy "codeBlock"
-  t <- whileParsingElem "codeBlock" $ allContentOf simpleText
-  pure $ Bcode $ BlockCode $ commonIndentStrip $ T.concat t
-
--- TODO: For lists, and numbered things generally, we should assume a
--- default numbering style, so that references to numbered list items
--- can still be rendered visually in HTML. Alternate styles could
--- still be set, but this would have to be done in-document, and it
--- would be the responsibility of the user (if not using whatever
--- standalone rendering we support) to ensure that the CSS matches
--- what the document assumes. We could still ship with CSS styles for
--- the numbers, and simply put different classes on the rendered
--- lists, of course.
-pList :: Scriba Element (List Block (Inline a))
-pList = pOlist <|> pUlist
-
-pOlist :: Scriba Element (List Block (Inline a))
-pOlist = do
-  matchTy "olist"
-  content $ pOnlySpace
-  fmap Olist $ whileParsingElem "olist" $ allContent $ many
-    (one pListItem <* pOnlySpace)
-
-pUlist :: Scriba Element (List Block (Inline a))
-pUlist = do
-  matchTy "ulist"
-  content $ pOnlySpace
-  fmap Ulist $ whileParsingElem "ulist" $ allContent $ many
-    (one pListItem <* pOnlySpace)
-
-pListItem :: Scriba Node (MixedBody Block (Inline a))
-pListItem = asNode pItem
- where
-  pItem = do
-    matchTy "item"
-    whileParsingElem "item" $ pMixedBlockBody
-
-pParagraph :: Scriba Element (Paragraph (Inline a))
-pParagraph = do
-  etp <- eitherP (matchTy "p") presentedAsParagraph
-  let e = case etp of
-        Left  _ -> "p"
-        Right _ -> "paragraph block"
-  c <- whileParsingElem e $ allContentOf pInline
-  pure $ Paragraph c
- where
-  presentedAsParagraph = do
-    meta $ do
-      Meta _ pres _ _ <- inspect
-      case pres of
-        AsPara -> pure ()
-        _      -> empty
-
-pMixedBlockBody :: Scriba Element (MixedBody Block (Inline a))
-pMixedBlockBody = allContent (MixedBlock <$> manyOf pBlock)
-  <|> allContent (MixedInline <$> manyOf pInline)
+pMixedBody :: Scriba [Node] (MixedBody Block (Inline a))
+pMixedBody = MixedBlock <$> pBlockBody <|> MixedInline <$> pInlineBody
 
 -- ** Inline parsing
 
