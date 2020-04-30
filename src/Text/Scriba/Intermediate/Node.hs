@@ -95,7 +95,6 @@ fromInlineContent (InlineSequence i    ) = fromInlineNodes i
 fromInlineContent (InlineVerbatim src t) = [NodeText src t]
 fromInlineContent InlineNil              = []
 
-
 -- | Convert a source inline element into an intermediate node. This
 -- unconditionally expands anonymous inline verbatim elements into
 -- their text content.
