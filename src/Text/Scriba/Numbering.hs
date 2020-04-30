@@ -7,7 +7,6 @@ module Text.Scriba.Numbering where
 import           Text.Scriba.Counters
 import           Text.Scriba.Markup
 
-import           Control.Applicative            ( (<|>) )
 import           Control.Monad                  ( join )
 import           Control.Monad.State.Strict     ( State
                                                 , MonadState(..)
@@ -80,10 +79,12 @@ newtype Numbering a = Numbering
   { unNumbering :: State NumberState a
   } deriving (Functor, Applicative, Monad, MonadState NumberState)
 
+type Numbers a = a -> Numbering a
+
 runNumbering :: Numbering a -> NumberState -> a
 runNumbering = go . State.runState . unNumbering where go f = fst . f
 
-defaultNumberState :: DocAttrs -> NumberState
+defaultNumberState :: DocAttrs i -> NumberState
 defaultNumberState da = NumberState initCounters
                                     []
                                     (docNumberStyles da)
@@ -161,40 +162,6 @@ restoreDependants = traverse_ $ uncurry setCounter
 setParentPath :: ContainerPath -> Numbering ()
 setParentPath p = modify $ \s -> s { nsParentPath = p }
 
--- TODO: Doesn't number anything in the config. Should it?
-numDoc :: Doc -> Doc
-numDoc (Doc da f m b) = flip runNumbering (defaultNumberState da) $ do
-  f' <- numSectionContent f
-  m' <- numSectionContent m
-  b' <- numSectionContent b
-  pure $ Doc da f' m' b'
-
-numSectionContent :: SectionContent -> Numbering SectionContent
-numSectionContent (SectionContent p c) = do
-  p' <- numBlocks p
-  c' <- numSections c
-  pure $ SectionContent p' c'
-
-numBlocks :: [Block (Inline a)] -> Numbering [Block (Inline a)]
-numBlocks = traverse numBlock
-
-numSections :: [Section] -> Numbering [Section]
-numSections = traverse numSection
-
--- TODO: integrate list numbering into all of this.
-numBlock :: Block (Inline a) -> Numbering (Block (Inline a))
-numBlock (Bformal formal) = Bformal <$> numFormal formal
-numBlock (Blist   l     ) = Blist <$> numList l
-numBlock x                = pure x
-
--- TODO: duplication with numFormal
-numSection :: Section -> Numbering Section
-numSection (Section mty tbody tfull mnum c) = bracketNumbering mty $ \mnumgen -> do
-  tbody'  <- traverse numTitle tbody
-  tfull'  <- traverse numTitle tfull
-  c'      <- numSectionContent c
-  pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'
-
 bracketNumbering :: Maybe Text -> (Maybe Text -> Numbering a) -> Numbering a
 bracketNumbering (Just typ) f = do
   let containername = ContainerName typ
@@ -217,60 +184,3 @@ bracketNumbering (Just typ) f = do
     restoreDependants oldDependants
   pure a
 bracketNumbering Nothing f = f Nothing
-
--- TODO: we don't skip numbering a formal block when it already has a
--- number. Should have config for that sort of thing.
-numFormal :: Formal Block (Inline a) -> Numbering (Formal Block (Inline a))
-numFormal (Formal mty mnum ti note tsep cont concl) = bracketNumbering mty $ \mnumgen -> do
-  ti'     <- traverse (numInlinesWith pure) ti
-  note'   <- traverse numInlines note
-  tsep'   <- traverse numInlines tsep
-  cont'   <- numMixedBlockBody cont
-  concl'  <- traverse numInlines concl
-  pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'
-
-{-
-numFormal (Formal mty mnum ti note tsep cont concl) = do
-  mnumdata <- fmap (join . join) $ for mty $ \typ -> do
-    let containername = ContainerName typ
-    mcountername <- lookupCounter containername
-    for mcountername $ \countername -> do
-      mn <- getIncCounter countername
-      for mn $ \n -> do
-        oldPath       <- gets nsParentPath
-        oldDependants <- getResetDependants countername
-        numbersty     <- gets
-          $ \s -> fromMaybe Decimal $ M.lookup typ (nsNumberStyles s)
-        let localNumber = renderCounter numbersty n
-        num <- renderNumber oldPath countername localNumber
-        setParentPath $ (countername, localNumber) : oldPath
-        pure (num, oldPath, oldDependants)
-
-  mnumgen <- for mnumdata $ \(num, oldPath, oldDependants) -> do
-    setParentPath oldPath
-    restoreDependants oldDependants
-    pure num
--}
-
-numList :: List Block (Inline a) -> Numbering (List Block (Inline a))
-numList (Ulist l) = Ulist <$> traverse numMixedBlockBody l
-numList (Olist l) = Olist <$> traverse numMixedBlockBody l
-
--- TODO: we don't descend into Iother, even though it might be
--- possible to have numbered inline things.
-numTitle :: Title a -> Numbering (Title a)
-numTitle = pure
-
-numInlinesWith :: (a -> Numbering a) -> [Inline a] -> Numbering [Inline a]
-numInlinesWith _ = pure
-
-numInlines :: [Inline a] -> Numbering [Inline a]
-numInlines = numInlinesWith pure
-
-numMixedBlockBody
-  :: MixedBody Block (Inline a) -> Numbering (MixedBody Block (Inline a))
-numMixedBlockBody (MixedInline p) = MixedInline <$> numInlines p
-numMixedBlockBody (MixedBlock  b) = MixedBlock <$> numBlocks b
-
-numInline :: Inline a -> Numbering (Inline a)
-numInline = pure

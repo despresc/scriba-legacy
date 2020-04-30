@@ -50,15 +50,12 @@ import           Text.Scriba.Element
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Functor                   ( ($>)
-                                                , (<&>)
                                                 )
-import qualified Data.List                     as List
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
                                                 )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
-import           Data.Set                       ( Set )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Void                      ( Void
@@ -163,145 +160,6 @@ import           GHC.Generics                   ( Generic )
   course.
 -}
 
--- | A document with front matter, main matter, and end matter.
-data Doc = Doc DocAttrs SectionContent SectionContent SectionContent
-  deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: should I mapKey the docNumberStyle here?
-data DocAttrs = DocAttrs
-  { docTitle :: Title (Inline Void)
-  , docPlainTitle :: Text
-  , docTitlingConfig :: TitlingConfig
-  , docElemCounterRel :: Map ContainerName CounterName
-  , docCounterRel :: Map CounterName (Set CounterName)
-  , docNumberStyles :: Map Text NumberStyle
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-data NumberStyle = Decimal
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data TitlingConfig = TitlingConfig
-  { tcFormalConfig :: Map Text FormalConfig
-  , tcSectionConfig :: Map Text SectionConfig
-  } deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: have this be a common type, and have TitlePart use it? Would
--- need a middle bit that could be () to use in the title config. Or
--- perhaps not.
-data Surround a = Surround
-  { surroundBefore :: [a]
-  , surroundMid :: Maybe [a]
-  , surroundAfter :: [a]
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-emptySurround :: Surround a
-emptySurround = Surround [] Nothing []
-
--- TODO: may want to restrict the inlines that can appear in a
--- title. May also want to have a toc title and header/running title
--- in here too. Also may want a richer title structure, say having
--- titles, separators, subtitles, that sort of thing.
-newtype Title a = Title
-  { titleBody :: [a]
-  } deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: might need more configuration related to component placement.
--- Perhaps also for whitespace?
--- TODO: I think a lot of these inline voids can be polymorphic, right?
-data TitleTemplate a = TitleTemplate
-  { ttemplatePrefix :: Surround a
-  , ttemplateNumber :: Surround a
-  , ttemplateBody :: Surround a
-  , ttemplatePrefixFirst :: Bool
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-data TitleTemplateStyle
-  = FormalTemplate
-  | SectionTemplate
-  deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: better way of giving the components?
--- TODO: I could have both a titleNote and a titleBody. I suppose it
--- would go prefix, number, body, note, by default?
--- TODO: observe that this doesn't add the separator
--- TODO: somewhat inelegant just accepting a maybe template.
--- TODO: put the template style in the template itself?
-runTemplate
-  :: Maybe (TitleTemplate (Inline a))
-  -> TitleTemplateStyle
-  -> Maybe [Inline a]
-  -> Maybe [Inline a]
-  -> Maybe [Inline a]
-  -> Maybe [Inline a]
-runTemplate (Just template) ts tp tn tb =
-  Just
-    $  List.intersperse (Istr $ Str " ")
-    $  mapMaybe mk
-    $  condSwap (TitlePrefix, ttemplatePrefix template, tp)
-                (TitleNumber, ttemplateNumber template, tn)
-    <> [(fromTs, ttemplateBody template, tb)]
- where
-  condSwap x y = case ttemplatePrefixFirst template of
-    True  -> [x, y]
-    False -> [y, x]
-  fromTs = case ts of
-    FormalTemplate  -> TitleNote
-    SectionTemplate -> TitleBody
-  mk (p, Surround b def a, mcomp) =
-    (mcomp <|> def) <&> \comp -> ItitleComponent $ TitleComponent p b comp a
-runTemplate Nothing _ _ _ _ = Nothing
-
--- TODO: richer whitespace options not in the body of the template?
--- E.g. stripping all whitespace, so that the template is a little
--- more understandable.
--- TODO: make the title template optional?
-data FormalConfig = FormalConfig
-  { fconfTitleTemplate :: Maybe (TitleTemplate (Inline Void))
-  , fconfTitleSep :: Maybe [Inline Void]
-  , fconfConcl :: Maybe [Inline Void]
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-newtype SectionConfig = SectionConfig
-  { sconfTitleTemplate :: Maybe (TitleTemplate (Inline Void))
-  } deriving (Eq, Ord, Show, Read, Generic)
-
--- | A section is a large-scale division of a document. For now it has
--- a preamble and a list of subsections.
-
--- TODO: maybe preamble isn't the correct name?
--- TODO: the inside should be "section content", probably, and the Doc
--- should have three SectionContent components, since we're enforcing
--- a particular matter structure.
--- TODO: when we do section templating, we may need templates based on
--- the section level.
--- TODO: no section title separator. Doesn't seem hugely necessary
--- right now.
--- TODO: There's no title body or anything here. If a section is
--- configured to be titled then any existing title becomes the
--- body. It doesn't count as an override. Might want configuration for
--- that.
-
--- TODO: need section titles to have the following behaviour in source:
--- 1. If titleFull is present, use that as the full title.
--- 2. If title is present, put that into titleBody.
--- 3. for title rendering, the precedence for TitleFull should be:
--- title full, generated title, title body
-data Section = Section
-  { secType :: Maybe Text
-  , secTitleBody :: Maybe (Title (Inline Void))
-  , secTitleFull :: Maybe (Title (Inline Void))
-  , secNum :: Maybe Text
-  , secContent :: SectionContent
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-data SectionContent = SectionContent
-  { secPreamble :: [Block (Inline Void)]
-  , secChildren :: [Section]
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-emptySectionContent :: SectionContent
-emptySectionContent = SectionContent [] []
-
 data Block i
   = Bformal !(Formal Block i)
   | Bcode !BlockCode
@@ -405,7 +263,10 @@ data VariedVar
 pFormalConfig
   :: Scriba
        Element
-       (Map Text (FormalConfig, Maybe ContainerRelation, Maybe NumberStyle))
+       ( Map
+           Text
+           (FormalConfig (Inline i), Maybe ContainerRelation, Maybe NumberStyle)
+       )
 pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
  where
   pFormalSpec = do
@@ -458,7 +319,13 @@ pSurround = do
 pSectionConfig
   :: Scriba
        Element
-       (Map Text (SectionConfig, Maybe ContainerRelation, Maybe NumberStyle))
+       ( Map
+           Text
+           ( SectionConfig (Inline i)
+           , Maybe ContainerRelation
+           , Maybe NumberStyle
+           )
+       )
 pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
  where
   pSectionSpec = do
@@ -548,7 +415,7 @@ pInline =
 -- TODO: do the expectations actually work out here?
 -- TODO: a top level title parser?
 -- TODO: reduce duplication with pFormalConfig
-pSection :: Scriba Element Section
+pSection :: Scriba Element (Section Block (Inline i))
 pSection = do
   mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
   whileParsingElem (fromMaybe "section of unknown type" mty) $ do
@@ -582,7 +449,7 @@ pSection = do
 -- want better expectation setting and propagation, certainly. Maybe
 -- also some conveniences like traversing a parser to get a text
 -- description of the node structure that it recognizes.
-pSectionContent :: Scriba [Node] SectionContent
+pSectionContent :: Scriba [Node] (SectionContent Block (Inline i))
 pSectionContent = do
   pre  <- manyOf $ pBlock
   subs <- remaining $ asNode pSection
@@ -603,7 +470,7 @@ pSectionContent = do
 -- TODO: document section config takes precedence over formal block
 -- config re: counters, in particular that there is no namespacing
 -- going on.
-pDoc :: Scriba Element Doc
+pDoc :: Scriba Element (Doc Block (Inline Void))
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
@@ -647,5 +514,5 @@ pDoc = do
 
 -- * Running parsers
 
-parseDoc :: Node -> Either ScribaError Doc
+parseDoc :: Node -> Either ScribaError (Doc Block (Inline Void))
 parseDoc = fmap snd . runScriba (asNode pDoc)

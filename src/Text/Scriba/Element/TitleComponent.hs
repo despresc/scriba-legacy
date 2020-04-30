@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Text.Scriba.Element.TitleParts where
+module Text.Scriba.Element.TitleComponent where
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )

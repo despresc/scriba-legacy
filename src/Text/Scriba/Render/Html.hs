@@ -41,7 +41,7 @@ import qualified Text.Blaze.Html5.Attributes   as A
 
 -}
 
-writeStandalone :: Doc -> Html
+writeStandalone :: Doc Block (Inline Void) -> Html
 writeStandalone d = fst $ runRender (renderStandalone d) initialRenderState
 
 -- Section titles run from h1 to h6, then top out there.
@@ -90,7 +90,7 @@ bumpHeaderDepth act = do
 -- TODO: add configurability, especially re: the math.
 -- TODO: have a header include option for documents. Hard-coding a
 -- style path for the manual is obviously poor.
-renderStandalone :: Doc -> Render Html
+renderStandalone :: Doc Block (Inline Void) -> Render Html
 renderStandalone d@(Doc dm _ _ _) = do
   d' <- renderDoc d
   let tplain = docPlainTitle dm
@@ -107,7 +107,7 @@ renderStandalone d@(Doc dm _ _ _) = do
 
 -- TODO: selectively render empty sections?
 -- TODO: Should the title be a Maybe?
-renderDoc :: Doc -> Render Html
+renderDoc :: Doc Block (Inline Void) -> Render Html
 renderDoc (Doc t f m b) = do
   t' <- renderTitle $ docTitle t
   bumpHeaderDepth $ do
@@ -121,7 +121,7 @@ renderDoc (Doc t f m b) = do
       H.section ! A.class_ "backMatter" $ b'
 
 -- TODO: Distinguish the preamble from the subsections?
-renderSectionContent :: SectionContent -> Render Html
+renderSectionContent :: SectionContent Block (Inline Void) -> Render Html
 renderSectionContent (SectionContent bs cs) = do
   bs' <- renderBlocks bs
   cs' <- renderSections cs
@@ -132,14 +132,14 @@ renderSectionContent (SectionContent bs cs) = do
 -- TODO: for untitled sections, perhaps conditionally add an anonymous
 -- break? They would be necessary when we first render a sibling
 -- untitled section. Some kind of state variable, I think.
-renderSection :: Section -> Render Html
+renderSection :: Section Block (Inline Void) -> Render Html
 renderSection (Section _ _ t _ c) = do
   t' <- traverse renderTitle t
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
     pure $ H.section $ fromMaybe mempty t' <> c'
 
-renderSections :: [Section] -> Render Html
+renderSections :: [Section Block (Inline Void)] -> Render Html
 renderSections = foldBy renderSection
 
 renderBlock :: Block (Inline Void) -> Render Html

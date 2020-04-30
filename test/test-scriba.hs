@@ -15,6 +15,7 @@ import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
 import qualified Data.Text.Lazy                as TL
 import qualified Data.Text.Lazy.Encoding       as TLE
+import           Data.Void                      ( Void )
 import           System.FilePath                ( takeFileName )
 import           Test.Tasty
 import           Test.Tasty.Golden
@@ -27,7 +28,7 @@ parseOrExplode name t = case SP.parseDoc' name t of
   Right a -> a
 
 -- with decoration
-markupOrExplode :: SI.Node -> SM.Doc
+markupOrExplode :: SI.Node -> SM.Doc SM.Block (SM.Inline Void)
 markupOrExplode n = case SM.parseDoc n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
   Right a -> SD.decorate a
@@ -67,7 +68,11 @@ testMarkup name src gold = goldenWith go name src gold
 
 -- TODO: duplication
 testRenderingWith
-  :: (SM.Doc -> TL.Text) -> String -> FilePath -> FilePath -> TestTree
+  :: (SM.Doc SM.Block (SM.Inline Void) -> TL.Text)
+  -> String
+  -> FilePath
+  -> FilePath
+  -> TestTree
 testRenderingWith f name src gold = goldenWith go name src gold
  where
   go t = TLE.encodeUtf8 $ f $ markupOrExplode $ SI.fromDoc $ parseOrExplode

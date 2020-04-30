@@ -43,8 +43,10 @@ library
     Text.Scriba.Element.Paragraph
     Text.Scriba.Element.MixedBody
     Text.Scriba.Element.List
-    Text.Scriba.Element.TitleParts
+    Text.Scriba.Element.TitleComponent
     Text.Scriba.Element.Formal
+    Text.Scriba.Element.Doc
+    Text.Scriba.Element.Section
     Text.Scriba.Intermediate
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse

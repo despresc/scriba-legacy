@@ -10,8 +10,10 @@ module Text.Scriba.Element
   , module Text.Scriba.Element.Paragraph
   , module Text.Scriba.Element.List
   , module Text.Scriba.Element.MixedBody
-  , module Text.Scriba.Element.TitleParts
+  , module Text.Scriba.Element.TitleComponent
   , module Text.Scriba.Element.Formal
+  , module Text.Scriba.Element.Doc
+  , module Text.Scriba.Element.Section
   )
 where
 
@@ -26,5 +28,7 @@ import           Text.Scriba.Element.BlockCode
 import           Text.Scriba.Element.Paragraph
 import           Text.Scriba.Element.List
 import           Text.Scriba.Element.MixedBody
-import           Text.Scriba.Element.TitleParts
+import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Element.Formal
+import           Text.Scriba.Element.Doc
+import           Text.Scriba.Element.Section
