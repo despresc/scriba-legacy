@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -5,7 +6,9 @@
 module Text.Scriba.Numbering where
 
 import           Text.Scriba.Counters
-import           Text.Scriba.Markup
+import           Text.Scriba.Intermediate       ( unzips )
+
+-- TODO: a common module for unzips and such?
 
 import           Control.Monad                  ( join )
 import           Control.Monad.State.Strict     ( State
@@ -17,7 +20,6 @@ import qualified Control.Monad.State.Strict    as State
 import           Data.Foldable                  ( traverse_
                                                 , for_
                                                 )
-import           Data.Functor                   ( ($>) )
 import           Data.Map.Strict                ( Map )
 import           Data.Maybe                     ( fromMaybe
                                                 , mapMaybe
@@ -29,6 +31,7 @@ import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
+import           GHC.Generics                   ( Generic )
 
 -- * Numbering elements
 
@@ -75,6 +78,10 @@ data NumberState = NumberState
   , nsElemCounterRel :: Map ContainerName CounterName
   } deriving (Eq, Ord, Show)
 
+-- TODO: move this elsewhere?
+data NumberStyle = Decimal
+  deriving (Eq, Ord, Show, Read, Generic)
+
 newtype Numbering a = Numbering
   { unNumbering :: State NumberState a
   } deriving (Functor, Applicative, Monad, MonadState NumberState)
@@ -83,14 +90,6 @@ type Numbers a = a -> Numbering a
 
 runNumbering :: Numbering a -> NumberState -> a
 runNumbering = go . State.runState . unNumbering where go f = fst . f
-
-defaultNumberState :: DocAttrs i -> NumberState
-defaultNumberState da = NumberState initCounters
-                                    []
-                                    (docNumberStyles da)
-                                    (docCounterRel da)
-                                    (docElemCounterRel da)
-  where initCounters = docCounterRel da $> 1
 
 renderCounter :: NumberStyle -> Int -> LocalNumber
 renderCounter Decimal n = T.pack $ show n

@@ -47,10 +47,10 @@ where
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Element
+import           Text.Scriba.Numbering          ( NumberStyle(..) )
 
 import           Control.Monad.Except           ( MonadError(..) )
-import           Data.Functor                   ( ($>)
-                                                )
+import           Data.Functor                   ( ($>) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
                                                 )

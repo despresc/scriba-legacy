@@ -4,6 +4,9 @@
 
 module Text.Scriba.Element.Section where
 
+import Text.Scriba.Numbering
+
+import Control.Applicative ((<|>))
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
 
@@ -52,3 +55,25 @@ newtype Title a = Title
 
 emptySectionContent :: SectionContent b i
 emptySectionContent = SectionContent [] []
+
+-- * Numbering
+
+numTitle :: Numbers [i] -> Numbers (Title i)
+numTitle f (Title i) = Title <$> f i
+
+numSectionContent
+  :: Numbers [b i]
+  -> Numbers [i]
+  -> Numbers (SectionContent b i)
+numSectionContent numBlocks numInls (SectionContent p c) = do
+  p' <- numBlocks p
+  c' <- traverse (numSection numBlocks numInls) c
+  pure $ SectionContent p' c'
+
+numSection :: Numbers [b i] -> Numbers [i] -> Numbers (Section b i)
+numSection numBlocks numInls (Section mty tbody tfull mnum c) =
+  bracketNumbering mty $ \mnumgen -> do
+    tbody' <- traverse (numTitle numInls) tbody
+    tfull' <- traverse (numTitle numInls) tfull
+    c'     <- numSectionContent numBlocks numInls c
+    pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'

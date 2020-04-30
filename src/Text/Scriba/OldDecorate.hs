@@ -8,9 +8,11 @@ module Text.Scriba.OldDecorate where
 
 import           Text.Scriba.Markup
 import           Text.Scriba.Numbering
+import           Text.Scriba.Element
 
 import           Control.Applicative            ( (<|>) )
 import           Control.Monad                  ( join )
+import           Data.Functor                   ( ($>) )
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import           Data.Void
@@ -19,7 +21,7 @@ import           Data.Void
 -- titling. Or perhaps pipelined for modularity, with a shared error
 -- type?
 decorate :: Doc Block (Inline Void) -> Doc Block (Inline Void)
-decorate = genDocTitle . numDoc
+decorate = genDocTitle . runNumDoc
 
 data DecorateError
   = DecorateError Text
@@ -39,54 +41,32 @@ instance Monoid DecorateError where
 
 -- * Numbering
 
--- TODO: Doesn't number anything in the config. Should it?
-numDoc :: Doc Block (Inline i) -> Doc Block (Inline i)
-numDoc (Doc da f m b) = flip runNumbering (defaultNumberState da) $ do
-  f' <- numSectionContent f
-  m' <- numSectionContent m
-  b' <- numSectionContent b
-  pure $ Doc da f' m' b'
+defaultNumberState :: DocAttrs i -> NumberState
+defaultNumberState da = NumberState initCounters
+                                    []
+                                    (docNumberStyles da)
+                                    (docCounterRel da)
+                                    (docElemCounterRel da)
+  where initCounters = docCounterRel da $> 1
 
-numSectionContent :: SectionContent Block (Inline i) -> Numbering (SectionContent Block (Inline i))
-numSectionContent (SectionContent p c) = do
-  p' <- numBlocks p
-  c' <- numSections c
-  pure $ SectionContent p' c'
+runNumDoc :: Doc Block (Inline a) -> Doc Block (Inline a)
+runNumDoc d@(Doc da _ _ _) =
+  flip runNumbering (defaultNumberState da) $ numDoc numBlocks numInlines d
 
 numBlocks :: [Block (Inline a)] -> Numbering [Block (Inline a)]
 numBlocks = traverse numBlock
 
-numSections :: [Section Block (Inline i)] -> Numbering [Section Block (Inline i)]
-numSections = traverse numSection
+numSections
+  :: [Section Block (Inline i)] -> Numbering [Section Block (Inline i)]
+numSections = traverse (numSection numBlocks numInlines)
 
 -- TODO: integrate list numbering into all of this.
 numBlock :: Block (Inline a) -> Numbering (Block (Inline a))
-numBlock (Bformal formal) = Bformal <$> numFormal formal
-numBlock (Blist   l     ) = Blist <$> numList l
-numBlock x                = pure x
+numBlock (Bformal formal) =
+  Bformal <$> numFormal (numMixedBody numBlocks numInlines) numInlines formal
+numBlock (Blist l) = Blist <$> numList (numMixedBody numBlocks numInlines) l
+numBlock x         = pure x
 
--- TODO: duplication with numFormal
-numSection :: Section Block (Inline i) -> Numbering (Section Block (Inline i))
-numSection (Section mty tbody tfull mnum c) = bracketNumbering mty $ \mnumgen -> do
-  tbody'  <- traverse numTitle tbody
-  tfull'  <- traverse numTitle tfull
-  c'      <- numSectionContent c
-  pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'
-
--- TODO: we don't skip numbering a formal block when it already has a
--- number. Should have config for that sort of thing.
-numFormal :: Formal Block (Inline a) -> Numbering (Formal Block (Inline a))
-numFormal (Formal mty mnum ti note tsep cont concl) = bracketNumbering mty $ \mnumgen -> do
-  ti'     <- traverse (numInlinesWith pure) ti
-  note'   <- traverse numInlines note
-  tsep'   <- traverse numInlines tsep
-  cont'   <- numMixedBlockBody cont
-  concl'  <- traverse numInlines concl
-  pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'
-
-numList :: List Block (Inline a) -> Numbering (List Block (Inline a))
-numList (Ulist l) = Ulist <$> traverse numMixedBlockBody l
-numList (Olist l) = Olist <$> traverse numMixedBlockBody l
 
 -- TODO: we don't descend into Iother, even though it might be
 -- possible to have numbered inline things.
@@ -99,14 +79,8 @@ numInlinesWith _ = pure
 numInlines :: [Inline a] -> Numbering [Inline a]
 numInlines = numInlinesWith pure
 
-numMixedBlockBody
-  :: MixedBody Block (Inline a) -> Numbering (MixedBody Block (Inline a))
-numMixedBlockBody (MixedInline p) = MixedInline <$> numInlines p
-numMixedBlockBody (MixedBlock  b) = MixedBlock <$> numBlocks b
-
 numInline :: Inline a -> Numbering (Inline a)
 numInline = pure
-
 
 -- * Generating titles
 
@@ -119,13 +93,17 @@ genDocTitle (Doc met f m b) = Doc met (go f) (go m) (go b)
 -- TODO: Make a Reader for this stuff
 
 -- TODO: really shows that a Walkable class is necessary.
-genSecContentTitle :: TitlingConfig (Inline Void) -> SectionContent Block (Inline Void) -> SectionContent Block (Inline Void)
+genSecContentTitle
+  :: TitlingConfig (Inline Void)
+  -> SectionContent Block (Inline Void)
+  -> SectionContent Block (Inline Void)
 genSecContentTitle m (SectionContent p c) =
   SectionContent (genBlockTitle m <$> p) (genSectionTitle m <$> c)
 
 -- TODO: we don't walk any inlines because there is nothing to
 -- generate for them. That might change!
-genBlockTitle :: TitlingConfig (Inline Void) -> Block (Inline Void) -> Block (Inline Void)
+genBlockTitle
+  :: TitlingConfig (Inline Void) -> Block (Inline Void) -> Block (Inline Void)
 genBlockTitle m (Bformal formal) = Bformal $ genFormalTitle m formal
 genBlockTitle m (Blist   l     ) = Blist $ genListTitle m l
 genBlockTitle _ x                = x
@@ -133,7 +111,9 @@ genBlockTitle _ x                = x
 -- TODO: this also generates the conclusion of formal blocks. Sort of
 -- misleading that it happens here, perhaps...
 genFormalTitle
-  :: TitlingConfig (Inline Void) -> Formal Block (Inline Void) -> Formal Block (Inline Void)
+  :: TitlingConfig (Inline Void)
+  -> Formal Block (Inline Void)
+  -> Formal Block (Inline Void)
 genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
   mty
   mnum
@@ -152,12 +132,20 @@ genFormalTitle m (Formal mty mnum mti mnote mtisep cont conc) = Formal
         toInlStr = (: []) . Istr . Str
     pure
       ( tisep
-      , runTemplate template ItitleComponent (Istr $ Str " ") FormalTemplate Nothing (toInlStr <$> mnum) mnote
+      , runTemplate template
+                    ItitleComponent
+                    (Istr $ Str " ")
+                    FormalTemplate
+                    Nothing
+                    (toInlStr <$> mnum)
+                    mnote
       , concl
       )
 
 genListTitle
-  :: TitlingConfig (Inline Void) -> List Block (Inline Void) -> List Block (Inline Void)
+  :: TitlingConfig (Inline Void)
+  -> List Block (Inline Void)
+  -> List Block (Inline Void)
 genListTitle m l = case l of
   Ulist l' -> Ulist $ go l'
   Olist l' -> Olist $ go l'
@@ -171,7 +159,10 @@ genMixedBlockBodyTitle m (MixedBlock b) = MixedBlock $ map (genBlockTitle m) b
 genMixedBlockBodyTitle _ x              = x
 
 -- TODO: reduce duplication with genFormalTitle
-genSectionTitle :: TitlingConfig (Inline Void) -> Section Block (Inline Void) -> Section Block (Inline Void)
+genSectionTitle
+  :: TitlingConfig (Inline Void)
+  -> Section Block (Inline Void)
+  -> Section Block (Inline Void)
 genSectionTitle m (Section mty mtbody mtfull mnum c) =
   let c' = genSecContentTitle m c
   in  Section mty mtbody (mtfull <|> mtigen <|> mtbody) mnum c'

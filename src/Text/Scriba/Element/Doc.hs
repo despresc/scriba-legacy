@@ -8,6 +8,7 @@ import           Text.Scriba.Counters
 import           Text.Scriba.Element.Section
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
+import           Text.Scriba.Numbering
 
 import           Data.Functor                   ( (<&>) )
 import qualified Data.List                     as List
@@ -19,7 +20,8 @@ import           GHC.Generics                   ( Generic )
 
 {- TODO:
 
-- split this further
+- split this further. The titling config and numbering config should
+  be bundled and put in a separate module.
 
 - improve runTemplate
 
@@ -44,9 +46,6 @@ data TitlingConfig i = TitlingConfig
   { tcFormalConfig :: Map Text (FormalConfig i)
   , tcSectionConfig :: Map Text (SectionConfig i)
   } deriving (Eq, Ord, Show, Read, Generic)
-
-data NumberStyle = Decimal
-  deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: richer whitespace options not in the body of the template?
 -- E.g. stripping all whitespace, so that the template is a little
@@ -121,3 +120,13 @@ runTemplate (Just template) embed sep ts tp tn tb =
   mk (p, Surround b def a, mcomp) =
     (mcomp <|> def) <&> \comp -> embed $ TitleComponent p b comp a
 runTemplate Nothing _ _ _ _ _ _ = Nothing
+
+-- * Numbering
+
+-- TODO: Doesn't number anything in the config. Should it?
+numDoc :: Numbers [b i] -> Numbers [i] -> Numbers (Doc b i)
+numDoc numBlocks numInls (Doc da f m b) = do
+  f' <- numSectionContent numBlocks numInls f
+  m' <- numSectionContent numBlocks numInls m
+  b' <- numSectionContent numBlocks numInls b
+  pure $ Doc da f' m' b'

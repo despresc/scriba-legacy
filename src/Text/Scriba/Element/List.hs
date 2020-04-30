@@ -6,6 +6,8 @@ module Text.Scriba.Element.List where
 
 import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Intermediate
+import Text.Scriba.Numbering
+
 
 import           GHC.Generics                   ( Generic )
 
@@ -46,3 +48,9 @@ pListItem p = asNode pItem
   pItem = do
     matchTy "item"
     whileParsingElem "item" $ content p
+
+-- * Numbering
+
+numList :: Numbers (MixedBody b i) -> Numbers (List b i)
+numList n (Ulist l) = Ulist <$> traverse n l
+numList n (Olist l) = Olist <$> traverse n l
