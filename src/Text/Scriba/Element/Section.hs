@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -10,8 +11,9 @@
 module Text.Scriba.Element.Section where
 
 import           Text.Scriba.Element.TitleComponent
-import           Text.Scriba.Numbering
-import           Text.Scriba.Titling
+import           Text.Scriba.Decorate.Common    ( Identifier )
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Titling
 
 import           Control.Applicative            ( (<|>) )
 import           Control.Monad                  ( join )
@@ -45,16 +47,17 @@ import           GHC.Generics                   ( Generic )
 -- title full, generated title, title body
 data Section b i = Section
   { secType :: Maybe Text
+  , secId :: Maybe Identifier
   , secTitleBody :: Maybe (Title i)
   , secTitleFull :: Maybe (Title i)
   , secNum :: Maybe Text
   , secContent :: SectionContent b i
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
 data SectionContent b i = SectionContent
   { secPreamble :: [b i]
   , secChildren :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Generic, Numbering)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
 
 deriving instance ( FromTitleComponent i
                   , Titling i (b i)
@@ -68,7 +71,7 @@ deriving instance ( FromTitleComponent i
 -- TODO: Might want this to be in its own module, and create a Heading type as well.
 newtype Title i = Title
   { titleBody :: [i]
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
     deriving anyclass (Numbering, Titling a)
 
 emptySectionContent :: SectionContent b i
@@ -80,15 +83,15 @@ numTitle :: Numbers' [i] -> Numbers' (Title i)
 numTitle f (Title i) = Title <$> f i
 
 instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
-  numbering (Section mty tbody tfull mnum c) =
-    bracketNumbering mty $ \mnumgen -> do
+  numbering (Section mty mId tbody tfull mnum c) =
+    bracketNumbering mty mId $ \mnumgen -> do
       tbody' <- numbering tbody
       tfull' <- numbering tfull
       c'     <- numbering c
-      pure $ Section mty tbody' tfull' (mnum <|> mnumgen) c'
+      pure $ Section mty mId tbody' tfull' (mnum <|> mnumgen) c'
 
 instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Section b i) where
-  titling (Section mty mtbody mtfull mnum c) = do
+  titling (Section mty mId mtbody mtfull mnum c) = do
     mtbody' <- titling mtbody
     mtfull' <- titling mtfull
     c'      <- titling c
@@ -101,6 +104,7 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
         ((: []) . fromTitleNumber <$> mnum)
         (titleBody <$> mtbody)
     pure $ Section mty
+                   mId
                    mtbody'
                    (mtfull' <|> join (join mtigen) <|> mtbody')
                    mnum

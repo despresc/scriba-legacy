@@ -214,6 +214,7 @@ Doc
     , secChildren =
         [ Section
             { secType = Just "section"
+            , secId = Nothing
             , secTitleBody =
                 Just
                   Title
@@ -250,6 +251,7 @@ Doc
                   , secChildren =
                       [ Section
                           { secType = Just "subsection"
+                          , secId = Nothing
                           , secTitleBody =
                               Just Title { titleBody = [ Istr Str { getStr = "Paragraphs" } ] }
                           , secTitleFull =
@@ -379,6 +381,7 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
+                          , secId = Nothing
                           , secTitleBody =
                               Just Title { titleBody = [ Istr Str { getStr = "Sections" } ] }
                           , secTitleFull =
@@ -493,6 +496,7 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
+                          , secId = Nothing
                           , secTitleBody =
                               Just Title { titleBody = [ Istr Str { getStr = "Blocks" } ] }
                           , secTitleFull =
@@ -607,6 +611,7 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
+                          , secId = Nothing
                           , secTitleBody =
                               Just Title { titleBody = [ Istr Str { getStr = "Mathematics" } ] }
                           , secTitleFull =
@@ -735,6 +740,7 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
+                          , secId = Nothing
                           , secTitleBody =
                               Just
                                 Title
@@ -785,6 +791,7 @@ Doc
             }
         , Section
             { secType = Just "section"
+            , secId = Nothing
             , secTitleBody =
                 Just
                   Title { titleBody = [ Istr Str { getStr = "Element reference" } ] }
@@ -815,6 +822,7 @@ Doc
                   , secChildren =
                       [ Section
                           { secType = Just "subsection"
+                          , secId = Nothing
                           , secTitleBody =
                               Just Title { titleBody = [ Istr Str { getStr = "formalBlock" } ] }
                           , secTitleFull =
@@ -870,6 +878,7 @@ Doc
                                     , Bformal
                                         Formal
                                           { fType = Just "lemma"
+                                          , fLabel = Nothing
                                           , fNum = Just "2.1"
                                           , fTitle =
                                               Just
@@ -897,6 +906,7 @@ Doc
                                     , Bformal
                                         Formal
                                           { fType = Just "theorem"
+                                          , fLabel = Nothing
                                           , fNum = Just "2.2"
                                           , fTitle =
                                               Just
@@ -938,6 +948,7 @@ Doc
                                     , Bformal
                                         Formal
                                           { fType = Just "proof"
+                                          , fLabel = Nothing
                                           , fNum = Nothing
                                           , fTitle =
                                               Just
@@ -975,6 +986,7 @@ Doc
                           }
                       , Section
                           { secType = Just "subsection"
+                          , secId = Just Identifier { getIdentifier = "elem-olist" }
                           , secTitleBody =
                               Just Title { titleBody = [ Istr Str { getStr = "olist" } ] }
                           , secTitleFull =
@@ -1020,6 +1032,59 @@ Doc
                                            , MixedInline [ Istr Str { getStr = "Second element" } ]
                                            , MixedInline [ Istr Str { getStr = "Third element" } ]
                                            ])
+                                    ]
+                                , secChildren = []
+                                }
+                          }
+                      , Section
+                          { secType = Just "subsection"
+                          , secId = Just Identifier { getIdentifier = "elem-ref" }
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "ref" } ] }
+                          , secTitleFull =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "2.3" } ]
+                                             [ Istr Str { getStr = "." } ])
+                                      , Istr Str { getStr = " " }
+                                      , ItitleComponent
+                                          (TitleComponent
+                                             TitleBody [] [ Istr Str { getStr = "ref" } ] [])
+                                      ]
+                                  }
+                          , secNum = Just "2.3"
+                          , secContent =
+                              SectionContent
+                                { secPreamble =
+                                    [ Bpar
+                                        Paragraph
+                                          { getParagraph =
+                                              [ Istr Str { getStr = "The " }
+                                              , Icode InlineCode { getInlineCode = "ref" }
+                                              , Istr
+                                                  Str
+                                                    { getStr =
+                                                        " inline element represents a reference to another\nelement. It takes a single argument, the identifier of another element\nin the document. In future, it may be able to reference elements\nacross documents, and to take multiple identifier arguments."
+                                                    }
+                                              ]
+                                          }
+                                    , Bpar
+                                        Paragraph
+                                          { getParagraph =
+                                              [ Istr
+                                                  Str { getStr = "For example, we can reference " }
+                                              , Istr Str { getStr = "" }
+                                              , Istr Str { getStr = ", this section, using\n" }
+                                              , Icode
+                                                  InlineCode { getInlineCode = "{ref@elem-ref}" }
+                                              , Istr Str { getStr = "." }
+                                              ]
+                                          }
                                     ]
                                 , secChildren = []
                                 }

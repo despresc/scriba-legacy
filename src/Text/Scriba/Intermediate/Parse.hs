@@ -83,6 +83,11 @@ liftScriba :: (s -> Either ScribaError (s, a)) -> Scriba s a
 liftScriba f = Scriba $ S.StateT $ E.liftEither . fmap flop . f
   where flop (x, y) = (y, x)
 
+useState :: s -> Scriba s a -> Scriba s' a
+useState s act = liftScriba $ \s' -> do
+  (_, a) <- runScriba act s
+  pure (s', a)
+
 newtype Expectations = Expectations
   { getExpectations :: Set Expectation
   } deriving (Eq, Ord, Show, Read, Semigroup, Monoid)
@@ -288,6 +293,15 @@ asNode act = liftScriba $ \n -> case n of
     pure (NodeElem e', a)
   NodeText sp _ -> expectsGotAt ["element"] sp "text node"
 
+-- TODO: not great.
+-- TODO: maybe a popParg :: Scriba [Node] a -> Scriba [Node] a?
+-- This could replace the node, if at least one were returned to
+-- us. But perhaps not the most intuitive.
+asArg :: Scriba [Node] a -> Scriba Node a
+asArg act = liftScriba $ \n -> do
+  (_, a) <- runScriba act [n]
+  pure (n, a)
+
 matchTy :: Text -> Scriba Element ()
 matchTy t = do
   Element mty (Meta sp _ _ _) _ <- inspect
@@ -371,8 +385,7 @@ prettyScribaError :: ScribaError -> Text
 prettyScribaError (WhileParsing msp t e) =
   prettyScribaError e <> "\n" <> errline
  where
-  errAt =
-    " at " <> maybe "<unknown position>" (T.pack . sourcePosPretty) msp
+  errAt   = " at " <> maybe "<unknown position>" (T.pack . sourcePosPretty) msp
   errline = "while parsing " <> t <> errAt
 prettyScribaError (Expecting e mspt) = ex <> got
  where

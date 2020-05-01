@@ -45,6 +45,7 @@ module Text.Scriba.Markup
   , Varied(..)
   , VariedVar(..)
   , BlockCode(..)
+  , Ref(..)
   , decorate
   )
 where
@@ -52,12 +53,12 @@ where
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Element
-import           Text.Scriba.Numbering          ( NumberStyle(..)
+import           Text.Scriba.Decorate.Numbering ( NumberStyle(..)
                                                 , Numbering(..)
                                                 , NumberState(..)
                                                 , runNumberM
                                                 )
-import           Text.Scriba.Titling            ( FormalConfig(..)
+import           Text.Scriba.Decorate.Titling   ( FormalConfig(..)
                                                 , TitleTemplate(..)
                                                 , Surround(..)
                                                 , SectionConfig(..)
@@ -76,17 +77,12 @@ import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
-import           Data.Void                      ( Void
-                                                , absurd
-                                                )
+import           Data.Void                      ( Void )
 import           GHC.Generics                   ( Generic )
 
 {- TODO:
 
 - Better errors everywhere (use source positions, for one thing)
-
-- Add blocks (figure out what to do about them and paragraphs?), more
-  inlines, sections.
 
 - Clarify whitespace policy. Right now none of the parsers allow
   whitespace around elements when recognizing them. This is fine when
@@ -97,12 +93,6 @@ import           GHC.Generics                   ( Generic )
 - Page mark (physPage) might need to be some kind of locator term, or
   at least some kind of parsed value (to support, e.g., linking to
   page images).
-
-- for formal blocks: these have some kind of preamble thing, body
-  thing, ending thing, and type. Would encompass amsthm-style
-  environments, among other things. later could have templating,
-  numbering, etc. Need to decide what is allowed in each position, of
-  course.
 
 - related: formal blocks might be used for "discussion", "note", or
   "proof". These discussion-type blocks are often discussions of
@@ -126,9 +116,6 @@ import           GHC.Generics                   ( Generic )
   - composite documents. Sort of the above: combine multiple articles
     into a single custom journal issue, take a document and annotate
     it with your commentary, that sort of thing.
-
-- should some of these types become parametric? to resuse blocks
-  elsewhere with different content restrictions.
 
 - fallbacks and conditional rendering for the various output formats?
   Say for internal links in non-hypertext formats. Though there we
@@ -176,6 +163,16 @@ import           GHC.Generics                   ( Generic )
   document assumes. We could still ship with CSS styles for the
   numbers, and simply put different classes on the rendered lists, of
   course.
+
+- label/ref. Things that can be numbered should have reference
+  prefixes, with upper/lower case and plural forms (for multiple
+  collected references).
+
+Unified element type configuration? Elements can have have
+
+- identifiers
+- numbers
+
 -}
 
 data Block i
@@ -183,7 +180,7 @@ data Block i
   | Bcode !BlockCode
   | Bpar !(Paragraph i)
   | Blist !(List Block i)
-  deriving (Eq, Ord, Show, Read, Generic, Numbering)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
 
 deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
 
@@ -203,9 +200,14 @@ data Inline a
   | IdisplayMath !DisplayMath
   | Icode !InlineCode
   | IpageMark !PageMark
+  | Iref !(Ref (Inline a))
   | ItitleComponent !(TitleComponent (Inline a))
-  | Iother !a
+  | Icontrol !a
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
+
+data InlineControl
+  = IcRef !SourceRef
+  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling i)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -225,8 +227,9 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (IdisplayMath    d ) = displayMathToText d
   inlineToText (Icode           t ) = inlineCodeToText t
   inlineToText (IpageMark       t ) = pageMarkToText t
+  inlineToText (Iref            t ) = refToText inlineToText t
   inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
-  inlineToText (Iother          a ) = f a
+  inlineToText (Icontrol        a ) = f a
 
 -- * Element parsers
 
@@ -290,7 +293,10 @@ pFormalConfig
        Element
        ( Map
            Text
-           (FormalConfig (Inline i), Maybe ContainerRelation, Maybe NumberStyle)
+           ( FormalConfig (Inline InlineControl)
+           , Maybe ContainerRelation
+           , Maybe NumberStyle
+           )
        )
 pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
  where
@@ -311,7 +317,8 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
 -- components, if, say, you wanted something numbered but not have it
 -- actually appear in the title.
 -- TODO: title separator customization?
-pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
+pTitleTemplate
+  :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline InlineControl))
 pTitleTemplate t = do
   pref        <- attrDef "prefix" emptySurround $ pSurround
   tnote       <- attrDef tname emptySurround $ pSurround
@@ -330,7 +337,7 @@ pTitleTemplate t = do
 
 -- TODO: can't distinguish between present-but-empty content, and
 -- absent content. Seems okay right now.
-pSurround :: Scriba Element (Surround (Inline a))
+pSurround :: Scriba Element (Surround (Inline InlineControl))
 pSurround = do
   (b, a) <- meta $ attrs $ do
     b <- mattr "before" $ allContentOf pInline
@@ -348,7 +355,7 @@ pSectionConfig
        Element
        ( Map
            Text
-           ( SectionConfig (Inline i)
+           ( SectionConfig (Inline InlineControl)
            , Maybe ContainerRelation
            , Maybe NumberStyle
            )
@@ -390,7 +397,7 @@ pCounterDepends = meta $ attrs $ do
 
 -- ** Block Parsing
 
-pBlock :: Scriba Node (Block (Inline a))
+pBlock :: Scriba Node (Block (Inline InlineControl))
 pBlock =
   asNode
     $   Bformal
@@ -402,19 +409,19 @@ pBlock =
     <|> Blist
     <$> pList pMixedBody
 
-pBlockBody :: Scriba [Node] [Block (Inline a)]
+pBlockBody :: Scriba [Node] [Block (Inline InlineControl)]
 pBlockBody = remaining pBlock
 
-pInlineBody :: Scriba [Node] [Inline a]
+pInlineBody :: Scriba [Node] [Inline InlineControl]
 pInlineBody = remaining pInline
 
-pMixedBody :: Scriba [Node] (MixedBody Block (Inline a))
+pMixedBody :: Scriba [Node] (MixedBody Block (Inline InlineControl))
 pMixedBody = MixedBlock <$> pBlockBody <|> MixedInline <$> pInlineBody
 
 -- ** Inline parsing
 
 -- pInline is synonymous with pParInline
-pInline :: Scriba Node (Inline a)
+pInline :: Scriba Node (Inline InlineControl)
 pInline =
   asNode
       (   Iemph
@@ -431,6 +438,8 @@ pInline =
       <$> pGathered
       <|> Icode
       <$> pCode
+      <|> Icontrol
+      <$> pControl
       )
     <|> Istr
     <$> pText
@@ -442,19 +451,21 @@ pInline =
 -- TODO: do the expectations actually work out here?
 -- TODO: a top level title parser?
 -- TODO: reduce duplication with pFormalConfig
-pSection :: Scriba Element (Section Block (Inline i))
+pSection :: Scriba Element (Section Block (Inline InlineControl))
 pSection = do
   mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
   whileParsingElem (fromMaybe "section of unknown type" mty) $ do
-    (mtitle, mfullTitle, mnumber) <- meta $ attrs $ do
+    (mId, mtitle, mfullTitle, mnumber) <- meta $ attrs $ do
+      mId        <- attrMaybe "id" $ content pIdent
       mtitle     <- attrMaybe "title" $ allContentOf pInline
       mfullTitle <- attrMaybe "fullTitle" $ allContentOf pInline
       mnumber    <- attrMaybe "n" $ allContentOf simpleText
-      pure (mtitle, mfullTitle, mnumber)
+      pure (mId, mtitle, mfullTitle, mnumber)
     c <- content $ pSectionContent
     pure $ Section mty
+                   mId
                    (Title <$> mtitle)
-                   (Title . fmap (fmap absurd) <$> mfullTitle)
+                   (Title <$> mfullTitle)
                    (T.concat <$> mnumber)
                    c
  where
@@ -476,11 +487,14 @@ pSection = do
 -- want better expectation setting and propagation, certainly. Maybe
 -- also some conveniences like traversing a parser to get a text
 -- description of the node structure that it recognizes.
-pSectionContent :: Scriba [Node] (SectionContent Block (Inline i))
+pSectionContent :: Scriba [Node] (SectionContent Block (Inline InlineControl))
 pSectionContent = do
   pre  <- manyOf $ pBlock
   subs <- remaining $ asNode pSection
   pure $ SectionContent pre subs
+
+pControl :: Scriba Element InlineControl
+pControl = IcRef <$> pSourceRef
 
 -- ** Document parsing
 
@@ -497,7 +511,7 @@ pSectionContent = do
 -- TODO: document section config takes precedence over formal block
 -- config re: counters, in particular that there is no namespacing
 -- going on.
-pDoc :: Scriba Element (Doc Block (Inline Void))
+pDoc :: Scriba Element (Doc Block (Inline InlineControl))
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
@@ -519,7 +533,7 @@ pDoc = do
           Left  e -> throwError $ Msg e
           Right a -> pure a
       pure $ DocAttrs (Title t)
-                      (fromMaybe (stripMarkup absurd t) tplain)
+                      (fromMaybe (stripMarkup (const []) t) tplain)
                       (TitlingConfig fconf sconf)
                       elemrel
                       crel
@@ -541,7 +555,7 @@ pDoc = do
 
 -- * Running parsers
 
-parseDoc :: Node -> Either ScribaError (Doc Block (Inline Void))
+parseDoc :: Node -> Either ScribaError (Doc Block (Inline InlineControl))
 parseDoc = fmap snd . runScriba (asNode pDoc)
 
 -- * Decorating the document
@@ -552,18 +566,39 @@ defaultNumberState da = NumberState initCounters
                                     (docNumberStyles da)
                                     (docCounterRel da)
                                     (docElemCounterRel da)
+                                    mempty
   where initCounters = docCounterRel da $> 1
 
+-- TODO: don't discard the numbering information.
 runNumDoc :: Numbering a => Doc Block (Inline a) -> Doc Block (Inline a)
 runNumDoc d@(Doc da _ _ _) =
-  flip runNumberM (defaultNumberState da) $ numbering d
+  snd $ flip runNumberM (defaultNumberState da) $ numbering d
 
 runTitleDoc
   :: Titling (Inline a) a => Doc Block (Inline a) -> Doc Block (Inline a)
 runTitleDoc d@(Doc da _ _ _) = flip runTitleM (docTitlingConfig da) $ titling d
 
+-- TODO: obviously have this be automatic. I suppose Inline is a
+-- monad.
+traverseInline :: (a -> Inline b) -> Inline a -> Inline b
+traverseInline f (Icontrol a) = f a
+traverseInline f (Iemph    e) = Iemph $ fmap (traverseInline f) e
+traverseInline f (Iquote   e) = Iquote $ fmap (traverseInline f) e
+traverseInline f (Iref     e) = Iref $ fmap (traverseInline f) e
+traverseInline f (ItitleComponent e) =
+  ItitleComponent $ fmap (traverseInline f) e
+traverseInline _ (Istr         s) = Istr s
+traverseInline _ (IinlineMath  s) = IinlineMath s
+traverseInline _ (IdisplayMath s) = IdisplayMath s
+traverseInline _ (Icode        s) = Icode s
+traverseInline _ (IpageMark    s) = IpageMark s
+
 -- TODO: may need errors, a state for numbering, environment for
 -- titling. Or perhaps pipelined for modularity, with a shared error
 -- type?
-decorate :: Doc Block (Inline Void) -> Doc Block (Inline Void)
-decorate = runTitleDoc . runNumDoc
+-- TODO: do something with the control elements, obviously.
+decorate :: Doc Block (Inline InlineControl) -> Doc Block (Inline Void)
+decorate = stripControl . runTitleDoc . runNumDoc
+ where
+  stripControl = fmap $ traverseInline go
+  go           = const $ Istr $ Str ""

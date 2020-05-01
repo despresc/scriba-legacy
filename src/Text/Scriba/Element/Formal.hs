@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -8,9 +9,10 @@ module Text.Scriba.Element.Formal where
 
 import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Element.TitleComponent
+import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Intermediate
-import           Text.Scriba.Numbering
-import           Text.Scriba.Titling
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Titling
 
 import           Control.Monad                  ( join )
 import           Control.Monad.Reader           ( asks )
@@ -19,7 +21,6 @@ import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
-
 
 -- Might want a formal inline too. Some kind of "inline result",
 -- anyway.
@@ -32,14 +33,14 @@ import           GHC.Generics                   ( Generic )
 -- TODO: Make the conclusion a maybe and add conclusion setting to the formal config.
 data Formal b i = Formal
   { fType :: Maybe Text
+  , fLabel :: Maybe Identifier
   , fNum :: Maybe Text
   , fTitle :: Maybe [i]
   , fNote :: Maybe [i]
   , fTitleSep :: Maybe [i]
   , fContent :: MixedBody b i
   , fConclusion :: Maybe [i]
-  } deriving (Eq, Ord, Show, Read, Generic)
-
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap
@@ -64,16 +65,18 @@ pFormal
   -> Scriba [Node] [i]
   -> Scriba Element (Formal b i)
 pFormal pBody pInl = whileMatchTy "formalBlock" $ do
-  (mty, mnumber, title, note, tsep, concl) <- meta $ attrs $ do
+  (mty, mId, mnumber, title, note, tsep, concl) <- meta $ attrs $ do
     mty     <- attrMaybe "type" $ allContentOf simpleText
+    mId     <- attrMaybe "id" $ content pIdent
     mnumber <- attrMaybe "n" $ allContentOf simpleText
     title   <- attrMaybe "title" $ content pInl
     note    <- attrMaybe "titleNote" $ content pInl
     tsep    <- attrMaybe "titleSep" $ content pInl
     concl   <- attrMaybe "conclusion" $ content pInl
-    pure (mty, mnumber, title, note, tsep, concl)
+    pure (mty, mId, mnumber, title, note, tsep, concl)
   body <- content pBody
   pure $ Formal (T.concat <$> mty)
+                mId
                 (T.concat <$> mnumber)
                 title
                 note
@@ -86,17 +89,17 @@ pFormal pBody pInl = whileMatchTy "formalBlock" $ do
 -- TODO: we don't skip numbering a formal block when it already has a
 -- number. Should have config for that sort of thing.
 instance (Numbering (b i), Numbering i) => Numbering (Formal b i) where
-  numbering (Formal mty mnum ti note tsep cont concl) =
-    bracketNumbering mty $ \mnumgen -> do
+  numbering (Formal mty mId mnum ti note tsep cont concl) =
+    bracketNumbering mty mId $ \mnumgen -> do
       ti'    <- numbering ti
       note'  <- numbering note
       tsep'  <- numbering tsep
       cont'  <- numbering cont
       concl' <- numbering concl
-      pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'
+      pure $ Formal mty mId (mnum <|> mnumgen) ti' note' tsep' cont' concl'
 
 instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Formal b i) where
-  titling (Formal mty mnum mti mnote mtisep cont conc) = do
+  titling (Formal mty mId mnum mti mnote mtisep cont conc) = do
     mti'                         <- titling mti
     mnote'                       <- titling mnote
     mtisep'                      <- titling mtisep
@@ -119,9 +122,25 @@ instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Form
               )
         Nothing -> (Nothing, Nothing, Nothing)
     pure $ Formal mty
+                  mId
                   mnum
                   (mti' <|> join mtigen)
                   mnote'
                   (mtisep' <|> join mtisepgen)
                   cont'
                   (conc' <|> join concgen)
+
+{- TODO: restore
+-- * Gathering linkage data
+
+-- TODO: put a data type with the linking data in it somewhere
+-- TODO: add source positions to linkage data?
+instance (Linking (Maybe Text) i, Linking (Maybe Text) (b i)) => Linking (Maybe Text) (Formal b i) where
+  linkingData (Formal mty mId mnum ti note tsep cont concl) = do
+    for_ mId $ \ident -> tell $ LinkageData [(ident, mty)]
+    linkingData ti
+    linkingData note
+    linkingData tsep
+    linkingData cont
+    linkingData concl
+-}

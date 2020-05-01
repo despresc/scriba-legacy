@@ -133,7 +133,7 @@ renderSectionContent (SectionContent bs cs) = do
 -- break? They would be necessary when we first render a sibling
 -- untitled section. Some kind of state variable, I think.
 renderSection :: Section Block (Inline Void) -> Render Html
-renderSection (Section _ _ t _ c) = do
+renderSection (Section _ _ _ t _ c) = do
   t' <- traverse renderTitle t
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
@@ -172,7 +172,7 @@ renderMixedBlockBody b (MixedBlock blks) = go <$> renderBlocks blks
 -- TODO: wrap the title separator? Also the title separator should be
 -- rendered conditional on there being a title at all.
 renderFormalBlock :: Formal Block (Inline Void) -> Render Html
-renderFormalBlock (Formal mty _ mtitle _ mtitlesep body concl) = do
+renderFormalBlock (Formal mty _ _ mtitle _ mtitlesep body concl) = do
   title'    <- traverse renderInlines mtitle
   titlesep' <- traverse renderInlines mtitlesep
   body'     <- renderMixedBlockBody True body
@@ -214,7 +214,8 @@ renderInlineWith _ (Icode        s) = renderInlineCode s
 renderInlineWith _ (IpageMark    s) = renderPageMark s
 renderInlineWith f (ItitleComponent s) =
   renderTitleComponent (renderInlineWith f) s
-renderInlineWith f (Iother s) = f s
+renderInlineWith f (Iref     s) = renderRef (renderInlineWith f) s
+renderInlineWith f (Icontrol s) = f s
 
 renderInline :: Inline Void -> Render Html
 renderInline = renderInlineWith absurd
@@ -252,6 +253,10 @@ renderDisplayMathContent (Gathered ts) =
     $  "\\begin{gathered}"
     <> T.intercalate "//\n" ts
     <> "\\end{gathered}"
+
+-- TODO: fill this in.
+renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
+renderRef _ _ = pure mempty
 
 -- | Render a heading title using the ambient header depth.
 

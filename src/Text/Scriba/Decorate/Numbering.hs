@@ -5,7 +5,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Text.Scriba.Numbering
+module Text.Scriba.Decorate.Numbering
   ( Numbering(..)
   , bracketNumbering
   , Numbers'
@@ -17,6 +17,7 @@ module Text.Scriba.Numbering
 where
 
 import           Text.Scriba.Counters
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Intermediate       ( unzips )
 
 -- TODO: a common module for unzips and such?
@@ -89,12 +90,25 @@ data NumberState = NumberState
   , nsNumberStyles :: Map Text NumberStyle
   , nsCounterRel :: Map CounterName (Set CounterName)
   , nsElemCounterRel :: Map ContainerName CounterName
+  , nsNumberData :: NumberData
   } deriving (Eq, Ord, Show)
+
+-- | Numbering data to be gathered from the AST.
+data NumberDatum = NumberDatum
+  { ndIdentifier :: Identifier
+  , ndContainerName :: ContainerName
+  , ndNumber :: Text
+  } deriving (Eq, Ord, Show)
+
+newtype NumberData = NumberData
+  { getNumberData :: [NumberDatum]
+  } deriving (Eq, Ord, Show, Semigroup, Monoid)
 
 -- TODO: move this elsewhere?
 data NumberStyle = Decimal
   deriving (Eq, Ord, Show, Read, Generic)
 
+-- TODO
 newtype NumberM a = NumberM
   { unNumberM :: State NumberState a
   } deriving (Functor, Applicative, Monad, MonadState NumberState)
@@ -145,10 +159,15 @@ instance Numbering Text where
 instance Numbering a => Numbering (Map k a) where
   numbering = M.traverseWithKey $ const numbering
 
+instance Numbering Identifier
+
 type Numbers' a = a -> NumberM a
 
-runNumberM :: NumberM a -> NumberState -> a
-runNumberM = go . State.runState . unNumberM where go f = fst . f
+runNumberM :: NumberM a -> NumberState -> (NumberData, a)
+runNumberM = go . State.runState . unNumberM
+ where
+  go f = retrieve . f
+  retrieve (a, ns) = (nsNumberData ns, a)
 
 renderCounter :: NumberStyle -> Int -> LocalNumber
 renderCounter Decimal n = T.pack $ show n
@@ -220,8 +239,13 @@ restoreDependants = traverse_ $ uncurry setCounter
 setParentPath :: ContainerPath -> NumberM ()
 setParentPath p = modify $ \s -> s { nsParentPath = p }
 
-bracketNumbering :: Maybe Text -> (Maybe Text -> NumberM a) -> NumberM a
-bracketNumbering (Just typ) f = do
+tellNumberDatum :: NumberDatum -> NumberM ()
+tellNumberDatum x =
+  modify $ \s -> s { nsNumberData = NumberData [x] <> nsNumberData s }
+
+bracketNumbering
+  :: Maybe Text -> Maybe Identifier -> (Maybe Text -> NumberM a) -> NumberM a
+bracketNumbering (Just typ) mId f = do
   let containername = ContainerName typ
   mcountername <- lookupCounter containername
   mnumdata     <- fmap join $ for mcountername $ \countername -> do
@@ -234,6 +258,7 @@ bracketNumbering (Just typ) f = do
       let localNumber = renderCounter numbersty n
       num <- renderNumber oldPath countername localNumber
       setParentPath $ (countername, localNumber) : oldPath
+      for_ mId $ \ident -> tellNumberDatum $ NumberDatum ident containername num
       pure (num, (oldPath, oldDependants))
   let (mnumgen, mpath) = unzips mnumdata
   a <- f mnumgen
@@ -241,4 +266,4 @@ bracketNumbering (Just typ) f = do
     setParentPath oldPath
     restoreDependants oldDependants
   pure a
-bracketNumbering Nothing f = f Nothing
+bracketNumbering Nothing _ f = f Nothing

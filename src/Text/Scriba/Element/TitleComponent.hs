@@ -4,8 +4,8 @@
 
 module Text.Scriba.Element.TitleComponent where
 
-import           Text.Scriba.Numbering
-import           Text.Scriba.Titling
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Titling
 
 import           Control.Applicative            ( (<|>) )
 import           Data.Functor                   ( (<&>) )

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -9,8 +10,8 @@ module Text.Scriba.Element.Doc where
 import           Text.Scriba.Counters
 import           Text.Scriba.Element.Section
 import           Text.Scriba.Element.TitleComponent
-import           Text.Scriba.Numbering
-import           Text.Scriba.Titling
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Titling
 
 import           Data.Map.Strict                ( Map )
 import           Data.Set                       ( Set )
@@ -29,7 +30,7 @@ import           GHC.Generics                   ( Generic )
 -- | A document with front matter, main matter, and end matter.
 
 data Doc b i = Doc (DocAttrs i) (SectionContent b i) (SectionContent b i) (SectionContent b i)
-  deriving (Eq, Ord, Show, Read, Generic)
+  deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 -- TODO: should I mapKey the docNumberStyle here?
 data DocAttrs i = DocAttrs
@@ -39,7 +40,7 @@ data DocAttrs i = DocAttrs
   , docElemCounterRel :: Map ContainerName CounterName
   , docCounterRel :: Map CounterName (Set CounterName)
   , docNumberStyles :: Map Text NumberStyle
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 emptySurround :: Surround a
 emptySurround = Surround [] Nothing []

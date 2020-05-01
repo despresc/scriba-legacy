@@ -27,7 +27,10 @@ library
                , blaze-html
   exposed-modules:
     Text.Scriba.Counters
-    Text.Scriba.Decorate
+    Text.Scriba.Decorate.Common
+    Text.Scriba.Decorate.Linking
+    Text.Scriba.Decorate.Numbering
+    Text.Scriba.Decorate.Titling
     Text.Scriba.Element
     Text.Scriba.Element.Str
     Text.Scriba.Element.Emph
@@ -44,14 +47,15 @@ library
     Text.Scriba.Element.Formal
     Text.Scriba.Element.Doc
     Text.Scriba.Element.Section
+    Text.Scriba.Element.Identifier
+    Text.Scriba.Element.Ref
     Text.Scriba.Intermediate
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
-    Text.Scriba.Numbering
     Text.Scriba.Parse
     Text.Scriba.Render.Html
-    Text.Scriba.Titling
+
 
 test-suite scriba-test
   import: base

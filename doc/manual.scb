@@ -346,7 +346,7 @@ Some examples:
 |Details of the proof
 }
 
-## subsection {title|olist}
+## subsection {id|elem-olist} {title|olist}
 
 The {code|olist} block element represents an ordered list. It contains
 a whitespace-separated list of {code|item} elements.
@@ -358,3 +358,13 @@ An example:
 {item|Second element}
 {item|Third element}
 }
+
+## subsection {id|elem-ref} {title|ref}
+
+The {code|ref} inline element represents a reference to another
+element. It takes a single argument, the identifier of another element
+in the document. In future, it may be able to reference elements
+across documents, and to take multiple identifier arguments.
+
+For example, we can reference {ref@elem-ref}, this section, using
+{code`{ref@elem-ref}`}.

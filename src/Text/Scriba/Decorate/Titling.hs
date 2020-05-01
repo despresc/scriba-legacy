@@ -1,4 +1,5 @@
 {-# LANGUAGE DefaultSignatures #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -7,7 +8,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Text.Scriba.Titling where
+module Text.Scriba.Decorate.Titling where
+
+import           Text.Scriba.Decorate.Common
 
 import           Control.Applicative            ( liftA2 )
 import           Control.Monad.Reader           ( MonadReader(..)
@@ -34,17 +37,17 @@ data FormalConfig i = FormalConfig
   { fconfTitleTemplate :: Maybe (TitleTemplate i)
   , fconfTitleSep :: Maybe [i]
   , fconfConcl :: Maybe [i]
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 newtype SectionConfig i = SectionConfig
   { sconfTitleTemplate :: Maybe (TitleTemplate i)
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 -- Consolidate the title templates?
 data TitlingConfig i = TitlingConfig
   { tcFormalConfig :: Map Text (FormalConfig i)
   , tcSectionConfig :: Map Text (SectionConfig i)
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 -- TODO: might need more configuration related to component placement.
 -- Perhaps also for whitespace?
@@ -55,7 +58,7 @@ data TitleTemplate a = TitleTemplate
   , ttemplateBody :: Surround a
   , ttemplatePartSep :: [a]
   , ttemplatePrefixFirst :: Bool
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 -- TODO: have this be a common type, and have TitlePart use it? Would
 -- need a middle bit that could be () to use in the title config. Or
@@ -64,7 +67,7 @@ data Surround a = Surround
   { surroundBefore :: [a]
   , surroundMid :: Maybe [a]
   , surroundAfter :: [a]
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 newtype TitleM i a = TitleM
   { unTitleM :: Reader (TitlingConfig i) a
@@ -126,6 +129,8 @@ instance Titling i Text where
 
 instance Titling i a => Titling i (Map k a) where
   titling = M.traverseWithKey $ const titling
+
+instance Titling a Identifier
 
 data TitleTemplateStyle
   = FormalTemplate

@@ -14,6 +14,8 @@ module Text.Scriba.Element
   , module Text.Scriba.Element.Formal
   , module Text.Scriba.Element.Doc
   , module Text.Scriba.Element.Section
+  , module Text.Scriba.Element.Ref
+  , module Text.Scriba.Element.Identifier
   )
 where
 
@@ -32,3 +34,5 @@ import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Element.Formal
 import           Text.Scriba.Element.Doc
 import           Text.Scriba.Element.Section
+import           Text.Scriba.Element.Ref
+import           Text.Scriba.Element.Identifier

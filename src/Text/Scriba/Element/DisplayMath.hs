@@ -6,8 +6,8 @@
 module Text.Scriba.Element.DisplayMath where
 
 import           Text.Scriba.Intermediate
-import           Text.Scriba.Numbering
-import           Text.Scriba.Titling
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
