@@ -1,11 +1,14 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.InlineCode where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -17,6 +20,7 @@ newtype InlineCode = InlineCode
   } deriving (Eq, Ord, Show, Read, Generic)
 
 instance Numbering InlineCode
+instance Titling i InlineCode
 
 inlineCodeToText :: InlineCode -> [Text]
 inlineCodeToText (InlineCode t) = [t]

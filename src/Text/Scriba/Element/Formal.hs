@@ -1,15 +1,23 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.Formal where
 
 import           Text.Scriba.Element.MixedBody
+import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
-import Text.Scriba.Numbering
+import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
+import           Control.Monad                  ( join )
+import           Control.Monad.Reader           ( asks )
+import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
-import qualified Data.Text as T
+import qualified Data.Text                     as T
+import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 
 
@@ -86,3 +94,34 @@ instance (Numbering (b i), Numbering i) => Numbering (Formal b i) where
       cont'  <- numbering cont
       concl' <- numbering concl
       pure $ Formal mty (mnum <|> mnumgen) ti' note' tsep' cont' concl'
+
+instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Formal b i) where
+  titling (Formal mty mnum mti mnote mtisep cont conc) = do
+    mti'                         <- titling mti
+    mnote'                       <- titling mnote
+    mtisep'                      <- titling mtisep
+    cont'                        <- titling cont
+    conc'                        <- titling conc
+    (mtisepgen, mtigen, concgen) <- fmap unzips3 $ for mty $ \t -> do
+      mfconf <- asks $ M.lookup t . tcFormalConfig
+      pure $ case mfconf of
+        Just fconf ->
+          let concl    = fconfConcl fconf
+              tisep    = fconfTitleSep fconf
+              template = fconfTitleTemplate fconf
+          in  ( tisep
+              , runTemplate template
+                            FormalTemplate
+                            Nothing
+                            ((: []) . fromTitleNumber <$> mnum)
+                            mnote
+              , concl
+              )
+        Nothing -> (Nothing, Nothing, Nothing)
+    pure $ Formal mty
+                  mnum
+                  (mti' <|> join mtigen)
+                  mnote'
+                  (mtisep' <|> join mtisepgen)
+                  cont'
+                  (conc' <|> join concgen)

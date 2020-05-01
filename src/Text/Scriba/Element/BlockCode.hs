@@ -1,11 +1,14 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.BlockCode where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -22,6 +25,7 @@ newtype BlockCode = BlockCode
   } deriving (Eq, Ord, Show, Read, Generic)
 
 instance Numbering BlockCode
+instance Titling i BlockCode
 
 blockCodeToText :: BlockCode -> [Text]
 blockCodeToText (BlockCode t) = [t]

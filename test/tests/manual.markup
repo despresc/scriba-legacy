@@ -35,6 +35,7 @@ Doc
                                     , surroundMid = Nothing
                                     , surroundAfter = []
                                     }
+                              , ttemplatePartSep = [ Istr Str { getStr = " " } ]
                               , ttemplatePrefixFirst = False
                               }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
@@ -64,6 +65,7 @@ Doc
                                     , surroundMid = Nothing
                                     , surroundAfter = []
                                     }
+                              , ttemplatePartSep = [ Istr Str { getStr = " " } ]
                               , ttemplatePrefixFirst = True
                               }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
@@ -93,6 +95,7 @@ Doc
                                     , surroundMid = Nothing
                                     , surroundAfter = [ Istr Str { getStr = ")" } ]
                                     }
+                              , ttemplatePartSep = [ Istr Str { getStr = " " } ]
                               , ttemplatePrefixFirst = True
                               }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
@@ -125,6 +128,7 @@ Doc
                                     , surroundMid = Nothing
                                     , surroundAfter = []
                                     }
+                              , ttemplatePartSep = [ Istr Str { getStr = " " } ]
                               , ttemplatePrefixFirst = True
                               }
                       }
@@ -152,6 +156,7 @@ Doc
                                     , surroundMid = Nothing
                                     , surroundAfter = []
                                     }
+                              , ttemplatePartSep = [ Istr Str { getStr = " " } ]
                               , ttemplatePrefixFirst = True
                               }
                       }
@@ -232,7 +237,7 @@ Doc
                         , Istr Str { getStr = " " }
                         , ItitleComponent
                             (TitleComponent
-                               TitleNote
+                               TitleBody
                                []
                                [ Istr Str { getStr = "An introduction to the language" } ]
                                [])
@@ -260,7 +265,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote [] [ Istr Str { getStr = "Paragraphs" } ] [])
+                                             TitleBody [] [ Istr Str { getStr = "Paragraphs" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.1"
@@ -389,7 +394,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote [] [ Istr Str { getStr = "Sections" } ] [])
+                                             TitleBody [] [ Istr Str { getStr = "Sections" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.2"
@@ -503,7 +508,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote [] [ Istr Str { getStr = "Blocks" } ] [])
+                                             TitleBody [] [ Istr Str { getStr = "Blocks" } ] [])
                                       ]
                                   }
                           , secNum = Just "1.3"
@@ -617,7 +622,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote
+                                             TitleBody
                                              []
                                              [ Istr Str { getStr = "Mathematics" } ]
                                              [])
@@ -749,7 +754,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote
+                                             TitleBody
                                              []
                                              [ Istr
                                                  Str { getStr = "The overall document structure" }
@@ -800,7 +805,7 @@ Doc
                         , Istr Str { getStr = " " }
                         , ItitleComponent
                             (TitleComponent
-                               TitleNote [] [ Istr Str { getStr = "Element reference" } ] [])
+                               TitleBody [] [ Istr Str { getStr = "Element reference" } ] [])
                         ]
                     }
             , secNum = Just "2"
@@ -825,7 +830,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote
+                                             TitleBody
                                              []
                                              [ Istr Str { getStr = "formalBlock" } ]
                                              [])
@@ -985,7 +990,7 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
-                                             TitleNote [] [ Istr Str { getStr = "olist" } ] [])
+                                             TitleBody [] [ Istr Str { getStr = "olist" } ] [])
                                       ]
                                   }
                           , secNum = Just "2.2"

@@ -8,6 +8,7 @@ module Text.Scriba.Element.Quote where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
@@ -16,7 +17,7 @@ import           GHC.Generics                   ( Generic )
 newtype Quote i = Quote
   { getQuote :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass Numbering
+    deriving anyclass (Numbering, Titling a)
 
 quoteToText :: (i -> [Text]) -> Quote i -> [Text]
 quoteToText f (Quote i) = concatMap f i

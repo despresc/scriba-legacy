@@ -2,9 +2,12 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 -- TODO: review exports once the refactor is done
 
@@ -42,13 +45,27 @@ module Text.Scriba.Markup
   , Varied(..)
   , VariedVar(..)
   , BlockCode(..)
+  , decorate
   )
 where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Element
-import           Text.Scriba.Numbering          ( NumberStyle(..) , Numbering)
+import           Text.Scriba.Numbering          ( NumberStyle(..)
+                                                , Numbering(..)
+                                                , NumberState(..)
+                                                , runNumberM
+                                                )
+import           Text.Scriba.Titling            ( FormalConfig(..)
+                                                , TitleTemplate(..)
+                                                , Surround(..)
+                                                , SectionConfig(..)
+                                                , TitlingConfig(..)
+                                                , TitleTemplateStyle(..)
+                                                , Titling(..)
+                                                , runTitleM
+                                                )
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Functor                   ( ($>) )
@@ -168,6 +185,8 @@ data Block i
   | Blist !(List Block i)
   deriving (Eq, Ord, Show, Read, Generic, Numbering)
 
+deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
+
 -- TODO: rename Math to InlineMath?
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
 -- probably be Text, and might want to record the Int that produced
@@ -186,7 +205,11 @@ data Inline a
   | IpageMark !PageMark
   | ItitleComponent !(TitleComponent (Inline a))
   | Iother !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
+
+instance FromTitleComponent (Inline a) where
+  fromTitleComponent = ItitleComponent
+  fromTitleNumber    = Istr . Str
 
 -- | Strip out the markup in a sequence of inlines, leaving only the
 -- plain text. Very lossy, naturally. This doesn't add any textual
@@ -261,6 +284,7 @@ data VariedVar
 -- template/configuration. Also reconsider the other configuration
 -- names. They should have the same name as the corresponding title
 -- attributes.
+-- TODO: move this (and the other attribute parsers) to Titling.
 pFormalConfig
   :: Scriba
        Element
@@ -276,16 +300,17 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate FormalTemplate)
-      titleSep  <- attrMaybe "titleSep" $ allContentOf pInline
-      numbering <- attrMaybe "numbering" $ pCounterDepends
-      concl     <- attrMaybe "conclusion" $ allContentOf pInline
-      let (counterDepends, ns) = unzips numbering
+      titleSep      <- attrMaybe "titleSep" $ allContentOf pInline
+      numberingConf <- attrMaybe "numbering" $ pCounterDepends
+      concl         <- attrMaybe "conclusion" $ allContentOf pInline
+      let (counterDepends, ns) = unzips numberingConf
       pure $ (FormalConfig titleTemplate titleSep concl, counterDepends, ns)
 
 -- TODO: more exotic orderings. Perhaps make prefix/numberFirst
 -- exclusive as well. Also options for suppressing particular
 -- components, if, say, you wanted something numbered but not have it
 -- actually appear in the title.
+-- TODO: title separator customization?
 pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
 pTitleTemplate t = do
   pref        <- attrDef "prefix" emptySurround $ pSurround
@@ -296,6 +321,7 @@ pTitleTemplate t = do
   pure $ TitleTemplate pref
                        tnum
                        tnote
+                       [Istr $ Str " "]
                        (fromMaybe True $ prefixFirst <|> numberFirst)
  where
   tname = case t of
@@ -337,8 +363,8 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
     whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate SectionTemplate)
-      numbering <- attrMaybe "numbering" $ pCounterDepends
-      let (counterDepends, ns) = unzips numbering
+      numberingConf <- attrMaybe "numbering" $ pCounterDepends
+      let (counterDepends, ns) = unzips numberingConf
       pure $ (SectionConfig titleTemplate, counterDepends, ns)
 
 -- TODO: enforce option exclusivity? Could do that by running all
@@ -517,3 +543,27 @@ pDoc = do
 
 parseDoc :: Node -> Either ScribaError (Doc Block (Inline Void))
 parseDoc = fmap snd . runScriba (asNode pDoc)
+
+-- * Decorating the document
+
+defaultNumberState :: DocAttrs i -> NumberState
+defaultNumberState da = NumberState initCounters
+                                    []
+                                    (docNumberStyles da)
+                                    (docCounterRel da)
+                                    (docElemCounterRel da)
+  where initCounters = docCounterRel da $> 1
+
+runNumDoc :: Numbering a => Doc Block (Inline a) -> Doc Block (Inline a)
+runNumDoc d@(Doc da _ _ _) =
+  flip runNumberM (defaultNumberState da) $ numbering d
+
+runTitleDoc
+  :: Titling (Inline a) a => Doc Block (Inline a) -> Doc Block (Inline a)
+runTitleDoc d@(Doc da _ _ _) = flip runTitleM (docTitlingConfig da) $ titling d
+
+-- TODO: may need errors, a state for numbering, environment for
+-- titling. Or perhaps pipelined for modularity, with a shared error
+-- type?
+decorate :: Doc Block (Inline Void) -> Doc Block (Inline Void)
+decorate = runTitleDoc . runNumDoc

@@ -17,8 +17,6 @@ common base
   ghc-options: -Wall -Wextra
   build-depends: base >=4.13 && <5
 
--- TODO: remove OldDecorate
-
 library
   import: base
   hs-source-dirs: src
@@ -30,7 +28,6 @@ library
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate
-    Text.Scriba.OldDecorate
     Text.Scriba.Element
     Text.Scriba.Element.Str
     Text.Scriba.Element.Emph
@@ -54,6 +51,7 @@ library
     Text.Scriba.Numbering
     Text.Scriba.Parse
     Text.Scriba.Render.Html
+    Text.Scriba.Titling
 
 test-suite scriba-test
   import: base

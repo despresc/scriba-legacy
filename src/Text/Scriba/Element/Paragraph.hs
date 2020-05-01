@@ -8,6 +8,7 @@ module Text.Scriba.Element.Paragraph where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
@@ -15,7 +16,7 @@ import           GHC.Generics                   ( Generic )
 newtype Paragraph i = Paragraph
   { getParagraph :: [i]
   } deriving (Eq, Ord, Show, Read, Generic)
-    deriving anyclass Numbering
+    deriving anyclass (Numbering, Titling a)
 
 paragraphToText :: (i -> [Text]) -> Paragraph i -> [Text]
 paragraphToText f (Paragraph t) = concatMap f t

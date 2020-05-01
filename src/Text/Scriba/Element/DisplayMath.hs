@@ -1,10 +1,13 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.DisplayMath where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -16,6 +19,7 @@ data DisplayMath
   deriving (Eq, Ord, Show, Read, Generic)
 
 instance Numbering DisplayMath
+instance Titling i DisplayMath
 
 -- TODO: have these be classes somewhere
 

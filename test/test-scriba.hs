@@ -1,9 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
-{-# OPTIONS_GHC -fno-warn-orphans #-}
 
-import qualified Text.Scriba.OldDecorate       as SD
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
 import qualified Text.Scriba.Parse             as SP
@@ -31,7 +29,7 @@ parseOrExplode name t = case SP.parseDoc' name t of
 markupOrExplode :: SI.Node -> SM.Doc SM.Block (SM.Inline Void)
 markupOrExplode n = case SM.parseDoc n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
-  Right a -> SD.decorate a
+  Right a -> SM.decorate a
 
 byteShow :: Show a => a -> BL.ByteString
 byteShow = TLE.encodeUtf8 . TL.pack . Pretty.ppShow

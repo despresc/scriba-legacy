@@ -4,11 +4,12 @@
 
 module Text.Scriba.Element.MixedBody where
 
-import Text.Scriba.Numbering
+import           Text.Scriba.Numbering
+import           Text.Scriba.Titling
 
 import           GHC.Generics                   ( Generic )
 
 data MixedBody b i
   = MixedInline [i]
   | MixedBlock [b i]
-  deriving (Eq, Ord, Show, Read, Generic, Numbering)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a)
