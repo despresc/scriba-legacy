@@ -94,9 +94,12 @@ instance Titling i a => GTitling i (K1 j a) where
 
 -- TODO: can we reduce duplication with Numbering?
 
--- TODO: find a way to improve the signatures of things. The (Titling
--- (Inline a) (Inline a), Titling (Inline a) (Block (Inline a))) stuff
--- is a little much. Could just add a constraint synonym, perhaps.
+-- TODO: There should be a tighter relationship between i and a in the
+-- class. We're mostly titling based on what's in TitleComponent, so
+-- that should come into it as well. If that is moved in and this
+-- becomes a little more bound to the TitleComponent representation,
+-- then the signatures should become better.
+-- Until then, we could add a constraint synonym for the longer signatures that occur.
 class Titling i a where
   titling :: a -> TitleM i a
 
