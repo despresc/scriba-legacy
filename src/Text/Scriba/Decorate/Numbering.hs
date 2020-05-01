@@ -104,6 +104,9 @@ newtype NumberData = NumberData
   { getNumberData :: [NumberDatum]
   } deriving (Eq, Ord, Show, Semigroup, Monoid)
 
+addNumberDatum :: NumberDatum -> NumberData -> NumberData
+addNumberDatum x (NumberData y) = NumberData $ x : y
+
 -- TODO: move this elsewhere?
 data NumberStyle = Decimal
   deriving (Eq, Ord, Show, Read, Generic)
@@ -241,8 +244,13 @@ setParentPath p = modify $ \s -> s { nsParentPath = p }
 
 tellNumberDatum :: NumberDatum -> NumberM ()
 tellNumberDatum x =
-  modify $ \s -> s { nsNumberData = NumberData [x] <> nsNumberData s }
+  modify $ \s -> s { nsNumberData = addNumberDatum x $ nsNumberData s }
 
+-- TODO: this does not respect manual numbering. I'm not sure what
+-- should be done in that case. I suppose that we could still look up
+-- its numbering data and register it, if it exists. We'll need to
+-- come up with some kind of ref configuration/sensible defualt
+-- fallbacks for manually numbered containers.
 bracketNumbering
   :: Maybe Text -> Maybe Identifier -> (Maybe Text -> NumberM a) -> NumberM a
 bracketNumbering (Just typ) mId f = do
