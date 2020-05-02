@@ -33,7 +33,7 @@ import           GHC.Generics                   ( Generic )
 -- | A document with front matter, main matter, and end matter.
 
 -- TODO: have a separate index for the attrs, so that they can have Void arguments?
-data Doc b i = Doc (DocAttrs i) (SectionContent b i) (SectionContent b i) (SectionContent b i)
+data Doc b j i = Doc (DocAttrs j) (SectionContent b i) (SectionContent b i) (SectionContent b i)
   deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 -- TODO: should I mapKey the docNumberStyle here?
@@ -54,21 +54,25 @@ emptySurround = Surround [] Nothing []
 -- * Numbering
 
 -- TODO: Doesn't number anything in the config. Should it?
-instance (Numbering a (b i), Numbering a i) => Numbering a (Doc b i) where
+instance (Numbering a (b i), Numbering a i) => Numbering a (Doc b j i) where
   numbering (Doc da f m b) = do
     f' <- numbering f
     m' <- numbering m
     b' <- numbering b
     pure $ Doc da f' m' b'
 
-instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Doc b i) where
+instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Doc b j i) where
   titling (Doc da f m b) = do
     f' <- titling f
     m' <- titling m
     b' <- titling b
     pure $ Doc da f' m' b'
 
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Doc f a) (Doc g b)
-
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Doc f j a) (Doc g j b) where
+  referencing (Doc da f m b) = do
+    f' <- referencing f
+    m' <- referencing m
+    b' <- referencing b
+    pure $ Doc da f' m' b'
 -- TODO not totally sure if wise?
-instance Referencing i a b => Referencing i (DocAttrs a) (DocAttrs b)
+-- instance Referencing i a b => Referencing i (DocAttrs a) (DocAttrs b)

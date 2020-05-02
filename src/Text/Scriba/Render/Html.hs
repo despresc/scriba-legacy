@@ -41,7 +41,7 @@ import qualified Text.Blaze.Html5.Attributes   as A
 
 -}
 
-writeStandalone :: Doc Block (Inline Void) -> Html
+writeStandalone :: Doc Block (Inline Void) (Inline Void) -> Html
 writeStandalone d = fst $ runRender (renderStandalone d) initialRenderState
 
 -- Section titles run from h1 to h6, then top out there.
@@ -90,7 +90,7 @@ bumpHeaderDepth act = do
 -- TODO: add configurability, especially re: the math.
 -- TODO: have a header include option for documents. Hard-coding a
 -- style path for the manual is obviously poor.
-renderStandalone :: Doc Block (Inline Void) -> Render Html
+renderStandalone :: Doc Block (Inline Void) (Inline Void) -> Render Html
 renderStandalone d@(Doc dm _ _ _) = do
   d' <- renderDoc d
   let tplain = docPlainTitle dm
@@ -107,7 +107,7 @@ renderStandalone d@(Doc dm _ _ _) = do
 
 -- TODO: selectively render empty sections?
 -- TODO: Should the title be a Maybe?
-renderDoc :: Doc Block (Inline Void) -> Render Html
+renderDoc :: Doc Block (Inline Void) (Inline Void) -> Render Html
 renderDoc (Doc t f m b) = do
   t' <- renderTitle $ docTitle t
   bumpHeaderDepth $ do

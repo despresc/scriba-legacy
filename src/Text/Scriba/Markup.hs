@@ -8,6 +8,8 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 -- TODO: review exports once the refactor is done
 
@@ -70,7 +72,9 @@ import qualified Data.Map.Merge.Strict         as M
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
-import           Data.Void                      ( Void )
+import           Data.Void                      ( Void
+                                                , absurd
+                                                )
 import           GHC.Generics                   ( Generic )
 
 {- TODO:
@@ -315,9 +319,9 @@ pFormalConfig
        Element
        ( Map
            Text
-           ( FormalConfig (Inline InlineControl)
+           ( FormalConfig (Inline a)
            , Maybe ContainerRelation
-           , Maybe (NumberConfig (Inline InlineControl))
+           , Maybe (NumberConfig (Inline a))
            )
        )
 pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
@@ -328,13 +332,13 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate FormalTemplate)
-      titleSep          <- attrMaybe "titleSep" $ allContentOf pInline
+      titleSep          <- attrMaybe "titleSep" $ allContentOf pInlineCore
       numberingConf     <- attrMaybe "numbering" $ pCounterDepends
       (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
-        s <- attrMaybe "sep" $ allContentOf pInline
-        p <- attrMaybe "prefix" $ allContentOf pInline
+        s <- attrMaybe "sep" $ allContentOf pInlineCore
+        p <- attrMaybe "prefix" $ allContentOf pInlineCore
         pure (s, p)
-      concl <- attrMaybe "conclusion" $ allContentOf pInline
+      concl <- attrMaybe "conclusion" $ allContentOf pInlineCore
       let (counterDepends, nc) = unzips $ do
             (containerRel, ns) <- numberingConf
             pure (containerRel, NumberConfig ns (join refPref) (join refSep))
@@ -345,8 +349,7 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
 -- components, if, say, you wanted something numbered but not have it
 -- actually appear in the title.
 -- TODO: title separator customization?
-pTitleTemplate
-  :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline InlineControl))
+pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
 pTitleTemplate t = do
   pref        <- attrDef "prefix" emptySurround $ pSurround
   tnote       <- attrDef tname emptySurround $ pSurround
@@ -365,13 +368,13 @@ pTitleTemplate t = do
 
 -- TODO: can't distinguish between present-but-empty content, and
 -- absent content. Seems okay right now.
-pSurround :: Scriba Element (Surround (Inline InlineControl))
+pSurround :: Scriba Element (Surround (Inline a))
 pSurround = do
   (b, a) <- meta $ attrs $ do
-    b <- mattr "before" $ allContentOf pInline
-    a <- mattr "after" $ allContentOf pInline
+    b <- mattr "before" $ allContentOf pInlineCore
+    a <- mattr "after" $ allContentOf pInlineCore
     pure (b, a)
-  c <- allContentOf $ pInline
+  c <- allContentOf $ pInlineCore
   let c' = case c of
         [] -> Nothing
         x  -> Just x
@@ -383,9 +386,9 @@ pSectionConfig
        Element
        ( Map
            Text
-           ( SectionConfig (Inline InlineControl)
+           ( SectionConfig (Inline a)
            , Maybe ContainerRelation
-           , Maybe (NumberConfig (Inline InlineControl))
+           , Maybe (NumberConfig (Inline a))
            )
        )
 pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
@@ -400,8 +403,8 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
         (pTitleTemplate SectionTemplate)
       numberingConf     <- attrMaybe "numbering" $ pCounterDepends
       (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
-        s <- attrMaybe "sep" $ allContentOf pInline
-        p <- attrMaybe "prefix" $ allContentOf pInline
+        s <- attrMaybe "sep" $ allContentOf pInlineCore
+        p <- attrMaybe "prefix" $ allContentOf pInlineCore
         pure (s, p)
       let (counterDepends, nc) = unzips $ do
             (containerRel, ns) <- numberingConf
@@ -431,26 +434,28 @@ pCounterDepends = meta $ attrs $ do
 
 -- ** Block Parsing
 
-pBlock :: Scriba Node (Block (Inline InlineControl))
-pBlock =
+pBlock :: Scriba Node (Inline a) -> Scriba Node (Block (Inline a))
+pBlock pInl =
   asNode
     $   Bformal
-    <$> pFormal pMixedBody pInlineBody
+    <$> pFormal (pMixedBody pInl) (pInlineBody pInl)
     <|> Bpar
-    <$> pParagraph pInlineBody
+    <$> pParagraph (pInlineBody pInl)
     <|> Bcode
     <$> pBlockCode
     <|> Blist
-    <$> pList pMixedBody
+    <$> pList (pMixedBody pInl)
 
-pBlockBody :: Scriba [Node] [Block (Inline InlineControl)]
-pBlockBody = remaining pBlock
+pBlockBody :: Scriba Node (Inline a) -> Scriba [Node] [Block (Inline a)]
+pBlockBody pInl = remaining $ pBlock pInl
 
-pInlineBody :: Scriba [Node] [Inline InlineControl]
-pInlineBody = remaining pInline
+pInlineBody :: Scriba Node (Inline a) -> Scriba [Node] [Inline a]
+pInlineBody = remaining
 
-pMixedBody :: Scriba [Node] (MixedBody Block (Inline InlineControl))
-pMixedBody = MixedBlock <$> pBlockBody <|> MixedInline <$> pInlineBody
+pMixedBody
+  :: Scriba Node (Inline a) -> Scriba [Node] (MixedBody Block (Inline a))
+pMixedBody pInl =
+  MixedBlock <$> (pBlockBody pInl) <|> MixedInline <$> (pInlineBody pInl)
 
 -- ** Inline parsing
 
@@ -478,6 +483,28 @@ pInline =
     <|> Istr
     <$> pText
 
+-- TODO: duplication
+pInlineCore :: Scriba Node (Inline a)
+pInlineCore =
+  asNode
+      (   Iemph
+      <$> pEmph pInlineCore
+      <|> Iquote
+      <$> pQuote pInlineCore
+      <|> IpageMark
+      <$> pPageMark
+      <|> IinlineMath
+      <$> pMath
+      <|> IdisplayMath
+      <$> pFormula
+      <|> IdisplayMath
+      <$> pGathered
+      <|> Icode
+      <$> pCode
+      )
+    <|> Istr
+    <$> pText
+
 -- ** Section parsing
 
 -- For now, all things presented as sections become sections.
@@ -485,17 +512,17 @@ pInline =
 -- TODO: do the expectations actually work out here?
 -- TODO: a top level title parser?
 -- TODO: reduce duplication with pFormalConfig
-pSection :: Scriba Element (Section Block (Inline InlineControl))
-pSection = do
+pSection :: Scriba Node (Inline a) -> Scriba Element (Section Block (Inline a))
+pSection pInl = do
   mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
   whileParsingElem (fromMaybe "section of unknown type" mty) $ do
     (mId, mtitle, mfullTitle, mnumber) <- meta $ attrs $ do
       mId        <- attrMaybe "id" $ content pIdent
-      mtitle     <- attrMaybe "title" $ allContentOf pInline
-      mfullTitle <- attrMaybe "fullTitle" $ allContentOf pInline
+      mtitle     <- attrMaybe "title" $ allContentOf pInl
+      mfullTitle <- attrMaybe "fullTitle" $ allContentOf pInl
       mnumber    <- attrMaybe "n" $ allContentOf simpleText
       pure (mId, mtitle, mfullTitle, mnumber)
-    c <- content $ pSectionContent
+    c <- content $ pSectionContent pInl
     pure $ Section mty
                    mId
                    (Title <$> mtitle)
@@ -521,10 +548,11 @@ pSection = do
 -- want better expectation setting and propagation, certainly. Maybe
 -- also some conveniences like traversing a parser to get a text
 -- description of the node structure that it recognizes.
-pSectionContent :: Scriba [Node] (SectionContent Block (Inline InlineControl))
-pSectionContent = do
-  pre  <- manyOf $ pBlock
-  subs <- remaining $ asNode pSection
+pSectionContent
+  :: Scriba Node (Inline a) -> Scriba [Node] (SectionContent Block (Inline a))
+pSectionContent pInl = do
+  pre  <- manyOf $ pBlock pInl
+  subs <- remaining $ asNode (pSection pInl)
   pure $ SectionContent pre subs
 
 pControl :: Scriba Element InlineControl
@@ -546,12 +574,12 @@ pControl = IcRef <$> pSourceRef
 -- config re: counters, in particular that there is no namespacing
 -- going on.
 -- TODO: add configuration for elemrel
-pDoc :: Scriba Element (Doc Block (Inline InlineControl))
+pDoc :: Scriba Element (Doc Block (Inline a) (Inline InlineControl))
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
-      t       <- mattr "title" $ allContentOf pInline
+      t       <- mattr "title" $ allContentOf pInlineCore
       tplain <- attrMaybe "plainTitle" $ fmap T.concat $ allContentOf simpleText
       fconfig <- mattr "formalBlocks" $ pFormalConfig
       sconfig <- mattr "sections" $ pSectionConfig
@@ -583,7 +611,7 @@ pDoc = do
  where
   pMatter t = asNode $ do
     matchTy t
-    whileParsingElem t $ content $ pSectionContent
+    whileParsingElem t $ content $ pSectionContent pInline
   pExplicitMatter dm = do
     f <- one $ pMatter "frontMatter"
     m <- one $ pMatter "mainMatter"
@@ -591,12 +619,13 @@ pDoc = do
     zero
     pure $ Doc dm f m b
   pBare dm = do
-    c <- pSectionContent
+    c <- pSectionContent pInline
     pure $ Doc dm emptySectionContent c emptySectionContent
 
 -- * Running parsers
 
-parseDoc :: Node -> Either ScribaError (Doc Block (Inline InlineControl))
+parseDoc
+  :: Node -> Either ScribaError (Doc Block (Inline a) (Inline InlineControl))
 parseDoc = fmap snd . runScriba (asNode pDoc)
 
 -- * Decorating the document
@@ -617,21 +646,29 @@ getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
 
 -- TODO: don't discard the numbering information.
 runNumDoc
-  :: Numbering (Inline a) a
-  => Doc Block (Inline a)
-  -> (NumberData (Inline a), Doc Block (Inline a))
+  :: Numbering j a
+  => Doc Block j (Inline a)
+  -> (NumberData j, Doc Block j (Inline a))
 runNumDoc d@(Doc da _ _ _) =
   flip runNumberM (defaultNumberState da) $ numbering d
 
 runTitleDoc
-  :: Titling (Inline a) a => Doc Block (Inline a) -> Doc Block (Inline a)
-runTitleDoc d@(Doc da _ _ _) = flip runTitleM (docTitlingConfig da) $ titling d
+  :: forall a
+   . Titling (Inline a) a
+  => Doc Block (Inline Void) (Inline a)
+  -> Doc Block (Inline Void) (Inline a)
+runTitleDoc d@(Doc da _ _ _) =
+  flip runTitleM (fmap (traverseInline absurd) $ docTitlingConfig da)
+    $ (titling :: Doc Block (Inline Void) (Inline a)
+        -> TitleM (Inline a) (Doc Block (Inline Void) (Inline a))
+      )
+        d
 
 runRefDoc
   :: Referencing (Inline Void) (Inline a) (Inline b)
   => RefData (Inline Void)
-  -> Doc Block (Inline a)
-  -> Either DecorateError (Doc Block (Inline b))
+  -> Doc Block j (Inline a)
+  -> Either DecorateError (Doc Block j (Inline b))
 runRefDoc rd d = runRefM (referencing d) rd
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
@@ -657,8 +694,8 @@ traverseInline _ (IpageMark    s) = IpageMark s
 -- TODO: _very_ bad hack here, with adjustEnv. Might want to add a
 -- parameter to Doc.
 decorate
-  :: Doc Block (Inline InlineControl)
-  -> Either DecorateError (Doc Block (Inline Void))
+  :: Doc Block (Inline Void) (Inline InlineControl)
+  -> Either DecorateError (Doc Block (Inline Void) (Inline Void))
 decorate d =
   let (numdat, nd) = runNumDoc d
       td           = runTitleDoc nd
