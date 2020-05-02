@@ -8,6 +8,7 @@ module Text.Scriba.Element.InlineMath where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -18,8 +19,9 @@ newtype InlineMath = InlineMath
   { getInlineMath :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering InlineMath
+instance Numbering i InlineMath
 instance Titling i InlineMath
+instance Referencing i InlineMath InlineMath
 
 inlineMathToText :: InlineMath -> [Text]
 inlineMathToText (InlineMath t) = [t]

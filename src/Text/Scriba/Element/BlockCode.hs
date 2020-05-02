@@ -8,6 +8,7 @@ module Text.Scriba.Element.BlockCode where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -24,8 +25,9 @@ newtype BlockCode = BlockCode
   { getBlockCode :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering BlockCode
+instance Numbering i BlockCode
 instance Titling i BlockCode
+instance Referencing i BlockCode BlockCode
 
 blockCodeToText :: BlockCode -> [Text]
 blockCodeToText (BlockCode t) = [t]

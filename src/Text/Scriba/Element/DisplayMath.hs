@@ -7,6 +7,7 @@ module Text.Scriba.Element.DisplayMath where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -18,7 +19,8 @@ data DisplayMath
   | Gathered [Text]
   deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering DisplayMath
+instance Numbering i DisplayMath
+instance Referencing i DisplayMath DisplayMath
 instance Titling i DisplayMath
 
 -- TODO: have these be classes somewhere

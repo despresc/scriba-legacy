@@ -1,18 +1,22 @@
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Text.Scriba.Decorate.Numbering
   ( Numbering(..)
+  , NumberConfig(..)
   , bracketNumbering
-  , Numbers'
   , NumberStyle(..)
   , NumberState(..)
   , NumberM
   , runNumberM
+  , NumberData(..)
+  , NumberDatum(..)
   )
 where
 
@@ -84,89 +88,85 @@ type LocalNumber = Text
 
 -- TODO: consolidate some of this together? I.e. numberstyles and
 -- elemcounterrel could probably be merged in Markup
-data NumberState = NumberState
+data NumberState i = NumberState
   { nsCounterVals :: Map CounterName Int -- ^ The values of the counters
   , nsParentPath  :: ContainerPath   -- ^ The full, unfiltered path of the parent container.
-  , nsNumberStyles :: Map Text NumberStyle
   , nsCounterRel :: Map CounterName (Set CounterName)
-  , nsElemCounterRel :: Map ContainerName CounterName
-  , nsNumberData :: NumberData
+  , nsContainerData :: Map ContainerName (CounterName, NumberConfig i)
+  , nsNumberData :: NumberData i
   } deriving (Eq, Ord, Show)
 
 -- | Numbering data to be gathered from the AST.
-data NumberDatum = NumberDatum
+data NumberDatum i = NumberDatum
   { ndIdentifier :: Identifier
   , ndContainerName :: ContainerName
+  , ndNumberConfig :: NumberConfig i
   , ndNumber :: Text
   } deriving (Eq, Ord, Show)
 
-newtype NumberData = NumberData
-  { getNumberData :: [NumberDatum]
+newtype NumberData i = NumberData
+  { getNumberData :: [NumberDatum i]
   } deriving (Eq, Ord, Show, Semigroup, Monoid)
 
-addNumberDatum :: NumberDatum -> NumberData -> NumberData
+addNumberDatum :: NumberDatum i -> NumberData i -> NumberData i
 addNumberDatum x (NumberData y) = NumberData $ x : y
 
--- TODO: move this elsewhere?
-data NumberStyle = Decimal
-  deriving (Eq, Ord, Show, Read, Generic)
+newtype NumberM i a = NumberM
+  { unNumberM :: State (NumberState i) a
+  } deriving (Functor, Applicative, Monad, MonadState (NumberState i))
 
--- TODO
-newtype NumberM a = NumberM
-  { unNumberM :: State NumberState a
-  } deriving (Functor, Applicative, Monad, MonadState NumberState)
+class GNumbering i f where
+  gnumbering :: f a -> NumberM i (f a)
 
-class GNumbering f where
-  gnumbering :: f a -> NumberM (f a)
-
-instance GNumbering U1 where
+instance GNumbering i U1 where
   gnumbering = pure
 
-instance (GNumbering a, GNumbering b) => GNumbering (a :*: b) where
+instance (GNumbering i a, GNumbering i b) => GNumbering i (a :*: b) where
   gnumbering (x :*: y) = liftA2 (:*:) (gnumbering x) (gnumbering y)
 
-instance (GNumbering a, GNumbering b) => GNumbering (a :+: b) where
+instance (GNumbering i a, GNumbering i b) => GNumbering i (a :+: b) where
   gnumbering (L1 x) = L1 <$> gnumbering x
   gnumbering (R1 y) = R1 <$> gnumbering y
 
-instance GNumbering a => GNumbering (M1 i c a) where
+instance GNumbering i a => GNumbering i (M1 j c a) where
   gnumbering (M1 x) = M1 <$> gnumbering x
 
-instance Numbering a => GNumbering (K1 i a) where
+instance Numbering i a => GNumbering i (K1 j a) where
   gnumbering (K1 x) = K1 <$> numbering x
 
 -- TODO: fiddle with the types here. Might be able to have a generic
 -- numbering instance that works for things that actually participate
 -- in numbering.
-class Numbering a where
-  numbering :: a -> NumberM a
+class Numbering i a where
+  numbering :: a -> NumberM i a
 
-  default numbering :: (Generic a, GNumbering (Rep a)) => a -> NumberM a
+  default numbering :: (Generic a, GNumbering i (Rep a)) => a -> NumberM i a
   numbering = fmap to . gnumbering . from
 
-instance Numbering a => Numbering [a] where
+instance Numbering i a => Numbering i [a] where
   numbering = traverse numbering
 
-instance Numbering a => Numbering (Maybe a) where
+instance Numbering i a => Numbering i (Maybe a) where
   numbering = traverse numbering
 
-instance Numbering () where
+instance Numbering i () where
   numbering = pure
 
-instance Numbering Void where
+instance Numbering i Void where
   numbering = absurd
 
-instance Numbering Text where
+instance Numbering i Text where
   numbering = pure
 
-instance Numbering a => Numbering (Map k a) where
+instance Numbering i a => Numbering i (Map k a) where
   numbering = M.traverseWithKey $ const numbering
 
-instance Numbering Identifier
+instance Numbering i Identifier
+instance Numbering a i => Numbering a (NumberConfig i)
+instance Numbering a NumberStyle
+instance Numbering a ContainerName
 
-type Numbers' a = a -> NumberM a
-
-runNumberM :: NumberM a -> NumberState -> (NumberData, a)
+runNumberM :: NumberM i a -> NumberState i -> (NumberData i, a)
 runNumberM = go . State.runState . unNumberM
  where
   go f = retrieve . f
@@ -176,14 +176,14 @@ renderCounter :: NumberStyle -> Int -> LocalNumber
 renderCounter Decimal n = T.pack $ show n
 
 -- TODO: will need to accept config at some point!
-renderNumber :: ContainerPath -> CounterName -> LocalNumber -> NumberM Text
+renderNumber :: ContainerPath -> CounterName -> LocalNumber -> NumberM i Text
 renderNumber cp cname n = do
   cp' <- filterDepends cname cp
   pure $ T.intercalate "." $ reverse $ n : fmap snd cp'
 
 -- Filter that path so that only numbers coming from a counter with
 -- the given counter as a dependency remain.
-filterDepends :: CounterName -> ContainerPath -> NumberM ContainerPath
+filterDepends :: CounterName -> ContainerPath -> NumberM i ContainerPath
 filterDepends cname cp = do
   let hasAsDependant (cpcname, ln) = do
         deps <- fmap (fromMaybe mempty) $ gets $ M.lookup cpcname . nsCounterRel
@@ -194,18 +194,19 @@ filterDepends cname cp = do
   pure $ catMaybes cp'
 
 -- | Get the value of a counter.
-getCounter :: CounterName -> NumberM (Maybe Int)
+getCounter :: CounterName -> NumberM i (Maybe Int)
 getCounter cname = gets $ M.lookup cname . nsCounterVals
 
-lookupCounter :: ContainerName -> NumberM (Maybe CounterName)
-lookupCounter cname = gets $ M.lookup cname . nsElemCounterRel
+lookupContainerData
+  :: ContainerName -> NumberM i (Maybe (CounterName, NumberConfig i))
+lookupContainerData cname = gets $ M.lookup cname . nsContainerData
 
-setCounter :: CounterName -> Int -> NumberM ()
+setCounter :: CounterName -> Int -> NumberM i ()
 setCounter cname n = modify
   $ \s -> s { nsCounterVals = M.adjust (const n) cname $ nsCounterVals s }
 
 -- | Reset a counter to 1, if it exists.
-resetCounter :: CounterName -> NumberM ()
+resetCounter :: CounterName -> NumberM i ()
 resetCounter cname = setCounter cname 1
 
 -- TODO: this assumes that things that should _not_ be numbered will
@@ -214,7 +215,7 @@ resetCounter cname = setCounter cname 1
 
 -- TODO: lenses?
 -- TODO: could probably use alterF here.
-getIncCounter :: CounterName -> NumberM (Maybe Int)
+getIncCounter :: CounterName -> NumberM i (Maybe Int)
 getIncCounter cname = do
   mn <- gets $ \s -> M.lookup cname (nsCounterVals s)
   for mn $ \n -> do
@@ -225,7 +226,7 @@ getIncCounter cname = do
 -- state, returning the state they had previously as a set.
 
 -- TODO: more efficient way?
-getResetDependants :: CounterName -> NumberM (Set (CounterName, Int))
+getResetDependants :: CounterName -> NumberM i (Set (CounterName, Int))
 getResetDependants cname = do
   ds <- gets $ fromMaybe mempty . M.lookup cname . nsCounterRel
   let dslist = Set.toList ds
@@ -236,13 +237,13 @@ getResetDependants cname = do
   traverse_ resetCounter ds
   pure ds'
 
-restoreDependants :: Set (CounterName, Int) -> NumberM ()
+restoreDependants :: Set (CounterName, Int) -> NumberM i ()
 restoreDependants = traverse_ $ uncurry setCounter
 
-setParentPath :: ContainerPath -> NumberM ()
+setParentPath :: ContainerPath -> NumberM i ()
 setParentPath p = modify $ \s -> s { nsParentPath = p }
 
-tellNumberDatum :: NumberDatum -> NumberM ()
+tellNumberDatum :: NumberDatum i -> NumberM i ()
 tellNumberDatum x =
   modify $ \s -> s { nsNumberData = addNumberDatum x $ nsNumberData s }
 
@@ -252,21 +253,24 @@ tellNumberDatum x =
 -- come up with some kind of ref configuration/sensible defualt
 -- fallbacks for manually numbered containers.
 bracketNumbering
-  :: Maybe Text -> Maybe Identifier -> (Maybe Text -> NumberM a) -> NumberM a
+  :: Maybe Text
+  -> Maybe Identifier
+  -> (Maybe Text -> NumberM i a)
+  -> NumberM i a
 bracketNumbering (Just typ) mId f = do
   let containername = ContainerName typ
-  mcountername <- lookupCounter containername
-  mnumdata     <- fmap join $ for mcountername $ \countername -> do
+  mcontainerdata <- lookupContainerData containername
+  mnumdata <- fmap join $ for mcontainerdata $ \(countername, numconf) -> do
     mn <- getIncCounter countername
     for mn $ \n -> do
       oldPath       <- gets nsParentPath
       oldDependants <- getResetDependants countername
-      numbersty     <- gets
-        $ \s -> fromMaybe Decimal $ M.lookup typ (nsNumberStyles s)
+      let numbersty   = ncNumberStyle numconf
       let localNumber = renderCounter numbersty n
       num <- renderNumber oldPath countername localNumber
       setParentPath $ (countername, localNumber) : oldPath
-      for_ mId $ \ident -> tellNumberDatum $ NumberDatum ident containername num
+      for_ mId $ \ident ->
+        tellNumberDatum $ NumberDatum ident containername numconf num
       pure (num, (oldPath, oldDependants))
   let (mnumgen, mpath) = unzips mnumdata
   a <- f mnumgen

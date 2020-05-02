@@ -8,6 +8,7 @@ module Text.Scriba.Element.PageMark where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -18,7 +19,8 @@ newtype PageMark = PageMark
   { getPageMark :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering PageMark
+instance Numbering a PageMark
+instance Referencing i PageMark PageMark
 instance Titling a PageMark
 
 pageMarkToText :: PageMark -> [Text]

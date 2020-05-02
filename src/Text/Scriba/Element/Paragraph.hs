@@ -1,13 +1,16 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.Paragraph where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -16,7 +19,9 @@ import           GHC.Generics                   ( Generic )
 newtype Paragraph i = Paragraph
   { getParagraph :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Titling a)
+    deriving anyclass (Numbering a, Titling a)
+
+instance Referencing i a b => Referencing i (Paragraph a) (Paragraph b)
 
 paragraphToText :: (i -> [Text]) -> Paragraph i -> [Text]
 paragraphToText f (Paragraph t) = concatMap f t

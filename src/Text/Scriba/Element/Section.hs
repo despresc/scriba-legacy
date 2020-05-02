@@ -11,8 +11,9 @@
 module Text.Scriba.Element.Section where
 
 import           Text.Scriba.Element.TitleComponent
-import           Text.Scriba.Decorate.Common    ( Identifier )
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Control.Applicative            ( (<|>) )
@@ -57,12 +58,14 @@ data Section b i = Section
 data SectionContent b i = SectionContent
   { secPreamble :: [b i]
   , secChildren :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering a)
 
 deriving instance ( FromTitleComponent i
                   , Titling i (b i)
                   , Titling i i
                   ) => Titling i (SectionContent b i)
+
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (SectionContent f a) (SectionContent g b) where
 
 -- TODO: may want to restrict the inlines that can appear in a
 -- title. May also want to have a toc title and header/running title
@@ -72,17 +75,16 @@ deriving instance ( FromTitleComponent i
 newtype Title i = Title
   { titleBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Titling a)
+    deriving anyclass (Numbering a, Titling a)
+
+instance Referencing i a b => Referencing i (Title a) (Title b)
 
 emptySectionContent :: SectionContent b i
 emptySectionContent = SectionContent [] []
 
 -- * Numbering
 
-numTitle :: Numbers' [i] -> Numbers' (Title i)
-numTitle f (Title i) = Title <$> f i
-
-instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
+instance (Numbering a (b i), Numbering a i) => Numbering a (Section b i) where
   numbering (Section mty mId tbody tfull mnum c) =
     bracketNumbering mty mId $ \mnumgen -> do
       tbody' <- numbering tbody
@@ -110,16 +112,4 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
                    mnum
                    c'
 
-{-
-   where
-    mtigen = do
-      t     <- mty
-      sconf <- M.lookup t $ tcSectionConfig m
-      let template = sconfTitleTemplate sconf
-          toInlStr = (: []) . Istr . Str
-      Title <$> runTemplate template
-                            FormalTemplate
-                            Nothing
-                            (toInlStr <$> mnum)
-                            (titleBody <$> mtbody)
-  -}
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Section f a) (Section g b)

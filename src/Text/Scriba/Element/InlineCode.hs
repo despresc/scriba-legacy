@@ -8,6 +8,7 @@ module Text.Scriba.Element.InlineCode where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -19,7 +20,8 @@ newtype InlineCode = InlineCode
   { getInlineCode :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering InlineCode
+instance Numbering i InlineCode
+instance Referencing i InlineCode InlineCode
 instance Titling i InlineCode
 
 inlineCodeToText :: InlineCode -> [Text]

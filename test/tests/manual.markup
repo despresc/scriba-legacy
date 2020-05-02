@@ -166,16 +166,40 @@ Doc
     , docElemCounterRel =
         fromList
           [ ( ContainerName { unContainerName = "lemma" }
-            , CounterName { unCounterName = "theorem" }
+            , ( CounterName { unCounterName = "theorem" }
+              , NumberConfig
+                  { ncNumberStyle = Decimal
+                  , ncRefPrefix = Nothing
+                  , ncRefSep = Nothing
+                  }
+              )
             )
           , ( ContainerName { unContainerName = "section" }
-            , CounterName { unCounterName = "section" }
+            , ( CounterName { unCounterName = "section" }
+              , NumberConfig
+                  { ncNumberStyle = Decimal
+                  , ncRefPrefix = Nothing
+                  , ncRefSep = Nothing
+                  }
+              )
             )
           , ( ContainerName { unContainerName = "subsection" }
-            , CounterName { unCounterName = "subsection" }
+            , ( CounterName { unCounterName = "subsection" }
+              , NumberConfig
+                  { ncNumberStyle = Decimal
+                  , ncRefPrefix = Just [ Istr Str { getStr = "\167" } ]
+                  , ncRefSep = Nothing
+                  }
+              )
             )
           , ( ContainerName { unContainerName = "theorem" }
-            , CounterName { unCounterName = "theorem" }
+            , ( CounterName { unCounterName = "theorem" }
+              , NumberConfig
+                  { ncNumberStyle = Decimal
+                  , ncRefPrefix = Nothing
+                  , ncRefSep = Nothing
+                  }
+              )
             )
           ]
     , docCounterRel =
@@ -188,13 +212,6 @@ Doc
             )
           , ( CounterName { unCounterName = "subsection" } , fromList [] )
           , ( CounterName { unCounterName = "theorem" } , fromList [] )
-          ]
-    , docNumberStyles =
-        fromList
-          [ ( "lemma" , Decimal )
-          , ( "section" , Decimal )
-          , ( "subsection" , Decimal )
-          , ( "theorem" , Decimal )
           ]
     }
   SectionContent { secPreamble = [] , secChildren = [] }
@@ -1078,7 +1095,22 @@ Doc
                                           { getParagraph =
                                               [ Istr
                                                   Str { getStr = "For example, we can reference " }
-                                              , Istr Str { getStr = "" }
+                                              , Iref
+                                                  Ref
+                                                    { refTarget =
+                                                        Identifier { getIdentifier = "elem-ref" }
+                                                    , refContainer =
+                                                        ContainerName
+                                                          { unContainerName = "subsection" }
+                                                    , refNumberConfig =
+                                                        NumberConfig
+                                                          { ncNumberStyle = Decimal
+                                                          , ncRefPrefix =
+                                                              Just [ Istr Str { getStr = "\167" } ]
+                                                          , ncRefSep = Nothing
+                                                          }
+                                                    , refNumber = "2.3"
+                                                    }
                                               , Istr Str { getStr = ", this section, using\n" }
                                               , Icode
                                                   InlineCode { getInlineCode = "{ref@elem-ref}" }

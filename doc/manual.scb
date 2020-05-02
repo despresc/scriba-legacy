@@ -42,6 +42,8 @@
         {n {after|.}}}
       {numbering {relative@section}
       		 {style@decimal}}
+      {ref
+        {prefix|§}}
     }
   }
 }
@@ -264,7 +266,7 @@ overhead. This is only a syntactic convenience in this case; the
 inline example above could equally well have been written
 {code`{math|f(x, y) = x^\{y+6\}}`}.
 
-{%TODO: 
+{%TODO:
 
 - link to amsmath, sections on numbering and referencing, maybe
   whatever manual section discusses mathematics in more detail.

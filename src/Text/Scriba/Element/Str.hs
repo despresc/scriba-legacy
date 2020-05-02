@@ -6,6 +6,7 @@ module Text.Scriba.Element.Str where
 
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Data.Text                      ( Text )
@@ -16,8 +17,9 @@ newtype Str = Str
   { getStr :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering Str
+instance Numbering i Str
 instance Titling i Str
+instance Referencing i Str Str
 
 strToText :: Str -> [Text]
 strToText (Str t) = [t]

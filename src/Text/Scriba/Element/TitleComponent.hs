@@ -1,10 +1,14 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Text.Scriba.Element.TitleComponent where
 
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Control.Applicative            ( (<|>) )
@@ -21,12 +25,16 @@ data TitlePart
   | TitleNumber
   | TitleSep
   | TitleBody
-  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering a, Titling a)
+
+instance Referencing i TitlePart TitlePart
 
 -- A title component, with before and after components.
 data TitleComponent i
   = TitleComponent TitlePart [i] [i] [i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a)
+
+instance Referencing i a b => Referencing i (TitleComponent a) (TitleComponent b)
 
 titleComponentToText :: (i -> [Text]) -> TitleComponent i -> [Text]
 titleComponentToText f (TitleComponent _ i j k) =

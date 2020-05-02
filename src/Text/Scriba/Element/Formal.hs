@@ -11,7 +11,9 @@ import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Intermediate
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           Control.Monad                  ( join )
@@ -88,7 +90,7 @@ pFormal pBody pInl = whileMatchTy "formalBlock" $ do
 
 -- TODO: we don't skip numbering a formal block when it already has a
 -- number. Should have config for that sort of thing.
-instance (Numbering (b i), Numbering i) => Numbering (Formal b i) where
+instance (Numbering a (b i), Numbering a i) => Numbering a (Formal b i) where
   numbering (Formal mty mId mnum ti note tsep cont concl) =
     bracketNumbering mty mId $ \mnumgen -> do
       ti'    <- numbering ti
@@ -130,17 +132,4 @@ instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Form
                   cont'
                   (conc' <|> join concgen)
 
-{- TODO: restore
--- * Gathering linkage data
-
--- TODO: put a data type with the linking data in it somewhere
--- TODO: add source positions to linkage data?
-instance (Linking (Maybe Text) i, Linking (Maybe Text) (b i)) => Linking (Maybe Text) (Formal b i) where
-  linkingData (Formal mty mId mnum ti note tsep cont concl) = do
-    for_ mId $ \ident -> tell $ LinkageData [(ident, mty)]
-    linkingData ti
-    linkingData note
-    linkingData tsep
-    linkingData cont
-    linkingData concl
--}
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Formal f a) (Formal g b)

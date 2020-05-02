@@ -10,6 +10,7 @@
 
 module Text.Scriba.Decorate.Titling where
 
+import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 
 import           Control.Applicative            ( liftA2 )
@@ -29,45 +30,6 @@ import           GHC.Generics
 -- TODO: this also responsible for generating the conclusion of formal
 -- blocks. Sort of misleading that it happens here, perhaps...
 
--- TODO: richer whitespace options not in the body of the template?
--- E.g. stripping all whitespace, so that the template is a little
--- more understandable.
--- TODO: make the title template optional?
-data FormalConfig i = FormalConfig
-  { fconfTitleTemplate :: Maybe (TitleTemplate i)
-  , fconfTitleSep :: Maybe [i]
-  , fconfConcl :: Maybe [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
-
-newtype SectionConfig i = SectionConfig
-  { sconfTitleTemplate :: Maybe (TitleTemplate i)
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
-
--- Consolidate the title templates?
-data TitlingConfig i = TitlingConfig
-  { tcFormalConfig :: Map Text (FormalConfig i)
-  , tcSectionConfig :: Map Text (SectionConfig i)
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
-
--- TODO: might need more configuration related to component placement.
--- Perhaps also for whitespace?
--- TODO: I think a lot of these inline voids can be polymorphic, right?
-data TitleTemplate a = TitleTemplate
-  { ttemplatePrefix :: Surround a
-  , ttemplateNumber :: Surround a
-  , ttemplateBody :: Surround a
-  , ttemplatePartSep :: [a]
-  , ttemplatePrefixFirst :: Bool
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
-
--- TODO: have this be a common type, and have TitlePart use it? Would
--- need a middle bit that could be () to use in the title config. Or
--- perhaps not.
-data Surround a = Surround
-  { surroundBefore :: [a]
-  , surroundMid :: Maybe [a]
-  , surroundAfter :: [a]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 newtype TitleM i a = TitleM
   { unTitleM :: Reader (TitlingConfig i) a
@@ -131,6 +93,9 @@ instance Titling i a => Titling i (Map k a) where
   titling = M.traverseWithKey $ const titling
 
 instance Titling a Identifier
+instance Titling a i => Titling a (NumberConfig i)
+instance Titling a NumberStyle
+instance Titling a ContainerName
 
 data TitleTemplateStyle
   = FormalTemplate

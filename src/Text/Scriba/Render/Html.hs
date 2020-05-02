@@ -254,9 +254,16 @@ renderDisplayMathContent (Gathered ts) =
     <> T.intercalate "//\n" ts
     <> "\\end{gathered}"
 
--- TODO: fill this in.
+-- TODO: add links
+-- TODO: wrap separator?
 renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
-renderRef _ _ = pure mempty
+renderRef f (Ref _ _ (NumberConfig _ mpref msep) num) = do
+  mpref' <- traverse (foldBy f) mpref
+  msep'  <- traverse (foldBy f) msep
+  pure $ H.span ! A.class_ "ref" $ do
+    renderMaybe mpref' $ H.span ! A.class_ "prefix"
+    renderMaybe msep' id
+    H.span ! A.class_ "number" $ H.toHtml num
 
 -- | Render a heading title using the ambient header depth.
 

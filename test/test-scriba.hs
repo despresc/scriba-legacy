@@ -26,10 +26,13 @@ parseOrExplode name t = case SP.parseDoc' name t of
   Right a -> a
 
 -- with decoration
+-- TODO: nicer looking messages
 markupOrExplode :: SI.Node -> SM.Doc SM.Block (SM.Inline Void)
 markupOrExplode n = case SM.parseDoc n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
-  Right a -> SM.decorate a
+  Right a -> case SM.decorate a of
+    Left  e  -> error $ show e
+    Right a' -> a'
 
 byteShow :: Show a => a -> BL.ByteString
 byteShow = TLE.encodeUtf8 . TL.pack . Pretty.ppShow

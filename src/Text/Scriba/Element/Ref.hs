@@ -7,30 +7,37 @@
 
 module Text.Scriba.Element.Ref where
 
+import           Text.Scriba.Counters
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
+import           Text.Scriba.Decorate.Titling
 import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Intermediate
-import           Text.Scriba.Decorate.Numbering
-import           Text.Scriba.Decorate.Titling
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
 
 newtype SourceRef = SourceRef
-  { getRef :: Identifier
+  { sourceRefTarget :: Identifier
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering SourceRef
+instance Numbering i SourceRef
 instance Titling i SourceRef
 
--- TODO: A resolved reference holds the identifier of a known element,
--- its type, its rendered number, its
-data Ref a = Ref
-  { refIdentifier :: Identifier
+-- TODO: may need more renditional information here, from Numbering and
+-- Referencing, like relative position of the number and prefix.
+-- May also need source overrides on certain elements of this.
+data Ref i = Ref
+  { refTarget :: Identifier
+  , refContainer :: ContainerName
+  , refNumberConfig :: NumberConfig i
+  , refNumber :: Text
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
-instance Numbering (Ref a)
-instance Titling i (Ref a)
+instance Numbering a i => Numbering a (Ref i)
+instance Titling a i => Titling a (Ref i)
+instance Referencing i a b => Referencing i (Ref a) (Ref b)
 
 -- TODO: Not sure what to do here.
 refToText :: (a -> [Text]) -> Ref a -> [Text]
@@ -43,3 +50,7 @@ pSourceRef = whileMatchTy "ref" $ do
     [t] -> useState [t] $ SourceRef <$> pIdent
     _   -> throwError $ Msg "ref takes exactly one identifier as an argument"
 
+resolveRef :: SourceRef -> RefM i (Ref i)
+resolveRef (SourceRef i) = do
+  (cn, nc, num) <- lookupRefData i
+  pure $ Ref i cn nc num

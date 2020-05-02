@@ -1,13 +1,16 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Text.Scriba.Element.List where
 
 import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 
 import           GHC.Generics                   ( Generic )
@@ -23,8 +26,11 @@ import           GHC.Generics                   ( Generic )
 data List b i
   = Ulist [MixedBody b i]
   | Olist [MixedBody b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering a, Titling a)
 
+instance ( Referencing i (f a) (g b)
+         , Referencing i a b
+         ) => Referencing i (List f a) (List g b)
 
 pList :: Scriba [Node] (MixedBody b i) -> Scriba Element (List b i)
 pList p = pOlist p <|> pUlist p

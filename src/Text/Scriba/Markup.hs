@@ -46,34 +46,27 @@ module Text.Scriba.Markup
   , VariedVar(..)
   , BlockCode(..)
   , Ref(..)
+  , NumberConfig(..)
   , decorate
   )
 where
 
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Counters
 import           Text.Scriba.Intermediate
 import           Text.Scriba.Element
-import           Text.Scriba.Decorate.Numbering ( NumberStyle(..)
-                                                , Numbering(..)
-                                                , NumberState(..)
-                                                , runNumberM
-                                                )
-import           Text.Scriba.Decorate.Titling   ( FormalConfig(..)
-                                                , TitleTemplate(..)
-                                                , Surround(..)
-                                                , SectionConfig(..)
-                                                , TitlingConfig(..)
-                                                , TitleTemplateStyle(..)
-                                                , Titling(..)
-                                                , runTitleM
-                                                )
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
+import           Text.Scriba.Decorate.Titling
 
+import           Control.Monad                  ( join )
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Functor                   ( ($>) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
                                                 )
 import           Data.Map.Strict                ( Map )
+import qualified Data.Map.Merge.Strict         as M
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -175,14 +168,15 @@ Unified element type configuration? Elements can have have
 
 -}
 
-data Block i
-  = Bformal !(Formal Block i)
+data Block a
+  = Bformal !(Formal Block a)
   | Bcode !BlockCode
-  | Bpar !(Paragraph i)
-  | Blist !(List Block i)
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
+  | Bpar !(Paragraph a)
+  | Blist !(List Block a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering i)
 
 deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
+instance Referencing i (Inline a) (Inline b) => Referencing i (Block (Inline a)) (Block (Inline b))
 
 -- TODO: rename Math to InlineMath?
 -- TODO: Number is [Inline] because I'm lazy with runVaried. It should
@@ -203,11 +197,37 @@ data Inline a
   | Iref !(Ref (Inline a))
   | ItitleComponent !(TitleComponent (Inline a))
   | Icontrol !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering i, Titling i)
+
+-- TODO: could make this more flexible with a "without" class
+
+-- TODO: figure something out here.
+-- I have a (SourceRef -> RefM i (Ref i)). I can promote that, right
+-- now, to an InlineControl -> RefM i (Ref i)
+-- Then I can promote that to an (Inline InlineControl -> RefM i
+-- (Inline i) The issue is that to be aware of that, the deriving
+-- mechanism needs to be aware of the monadic nature of Inline, and so
+-- be able to take what is in effect an (a -> Inline b) and turn that
+-- into an (Inline a -> Inline b). So essentially I need another class
+-- to make this nice
+instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
+  referencing (Istr            x) = Istr <$> referencing x
+  referencing (Iemph           x) = Iemph <$> referencing x
+  referencing (Iquote          x) = Iquote <$> referencing x
+  referencing (IinlineMath     x) = IinlineMath <$> referencing x
+  referencing (IdisplayMath    x) = IdisplayMath <$> referencing x
+  referencing (Icode           x) = Icode <$> referencing x
+  referencing (IpageMark       x) = IpageMark <$> referencing x
+  referencing (Iref            x) = Iref <$> referencing x
+  referencing (ItitleComponent x) = ItitleComponent <$> referencing x
+  referencing (Icontrol        x) = referencing x
+
+instance Referencing (Inline b) InlineControl (Inline b) where
+  referencing (IcRef sr) = Iref <$> resolveRef sr
 
 data InlineControl
   = IcRef !SourceRef
-  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling i)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering i, Titling i)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -288,6 +308,8 @@ data VariedVar
 -- names. They should have the same name as the corresponding title
 -- attributes.
 -- TODO: move this (and the other attribute parsers) to Titling.
+-- TODO: Should the number config be a Maybe (and be in with
+-- ContainerRelation?)
 pFormalConfig
   :: Scriba
        Element
@@ -295,7 +317,7 @@ pFormalConfig
            Text
            ( FormalConfig (Inline InlineControl)
            , Maybe ContainerRelation
-           , Maybe NumberStyle
+           , Maybe (NumberConfig (Inline InlineControl))
            )
        )
 pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
@@ -306,11 +328,17 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate FormalTemplate)
-      titleSep      <- attrMaybe "titleSep" $ allContentOf pInline
-      numberingConf <- attrMaybe "numbering" $ pCounterDepends
-      concl         <- attrMaybe "conclusion" $ allContentOf pInline
-      let (counterDepends, ns) = unzips numberingConf
-      pure $ (FormalConfig titleTemplate titleSep concl, counterDepends, ns)
+      titleSep          <- attrMaybe "titleSep" $ allContentOf pInline
+      numberingConf     <- attrMaybe "numbering" $ pCounterDepends
+      (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
+        s <- attrMaybe "sep" $ allContentOf pInline
+        p <- attrMaybe "prefix" $ allContentOf pInline
+        pure (s, p)
+      concl <- attrMaybe "conclusion" $ allContentOf pInline
+      let (counterDepends, nc) = unzips $ do
+            (containerRel, ns) <- numberingConf
+            pure (containerRel, NumberConfig ns (join refPref) (join refSep))
+      pure $ (FormalConfig titleTemplate titleSep concl, counterDepends, nc)
 
 -- TODO: more exotic orderings. Perhaps make prefix/numberFirst
 -- exclusive as well. Also options for suppressing particular
@@ -357,7 +385,7 @@ pSectionConfig
            Text
            ( SectionConfig (Inline InlineControl)
            , Maybe ContainerRelation
-           , Maybe NumberStyle
+           , Maybe (NumberConfig (Inline InlineControl))
            )
        )
 pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
@@ -370,9 +398,15 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
     whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate SectionTemplate)
-      numberingConf <- attrMaybe "numbering" $ pCounterDepends
-      let (counterDepends, ns) = unzips numberingConf
-      pure $ (SectionConfig titleTemplate, counterDepends, ns)
+      numberingConf     <- attrMaybe "numbering" $ pCounterDepends
+      (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
+        s <- attrMaybe "sep" $ allContentOf pInline
+        p <- attrMaybe "prefix" $ allContentOf pInline
+        pure (s, p)
+      let (counterDepends, nc) = unzips $ do
+            (containerRel, ns) <- numberingConf
+            pure (containerRel, NumberConfig ns (join refPref) (join refSep))
+      pure $ (SectionConfig titleTemplate, counterDepends, nc)
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an
@@ -511,6 +545,7 @@ pControl = IcRef <$> pSourceRef
 -- TODO: document section config takes precedence over formal block
 -- config re: counters, in particular that there is no namespacing
 -- going on.
+-- TODO: add configuration for elemrel
 pDoc :: Scriba Element (Doc Block (Inline InlineControl))
 pDoc = do
   matchTy "scriba"
@@ -520,11 +555,10 @@ pDoc = do
       tplain <- attrMaybe "plainTitle" $ fmap T.concat $ allContentOf simpleText
       fconfig <- mattr "formalBlocks" $ pFormalConfig
       sconfig <- mattr "sections" $ pSectionConfig
+      -- TODO: clean up
       let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig
           mcrel (x, y) = (,) (ContainerName x) <$> y
-          fnstyle                      = M.mapMaybe id fnstyleRaw
           (sconf, srelRaw, snstyleRaw) = unzips3 sconfig
-          snstyle                      = M.mapMaybe id snstyleRaw
       (elemrel, crel) <-
         case
           compileContainerRelations
@@ -532,12 +566,19 @@ pDoc = do
         of
           Left  e -> throwError $ Msg e
           Right a -> pure a
+      let
+        mergeRel =
+          M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
+        toCNKey  = M.mapKeysMonotonic ContainerName
+        elemrel' = mergeRel
+          elemrel
+          (M.mapMaybe id $ toCNKey snstyleRaw <> toCNKey fnstyleRaw) -- M.map (\x -> (x, NumberConfig Decimal Nothing)) elemrel
       pure $ DocAttrs (Title t)
                       (fromMaybe (stripMarkup (const []) t) tplain)
                       (TitlingConfig fconf sconf)
-                      elemrel
+                      elemrel'
                       crel
-                      (snstyle <> fnstyle)
+--                      (snstyle <> fnstyle)
     content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do
@@ -560,23 +601,38 @@ parseDoc = fmap snd . runScriba (asNode pDoc)
 
 -- * Decorating the document
 
-defaultNumberState :: DocAttrs i -> NumberState
+-- TODO: add in configuration for prefixes and other things
+defaultNumberState :: DocAttrs i -> NumberState i
 defaultNumberState da = NumberState initCounters
                                     []
-                                    (docNumberStyles da)
                                     (docCounterRel da)
                                     (docElemCounterRel da)
                                     mempty
   where initCounters = docCounterRel da $> 1
 
+
+getRefEnv :: NumberData i -> RefData i
+getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
+  where go (NumberDatum i cn nc num) = (i, (cn, nc, num))
+
 -- TODO: don't discard the numbering information.
-runNumDoc :: Numbering a => Doc Block (Inline a) -> Doc Block (Inline a)
+runNumDoc
+  :: Numbering (Inline a) a
+  => Doc Block (Inline a)
+  -> (NumberData (Inline a), Doc Block (Inline a))
 runNumDoc d@(Doc da _ _ _) =
-  snd $ flip runNumberM (defaultNumberState da) $ numbering d
+  flip runNumberM (defaultNumberState da) $ numbering d
 
 runTitleDoc
   :: Titling (Inline a) a => Doc Block (Inline a) -> Doc Block (Inline a)
 runTitleDoc d@(Doc da _ _ _) = flip runTitleM (docTitlingConfig da) $ titling d
+
+runRefDoc
+  :: Referencing (Inline Void) (Inline a) (Inline b)
+  => RefData (Inline Void)
+  -> Doc Block (Inline a)
+  -> Either DecorateError (Doc Block (Inline b))
+runRefDoc rd d = runRefM (referencing d) rd
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
@@ -593,12 +649,24 @@ traverseInline _ (IdisplayMath s) = IdisplayMath s
 traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
 
+
 -- TODO: may need errors, a state for numbering, environment for
 -- titling. Or perhaps pipelined for modularity, with a shared error
 -- type?
 -- TODO: do something with the control elements, obviously.
-decorate :: Doc Block (Inline InlineControl) -> Doc Block (Inline Void)
-decorate = stripControl . runTitleDoc . runNumDoc
+-- TODO: _very_ bad hack here, with adjustEnv. Might want to add a
+-- parameter to Doc.
+decorate
+  :: Doc Block (Inline InlineControl)
+  -> Either DecorateError (Doc Block (Inline Void))
+decorate d =
+  let (numdat, nd) = runNumDoc d
+      td           = runTitleDoc nd
+      erd          = runRefDoc (adjustEnv $ getRefEnv numdat) td
+  in  erd
  where
-  stripControl = fmap $ traverseInline go
-  go           = const $ Istr $ Str ""
+  adjustEnv (RefData m) = RefData $ (\(x, y, z) -> (x, adjustNC y, z)) <$> m
+  adjustNC (NumberConfig ns m p) =
+    NumberConfig ns (map adjustInls <$> m) (map adjustInls <$> p)
+  adjustInls = traverseInline $ const $ Istr $ Str ""
+
