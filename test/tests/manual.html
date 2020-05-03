@@ -83,15 +83,18 @@ x^{y+6}\)</span>, and displayed formulas like
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}&#39;}{r&#39;^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}&#39;}{r&#39;^2}
-\]</span>
+\tag{1.4.1}\label{displayFormulaExample}\]</span>
 are available, among other more complex constructs. The formulas
 themselves are written in TeX syntax by default, and rendering in HTML
 is handled with MathJax. Be aware that amsmath-style environments like
 <code>gathered</code> or <code>alignedat</code> should not be used inside
 <code>math</code> or <code>dmath</code> elements themselves. Scriba itself
 implements some of these environments as elements, so that they can
-interact with its built-in numbering and referencing capabilities.</p><p>The examples of formulas above were entered into the source like so:</p><div class="codeBlock"><pre><code>Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
-{dmath`
+interact with its built-in numbering and referencing
+capabilities. This means that we can refer to
+<a class="ref" href="#mjx-eqn-displayFormulaExample"><span class="prefix">eqn.</span> <span class="number">1.4.1</span></a> with <code>{ref@displayFormulaExample}</code>
+and have the reference be rendered properly.</p><p>The examples of formulas above were entered into the source like so:</p><div class="codeBlock"><pre><code>Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
+{dmath {id|displayFormulaExample} `
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}&#39;}{r&#39;^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}&#39;}{r&#39;^2}

@@ -253,8 +253,16 @@ renderPageMark :: PageMark -> Render Html
 renderPageMark (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
 
 -- TODO: assumes mathjax or katex
+-- TODO: not great
 renderDisplayMathContent :: DisplayMath -> Render Html
-renderDisplayMathContent (Formula t) = pure $ H.toHtml t
+renderDisplayMathContent (Formula mId mnum t) = pure $ H.toHtml $ withLabNum t
+  where
+    withNum Nothing = id
+    withNum (Just n) = (<> ("\\tag{" <> n <> "}"))
+    withLab Nothing = id
+    withLab (Just x) = (<> ("\\label{" <> getIdentifier x <> "}"))
+    withLabNum = withLab mId . withNum mnum
+
 renderDisplayMathContent (Gathered ts) =
   pure
     $  H.toHtml
@@ -264,14 +272,21 @@ renderDisplayMathContent (Gathered ts) =
 
 -- TODO: add links
 -- TODO: wrap separator?
+
+-- TODO: we're special-casing dmath for now, so references to math
+-- work out. Later we'll want to configure mathjax's tagging.
 renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
-renderRef f (Ref (Identifier lab) _ (NumberConfig _ mpref msep) num) = do
+renderRef f (Ref (Identifier lab) containername (NumberConfig _ mpref msep) num) = do
   mpref' <- traverse (foldBy f) mpref
   msep'  <- traverse (foldBy f) msep
-  pure $ H.a ! A.class_ "ref" ! A.href (H.toValue $ "#" <> lab) $ do
+  pure $ H.a ! A.class_ "ref" ! A.href (H.toValue refVal) $ do
     renderMaybe mpref' $ H.span ! A.class_ "prefix"
     renderMaybe msep' id
     H.span ! A.class_ "number" $ H.toHtml num
+  where
+    refVal = case getContainerName containername of
+      "dmath" -> "#mjx-eqn-" <> lab
+      _       -> "#" <> lab
 
 -- | Render a heading title using the ambient header depth.
 

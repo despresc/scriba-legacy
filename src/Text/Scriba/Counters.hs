@@ -39,20 +39,20 @@ import           GHC.Generics                   ( Generic )
 -- such as a @section@, @theorem@, or @lemma@. Numbering relations are specified
 -- as relations between container names.
 newtype ContainerName = ContainerName
-  { unContainerName :: Text
+  { getContainerName :: Text
   } deriving (Eq, Ord, Show, Read, IsString, Generic)
 
 -- | A 'CounterName' is the name of a counter, which will have a numeric state
 -- during numbering. For each container that doesn't 'Share' the numbering of
 -- another container, we create a counter with the same name.
 newtype CounterName = CounterName
-  { unCounterName :: Text
+  { getCounterName :: Text
   } deriving (Eq, Ord, Show, Read, IsString, Generic)
 
 -- | We will need to make counter names out of the names of containers that
 -- don't 'Share' a counter.
 toCounterName :: ContainerName -> CounterName
-toCounterName = CounterName . unContainerName
+toCounterName = CounterName . getContainerName
 
 -- | A simple monad for throwing error messages while compiling the relations.
 newtype CounterM a = CounterM
@@ -99,7 +99,7 @@ guardWellFormed =
         . ("Cyclic dependency detected among containers: " <>)
         . foldl' (<>) mempty
         . List.intersperse ","
-        $ fmap unContainerName y
+        $ fmap getContainerName y
 
 -- | Ensure that the union of all the @z@ in @'Relative' z@ in the relations is
 -- a subset of the set of 'ContainerName' keys. We check elsewhere that the
@@ -117,9 +117,9 @@ guardFullySpecified l = traverse_ (uncurry guardIsIn)
     | otherwise
     = throwError
       $  "Container "
-      <> unContainerName k
+      <> getContainerName k
       <> " is declared to be relative to  "
-      <> unContainerName x
+      <> getContainerName x
       <> " but that container does not have an entry in the relations."
 
 -- | Given a container name, look up what it is shared with (recursively, if
@@ -131,7 +131,7 @@ lookupUltimate
   -> RawCounterDependency -- ^ The (non-)inverted dependency graph
   -> CounterM CounterName
 lookupUltimate k rcd = case Map.lookup k rcd of
-  Nothing         -> throwError $ "Unknown container " <> unContainerName k
+  Nothing         -> throwError $ "Unknown container " <> getContainerName k
   Just (Share k') -> lookupUltimate k' rcd
   Just _          -> pure $ toCounterName k
 
@@ -212,7 +212,7 @@ compileContainerRelations rcd = runCounterM $ do
   let (g, n, mv) = getInverted $ (\(x, y) -> ((), x, y)) <$> l
       getVertKey = (\(_, k, _) -> k) . n
       getReachable c = case mv c of
-        Nothing -> throwError $ "Unknown counter " <> unCounterName c
+        Nothing -> throwError $ "Unknown counter " <> getCounterName c
         -- Data.Graph thinks that a vertex is always reachable from itself, even
         -- if it doesn't have a self-edge, so we delete vertices from their
         -- reachable sets.

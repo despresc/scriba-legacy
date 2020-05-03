@@ -165,8 +165,17 @@ Doc
           }
     , docElemCounterRel =
         fromList
-          [ ( ContainerName { unContainerName = "lemma" }
-            , ( CounterName { unCounterName = "theorem" }
+          [ ( ContainerName { getContainerName = "dmath" }
+            , ( CounterName { getCounterName = "dmath" }
+              , NumberConfig
+                  { ncNumberStyle = Decimal
+                  , ncRefPrefix = Just [ Istr Str { getStr = "eqn." } ]
+                  , ncRefSep = Just [ Istr Str { getStr = " " } ]
+                  }
+              )
+            )
+          , ( ContainerName { getContainerName = "lemma" }
+            , ( CounterName { getCounterName = "theorem" }
               , NumberConfig
                   { ncNumberStyle = Decimal
                   , ncRefPrefix = Nothing
@@ -174,8 +183,8 @@ Doc
                   }
               )
             )
-          , ( ContainerName { unContainerName = "section" }
-            , ( CounterName { unCounterName = "section" }
+          , ( ContainerName { getContainerName = "section" }
+            , ( CounterName { getCounterName = "section" }
               , NumberConfig
                   { ncNumberStyle = Decimal
                   , ncRefPrefix = Nothing
@@ -183,8 +192,8 @@ Doc
                   }
               )
             )
-          , ( ContainerName { unContainerName = "subsection" }
-            , ( CounterName { unCounterName = "subsection" }
+          , ( ContainerName { getContainerName = "subsection" }
+            , ( CounterName { getCounterName = "subsection" }
               , NumberConfig
                   { ncNumberStyle = Decimal
                   , ncRefPrefix = Just [ Istr Str { getStr = "\167" } ]
@@ -192,8 +201,8 @@ Doc
                   }
               )
             )
-          , ( ContainerName { unContainerName = "theorem" }
-            , ( CounterName { unCounterName = "theorem" }
+          , ( ContainerName { getContainerName = "theorem" }
+            , ( CounterName { getCounterName = "theorem" }
               , NumberConfig
                   { ncNumberStyle = Decimal
                   , ncRefPrefix = Nothing
@@ -204,14 +213,18 @@ Doc
           ]
     , docCounterRel =
         fromList
-          [ ( CounterName { unCounterName = "section" }
+          [ ( CounterName { getCounterName = "dmath" } , fromList [] )
+          , ( CounterName { getCounterName = "section" }
             , fromList
-                [ CounterName { unCounterName = "subsection" }
-                , CounterName { unCounterName = "theorem" }
+                [ CounterName { getCounterName = "dmath" }
+                , CounterName { getCounterName = "subsection" }
+                , CounterName { getCounterName = "theorem" }
                 ]
             )
-          , ( CounterName { unCounterName = "subsection" } , fromList [] )
-          , ( CounterName { unCounterName = "theorem" } , fromList [] )
+          , ( CounterName { getCounterName = "subsection" }
+            , fromList [ CounterName { getCounterName = "dmath" } ]
+            )
+          , ( CounterName { getCounterName = "theorem" } , fromList [] )
           ]
     }
   SectionContent { secPreamble = [] , secChildren = [] }
@@ -669,6 +682,11 @@ Doc
                                                   Str { getStr = ", and displayed formulas like\n" }
                                               , IdisplayMath
                                                   (Formula
+                                                     (Just
+                                                        Identifier
+                                                          { getIdentifier = "displayFormulaExample"
+                                                          })
+                                                     (Just "1.4.1")
                                                      "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n")
                                               , Istr
                                                   Str
@@ -685,7 +703,35 @@ Doc
                                               , Istr
                                                   Str
                                                     { getStr =
-                                                        " elements themselves. Scriba itself\nimplements some of these environments as elements, so that they can\ninteract with its built-in numbering and referencing capabilities."
+                                                        " elements themselves. Scriba itself\nimplements some of these environments as elements, so that they can\ninteract with its built-in numbering and referencing\ncapabilities. This means that we can refer to\n"
+                                                    }
+                                              , Iref
+                                                  Ref
+                                                    { refTarget =
+                                                        Identifier
+                                                          { getIdentifier = "displayFormulaExample"
+                                                          }
+                                                    , refContainer =
+                                                        ContainerName { getContainerName = "dmath" }
+                                                    , refNumberConfig =
+                                                        NumberConfig
+                                                          { ncNumberStyle = Decimal
+                                                          , ncRefPrefix =
+                                                              Just [ Istr Str { getStr = "eqn." } ]
+                                                          , ncRefSep =
+                                                              Just [ Istr Str { getStr = " " } ]
+                                                          }
+                                                    , refNumber = "1.4.1"
+                                                    }
+                                              , Istr Str { getStr = " with " }
+                                              , Icode
+                                                  InlineCode
+                                                    { getInlineCode = "{ref@displayFormulaExample}"
+                                                    }
+                                              , Istr
+                                                  Str
+                                                    { getStr =
+                                                        "\nand have the reference be rendered properly."
                                                     }
                                               ]
                                           }
@@ -702,7 +748,7 @@ Doc
                                     , Bcode
                                         BlockCode
                                           { getBlockCode =
-                                              "Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like\n{dmath`\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n`}\nare available, among \8230"
+                                              "Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like\n{dmath {id|displayFormulaExample} `\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n`}\nare available, among \8230"
                                           }
                                     , Bpar
                                         Paragraph
@@ -1101,7 +1147,7 @@ Doc
                                                         Identifier { getIdentifier = "elem-ref" }
                                                     , refContainer =
                                                         ContainerName
-                                                          { unContainerName = "subsection" }
+                                                          { getContainerName = "subsection" }
                                                     , refNumberConfig =
                                                         NumberConfig
                                                           { ncNumberStyle = Decimal

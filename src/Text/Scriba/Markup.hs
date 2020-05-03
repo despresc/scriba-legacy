@@ -44,12 +44,11 @@ module Text.Scriba.Markup
   , PageMark(..)
   , TitlePart(..)
   , TitleComponent(..)
-  , Varied(..)
-  , VariedVar(..)
   , BlockCode(..)
   , Ref(..)
   , NumberConfig(..)
   , Identifier(..)
+  , ContainerName(..)
   , decorate
   )
 where
@@ -260,49 +259,9 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
 
 -- ** Document attribute parsing
 
--- Content with variables and text in it, for use in formal
--- config. 
--- TODO: Should probably have the internal representation be
--- flexible enough to accommodate variables and things.
-
--- TODO: Some sort of conditional behaviour may become necessary in
--- templates. There may be examples where separator styling needs to
--- vary based on the presence of certain elements.
--- TODO: need a default [Varied] template.
-data Varied
-  = VariedStr Text
-  | VariedSpace
-  | VariedVar Text VariedVar Text
-  deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: restrict the appearance of particular variables? Right now we
--- use the same pVaried for formal blocks and sections.
-data VariedVar
-  = VariedNote
-  | VariedTitleBody
-  | VariedPrefix
-  | VariedNumber
-  deriving (Eq, Ord, Show, Read, Generic)
-
--- TODO: write this. Will need to have options for how they are
--- numbered, and how the title and conclusion are generated.
--- TODO: should probably have "whileParsingAttr"
 -- TODO: put in checks on the possible {type} of formal blocks?
--- TODO: better errors in some of the subparsers
 
--- TODO: not entirely sure what to do here. I _think_ I want the title
--- template to have variables and known blocks, but that will require
--- my syntax tree to be a little more flexible.
--- For now we just have variable parsing implemented here.
-
--- TODO: I think we want to be able to give the components of the
--- generated title different styles. E.g. have an
--- optionalParenthetical style, or something like that, for the
--- titleNote, so that CSS doesn't have to be touched too much.
-
--- TODO: think about the title sep more carefully.  
--- TODO: need to think about NumberStyle. Later, we just M.mapMaybe id
--- what we get from unzip3, but perhaps this isn't wise?
+-- TODO: think about the title sep more carefully.
 
 -- TODO: should have a NumberingConfig, TitlingConfig, etc., I think,
 -- keyed by the type of the element. Then we can operate on numbered
@@ -333,17 +292,10 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
     whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate FormalTemplate)
-      titleSep          <- attrMaybe "titleSep" $ allContentOf pInlineCore
-      numberingConf     <- attrMaybe "numbering" $ pCounterDepends
-      (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
-        s <- attrMaybe "sep" $ allContentOf pInlineCore
-        p <- attrMaybe "prefix" $ allContentOf pInlineCore
-        pure (s, p)
-      concl <- attrMaybe "conclusion" $ allContentOf pInlineCore
-      let (counterDepends, nc) = unzips $ do
-            (containerRel, ns) <- numberingConf
-            pure (containerRel, NumberConfig ns (join refPref) (join refSep))
-      pure $ (FormalConfig titleTemplate titleSep concl, counterDepends, nc)
+      titleSep <- attrMaybe "titleSep" $ allContentOf pInlineCore
+      (cr, nc) <- pNumberRef
+      concl    <- attrMaybe "conclusion" $ allContentOf pInlineCore
+      pure $ (FormalConfig titleTemplate titleSep concl, cr, nc)
 
 -- TODO: more exotic orderings. Perhaps make prefix/numberFirst
 -- exclusive as well. Also options for suppressing particular
@@ -381,6 +333,19 @@ pSurround = do
         x  -> Just x
   pure $ Surround b c' a
 
+pNumberRef
+  :: Scriba Attrs (Maybe ContainerRelation, Maybe (NumberConfig (Inline a)))
+pNumberRef = do
+  numberingConf     <- attrMaybe "numbering" $ pCounterDepends
+  (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
+    s <- attrMaybe "sep" $ allContentOf pInlineCore
+    p <- attrMaybe "prefix" $ allContentOf pInlineCore
+    pure (s, p)
+  let (counterDepends, nc) = unzips $ do
+        (containerRel, ns) <- numberingConf
+        pure (containerRel, NumberConfig ns (join refPref) (join refSep))
+  pure (counterDepends, nc)
+
 -- TODO: reduce duplication with pFormalConfig
 pSectionConfig
   :: Scriba
@@ -402,15 +367,8 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
     whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate SectionTemplate)
-      numberingConf     <- attrMaybe "numbering" $ pCounterDepends
-      (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
-        s <- attrMaybe "sep" $ allContentOf pInlineCore
-        p <- attrMaybe "prefix" $ allContentOf pInlineCore
-        pure (s, p)
-      let (counterDepends, nc) = unzips $ do
-            (containerRel, ns) <- numberingConf
-            pure (containerRel, NumberConfig ns (join refPref) (join refSep))
-      pure $ (SectionConfig titleTemplate, counterDepends, nc)
+      (cr, nc) <- pNumberRef
+      pure $ (SectionConfig titleTemplate, cr, nc)
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an
@@ -418,7 +376,10 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
 -- TODO: need some pOneArg thing, clearly
 pCounterDepends :: Scriba Element (ContainerRelation, NumberStyle)
 pCounterDepends = meta $ attrs $ do
-  cr <- pAbsCounter <|> pRelCounter <|> pShare
+  cr <-
+    label "absolute" pAbsCounter
+    <|> label "relative" pRelCounter
+    <|> label "share"    pShare
   ns <- pNumberStyle
   pure (cr, ns)
  where
@@ -460,7 +421,6 @@ pMixedBody pInl =
 
 -- ** Inline parsing
 
--- pInline is synonymous with pParInline
 pInline :: Scriba Node (Inline InlineControl)
 pInline =
   asNode
@@ -539,8 +499,6 @@ pSection pInl = do
         _           -> empty
     ty inspect
 
--- implicitly parses the whole block content
-
 -- The errors are better, but if we, e.g., have an unrecognized block,
 -- then the manyOf fails, and we get an "expecting one of: section",
 -- intead of also listing the blocks that we could have. Perhaps we
@@ -575,39 +533,48 @@ pControl = IcRef <$> pSourceRef
 -- config re: counters, in particular that there is no namespacing
 -- going on.
 -- TODO: add configuration for elemrel
+-- TODO: better math numbering support. The elemrel thing is particularly bad.
 pDoc :: Scriba Element (Doc Block (Inline a) (Inline InlineControl))
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
-      t       <- mattr "title" $ allContentOf pInlineCore
+      t                         <- mattr "title" $ allContentOf pInlineCore
       tplain <- attrMaybe "plainTitle" $ fmap T.concat $ allContentOf simpleText
-      fconfig <- mattr "formalBlocks" $ pFormalConfig
-      sconfig <- mattr "sections" $ pSectionConfig
+      fconfig                   <- mattr "formalBlocks" $ pFormalConfig
+      sconfig                   <- mattr "sections" $ pSectionConfig
+      (dmathCrel, dmathNumConf) <-
+        fmap unzips $ attrMaybe "dmath" $ meta $ attrs pNumberRef
+      let dmathrelRaw = [("dmath", join dmathCrel)]
       -- TODO: clean up
       let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig
-          mcrel (x, y) = (,) (ContainerName x) <$> y
+          mkName (x, y) = (,) (ContainerName x) <$> y
           (sconf, srelRaw, snstyleRaw) = unzips3 sconfig
       (elemrel, crel) <-
         case
           compileContainerRelations
-            (mapMaybe mcrel $ M.toList srelRaw <> M.toList frelRaw)
+            (  mapMaybe mkName
+            $  dmathrelRaw
+            <> M.toList srelRaw
+            <> M.toList frelRaw
+            )
         of
           Left  e -> throwError $ Msg e
           Right a -> pure a
-      let
-        mergeRel =
-          M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
-        toCNKey  = M.mapKeysMonotonic ContainerName
-        elemrel' = mergeRel
-          elemrel
-          (M.mapMaybe id $ toCNKey snstyleRaw <> toCNKey fnstyleRaw) -- M.map (\x -> (x, NumberConfig Decimal Nothing)) elemrel
+      let mergeRel =
+            M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
+          toCNKey = M.mapKeysMonotonic ContainerName
+          mergedStyles =
+            M.alter (const $ join dmathNumConf) "dmath"
+              $  M.mapMaybe id
+              $  toCNKey snstyleRaw
+              <> toCNKey fnstyleRaw
+          elemrel' = mergeRel elemrel mergedStyles
       pure $ DocAttrs (Title t)
                       (fromMaybe (stripMarkup (const []) t) tplain)
                       (TitlingConfig fconf sconf)
                       elemrel'
                       crel
---                      (snstyle <> fnstyle)
     content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do

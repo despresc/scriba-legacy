@@ -150,6 +150,11 @@ expectsGotAt :: MonadError ScribaError m => [Text] -> SourcePos -> Text -> m a
 expectsGotAt es sp t =
   throwError $ Expecting (toExpectations es) (Just (sp, t))
 
+-- | Convert any thrown errors into an @Expecting@ error.
+label :: MonadError ScribaError m => Text -> m a -> m a
+label t = flip catchError go
+  where go _ = throwError $ Expecting (toExpectations [t]) Nothing
+
 -- TODO: generalize, maybe with a HasPosition class? Also lenses
 elemPos :: Scriba Element SourcePos
 elemPos = meta $ do

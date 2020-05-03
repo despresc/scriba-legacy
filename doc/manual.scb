@@ -1,6 +1,12 @@
 {scriba
   {title|The scriba markup language and document system}
   {type|article}
+  {dmath
+    {numbering {relative@subsection}
+               {style@decimal}}
+    {ref {prefix|eqn.}
+         {sep| }}
+  }
   {formalBlocks
     {theorem
       {title
@@ -227,7 +233,7 @@ and can contain text and inline elements.
 Formal mathematical content can be included in a document with
 particular inline elements. Inline formulas like {math`f(x, y) =
 x^{y+6}`}, and displayed formulas like
-{dmath`
+{dmath {id|displayFormulaExample} `
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
   \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
   \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
@@ -238,13 +244,17 @@ is handled with MathJax. Be aware that amsmath-style environments like
 {code|gathered} or {code|alignedat} should not be used inside
 {code|math} or {code|dmath} elements themselves. Scriba itself
 implements some of these environments as elements, so that they can
-interact with its built-in numbering and referencing capabilities.
+interact with its built-in numbering and referencing
+capabilities. This means that we can refer to
+{ref@displayFormulaExample} with {code`{ref@displayFormulaExample}`}
+and have the reference be rendered properly.
+
 
 The examples of formulas above were entered into the source like so:
 
 &{codeBlock {language|scriba} `
   Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
-  {dmath`
+  {dmath {id|displayFormulaExample} `
     \mathbf{B}(P) = \frac{\mu_0}{4\pi}
     \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
     \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
