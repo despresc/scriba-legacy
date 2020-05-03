@@ -262,7 +262,6 @@ renderDisplayMathContent (Formula mId mnum t) = pure $ H.toHtml $ withLabNum t
     withLab Nothing = id
     withLab (Just x) = (<> ("\\label{" <> getIdentifier x <> "}"))
     withLabNum = withLab mId . withNum mnum
-
 renderDisplayMathContent (Gathered ts) =
   pure
     $  H.toHtml
@@ -270,9 +269,7 @@ renderDisplayMathContent (Gathered ts) =
     <> T.intercalate "//\n" ts
     <> "\\end{gathered}"
 
--- TODO: add links
 -- TODO: wrap separator?
-
 -- TODO: we're special-casing dmath for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
 renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
