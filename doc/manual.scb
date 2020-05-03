@@ -1,7 +1,7 @@
 {scriba
   {title|The scriba markup language and document system}
   {type|article}
-  {dmath
+  {formula
     {numbering {relative@subsection}
                {style@decimal}}
     {ref {prefix|eqn.}
@@ -326,6 +326,24 @@ Will contain a description of documents as a whole.
   that I want in each section?
 
 %}
+
+## subsection {title|gathered}
+
+The {code|gathered} element represents a series of lines of
+formulas. It contains a sequence of {code|line} elements, each with
+optional {code|id}, {code|n}, and {code|noNum} attributes and LaTeX
+math content. This element is inline.
+
+An example of some gathered equations
+{gathered|
+{line
+  |2+2=4}
+{line {noNum}
+  |4+4=8}
+{line {id|thirdGathered}
+  |8+8=16}
+}
+inside a paragraph, with a reference ({ref@thirdGathered}) to one of them.
 
 ## subsection {title|formalBlock}
 

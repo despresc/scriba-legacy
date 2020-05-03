@@ -161,6 +161,9 @@ instance Numbering i Text where
 instance Numbering i a => Numbering i (Map k a) where
   numbering = M.traverseWithKey $ const numbering
 
+instance Numbering i Bool where
+  numbering = pure
+
 instance Numbering i Identifier
 instance Numbering a i => Numbering a (NumberConfig i)
 instance Numbering a NumberStyle

@@ -165,8 +165,8 @@ Doc
           }
     , docElemCounterRel =
         fromList
-          [ ( ContainerName { getContainerName = "dmath" }
-            , ( CounterName { getCounterName = "dmath" }
+          [ ( ContainerName { getContainerName = "formula" }
+            , ( CounterName { getCounterName = "formula" }
               , NumberConfig
                   { ncNumberStyle = Decimal
                   , ncRefPrefix = Just [ Istr Str { getStr = "eqn." } ]
@@ -213,16 +213,16 @@ Doc
           ]
     , docCounterRel =
         fromList
-          [ ( CounterName { getCounterName = "dmath" } , fromList [] )
+          [ ( CounterName { getCounterName = "formula" } , fromList [] )
           , ( CounterName { getCounterName = "section" }
             , fromList
-                [ CounterName { getCounterName = "dmath" }
+                [ CounterName { getCounterName = "formula" }
                 , CounterName { getCounterName = "subsection" }
                 , CounterName { getCounterName = "theorem" }
                 ]
             )
           , ( CounterName { getCounterName = "subsection" }
-            , fromList [ CounterName { getCounterName = "dmath" } ]
+            , fromList [ CounterName { getCounterName = "formula" } ]
             )
           , ( CounterName { getCounterName = "theorem" } , fromList [] )
           ]
@@ -682,12 +682,18 @@ Doc
                                                   Str { getStr = ", and displayed formulas like\n" }
                                               , IdisplayMath
                                                   (Formula
-                                                     (Just
-                                                        Identifier
-                                                          { getIdentifier = "displayFormulaExample"
-                                                          })
-                                                     (Just "1.4.1")
-                                                     "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n")
+                                                     MathItem
+                                                       { miIdentifier =
+                                                           Just
+                                                             Identifier
+                                                               { getIdentifier =
+                                                                   "displayFormulaExample"
+                                                               }
+                                                       , miNum = Just "1.4.1"
+                                                       , miIsNumbered = True
+                                                       , miContent =
+                                                           "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
+                                                       })
                                               , Istr
                                                   Str
                                                     { getStr =
@@ -712,7 +718,8 @@ Doc
                                                           { getIdentifier = "displayFormulaExample"
                                                           }
                                                     , refContainer =
-                                                        ContainerName { getContainerName = "dmath" }
+                                                        ContainerName
+                                                          { getContainerName = "formula" }
                                                     , refNumberConfig =
                                                         NumberConfig
                                                           { ncNumberStyle = Decimal
@@ -887,7 +894,7 @@ Doc
                           { secType = Just "subsection"
                           , secId = Nothing
                           , secTitleBody =
-                              Just Title { titleBody = [ Istr Str { getStr = "formalBlock" } ] }
+                              Just Title { titleBody = [ Istr Str { getStr = "gathered" } ] }
                           , secTitleFull =
                               Just
                                 Title
@@ -901,13 +908,126 @@ Doc
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
                                           (TitleComponent
+                                             TitleBody [] [ Istr Str { getStr = "gathered" } ] [])
+                                      ]
+                                  }
+                          , secNum = Just "2.1"
+                          , secContent =
+                              SectionContent
+                                { secPreamble =
+                                    [ Bpar
+                                        Paragraph
+                                          { getParagraph =
+                                              [ Istr Str { getStr = "The " }
+                                              , Icode InlineCode { getInlineCode = "gathered" }
+                                              , Istr
+                                                  Str
+                                                    { getStr =
+                                                        " element represents a series of lines of\nformulas. It contains a sequence of "
+                                                    }
+                                              , Icode InlineCode { getInlineCode = "line" }
+                                              , Istr
+                                                  Str { getStr = " elements, each with\noptional " }
+                                              , Icode InlineCode { getInlineCode = "id" }
+                                              , Istr Str { getStr = ", " }
+                                              , Icode InlineCode { getInlineCode = "n" }
+                                              , Istr Str { getStr = ", and " }
+                                              , Icode InlineCode { getInlineCode = "noNum" }
+                                              , Istr
+                                                  Str
+                                                    { getStr =
+                                                        " attributes and LaTeX\nmath content. This element is inline."
+                                                    }
+                                              ]
+                                          }
+                                    , Bpar
+                                        Paragraph
+                                          { getParagraph =
+                                              [ Istr
+                                                  Str
+                                                    { getStr =
+                                                        "An example of some gathered equations\n"
+                                                    }
+                                              , IdisplayMath
+                                                  (Gathered
+                                                     True
+                                                     [ MathItem
+                                                         { miIdentifier = Nothing
+                                                         , miNum = Just "2.1.1"
+                                                         , miIsNumbered = True
+                                                         , miContent = "2+2=4"
+                                                         }
+                                                     , MathItem
+                                                         { miIdentifier = Nothing
+                                                         , miNum = Nothing
+                                                         , miIsNumbered = False
+                                                         , miContent = "4+4=8"
+                                                         }
+                                                     , MathItem
+                                                         { miIdentifier =
+                                                             Just
+                                                               Identifier
+                                                                 { getIdentifier = "thirdGathered" }
+                                                         , miNum = Just "2.1.2"
+                                                         , miIsNumbered = True
+                                                         , miContent = "8+8=16"
+                                                         }
+                                                     ])
+                                              , Istr
+                                                  Str
+                                                    { getStr =
+                                                        "\ninside a paragraph, with a reference ("
+                                                    }
+                                              , Iref
+                                                  Ref
+                                                    { refTarget =
+                                                        Identifier
+                                                          { getIdentifier = "thirdGathered" }
+                                                    , refContainer =
+                                                        ContainerName
+                                                          { getContainerName = "formula" }
+                                                    , refNumberConfig =
+                                                        NumberConfig
+                                                          { ncNumberStyle = Decimal
+                                                          , ncRefPrefix =
+                                                              Just [ Istr Str { getStr = "eqn." } ]
+                                                          , ncRefSep =
+                                                              Just [ Istr Str { getStr = " " } ]
+                                                          }
+                                                    , refNumber = "2.1.2"
+                                                    }
+                                              , Istr Str { getStr = ") to one of them." }
+                                              ]
+                                          }
+                                    ]
+                                , secChildren = []
+                                }
+                          }
+                      , Section
+                          { secType = Just "subsection"
+                          , secId = Nothing
+                          , secTitleBody =
+                              Just Title { titleBody = [ Istr Str { getStr = "formalBlock" } ] }
+                          , secTitleFull =
+                              Just
+                                Title
+                                  { titleBody =
+                                      [ ItitleComponent
+                                          (TitleComponent
+                                             TitleNumber
+                                             []
+                                             [ Istr Str { getStr = "2.2" } ]
+                                             [ Istr Str { getStr = "." } ])
+                                      , Istr Str { getStr = " " }
+                                      , ItitleComponent
+                                          (TitleComponent
                                              TitleBody
                                              []
                                              [ Istr Str { getStr = "formalBlock" } ]
                                              [])
                                       ]
                                   }
-                          , secNum = Just "2.1"
+                          , secNum = Just "2.2"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -1060,7 +1180,7 @@ Doc
                                           (TitleComponent
                                              TitleNumber
                                              []
-                                             [ Istr Str { getStr = "2.2" } ]
+                                             [ Istr Str { getStr = "2.3" } ]
                                              [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
@@ -1068,7 +1188,7 @@ Doc
                                              TitleBody [] [ Istr Str { getStr = "olist" } ] [])
                                       ]
                                   }
-                          , secNum = Just "2.2"
+                          , secNum = Just "2.3"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -1112,7 +1232,7 @@ Doc
                                           (TitleComponent
                                              TitleNumber
                                              []
-                                             [ Istr Str { getStr = "2.3" } ]
+                                             [ Istr Str { getStr = "2.4" } ]
                                              [ Istr Str { getStr = "." } ])
                                       , Istr Str { getStr = " " }
                                       , ItitleComponent
@@ -1120,7 +1240,7 @@ Doc
                                              TitleBody [] [ Istr Str { getStr = "ref" } ] [])
                                       ]
                                   }
-                          , secNum = Just "2.3"
+                          , secNum = Just "2.4"
                           , secContent =
                               SectionContent
                                 { secPreamble =
@@ -1155,7 +1275,7 @@ Doc
                                                               Just [ Istr Str { getStr = "\167" } ]
                                                           , ncRefSep = Nothing
                                                           }
-                                                    , refNumber = "2.3"
+                                                    , refNumber = "2.4"
                                                     }
                                               , Istr Str { getStr = ", this section, using\n" }
                                               , Icode

@@ -49,6 +49,7 @@ module Text.Scriba.Markup
   , NumberConfig(..)
   , Identifier(..)
   , ContainerName(..)
+  , MathItem(..)
   , decorate
   )
 where
@@ -169,6 +170,10 @@ Unified element type configuration? Elements can have have
 
 - identifiers
 - numbers
+
+- We currently have the noNum attribute for suppressing the numbering
+  of displayed equations. It might be better to have boolean syntax
+  for these things. !num and ~num for true and false? unsure.
 
 -}
 
@@ -544,8 +549,8 @@ pDoc = do
       fconfig                   <- mattr "formalBlocks" $ pFormalConfig
       sconfig                   <- mattr "sections" $ pSectionConfig
       (dmathCrel, dmathNumConf) <-
-        fmap unzips $ attrMaybe "dmath" $ meta $ attrs pNumberRef
-      let dmathrelRaw = [("dmath", join dmathCrel)]
+        fmap unzips $ attrMaybe "formula" $ meta $ attrs pNumberRef
+      let dmathrelRaw = [("formula", join dmathCrel)]
       -- TODO: clean up
       let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig
           mkName (x, y) = (,) (ContainerName x) <$> y
@@ -565,7 +570,7 @@ pDoc = do
             M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
           toCNKey = M.mapKeysMonotonic ContainerName
           mergedStyles =
-            M.alter (const $ join dmathNumConf) "dmath"
+            M.alter (const $ join dmathNumConf) "formula"
               $  M.mapMaybe id
               $  toCNKey snstyleRaw
               <> toCNKey fnstyleRaw

@@ -15,7 +15,7 @@ import           Control.Monad.State            ( MonadState(..)
                                                 )
 import           Data.Maybe                     ( fromMaybe )
 import           Data.Foldable                  ( foldl' )
-import qualified Data.Text                     as T
+import           Data.List                      ( intersperse )
 import           Data.Void                      ( Void
                                                 , absurd
                                                 )
@@ -252,38 +252,43 @@ renderInlineCode (InlineCode t) = pure $ H.code $ H.toHtml t
 renderPageMark :: PageMark -> Render Html
 renderPageMark (PageMark t) = pure $ H.span ! A.class_ "physPage" $ H.toHtml t
 
--- TODO: assumes mathjax or katex
 -- TODO: not great
+renderMathItem :: MathItem -> Render Html
+renderMathItem (MathItem mId mnum _ t) = pure $ H.toHtml $ withLabNum t
+ where
+  withNum Nothing  = id
+  withNum (Just n) = (<> ("\\tag{" <> n <> "}"))
+  withLab Nothing  = id
+  withLab (Just x) = (<> ("\\label{" <> getIdentifier x <> "}"))
+  withLabNum = withLab mId . withNum mnum
+
+-- TODO: assumes mathjax or katex
 renderDisplayMathContent :: DisplayMath -> Render Html
-renderDisplayMathContent (Formula mId mnum t) = pure $ H.toHtml $ withLabNum t
-  where
-    withNum Nothing = id
-    withNum (Just n) = (<> ("\\tag{" <> n <> "}"))
-    withLab Nothing = id
-    withLab (Just x) = (<> ("\\label{" <> getIdentifier x <> "}"))
-    withLabNum = withLab mId . withNum mnum
-renderDisplayMathContent (Gathered ts) =
-  pure
-    $  H.toHtml
-    $  "\\begin{gathered}"
-    <> T.intercalate "//\n" ts
-    <> "\\end{gathered}"
+renderDisplayMathContent (Formula mi    ) = renderMathItem mi
+renderDisplayMathContent (Gathered _ mis) = do
+  mis' <- traverse renderMathItem mis
+  let mis'' = intersperse "\\\\\n" mis'
+  pure $ do
+    "\\begin{gather*}"
+    sequence_ mis''
+    "\\end{gather*}"
 
 -- TODO: wrap separator?
--- TODO: we're special-casing dmath for now, so references to math
+-- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
 renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
-renderRef f (Ref (Identifier lab) containername (NumberConfig _ mpref msep) num) = do
-  mpref' <- traverse (foldBy f) mpref
-  msep'  <- traverse (foldBy f) msep
-  pure $ H.a ! A.class_ "ref" ! A.href (H.toValue refVal) $ do
-    renderMaybe mpref' $ H.span ! A.class_ "prefix"
-    renderMaybe msep' id
-    H.span ! A.class_ "number" $ H.toHtml num
-  where
-    refVal = case getContainerName containername of
-      "dmath" -> "#mjx-eqn-" <> lab
-      _       -> "#" <> lab
+renderRef f (Ref (Identifier lab) containername (NumberConfig _ mpref msep) num)
+  = do
+    mpref' <- traverse (foldBy f) mpref
+    msep'  <- traverse (foldBy f) msep
+    pure $ H.a ! A.class_ "ref" ! A.href (H.toValue refVal) $ do
+      renderMaybe mpref' $ H.span ! A.class_ "prefix"
+      renderMaybe msep' id
+      H.span ! A.class_ "number" $ H.toHtml num
+ where
+  refVal = case getContainerName containername of
+    "formula" -> "#mjx-eqn-" <> lab
+    _         -> "#" <> lab
 
 -- | Render a heading title using the ambient header depth.
 
