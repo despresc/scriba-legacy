@@ -115,6 +115,9 @@ require some delicacy. Note that LaTeX's actual default is
 
 1. (a) i. A.
 
+and its \ref behaviour is surprisingly poor. This renders as 1(a)iA,
+but a more sensible result would be 1.a.i.A, I think.
+
 -}
 
 -- Container path, with the associated container type for filtering.
