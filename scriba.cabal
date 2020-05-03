@@ -25,6 +25,7 @@ library
                , containers
                , mtl
                , blaze-html
+               , blaze-markup
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate.Common

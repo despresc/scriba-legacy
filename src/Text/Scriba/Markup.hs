@@ -49,6 +49,7 @@ module Text.Scriba.Markup
   , BlockCode(..)
   , Ref(..)
   , NumberConfig(..)
+  , Identifier(..)
   , decorate
   )
 where

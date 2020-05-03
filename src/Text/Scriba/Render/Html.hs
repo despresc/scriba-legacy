@@ -22,6 +22,7 @@ import           Data.Void                      ( Void
 import           Text.Blaze.Html5               ( Html
                                                 , (!)
                                                 )
+import qualified Text.Blaze.Internal           as BI
 import qualified Text.Blaze.Html5              as H
 import qualified Text.Blaze.Html5.Attributes   as A
 
@@ -54,6 +55,10 @@ foldBy f = foldl' go mempty where go c a = c <> f a
 
 renderMaybe :: Maybe Html -> (Html -> Html) -> Html
 renderMaybe mh f = maybe mempty f mh
+
+(??) :: BI.Attributable h => h -> Maybe H.Attribute -> h
+(??) h Nothing  = h
+(??) h (Just v) = h ! v
 
 -- TODO: I _think_ the header depth should start at 1? Might need to
 -- be configurable later. I think for standalone it should be 1, since
@@ -133,11 +138,12 @@ renderSectionContent (SectionContent bs cs) = do
 -- break? They would be necessary when we first render a sibling
 -- untitled section. Some kind of state variable, I think.
 renderSection :: Section Block (Inline Void) -> Render Html
-renderSection (Section _ _ _ t _ c) = do
+renderSection (Section _ ml _ t _ c) = do
   t' <- traverse renderTitle t
+  let ident = (\(Identifier i) -> A.id (H.toValue i)) <$> ml
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
-    pure $ H.section $ fromMaybe mempty t' <> c'
+    pure $ H.section ?? ident $ fromMaybe mempty t' <> c'
 
 renderSections :: [Section Block (Inline Void)] -> Render Html
 renderSections = foldBy renderSection
@@ -171,14 +177,16 @@ renderMixedBlockBody b (MixedBlock blks) = go <$> renderBlocks blks
 -- TODO: Should the title be "formalTitle"?
 -- TODO: wrap the title separator? Also the title separator should be
 -- rendered conditional on there being a title at all.
+-- TODO: Have something in the margin indicating an anchor point?
 renderFormalBlock :: Formal Block (Inline Void) -> Render Html
-renderFormalBlock (Formal mty _ _ mtitle _ mtitlesep body concl) = do
+renderFormalBlock (Formal mty ml _ mtitle _ mtitlesep body concl) = do
   title'    <- traverse renderInlines mtitle
   titlesep' <- traverse renderInlines mtitlesep
   body'     <- renderMixedBlockBody True body
   concl'    <- traverse renderInlines concl
-  let cls = "formalBlock" <> maybe "" (" " <>) mty
-  pure $ H.div ! A.class_ (H.toValue cls) $ do
+  let cls   = "formalBlock" <> maybe "" (" " <>) mty
+      ident = (\(Identifier i) -> A.id (H.toValue i)) <$> ml
+  pure $ H.div ! A.class_ (H.toValue cls) ?? ident $ do
     renderMaybe title' $ H.span ! A.class_ "title"
     renderMaybe titlesep' $ H.span ! A.class_ "titleSep"
     body'
@@ -257,10 +265,10 @@ renderDisplayMathContent (Gathered ts) =
 -- TODO: add links
 -- TODO: wrap separator?
 renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
-renderRef f (Ref _ _ (NumberConfig _ mpref msep) num) = do
+renderRef f (Ref (Identifier lab) _ (NumberConfig _ mpref msep) num) = do
   mpref' <- traverse (foldBy f) mpref
   msep'  <- traverse (foldBy f) msep
-  pure $ H.span ! A.class_ "ref" $ do
+  pure $ H.a ! A.class_ "ref" ! A.href (H.toValue $ "#" <> lab) $ do
     renderMaybe mpref' $ H.span ! A.class_ "prefix"
     renderMaybe msep' id
     H.span ! A.class_ "number" $ H.toHtml num
