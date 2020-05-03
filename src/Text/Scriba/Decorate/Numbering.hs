@@ -68,18 +68,54 @@ import           GHC.Generics
 -- also have sub-exercises in list form that you might want to refer
 -- to as Exercise 2.iii.
 
--- TODO: For lists, we may need the notion of depth in styles, to be
--- able to refer to list item 3.iv. Something like having different
--- styles based on the types of the containers above it, using some
--- kind of longest match syntax.
---
--- {above@list|lower-alpha}
--- {above@list list|lower-roman}
---
--- That sort of thing. With some kind of default list style
--- hierarchy. Or possibly just have a list of styles corresponding to
--- the depth of containers of the same type appearing above it?
--- Depends on what our needs turn out to be.
+
+{- TODO:
+
+For lists, we may need the notion of depth in styles, to be able to
+refer to list item 3.iv. Something like having different styles based
+on the types of the containers above it, using some kind of longest
+match syntax.
+
+{above@list|lower-alpha}
+{above@list list|lower-roman}
+
+That sort of thing. With some kind of default list style hierarchy. Or
+possibly just have a list of styles corresponding to the depth of
+containers of the same type appearing above it?  Depends on what our
+needs turn out to be.
+
+We also need "numbering contexts" in order to treat lists properly,
+which relates to the note above on axioms. An individual "list" is "of
+items", but is not itself numbered, normally. Items also get their
+styles from the enclosing context in some way. How do I work with
+them? Say that each olist becomes a new list context, that is keyed in
+some way to the "item" type. Then when we encounter an "item" we look
+up the context corresponding to the item type and use the stored style
+when we register the item. We might want to create custom list types
+(behaving as new contexts). I _think_ they should be orthogonal to the
+built-in lists?
+
+We should also add a part of the numbering state to track the current
+context. I think contexts should either act like counters, with their
+number tracking their depth, or like the container path. In the latter
+design we would want to filter the path by relatedness, and perhaps
+add more detailed customization affecting how contexts get their
+styles later. For now we need to be able to customize the number style
+and the markers before and after the number. We might have pre-defined
+marker styles, I suppose, to ease the CSS requirements. Something
+like:
+
+{style {depth@decimal lower-alpha lower-roman upper-alpha}}
+
+which is the default for LaTeX. But that doesn't let us customize the
+before/after, which requires custom counters. Note that counter
+manipulation is possible on a per-element basis, so we should still be
+able to implement counter manipulation in our documents, but it will
+require some delicacy. Note that LaTeX's actual default is
+
+1. (a) i. A.
+
+-}
 
 -- Container path, with the associated container type for filtering.
 type ContainerPath = [(CounterName, LocalNumber)]

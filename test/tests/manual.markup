@@ -1280,7 +1280,7 @@ Doc
                                               , Istr Str { getStr = ", this section, using\n" }
                                               , Icode
                                                   InlineCode { getInlineCode = "{ref@elem-ref}" }
-                                              , Istr Str { getStr = "." }
+                                              , Istr Str { getStr = ".\n" }
                                               ]
                                           }
                                     ]
