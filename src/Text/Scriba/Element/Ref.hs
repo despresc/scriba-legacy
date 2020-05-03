@@ -28,6 +28,9 @@ instance Titling i SourceRef
 -- TODO: may need more renditional information here, from Numbering and
 -- Referencing, like relative position of the number and prefix.
 -- May also need source overrides on certain elements of this.
+
+-- TODO: For multi-page standalone rendering, will I need to modify
+-- identifiers at all? Probably.
 data Ref i = Ref
   { refTarget :: Identifier
   , refContainer :: ContainerName
