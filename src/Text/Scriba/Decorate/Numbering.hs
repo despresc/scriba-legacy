@@ -118,6 +118,11 @@ require some delicacy. Note that LaTeX's actual default is
 and its \ref behaviour is surprisingly poor. This renders as 1(a)iA,
 but a more sensible result would be 1.a.i.A, I think.
 
+Finally, we might need to collect the numbering data of _every_
+numbered element, not just the ones that are identified, since some
+applications will want to be able to address elements by their
+numbers, not just their identifiers.
+
 -}
 
 -- Container path, with the associated container type for filtering.

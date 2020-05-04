@@ -24,6 +24,12 @@ import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 
+{- TODO: 
+
+- A formal _heading_ title type?
+
+-}
+
 -- Might want a formal inline too. Some kind of "inline result",
 -- anyway.
 -- TODO: the fTitle _might_ be better as Title, but I'm not sure if a

@@ -25,6 +25,22 @@ import           Data.Text                      ( Text )
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 
+{- TODO:
+
+- a mode that allows us to style untyped sections based on level,
+  perhaps in a similar way to the "list context" facilities we will
+  implement
+
+- consider unifying formal blocks and sections together, at least
+  internally. They are quite similar. Perhaps the "conclusion" of
+  formal blocks is not so necessary, especially since its automatic
+  placement can be difficult. In such a scenario, we'd end up calling
+  them "sections", but we'd need to distinguish between "large-scale"
+  divisions that are suitable for a table of contents and lesser
+  divisions.
+
+-}
+
 -- | A section is a large-scale division of a document. For now it has
 -- a preamble and a list of subsections.
 
