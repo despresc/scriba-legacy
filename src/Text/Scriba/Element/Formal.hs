@@ -24,7 +24,7 @@ import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 
-{- TODO: 
+{- TODO:
 
 - A formal _heading_ title type?
 
