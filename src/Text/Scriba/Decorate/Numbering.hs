@@ -1,5 +1,4 @@
 {-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -22,13 +21,16 @@ where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
-import           Text.Scriba.Intermediate       ( unzips )
 
 -- TODO: a common module for unzips and such?
 
 import           Control.Applicative            ( liftA2 )
 import           Control.Monad                  ( join )
-import           Control.Monad.State.Strict     ( State
+import           Control.Monad.Except           ( Except
+                                                , runExcept
+                                                , MonadError(..)
+                                                )
+import           Control.Monad.State.Strict     ( StateT
                                                 , MonadState(..)
                                                 , gets
                                                 , modify
@@ -38,17 +40,17 @@ import           Data.Foldable                  ( traverse_
                                                 , for_
                                                 )
 import           Data.Map.Strict                ( Map )
+import qualified Data.Map.Strict               as M
 import           Data.Maybe                     ( fromMaybe
                                                 , mapMaybe
                                                 , catMaybes
                                                 )
-import qualified Data.Map.Strict               as M
 import           Data.Set                       ( Set )
 import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
-import           Data.Void
 import           Data.Traversable               ( for )
+import           Data.Void
 import           GHC.Generics
 
 -- * Numbering elements
@@ -132,6 +134,7 @@ type LocalNumber = Text
 
 -- TODO: consolidate some of this together? I.e. numberstyles and
 -- elemcounterrel could probably be merged in Markup
+-- TODO: Should the contexts be stored in the parent path?
 data NumberState i = NumberState
   { nsCounterVals :: Map CounterName Int -- ^ The values of the counters
   , nsParentPath  :: ContainerPath   -- ^ The full, unfiltered path of the parent container.
@@ -156,8 +159,8 @@ addNumberDatum :: NumberDatum i -> NumberData i -> NumberData i
 addNumberDatum x (NumberData y) = NumberData $ x : y
 
 newtype NumberM i a = NumberM
-  { unNumberM :: State (NumberState i) a
-  } deriving (Functor, Applicative, Monad, MonadState (NumberState i))
+  { unNumberM :: StateT (NumberState i) (Except DecorateError) a
+  } deriving (Functor, Applicative, Monad, MonadState (NumberState i), MonadError DecorateError)
 
 class GNumbering i f where
   gnumbering :: f a -> NumberM i (f a)
@@ -213,10 +216,11 @@ instance Numbering a i => Numbering a (NumberConfig i)
 instance Numbering a NumberStyle
 instance Numbering a ContainerName
 
-runNumberM :: NumberM i a -> NumberState i -> (NumberData i, a)
-runNumberM = go . State.runState . unNumberM
+runNumberM
+  :: NumberM i a -> NumberState i -> Either DecorateError (NumberData i, a)
+runNumberM = go . State.runStateT . unNumberM
  where
-  go f = retrieve . f
+  go f = fmap retrieve . runExcept . f
   retrieve (a, ns) = (nsNumberData ns, a)
 
 renderCounter :: NumberStyle -> Int -> LocalNumber
@@ -234,9 +238,9 @@ filterDepends :: CounterName -> ContainerPath -> NumberM i ContainerPath
 filterDepends cname cp = do
   let hasAsDependant (cpcname, ln) = do
         deps <- fmap (fromMaybe mempty) $ gets $ M.lookup cpcname . nsCounterRel
-        case cname `Set.member` deps of
-          True  -> pure $ Just (cpcname, ln)
-          False -> pure Nothing
+        if cname `Set.member` deps
+          then pure $ Just (cpcname, ln)
+          else pure Nothing
   cp' <- traverse hasAsDependant cp
   pure $ catMaybes cp'
 
@@ -267,7 +271,7 @@ getIncCounter cname = do
   mn <- gets $ \s -> M.lookup cname (nsCounterVals s)
   for mn $ \n -> do
     modify $ \s -> s { nsCounterVals = M.adjust (+ 1) cname (nsCounterVals s) }
-    pure $ n
+    pure n
 
 -- | Reset the dependants of the current counter to their default
 -- state, returning the state they had previously as a set.
@@ -326,3 +330,154 @@ bracketNumbering (Just typ) mId f = do
     restoreDependants oldDependants
   pure a
 bracketNumbering Nothing _ f = f Nothing
+
+
+{-
+Our context strategy right now is:
+
+- contexts always have an associated counter that goes in the counter
+  relations for compiling. This counter can't be shared, for now, so
+  it's safe to assume that the number context name is the same as the
+  counter name. This even ends up in the numbering state, but since
+  contexts cannot be numbered themselves, this isn't a problem; we
+  simply fail to update the counter. If contexts are changed to be
+  possibly numbered, then the unnumbered ones should be removed from
+  the counter state at the end, which should suppress numbering,
+  unless bracketNumbering has changed in the meantime.
+
+  For now, there will be a built-in "olist" counter for this purpose.
+
+- every context has an active number configuration and a stack of
+  future number configurations in the state. At the top level of the
+  document this current configuration is assigned an arbitrary value
+  (the default, for now), since anything that is styled relative to a
+  context should only occur within such a context, at which point the
+  current configuration should have been set properly.
+
+- all containers have either an associated numbering context, or an
+  associated explicit numbering configuration. If they have the
+  former, we need to look up the numbering configuration in the
+  environment associated to the numbering context, which will be used
+  to generate the number and will be reported along with the element
+  identifier, when necessary.
+
+  Currently, only a list `item` can be assigned a numbering context,
+  and its only value will be "olist", something that happens
+  internally.
+
+- though note that this could be different from numbering! There is a
+  difference between style contexts (which vary according to some
+  unspecified procedure and control the style of whatever refers to
+  them) and numbering contexts (which control numbering essentially
+  like normal counters, without the requirement that they also be
+  counters). We might want to call these identifiers
+  NumberStyleContext instead.
+
+- So for things that we know are contexts (only olist at the moment),
+  we must bracket the numbering as we do with normal containers, and
+  bracket the style context data (activating the pending style, then
+  restoring the old one). Some of these might allow the numbering of
+  their children to start from something different than 1, but that's
+  similar to allowing directives to change the counter state (only
+  more restricted, but perhaps easier to use).
+
+- And for things that are containers, we proceed normally, except that
+  we might have to look up an active style instead of getting the
+  style directly from the environment.
+
+What remains is how the style contexts change in the state, and how
+they are configured.
+
+- list-like contexts get their style based on the current list
+  depth. If we interpret this as meaning the depth of the same type of
+  list, then this can be implemented with a non-empty stack of styles
+  associated to each list context.
+
+- it may or may not be worthwhile to integrate all of this into a
+  single system - _everything_ would have a numbering context in this
+  arrangement. For current containers, their numbering is based on
+  _depth of related containers_. This is very similar to list
+  numbering: in both cases, conceptually, one accumulates a stack of
+  related containers in each context and calculates a number based on
+  that context and the local number. The difference, of course, is in
+  the way that the number is calculated.
+
+If we do integrate this, then all block {type}s will define an
+associated context, and will have an associated counter (either
+defined by them or shared). We would then need to keep track of the
+context dependencies in order to update their state properly. So for
+any {type}d thing, we would look up its associated context and
+counter, calculate the local number of the container using the counter
+and update the counter, then calculate the full number using the
+context and update the context.
+
+Say we had lemma shared with theorem, and a theorem -> subsection ->
+section dependency. If we come across a section, every dependent
+counter would need to know (by being reset), and every dependent
+context would need to know (somehow). Unsure how dependent contexts
+would be updated. They mostly operate like a reader, I suppose, so if
+we descend into a new context we should push its data to the dependent
+contexts, then pop it when we ascend from it. This data _might_
+include the local number, I suppose, but for lists we would only want
+to record that a list was encountered at all. (That's all we could do,
+in fact).
+
+Getting back to that example, we'd want to bracket the numbering of
+the content of the thing with an action that pushes the new context to
+the dependent contexts, then pops it (or restores the old context,
+whichever) when it's done. So for the section we'd calculate its
+number, then push that data onto all the dependent contexts. If we
+encountered a subsection inside it, we'd calculate the subsection's
+local number based on its context (which will include the number of
+the section), and push that information to its dependent contexts. And
+so on. Note that each container would need to have some (optional) way
+of calculating its number based on its local number and context. In
+the case of things like sections and formal blocks this would be based
+on the local numbers in the context (interspersed with '.', but
+perhaps with other options).
+
+But how would this work for lists and items? The issue with items is
+that they might occur inside lists of different styles, perhaps nested
+inside other lists of other styles. That suggests that items should
+not be configured directly. They should be hard-wired to be numbered
+based on their enclosing list. Internally, we might say that list
+items would share (?) the context of every list. We could also say
+that items are dependent on every type of list, in which case the list
+item context would contain a record of the entire path of lists above
+it, and we would want to filter that path so that we only included the
+number of lists with type equal to the type of the list at the head of
+the path.
+
+Maybe this suggests that we should simply have a separate context for
+lists and list items, apart from the shared section/formalBlock one?
+Then for the built-in olist we'd be able to configure the appearance
+of items based on the enclosing olist depth. We could also do the same
+with custom olist types, though perhaps it would be easier if we only
+allowed a constant style for such custom types, to be applied at an
+arbitrary depth.
+
+Internally we would have an item counter state that gets bracketed
+every time we enter a new list, and a list context that gets similarly
+bracketed. As for encountering items, we would getIncrement the item
+counter and look up the number/ref style defined in the current list
+context. We might want to have a built-in "_item" counter that other
+things can depend on, and if so we should add the item numbering data
+to the current path as well.
+
+I suppose we could even base item numbering purely off the path. We'd
+need to add a numbering style that could vary based on the number of
+equal container types above it. We'd want to have the item be recorded
+as a composite type in that case, an "_item of _olist", or "_item of
+axiom". That sort of thing. We could unify that with sections and
+other things by talking about "_formalBlock of theorem" or "_section
+of section" or "_section of _level-n". Perhaps. Something like
+"(element, type)"? But where is the number/ref config stored? Perhaps
+_item is a container name whose numbering configuration is updated
+every time we enter a list? Sure. Then the numbering config would need
+to have a calculating style like "single number with style X based on
+the depth of <concrete-contain-type> in the path". The other
+possibility would of course be "composite number based on accumulated
+local numbers whose counters govern this container", perhaps with a
+`take n` option attached.
+
+-}

@@ -16,6 +16,20 @@ module Text.Scriba.Decorate.Referencing
   )
 where
 
+{- TODO:
+
+- references with Surrounding content?
+
+- A "reference list" style? related to references with
+  before/after. Would be rendered as a separated list of all the
+  prefixed numbers. This is a style in the Cours d'Analyse, for
+  example. That one might require more subtle referencing style
+  changes, if we wanted to be more faithful (e.g. selectively rendered
+  ordinal markers and other things).
+
+
+-}
+
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 

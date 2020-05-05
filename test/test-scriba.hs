@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE StandaloneDeriving #-}
 
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM

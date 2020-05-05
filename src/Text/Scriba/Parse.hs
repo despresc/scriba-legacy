@@ -1,7 +1,5 @@
-{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Parse where
@@ -411,7 +409,7 @@ pBlockElement indentLvl = pBlockMark
 -- | Parses paragraphed block content
 pBlockParContent :: Parser BlockContent
 pBlockParContent = do
-  void $ pBlockBodyStart
+  void pBlockBodyStart
   pSpace
   BlockBlocks <$> MP.many (pBlockNode <* pSpace)
 
@@ -473,7 +471,7 @@ pSecHeader = do
 pDocAttrs :: Parser Attrs
 pDocAttrs = pBraced "scriba element (document meta)" $ do
   pSpace
-  void $ "scriba"
+  void "scriba"
   pSpace
   pAttrs pSpace
 

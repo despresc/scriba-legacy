@@ -71,9 +71,7 @@ runTemplate (Just template) ts tp tn tb =
     <> [(fromTs, ttemplateBody template, tb)]
  where
   sep = ttemplatePartSep template
-  condSwap x y = case ttemplatePrefixFirst template of
-    True  -> [x, y]
-    False -> [y, x]
+  condSwap x y = if ttemplatePrefixFirst template then [x, y] else [y, x]
   fromTs = case ts of
     FormalTemplate  -> TitleNote
     SectionTemplate -> TitleBody

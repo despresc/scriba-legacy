@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Intermediate.Parse where
@@ -177,7 +178,7 @@ whileParsingElem t act = do
 -- TODO: maybe one that operates on the head? I.e. modifies the s and
 -- places the s' back on the list.
 one :: Scriba s a -> Scriba [s] a
-one act = liftScriba $ \ss -> case ss of
+one act = liftScriba $ \case
   s : ss' -> do
     (_, a) <- runScriba act s
     pure (ss', a)
@@ -187,7 +188,7 @@ one act = liftScriba $ \ss -> case ss of
 -- "unexpected text". Also might want this to consume whitespace or
 -- otherwise be whitespace-configurable.
 zero :: Scriba [s] ()
-zero = liftScriba $ \ss -> case ss of
+zero = liftScriba $ \case
   [] -> pure ([], ())
   _  -> throwError $ Msg "non-empty input"
 
@@ -292,7 +293,7 @@ ty act = liftScriba $ \(Element mty met con) -> do
 -- 1. add (Scriba [Node] a) combinators that do this? Say oneElem? or
 -- 2. create a pParser' for each element parser using this.
 asNode :: Scriba Element a -> Scriba Node a
-asNode act = liftScriba $ \n -> case n of
+asNode act = liftScriba $ \case
   NodeElem e -> do
     (e', a) <- runScriba act e
     pure (NodeElem e', a)
@@ -327,16 +328,6 @@ text = liftScriba $ \n -> case n of
 
 simpleText :: Scriba Node Text
 simpleText = snd <$> text
-
-unzips :: Functor f => f (a, b) -> (f a, f b)
-unzips x = (fmap fst x, fmap snd x)
-
-unzips3 :: Functor f => f (a, b, c) -> (f a, f b, f c)
-unzips3 x = (fmap fst' x, fmap snd' x, fmap thd' x)
- where
-  fst' (a, _, _) = a
-  snd' (_, b, _) = b
-  thd' (_, _, c) = c
 
 -- TODO: no tab support yet. Should document.
 -- TODO: should document the blank line behaviour.

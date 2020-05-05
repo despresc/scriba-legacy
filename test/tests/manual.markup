@@ -1211,9 +1211,27 @@ Doc
                                           { getParagraph = [ Istr Str { getStr = "An example:" } ] }
                                     , Blist
                                         (Olist
-                                           [ MixedInline [ Istr Str { getStr = "First element" } ]
-                                           , MixedInline [ Istr Str { getStr = "Second element" } ]
-                                           , MixedInline [ Istr Str { getStr = "Third element" } ]
+                                           [ OlistItem
+                                               { olLabel = Nothing
+                                               , olNum = Nothing
+                                               , olContent =
+                                                   MixedInline
+                                                     [ Istr Str { getStr = "First element" } ]
+                                               }
+                                           , OlistItem
+                                               { olLabel = Nothing
+                                               , olNum = Nothing
+                                               , olContent =
+                                                   MixedInline
+                                                     [ Istr Str { getStr = "Second element" } ]
+                                               }
+                                           , OlistItem
+                                               { olLabel = Nothing
+                                               , olNum = Nothing
+                                               , olContent =
+                                                   MixedInline
+                                                     [ Istr Str { getStr = "Third element" } ]
+                                               }
                                            ])
                                     ]
                                 , secChildren = []

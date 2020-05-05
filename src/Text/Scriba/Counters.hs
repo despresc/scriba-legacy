@@ -16,6 +16,7 @@ import           Control.Monad.Except           ( Except
                                                 , MonadError(..)
                                                 , runExcept
                                                 )
+import           Data.Bifunctor                 ( first )
 import           Data.Either                    ( partitionEithers )
 import           Data.Foldable                  ( traverse_
                                                 , foldl'
@@ -83,6 +84,8 @@ data ContainerRelation
 type RawCounterDependency = Map ContainerName ContainerRelation
 
 -- | Ensure that the container relations have no cycles in them.
+
+-- TODO: change the error messages here.
 guardWellFormed :: [(ContainerName, ContainerRelation)] -> CounterM ()
 guardWellFormed =
   traverse_ allSingleton . Graph.stronglyConnComp . fmap getRels
@@ -156,7 +159,7 @@ getSemiCounterData l = do
       others' = updateRel <$> others
   pure
     ( sharedmap <> Map.fromList (getNonSharedCounter . fst <$> others')
-    , (\(x, y) -> (toCounterName x, y)) <$> others'
+    , first toCounterName <$> others'
     )
  where
   -- Get the raw dependency graph

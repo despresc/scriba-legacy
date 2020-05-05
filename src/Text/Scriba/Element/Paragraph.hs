@@ -35,9 +35,8 @@ pParagraph p = do
   c <- whileParsingElem e $ content p
   pure $ Paragraph c
  where
-  presentedAsParagraph = do
-    meta $ do
-      Meta _ pres _ _ <- inspect
-      case pres of
-        AsPara -> pure ()
-        _      -> empty
+  presentedAsParagraph = meta $ do
+    Meta _ pres _ _ <- inspect
+    case pres of
+      AsPara -> pure ()
+      _      -> empty

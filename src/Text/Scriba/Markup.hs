@@ -1,10 +1,10 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -21,6 +21,7 @@ module Text.Scriba.Markup
   , MixedBody(..)
   , Formal(..)
   , List(..)
+  , OlistItem(..)
   , Paragraph(..)
   , Inline(..)
   , Title(..)
@@ -234,9 +235,10 @@ instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
 instance Referencing (Inline b) InlineControl (Inline b) where
   referencing (IcRef sr) = Iref <$> resolveRef sr
 
-data InlineControl
-  = IcRef !SourceRef
-  deriving (Eq, Ord, Show, Read, Generic, Numbering i, Titling i)
+newtype InlineControl
+  = IcRef SourceRef
+  deriving (Eq, Ord, Show, Read, Generic)
+  deriving anyclass (Numbering i, Titling i)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -300,7 +302,7 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
       titleSep <- attrMaybe "titleSep" $ allContentOf pInlineCore
       (cr, nc) <- pNumberRef
       concl    <- attrMaybe "conclusion" $ allContentOf pInlineCore
-      pure $ (FormalConfig titleTemplate titleSep concl, cr, nc)
+      pure (FormalConfig titleTemplate titleSep concl, cr, nc)
 
 -- TODO: more exotic orderings. Perhaps make prefix/numberFirst
 -- exclusive as well. Also options for suppressing particular
@@ -309,9 +311,9 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
 -- TODO: title separator customization?
 pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
 pTitleTemplate t = do
-  pref        <- attrDef "prefix" emptySurround $ pSurround
-  tnote       <- attrDef tname emptySurround $ pSurround
-  tnum        <- attrDef "n" emptySurround $ pSurround
+  pref        <- attrDef "prefix" emptySurround pSurround
+  tnote       <- attrDef tname emptySurround pSurround
+  tnum        <- attrDef "n" emptySurround pSurround
   prefixFirst <- attrMaybe "prefixFirst" $ pure True
   numberFirst <- attrMaybe "numberFirst" $ pure False
   pure $ TitleTemplate pref
@@ -332,7 +334,7 @@ pSurround = do
     b <- mattr "before" $ allContentOf pInlineCore
     a <- mattr "after" $ allContentOf pInlineCore
     pure (b, a)
-  c <- allContentOf $ pInlineCore
+  c <- allContentOf pInlineCore
   let c' = case c of
         [] -> Nothing
         x  -> Just x
@@ -341,7 +343,7 @@ pSurround = do
 pNumberRef
   :: Scriba Attrs (Maybe ContainerRelation, Maybe (NumberConfig (Inline a)))
 pNumberRef = do
-  numberingConf     <- attrMaybe "numbering" $ pCounterDepends
+  numberingConf     <- attrMaybe "numbering" pCounterDepends
   (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
     s <- attrMaybe "sep" $ allContentOf pInlineCore
     p <- attrMaybe "prefix" $ allContentOf pInlineCore
@@ -373,7 +375,7 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate SectionTemplate)
       (cr, nc) <- pNumberRef
-      pure $ (SectionConfig titleTemplate, cr, nc)
+      pure (SectionConfig titleTemplate, cr, nc)
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an
@@ -422,7 +424,7 @@ pInlineBody = remaining
 pMixedBody
   :: Scriba Node (Inline a) -> Scriba [Node] (MixedBody Block (Inline a))
 pMixedBody pInl =
-  MixedBlock <$> (pBlockBody pInl) <|> MixedInline <$> (pInlineBody pInl)
+  MixedBlock <$> pBlockBody pInl <|> MixedInline <$> pInlineBody pInl
 
 -- ** Inline parsing
 
@@ -545,9 +547,9 @@ pDoc = do
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
       t                         <- mattr "title" $ allContentOf pInlineCore
-      tplain <- attrMaybe "plainTitle" $ fmap T.concat $ allContentOf simpleText
-      fconfig                   <- mattr "formalBlocks" $ pFormalConfig
-      sconfig                   <- mattr "sections" $ pSectionConfig
+      tplain <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
+      fconfig                   <- mattr "formalBlocks" pFormalConfig
+      sconfig                   <- mattr "sections" pSectionConfig
       (dmathCrel, dmathNumConf) <-
         fmap unzips $ attrMaybe "formula" $ meta $ attrs pNumberRef
       let dmathrelRaw = [("formula", join dmathCrel)]
@@ -604,13 +606,15 @@ parseDoc = fmap snd . runScriba (asNode pDoc)
 -- * Decorating the document
 
 -- TODO: add in configuration for prefixes and other things
-defaultNumberState :: DocAttrs i -> NumberState i
+-- TODO: might want to forbid, or have special configuration for, the
+-- "item" counter.
+defaultNumberState :: DocAttrs (Inline i) -> NumberState (Inline i)
 defaultNumberState da = NumberState initCounters
                                     []
                                     (docCounterRel da)
                                     (docElemCounterRel da)
                                     mempty
-  where initCounters = docCounterRel da $> 1
+  where initCounters = M.insert "item" 1 $ docCounterRel da $> 1
 
 
 getRefEnv :: NumberData i -> RefData i
@@ -619,19 +623,22 @@ getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
 
 -- TODO: don't discard the numbering information.
 runNumDoc
-  :: Numbering j a
-  => Doc Block j (Inline a)
-  -> (NumberData j, Doc Block j (Inline a))
+  :: Numbering (Inline j) a
+  => Doc Block (Inline j) (Inline a)
+  -> Either
+       DecorateError
+       (NumberData (Inline j), Doc Block (Inline j) (Inline a))
 runNumDoc d@(Doc da _ _ _) =
   flip runNumberM (defaultNumberState da) $ numbering d
 
+-- TODO: type applications for titling?
 runTitleDoc
   :: forall a
    . Titling (Inline a) a
   => Doc Block (Inline Void) (Inline a)
   -> Doc Block (Inline Void) (Inline a)
 runTitleDoc d@(Doc da _ _ _) =
-  flip runTitleM (fmap (traverseInline absurd) $ docTitlingConfig da)
+  flip runTitleM (traverseInline absurd <$> docTitlingConfig da)
     $ (titling :: Doc Block (Inline Void) (Inline a)
         -> TitleM (Inline a) (Doc Block (Inline Void) (Inline a))
       )
@@ -669,14 +676,7 @@ traverseInline _ (IpageMark    s) = IpageMark s
 decorate
   :: Doc Block (Inline Void) (Inline InlineControl)
   -> Either DecorateError (Doc Block (Inline Void) (Inline Void))
-decorate d =
-  let (numdat, nd) = runNumDoc d
-      td           = runTitleDoc nd
-      erd          = runRefDoc (adjustEnv $ getRefEnv numdat) td
-  in  erd
- where
-  adjustEnv (RefData m) = RefData $ (\(x, y, z) -> (x, adjustNC y, z)) <$> m
-  adjustNC (NumberConfig ns m p) =
-    NumberConfig ns (map adjustInls <$> m) (map adjustInls <$> p)
-  adjustInls = traverseInline $ const $ Istr $ Str ""
-
+decorate d = do
+  (numdat, nd) <- runNumDoc d
+  let td = runTitleDoc nd
+  runRefDoc (getRefEnv numdat) td

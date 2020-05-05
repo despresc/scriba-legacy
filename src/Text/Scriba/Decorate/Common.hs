@@ -75,3 +75,13 @@ instance Semigroup DecorateError where
 
 instance Monoid DecorateError where
   mempty = DecorateNil
+
+unzips :: Functor f => f (a, b) -> (f a, f b)
+unzips x = (fmap fst x, fmap snd x)
+
+unzips3 :: Functor f => f (a, b, c) -> (f a, f b, f c)
+unzips3 x = (fmap fst' x, fmap snd' x, fmap thd' x)
+ where
+  fst' (a, _, _) = a
+  snd' (_, b, _) = b
+  thd' (_, _, c) = c

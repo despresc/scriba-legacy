@@ -46,7 +46,7 @@ writeStandalone :: Doc Block (Inline Void) (Inline Void) -> Html
 writeStandalone d = fst $ runRender (renderStandalone d) initialRenderState
 
 -- Section titles run from h1 to h6, then top out there.
-data RenderState = RenderState
+newtype RenderState = RenderState
   { rsHeaderDepth :: Int
   }
 
@@ -162,15 +162,9 @@ renderCodeBlock (BlockCode t) =
 -- TODO: True for wrapping the body. Maybe better type?
 renderMixedBlockBody :: Bool -> MixedBody Block (Inline Void) -> Render Html
 renderMixedBlockBody b (MixedInline ils) = go <$> foldBy renderInline ils
- where
-  go = case b of
-    True  -> H.span ! A.class_ "body"
-    False -> id
+  where go = if b then H.span ! A.class_ "body" else id
 renderMixedBlockBody b (MixedBlock blks) = go <$> renderBlocks blks
- where
-  go = case b of
-    True  -> H.div ! A.class_ "body"
-    False -> id
+  where go = if b then H.div ! A.class_ "body" else id
 
 -- TODO: add the type as a data-scribaType? Though we might want that
 -- to equal formalBlock here. Might want to record the number as well.
@@ -195,10 +189,18 @@ renderFormalBlock (Formal mty ml _ mtitle _ mtitlesep body concl) = do
 renderList :: List Block (Inline Void) -> Render Html
 renderList b = case b of
   Ulist l -> H.ul <$> renderListItems l
-  Olist l -> H.ol <$> renderListItems l
+  Olist l -> H.ol <$> foldBy renderOlistItem l
  where
   renderListItems = foldBy renderListItem
   renderListItem bs = H.li <$> renderMixedBlockBody False bs
+
+-- TODO: some kind of renderIdentifier to turn a Maybe Identifier into
+-- a Maybe attribute
+renderOlistItem :: OlistItem Block (Inline Void) -> Render Html
+renderOlistItem (OlistItem mId _ c) = do
+  c' <- renderMixedBlockBody False c
+  pure $ H.li ?? ident $ c'
+  where ident = (\(Identifier i) -> A.id (H.toValue i)) <$> mId
 
 renderParagraph :: Paragraph (Inline Void) -> Render Html
 renderParagraph (Paragraph c) = H.p <$> foldBy renderInline c

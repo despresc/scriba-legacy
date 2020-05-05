@@ -12,7 +12,7 @@ import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 import           Text.Scriba.Element.Identifier
 
-import           Data.Maybe                     ( isJust )
+import           Data.Maybe                     ( isNothing )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
@@ -44,7 +44,7 @@ pMathItem = do
     mId     <- attrMaybe "id" $ content pIdent
     mnumber <- attrMaybe "n" $ allContentOf simpleText
     mIsNum  <- attrMaybe "noNum" $ pure ()
-    pure (mId, mnumber, not $ isJust mIsNum)
+    pure (mId, mnumber, isNothing mIsNum)
   pure $ MathItem mId (T.concat <$> mnumber) isNum t
 
 -- Formulas have a possible identifier and a possible number
@@ -83,10 +83,10 @@ pGathered :: Scriba Element DisplayMath
 pGathered = whileMatchTy "gathered" $ do
   body   <- allContent $ pOnlySpace *> many pLines
   mIsNum <- meta $ attrs $ attrMaybe "noNum" $ pure ()
-  pure $ Gathered (not $ isJust mIsNum) body
+  pure $ Gathered (isNothing mIsNum) body
  where
   pLines = one (asNode pLine) <* pOnlySpace
-  pLine  = whileMatchTy "line" $ pMathItem
+  pLine  = whileMatchTy "line" pMathItem
 
 instance Numbering i DisplayMath
 
