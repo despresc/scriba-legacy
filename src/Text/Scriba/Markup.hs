@@ -26,7 +26,7 @@ module Text.Scriba.Markup
   , Inline(..)
   , Title(..)
   , DocAttrs(..)
-  , NumberStyle(..)
+  , LocalNumberStyle(..)
   , TitlingConfig(..)
   , unzips
   , unzips3
@@ -48,6 +48,7 @@ module Text.Scriba.Markup
   , BlockCode(..)
   , Ref(..)
   , NumberConfig(..)
+  , UsedNumberConfig(..)
   , Identifier(..)
   , ContainerName(..)
   , MathItem(..)
@@ -215,7 +216,7 @@ data Inline a
 -- I have a (SourceRef -> RefM i (Ref i)). I can promote that, right
 -- now, to an InlineControl -> RefM i (Ref i)
 -- Then I can promote that to an (Inline InlineControl -> RefM i
--- (Inline i) The issue is that to be aware of that, the deriving
+-- (Inline i)) The issue is that to be aware of that, the deriving
 -- mechanism needs to be aware of the monadic nature of Inline, and so
 -- be able to take what is in effect an (a -> Inline b) and turn that
 -- into an (Inline a -> Inline b). So essentially I need another class
@@ -302,7 +303,23 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
       titleSep <- attrMaybe "titleSep" $ allContentOf pInlineCore
       (cr, nc) <- pNumberRef
       concl    <- attrMaybe "conclusion" $ allContentOf pInlineCore
-      pure (FormalConfig titleTemplate titleSep concl, cr, nc)
+      pure
+        ( FormalConfig titleTemplate titleSep concl
+        , cr
+        , nc <*> pure FilterByCounterDep
+        )
+
+-- TODO: add actual config
+pListConfig :: Scriba Element (NumberConfig (Inline a))
+pListConfig = meta $ attrs $ attrDef "olist" defaultListConfig $ pure
+  defaultListConfig
+ where
+  defaultListConfig = NumberConfig
+    ( NumberStyle (FilterByContainer "item:olist") Nothing
+    $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
+    )
+    (Just [Istr $ Str "item"])
+    (Just [Istr $ Str " "])
 
 -- TODO: more exotic orderings. Perhaps make prefix/numberFirst
 -- exclusive as well. Also options for suppressing particular
@@ -340,17 +357,33 @@ pSurround = do
         x  -> Just x
   pure $ Surround b c' a
 
+-- TODO: add in full NumberStyle parsing in some way. It might be good
+-- to have the config be dependent on the carrier of the container
+-- type, so that list item numbering would always (or by default) be
+-- by depth. Could simply pass in a number style parser.  TODO: I need
+-- to recreate this for list numbering parsing anyway, so we probably
+-- don't need to return a Maybe function here. Just have the filter be
+-- by relatedness.
 pNumberRef
-  :: Scriba Attrs (Maybe ContainerRelation, Maybe (NumberConfig (Inline a)))
+  :: Scriba
+       Attrs
+       ( Maybe ContainerRelation
+       , Maybe (ContainerPathFilter -> NumberConfig (Inline a))
+       )
 pNumberRef = do
   numberingConf     <- attrMaybe "numbering" pCounterDepends
   (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
     s <- attrMaybe "sep" $ allContentOf pInlineCore
     p <- attrMaybe "prefix" $ allContentOf pInlineCore
     pure (s, p)
-  let (counterDepends, nc) = unzips $ do
-        (containerRel, ns) <- numberingConf
-        pure (containerRel, NumberConfig ns (join refPref) (join refSep))
+  let
+    (counterDepends, nc) = unzips $ do
+      (containerRel, ns) <- numberingConf
+      pure
+        ( containerRel
+        , \fm ->
+          NumberConfig (NumberStyle fm Nothing ns) (join refPref) (join refSep)
+        )
   pure (counterDepends, nc)
 
 -- TODO: reduce duplication with pFormalConfig
@@ -375,13 +408,13 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate SectionTemplate)
       (cr, nc) <- pNumberRef
-      pure (SectionConfig titleTemplate, cr, nc)
+      pure (SectionConfig titleTemplate, cr, nc <*> pure FilterByCounterDep)
 
 -- TODO: enforce option exclusivity? Could do that by running all
 -- parsers (which should also return expectations), then throw an
 -- error if at least two are Right.
 -- TODO: need some pOneArg thing, clearly
-pCounterDepends :: Scriba Element (ContainerRelation, NumberStyle)
+pCounterDepends :: Scriba Element (ContainerRelation, LocalStyle)
 pCounterDepends = meta $ attrs $ do
   cr <-
     label "absolute" pAbsCounter
@@ -399,7 +432,17 @@ pCounterDepends = meta $ attrs $ do
     case ts of
       [t] -> pure $ Share $ ContainerName t
       _   -> throwError $ Msg "expecting exactly one counter"
-  pNumberStyle = attrDef "style" Decimal $ pure Decimal
+  pNumberStyle = attrDef "style" (AbsoluteStyle Decimal) $ do
+    as <- meta $ allArgsOf pLocalNumberStyle
+    case as of
+      []  -> throwError $ Msg "expecting one style, or multiple styles"
+      [t] -> pure $ AbsoluteStyle t
+      ts  -> pure $ DepthStyle ts
+  pLocalNumberStyle = do
+    (sp, t) <- text
+    whileParsing (Just sp) "local number style" $ case t of
+      "decimal" -> pure Decimal
+      _         -> throwError $ Msg "unknown number style"
 
 -- ** Block Parsing
 
@@ -541,15 +584,18 @@ pControl = IcRef <$> pSourceRef
 -- going on.
 -- TODO: add configuration for elemrel
 -- TODO: better math numbering support. The elemrel thing is particularly bad.
+-- TODO: list config should not be mandatory.
 pDoc :: Scriba Element (Doc Block (Inline a) (Inline InlineControl))
 pDoc = do
   matchTy "scriba"
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
-      t                         <- mattr "title" $ allContentOf pInlineCore
-      tplain <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
-      fconfig                   <- mattr "formalBlocks" pFormalConfig
-      sconfig                   <- mattr "sections" pSectionConfig
+      t       <- mattr "title" $ allContentOf pInlineCore
+      tplain  <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
+      fconfig <- mattr "formalBlocks" pFormalConfig
+      sconfig <- mattr "sections" pSectionConfig
+      lconfig <- attr "lists" pListConfig
+      let lCrel = ("item:olist", Just $ Relative [])
       (dmathCrel, dmathNumConf) <-
         fmap unzips $ attrMaybe "formula" $ meta $ attrs pNumberRef
       let dmathrelRaw = [("formula", join dmathCrel)]
@@ -562,21 +608,27 @@ pDoc = do
           compileContainerRelations
             (  mapMaybe mkName
             $  dmathrelRaw
+            <> [lCrel]
             <> M.toList srelRaw
             <> M.toList frelRaw
             )
         of
           Left  e -> throwError $ Msg e
           Right a -> pure a
-      let mergeRel =
-            M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
-          toCNKey = M.mapKeysMonotonic ContainerName
-          mergedStyles =
-            M.alter (const $ join dmathNumConf) "formula"
-              $  M.mapMaybe id
-              $  toCNKey snstyleRaw
-              <> toCNKey fnstyleRaw
-          elemrel' = mergeRel elemrel mergedStyles
+      let
+        mergeRel =
+          M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
+        toCNKey = M.mapKeysMonotonic ContainerName
+        formulaStyle =
+          M.singleton "formula" $ join dmathNumConf <*> pure FilterByCounterDep
+        listStyle = M.singleton "item:olist" (Just lconfig)
+        mergedStyles =
+          M.mapMaybe id
+            $  listStyle
+            <> formulaStyle
+            <> toCNKey snstyleRaw
+            <> toCNKey fnstyleRaw
+        elemrel' = mergeRel elemrel mergedStyles
       pure $ DocAttrs (Title t)
                       (fromMaybe (stripMarkup (const []) t) tplain)
                       (TitlingConfig fconf sconf)
@@ -614,7 +666,7 @@ defaultNumberState da = NumberState initCounters
                                     (docCounterRel da)
                                     (docElemCounterRel da)
                                     mempty
-  where initCounters = M.insert "item" 1 $ docCounterRel da $> 1
+  where initCounters = docCounterRel da $> 1
 
 
 getRefEnv :: NumberData i -> RefData i

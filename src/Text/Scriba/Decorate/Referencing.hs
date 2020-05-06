@@ -43,6 +43,7 @@ import           Control.Monad.Reader           ( ReaderT
                                                 , asks
                                                 , MonadReader(..)
                                                 )
+import           Data.List.NonEmpty             ( NonEmpty )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as Map
 import           Data.Set                       ( Set )
@@ -56,7 +57,7 @@ import           GHC.Generics
 -- Resolve references with accumulated numbering data
 
 newtype RefData i = RefData
-  { getRefData :: Map Identifier (ContainerName, NumberConfig i, Text)
+  { getRefData :: Map Identifier (ContainerName, UsedNumberConfig i, Text)
   } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: may want this to time travel, eventually
@@ -68,7 +69,7 @@ runRefM :: RefM i a -> RefData i -> Either DecorateError a
 runRefM = go . runReaderT . getRefM where go f = runExcept . f
 
 -- TODO: when errors get better, add positional information.
-lookupRefData :: Identifier -> RefM i (ContainerName, NumberConfig i, Text)
+lookupRefData :: Identifier -> RefM i (ContainerName, UsedNumberConfig i, Text)
 lookupRefData i = do
   mdat <- asks $ Map.lookup i . getRefData
   case mdat of
@@ -133,8 +134,15 @@ instance (Referencing i a b, Referencing i c d) => Referencing i (a, c) (b, d)
 
 instance Referencing i Identifier Identifier
 instance Referencing i a b => Referencing i (NumberConfig a) (NumberConfig b)
+instance Referencing i a b => Referencing i (UsedNumberConfig a) (UsedNumberConfig b)
 instance Referencing i NumberStyle NumberStyle
+instance Referencing i LocalNumberStyle LocalNumberStyle
+instance Referencing i LocalStyle LocalStyle
 instance Referencing i ContainerName ContainerName
+instance Referencing i ContainerPathFilter ContainerPathFilter
+instance Referencing i Int Int where
+  referencing = pure
+instance Referencing i a b => Referencing i (NonEmpty a) (NonEmpty b)
 instance Referencing i a b => Referencing i (TitlingConfig a) (TitlingConfig b)
 instance Referencing i a b => Referencing i (FormalConfig a) (FormalConfig b)
 instance Referencing i a b => Referencing i (SectionConfig a) (SectionConfig b)

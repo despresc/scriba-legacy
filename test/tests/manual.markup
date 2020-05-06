@@ -168,8 +168,29 @@ Doc
           [ ( ContainerName { getContainerName = "formula" }
             , ( CounterName { getCounterName = "formula" }
               , NumberConfig
-                  { ncNumberStyle = Decimal
+                  { ncNumberStyle =
+                      NumberStyle
+                        { nsFilterMethod = FilterByCounterDep
+                        , nsDisplayTake = Nothing
+                        , nsStyles = AbsoluteStyle Decimal
+                        }
                   , ncRefPrefix = Just [ Istr Str { getStr = "eqn." } ]
+                  , ncRefSep = Just [ Istr Str { getStr = " " } ]
+                  }
+              )
+            )
+          , ( ContainerName { getContainerName = "item:olist" }
+            , ( CounterName { getCounterName = "item:olist" }
+              , NumberConfig
+                  { ncNumberStyle =
+                      NumberStyle
+                        { nsFilterMethod =
+                            FilterByContainer ContainerName { getContainerName = "item:olist" }
+                        , nsDisplayTake = Nothing
+                        , nsStyles =
+                            DepthStyle [ Decimal , LowerAlpha , LowerRoman , Decimal ]
+                        }
+                  , ncRefPrefix = Just [ Istr Str { getStr = "item" } ]
                   , ncRefSep = Just [ Istr Str { getStr = " " } ]
                   }
               )
@@ -177,7 +198,12 @@ Doc
           , ( ContainerName { getContainerName = "lemma" }
             , ( CounterName { getCounterName = "theorem" }
               , NumberConfig
-                  { ncNumberStyle = Decimal
+                  { ncNumberStyle =
+                      NumberStyle
+                        { nsFilterMethod = FilterByCounterDep
+                        , nsDisplayTake = Nothing
+                        , nsStyles = AbsoluteStyle Decimal
+                        }
                   , ncRefPrefix = Nothing
                   , ncRefSep = Nothing
                   }
@@ -186,7 +212,12 @@ Doc
           , ( ContainerName { getContainerName = "section" }
             , ( CounterName { getCounterName = "section" }
               , NumberConfig
-                  { ncNumberStyle = Decimal
+                  { ncNumberStyle =
+                      NumberStyle
+                        { nsFilterMethod = FilterByCounterDep
+                        , nsDisplayTake = Nothing
+                        , nsStyles = AbsoluteStyle Decimal
+                        }
                   , ncRefPrefix = Nothing
                   , ncRefSep = Nothing
                   }
@@ -195,7 +226,12 @@ Doc
           , ( ContainerName { getContainerName = "subsection" }
             , ( CounterName { getCounterName = "subsection" }
               , NumberConfig
-                  { ncNumberStyle = Decimal
+                  { ncNumberStyle =
+                      NumberStyle
+                        { nsFilterMethod = FilterByCounterDep
+                        , nsDisplayTake = Nothing
+                        , nsStyles = AbsoluteStyle Decimal
+                        }
                   , ncRefPrefix = Just [ Istr Str { getStr = "\167" } ]
                   , ncRefSep = Nothing
                   }
@@ -204,7 +240,12 @@ Doc
           , ( ContainerName { getContainerName = "theorem" }
             , ( CounterName { getCounterName = "theorem" }
               , NumberConfig
-                  { ncNumberStyle = Decimal
+                  { ncNumberStyle =
+                      NumberStyle
+                        { nsFilterMethod = FilterByCounterDep
+                        , nsDisplayTake = Nothing
+                        , nsStyles = AbsoluteStyle Decimal
+                        }
                   , ncRefPrefix = Nothing
                   , ncRefSep = Nothing
                   }
@@ -214,6 +255,7 @@ Doc
     , docCounterRel =
         fromList
           [ ( CounterName { getCounterName = "formula" } , fromList [] )
+          , ( CounterName { getCounterName = "item:olist" } , fromList [] )
           , ( CounterName { getCounterName = "section" }
             , fromList
                 [ CounterName { getCounterName = "formula" }
@@ -721,11 +763,11 @@ Doc
                                                         ContainerName
                                                           { getContainerName = "formula" }
                                                     , refNumberConfig =
-                                                        NumberConfig
-                                                          { ncNumberStyle = Decimal
-                                                          , ncRefPrefix =
+                                                        UsedNumberConfig
+                                                          { uncStyle = Decimal
+                                                          , uncRefPrefix =
                                                               Just [ Istr Str { getStr = "eqn." } ]
-                                                          , ncRefSep =
+                                                          , uncRefSep =
                                                               Just [ Istr Str { getStr = " " } ]
                                                           }
                                                     , refNumber = "1.4.1"
@@ -987,11 +1029,11 @@ Doc
                                                         ContainerName
                                                           { getContainerName = "formula" }
                                                     , refNumberConfig =
-                                                        NumberConfig
-                                                          { ncNumberStyle = Decimal
-                                                          , ncRefPrefix =
+                                                        UsedNumberConfig
+                                                          { uncStyle = Decimal
+                                                          , uncRefPrefix =
                                                               Just [ Istr Str { getStr = "eqn." } ]
-                                                          , ncRefSep =
+                                                          , uncRefSep =
                                                               Just [ Istr Str { getStr = " " } ]
                                                           }
                                                     , refNumber = "2.1.2"
@@ -1213,26 +1255,61 @@ Doc
                                         (Olist
                                            [ OlistItem
                                                { olLabel = Nothing
-                                               , olNum = Nothing
+                                               , olNum = Just "1"
                                                , olContent =
                                                    MixedInline
                                                      [ Istr Str { getStr = "First element" } ]
                                                }
                                            , OlistItem
                                                { olLabel = Nothing
-                                               , olNum = Nothing
+                                               , olNum = Just "2"
                                                , olContent =
                                                    MixedInline
                                                      [ Istr Str { getStr = "Second element" } ]
                                                }
                                            , OlistItem
-                                               { olLabel = Nothing
-                                               , olNum = Nothing
+                                               { olLabel =
+                                                   Just
+                                                     Identifier { getIdentifier = "elem-ref-third" }
+                                               , olNum = Just "3"
                                                , olContent =
                                                    MixedInline
                                                      [ Istr Str { getStr = "Third element" } ]
                                                }
                                            ])
+                                    , Bpar
+                                        Paragraph
+                                          { getParagraph =
+                                              [ Istr
+                                                  Str
+                                                    { getStr =
+                                                        "The items of a list can be referenced, like this\n("
+                                                    }
+                                              , Iref
+                                                  Ref
+                                                    { refTarget =
+                                                        Identifier
+                                                          { getIdentifier = "elem-ref-third" }
+                                                    , refContainer =
+                                                        ContainerName
+                                                          { getContainerName = "item:olist" }
+                                                    , refNumberConfig =
+                                                        UsedNumberConfig
+                                                          { uncStyle = Decimal
+                                                          , uncRefPrefix =
+                                                              Just [ Istr Str { getStr = "item" } ]
+                                                          , uncRefSep =
+                                                              Just [ Istr Str { getStr = " " } ]
+                                                          }
+                                                    , refNumber = "3"
+                                                    }
+                                              , Istr
+                                                  Str
+                                                    { getStr =
+                                                        ") reference to one of the items above."
+                                                    }
+                                              ]
+                                          }
                                     ]
                                 , secChildren = []
                                 }
@@ -1287,11 +1364,11 @@ Doc
                                                         ContainerName
                                                           { getContainerName = "subsection" }
                                                     , refNumberConfig =
-                                                        NumberConfig
-                                                          { ncNumberStyle = Decimal
-                                                          , ncRefPrefix =
+                                                        UsedNumberConfig
+                                                          { uncStyle = Decimal
+                                                          , uncRefPrefix =
                                                               Just [ Istr Str { getStr = "\167" } ]
-                                                          , ncRefSep = Nothing
+                                                          , uncRefSep = Nothing
                                                           }
                                                     , refNumber = "2.4"
                                                     }

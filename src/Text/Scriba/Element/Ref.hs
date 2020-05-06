@@ -33,7 +33,7 @@ instance Titling i SourceRef
 data Ref i = Ref
   { refTarget :: Identifier
   , refContainer :: ContainerName
-  , refNumberConfig :: NumberConfig i
+  , refNumberConfig :: UsedNumberConfig i
   , refNumber :: Text
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 

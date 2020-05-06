@@ -30,13 +30,28 @@ import           GHC.Generics                   ( Generic )
 data List b i
   = Ulist [MixedBody b i]
   | Olist [OlistItem b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Numbering a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a)
 
 data OlistItem b i = OlistItem
   { olLabel :: Maybe Identifier
   , olNum :: Maybe Text
   , olContent :: MixedBody b i
   } deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Numbering a)
+
+-- TODO: not the best. We could have a "type inference" pass that
+-- annotates the list items with the type of their parent
+-- TODO: I think only a resetCounter is necessary here.
+instance (Numbering a (b i), Numbering a i) => Numbering a (List b i) where
+  numbering (Olist items) = do
+    resetCounter "item:olist"
+    a <- Olist <$> traverse numberItem items
+    pure a
+   where
+    numberItem (OlistItem mId mnum cont) =
+      bracketNumbering (Just "item:olist") mId $ \mnumgen -> do
+        cont' <- numbering cont
+        pure $ OlistItem mId (mnum <|> mnumgen) cont'
+  numbering (Ulist items) = Ulist <$> traverse numbering items
 
 instance ( Referencing i (f a) (g b)
          , Referencing i a b

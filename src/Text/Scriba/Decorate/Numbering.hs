@@ -9,8 +9,12 @@
 module Text.Scriba.Decorate.Numbering
   ( Numbering(..)
   , NumberConfig(..)
+  , UsedNumberConfig(..)
   , bracketNumbering
-  , NumberStyle(..)
+  , getResetDependants
+  , restoreDependants
+  , resetCounter
+  , LocalNumberStyle(..)
   , NumberState(..)
   , NumberM
   , runNumberM
@@ -39,6 +43,7 @@ import qualified Control.Monad.State.Strict    as State
 import           Data.Foldable                  ( traverse_
                                                 , for_
                                                 )
+import           Data.Digits                    ( digits )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Maybe                     ( fromMaybe
@@ -52,6 +57,7 @@ import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
 import           Data.Void
 import           GHC.Generics
+import           Text.Numeral.Roman
 
 -- * Numbering elements
 
@@ -69,7 +75,6 @@ import           GHC.Generics
 -- sequence. This might come up in lists of exercises, too, which can
 -- also have sub-exercises in list form that you might want to refer
 -- to as Exercise 2.iii.
-
 
 {- TODO:
 
@@ -127,14 +132,17 @@ numbers, not just their identifiers.
 
 -}
 
--- Container path, with the associated container type for filtering.
-type ContainerPath = [(CounterName, LocalNumber)]
+-- Counter path with local numbers and, if relevant, the parent
+-- container controlling the numbering of the given one (relevant for
+-- list items).
+type ContainerPath = [(ContainerName, CounterName, LocalNumber)]
 
 type LocalNumber = Text
 
 -- TODO: consolidate some of this together? I.e. numberstyles and
 -- elemcounterrel could probably be merged in Markup
 -- TODO: Should the contexts be stored in the parent path?
+-- TODO: should just have a separate list numbering component
 data NumberState i = NumberState
   { nsCounterVals :: Map CounterName Int -- ^ The values of the counters
   , nsParentPath  :: ContainerPath   -- ^ The full, unfiltered path of the parent container.
@@ -147,7 +155,7 @@ data NumberState i = NumberState
 data NumberDatum i = NumberDatum
   { ndIdentifier :: Identifier
   , ndContainerName :: ContainerName
-  , ndNumberConfig :: NumberConfig i
+  , ndNumberConfig :: UsedNumberConfig i
   , ndNumber :: Text
   } deriving (Eq, Ord, Show)
 
@@ -213,8 +221,14 @@ instance Numbering i Bool where
 
 instance Numbering i Identifier
 instance Numbering a i => Numbering a (NumberConfig i)
+instance Numbering a LocalNumberStyle
 instance Numbering a NumberStyle
+instance Numbering a ContainerPathFilter
+instance Numbering a Int where
+  numbering = pure
+instance Numbering a LocalStyle
 instance Numbering a ContainerName
+instance Numbering a i => Numbering a (UsedNumberConfig i)
 
 runNumberM
   :: NumberM i a -> NumberState i -> Either DecorateError (NumberData i, a)
@@ -223,26 +237,68 @@ runNumberM = go . State.runStateT . unNumberM
   go f = fmap retrieve . runExcept . f
   retrieve (a, ns) = (nsNumberData ns, a)
 
-renderCounter :: NumberStyle -> Int -> LocalNumber
-renderCounter Decimal n = T.pack $ show n
+-- the LowerAlpha implements the "alphabetic" CSS style, for reference
+renderCounter :: LocalNumberStyle -> Int -> Text
+renderCounter Decimal    n = T.pack $ show n
+renderCounter LowerRoman n = T.toLower $ toRoman n
+renderCounter LowerAlpha n =
+  T.pack $ (s `T.index`) . subtract 1 <$> digits (T.length s) n
+  where s = T.pack ['a' .. 'z']
 
--- TODO: will need to accept config at some point!
-renderNumber :: ContainerPath -> CounterName -> LocalNumber -> NumberM i Text
-renderNumber cp cname n = do
-  cp' <- filterDepends cname cp
-  pure $ T.intercalate "." $ reverse $ n : fmap snd cp'
+-- TODO: The text is the full number. We should have a type for it,
+-- honestly.
+-- TODO: come up with a name other than "container" for errors, or
+-- document what it means in relation to numbering.
+renderNumber
+  :: NumberStyle
+  -> ContainerPath
+  -> ContainerName
+  -> CounterName
+  -> Int
+  -> NumberM i (Text, LocalNumberStyle, ContainerPath)
+renderNumber (NumberStyle fm mdt sty) path containername countername n = do
+  path' <- case fm of
+    FilterByCounterDep     -> filterDepends countername path
+    FilterByContainer name -> pure $ filterByContainer name path
+  lsty <- case sty of
+    AbsoluteStyle lsty -> pure lsty
+    DepthStyle    stys -> case styleAtDepth (length path') stys of
+      Just lsty -> pure lsty
+      Nothing ->
+        throwError
+          $  DecorateError
+          $  "container "
+          <> getContainerName containername
+          <> "exceeded its defined numbering depth"
+  let
+    localNumber = renderCounter lsty n
+    thrd (_, _, z) = z
+    fullNumber =
+      T.intercalate "."
+        $ maybeTake mdt
+        $ reverse
+        $ localNumber
+        : fmap thrd path'
+    newPath = (containername, countername, localNumber) : path
+  pure (fullNumber, lsty, newPath)
+ where
+  maybeTake Nothing  = id
+  maybeTake (Just m) = take m
 
 -- Filter that path so that only numbers coming from a counter with
 -- the given counter as a dependency remain.
 filterDepends :: CounterName -> ContainerPath -> NumberM i ContainerPath
 filterDepends cname cp = do
-  let hasAsDependant (cpcname, ln) = do
+  let hasAsDependant (containername, cpcname, ln) = do
         deps <- fmap (fromMaybe mempty) $ gets $ M.lookup cpcname . nsCounterRel
         if cname `Set.member` deps
-          then pure $ Just (cpcname, ln)
+          then pure $ Just (containername, cpcname, ln)
           else pure Nothing
   cp' <- traverse hasAsDependant cp
   pure $ catMaybes cp'
+
+filterByContainer :: ContainerName -> ContainerPath -> ContainerPath
+filterByContainer cn = filter $ \(x, _, _) -> x == cn
 
 -- | Get the value of a counter.
 getCounter :: CounterName -> NumberM i (Maybe Int)
@@ -301,6 +357,7 @@ tellNumberDatum x =
 -- TODO: this does not respect manual numbering. I'm not sure what
 -- should be done in that case. I suppose that we could still look up
 -- its numbering data and register it, if it exists. We'll need to
+
 -- come up with some kind of ref configuration/sensible defualt
 -- fallbacks for manually numbered containers.
 bracketNumbering
@@ -316,13 +373,19 @@ bracketNumbering (Just typ) mId f = do
     for mn $ \n -> do
       oldPath       <- gets nsParentPath
       oldDependants <- getResetDependants countername
-      let numbersty   = ncNumberStyle numconf
-      let localNumber = renderCounter numbersty n
-      num <- renderNumber oldPath countername localNumber
-      setParentPath $ (countername, localNumber) : oldPath
-      for_ mId $ \ident ->
-        tellNumberDatum $ NumberDatum ident containername numconf num
-      pure (num, (oldPath, oldDependants))
+      let numbersty = ncNumberStyle numconf
+      (fullNum, lsty, newPath) <- renderNumber numbersty
+                                               oldPath
+                                               containername
+                                               countername
+                                               n
+      setParentPath newPath
+      for_ mId $ \ident -> tellNumberDatum $ NumberDatum
+        ident
+        containername
+        (UsedNumberConfig lsty (ncRefPrefix numconf) (ncRefSep numconf))
+        fullNum
+      pure (fullNum, (oldPath, oldDependants))
   let (mnumgen, mpath) = unzips mnumdata
   a <- f mnumgen
   for_ mpath $ \(oldPath, oldDependants) -> do
@@ -331,6 +394,27 @@ bracketNumbering (Just typ) mId f = do
   pure a
 bracketNumbering Nothing _ f = f Nothing
 
+{- TODO:
+
+Use the comment below this one and this one to document what's actually going on with lists:
+
+okay. lists with a separate numbering context?
+
+There will be a single _item counter, or maybe just item.
+
+When we encounter a list of a particular type, say axiom, we can
+update the current list context and reset the _item counter.
+
+Actually, no. There should be separate item types for each list
+type. I don't care. That means that we will have a built-in
+item:olist.
+
+Then when we encounter a list of type t, we will reset (possibly
+getReset) the item:t counter, and number its contents as item:t as
+normal.
+
+
+-}
 
 {-
 Our context strategy right now is:
@@ -479,5 +563,10 @@ the depth of <concrete-contain-type> in the path". The other
 possibility would of course be "composite number based on accumulated
 local numbers whose counters govern this container", perhaps with a
 `take n` option attached.
+
+Suppose we store the item config in the list container name?
+
+Separate listlike numbering? If we go to
+
 
 -}

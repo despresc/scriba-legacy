@@ -93,7 +93,13 @@ instance Titling i a => Titling i (Map k a) where
 
 instance Titling a Identifier
 instance Titling a i => Titling a (NumberConfig i)
+instance Titling a i => Titling a (UsedNumberConfig i)
+instance Titling a LocalNumberStyle
+instance Titling a LocalStyle
 instance Titling a NumberStyle
+instance Titling a ContainerPathFilter
+instance Titling a Int where
+  titling = pure
 instance Titling a ContainerName
 
 data TitleTemplateStyle

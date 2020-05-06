@@ -26,6 +26,8 @@ library
                , mtl
                , blaze-html
                , blaze-markup
+               , roman-numerals
+               , digits
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate.Common

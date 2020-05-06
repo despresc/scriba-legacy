@@ -279,7 +279,7 @@ renderDisplayMathContent (Gathered _ mis) = do
 -- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
 renderRef :: (Inline a -> Render Html) -> Ref (Inline a) -> Render Html
-renderRef f (Ref (Identifier lab) containername (NumberConfig _ mpref msep) num)
+renderRef f (Ref (Identifier lab) containername (UsedNumberConfig _ mpref msep) num)
   = do
     mpref' <- traverse (foldBy f) mpref
     msep'  <- traverse (foldBy f) msep

@@ -3,7 +3,14 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: roman-numerals-0.5.1.5@sha256:819d04d9d442b24629dd058f6f0b02bd78e9f9ae99538bc44ca448f1cb2b7b01,1208
+    pantry-tree:
+      size: 220
+      sha256: 2154c0f4a11842593586dc1932e233cd8c802994763f7d3ce3e5916be8bc7ee5
+  original:
+    hackage: roman-numerals-0.5.1.5
 snapshots:
 - completed:
     size: 491373
