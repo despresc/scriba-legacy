@@ -1,63 +1,51 @@
 {scriba
-  {title|The scriba markup language and document system}
-  {type|article}
-  {formula
-    {numbering {relative@subsection}
-               {style@decimal}}
-    {ref {prefix|eqn.}
-         {sep| }}
-  }
-  {lists
-    {_olist
-      {style@decimal decimal decimal decimal}
-    }
-  }
-  {formalBlocks
-    {theorem
-      {title
-        {prefix|Theorem}
-        {note {before|(}
-                   {after|)}}
-        {n {after|.}}
-      }
-      {titleSep|. }
-      {numbering {relative@section}
-                 {style@decimal}}
-    }
-    {lemma
-      {title
-        {numberFirst}
-        {prefix|Lemma}
+{title|The scriba markup language and document system}
+{type|article}
+{formula
+  {numbering {relative@subsection}
+             {style@decimal}}
+  {ref {prefix|eqn.}
+       {sep| }}}
+{lists
+  {_olist
+    {style@decimal decimal decimal decimal}}}
+{formalBlocks
+  {theorem
+    {title
+      {prefix|Theorem}
+      {note {before|(}
+            {after|)}}
+      {n {after|.}}}
+    {titleSep|. }
+    {numbering {relative@section}
+               {style@decimal}}}
+  {lemma
+    {title
+      {numberFirst}
+      {prefix|Lemma}
 	{n {after|.}}}
-      {titleSep|. }
-      {numbering {share@theorem}
-                 {style@decimal}}
-    }
-    {proof
-      {title
-        {prefix|Proof}}
-      {titleSep|. }
-      {conclusion|∎}
-    }
-  }
-  {sections
-    {section
-      {title
-        {prefix|Section}
-        {n {after|.}}}
-      {numbering {absolute}
-      		 {style@decimal}}
-    }
-    {subsection
-      {title
-        {n {after|.}}}
-      {numbering {relative@section}
-      		 {style@decimal}}
-      {ref
-        {prefix|§}}
-    }
-  }
-}
+    {titleSep|. }
+    {numbering {share@theorem}
+               {style@decimal}}}
+  {proof
+    {title
+      {prefix|Proof}}
+    {titleSep|. }
+    {conclusion|∎}}}
+{sections
+  {section
+    {title
+      {prefix|Section}
+      {n {after|.}}}
+    {numbering {absolute}
+               {style@decimal}}}
+  {subsection
+    {title
+      {n {after|.}}}
+    {numbering {relative@section}
+               {style@decimal}}
+    {ref
+      {prefix|§}}}}}
 
 {% TODO:
 
