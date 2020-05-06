@@ -1257,8 +1257,35 @@ Doc
                                                { olLabel = Nothing
                                                , olNum = Just "1"
                                                , olContent =
-                                                   MixedInline
-                                                     [ Istr Str { getStr = "First element" } ]
+                                                   MixedBlock
+                                                     [ Bpar
+                                                         Paragraph
+                                                           { getParagraph =
+                                                               [ Istr
+                                                                   Str { getStr = "Some preamble." }
+                                                               ]
+                                                           }
+                                                     , Blist
+                                                         (Olist
+                                                            [ OlistItem
+                                                                { olLabel =
+                                                                    Just
+                                                                      Identifier
+                                                                        { getIdentifier =
+                                                                            "elem-ref-nest"
+                                                                        }
+                                                                , olNum = Just "1.a"
+                                                                , olContent =
+                                                                    MixedInline
+                                                                      [ Istr
+                                                                          Str
+                                                                            { getStr =
+                                                                                "First element in first element"
+                                                                            }
+                                                                      ]
+                                                                }
+                                                            ])
+                                                     ]
                                                }
                                            , OlistItem
                                                { olLabel = Nothing
@@ -1268,9 +1295,7 @@ Doc
                                                      [ Istr Str { getStr = "Second element" } ]
                                                }
                                            , OlistItem
-                                               { olLabel =
-                                                   Just
-                                                     Identifier { getIdentifier = "elem-ref-third" }
+                                               { olLabel = Nothing
                                                , olNum = Just "3"
                                                , olContent =
                                                    MixedInline
@@ -1289,19 +1314,19 @@ Doc
                                                   Ref
                                                     { refTarget =
                                                         Identifier
-                                                          { getIdentifier = "elem-ref-third" }
+                                                          { getIdentifier = "elem-ref-nest" }
                                                     , refContainer =
                                                         ContainerName
                                                           { getContainerName = "item:olist" }
                                                     , refNumberConfig =
                                                         UsedNumberConfig
-                                                          { uncStyle = Decimal
+                                                          { uncStyle = LowerAlpha
                                                           , uncRefPrefix =
                                                               Just [ Istr Str { getStr = "item" } ]
                                                           , uncRefSep =
                                                               Just [ Istr Str { getStr = " " } ]
                                                           }
-                                                    , refNumber = "3"
+                                                    , refNumber = "1.a"
                                                     }
                                               , Istr
                                                   Str

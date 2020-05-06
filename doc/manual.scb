@@ -388,14 +388,21 @@ a whitespace-separated list of {code|item} elements.
 
 An example:
 
-&{olist|
-{item|First element}
-{item|Second element}
-{item {id|elem-ref-third}|Third element}
+&{olist&
+
+&{item&
+  Some preamble.
+
+  &{olist|
+    {item {id|elem-ref-nest}|First element in first element}
+  }
+}
+&{item|Second element}
+&{item|Third element}
 }
 
 The items of a list can be referenced, like this
-({ref@elem-ref-third}) reference to one of the items above.
+({ref@elem-ref-nest}) reference to one of the items above.
 
 ## subsection {id|elem-ref} {title|ref}
 

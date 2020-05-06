@@ -414,6 +414,10 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
 -- parsers (which should also return expectations), then throw an
 -- error if at least two are Right.
 -- TODO: need some pOneArg thing, clearly
+
+-- TODO: change pNumberStyle back to a single local number style. Then
+-- create a new parser for pListConfig, since this one can't be used
+-- for it (too dissimilar).
 pCounterDepends :: Scriba Element (ContainerRelation, LocalStyle)
 pCounterDepends = meta $ attrs $ do
   cr <-
