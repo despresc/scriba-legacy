@@ -80,10 +80,10 @@ ol ol ol ol {
     list-style: decimal;
 }
 
-li > p:first-child {
+li > .body > p:first-child {
     text-indent: 0;
 }
 
-ul > p:first-child {
+ul > .body > p:first-child {
     text-indent: 0;
 }
