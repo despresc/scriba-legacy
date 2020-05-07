@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Text.Scriba.Parse where
+module Text.Scriba.Source.Parse where
 
 import           Control.Applicative            ( (<|>)
                                                 , empty

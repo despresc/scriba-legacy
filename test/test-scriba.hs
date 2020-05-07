@@ -3,7 +3,7 @@
 
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
-import qualified Text.Scriba.Parse             as SP
+import qualified Text.Scriba.Source.Parse      as SP
 
 import           Data.ByteString.Lazy          as BL
 import           Data.Text                      ( Text )

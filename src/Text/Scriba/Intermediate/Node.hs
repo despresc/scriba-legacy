@@ -3,12 +3,12 @@
 
 module Text.Scriba.Intermediate.Node where
 
-import           Text.Scriba.Parse              ( InlineContent(..)
+import           Text.Scriba.Source.Parse       ( InlineContent(..)
                                                 , InlineNode(..)
                                                 , InlineElement
                                                 , BlockContent(..)
                                                 )
-import qualified Text.Scriba.Parse             as P
+import qualified Text.Scriba.Source.Parse      as P
 
 import           Data.Char                      ( isSpace )
 import           Data.Map.Strict                ( Map )

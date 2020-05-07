@@ -56,7 +56,7 @@ library
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
-    Text.Scriba.Parse
+    Text.Scriba.Source.Parse
     Text.Scriba.Render.Html
 
 
