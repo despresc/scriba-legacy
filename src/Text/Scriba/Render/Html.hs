@@ -114,7 +114,7 @@ renderStandalone d@(Doc dm _ _ _) = do
 -- TODO: Should the title be a Maybe?
 renderDoc :: Doc Block (Inline Void) (Inline Void) -> Render Html
 renderDoc (Doc t f m b) = do
-  t' <- renderTitle $ docTitle t
+  t' <- renderHeading renderTitle $ Heading $ docTitle t
   bumpHeaderDepth $ do
     f' <- renderSectionContent f
     m' <- renderSectionContent m
@@ -139,7 +139,7 @@ renderSectionContent (SectionContent bs cs) = do
 -- untitled section. Some kind of state variable, I think.
 renderSection :: Section Block (Inline Void) -> Render Html
 renderSection (Section _ ml _ t _ c) = do
-  t' <- traverse renderTitle t
+  t' <- traverse (renderHeading renderTitle . Heading) t
   let ident = (\(Identifier i) -> A.id (H.toValue i)) <$> ml
   bumpHeaderDepth $ do
     c' <- renderSectionContent c
@@ -297,8 +297,13 @@ renderRef f (Ref (Identifier lab) containername (UsedNumberConfig _ mpref msep) 
 -- Add a sectionTitle class?
 renderTitle :: Title (Inline Void) -> Render Html
 renderTitle (Title t) = do
+  t' <- renderInlines t
+  pure $ H.span ! A.class_ "title" $ t'
+
+renderHeading :: (a -> Render Html) -> Heading a -> Render Html
+renderHeading f (Heading t) = do
   lvl <- gets rsHeaderDepth
-  headAtLevel lvl <$> renderInlines t
+  headAtLevel lvl <$> f t
  where
   headAtLevel n = case n of
     1 -> H.h1

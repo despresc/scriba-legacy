@@ -93,6 +93,11 @@ newtype Title i = Title
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
     deriving anyclass (Numbering a, Titling a)
 
+newtype Heading i = Heading
+  { getHeading :: i
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
+    deriving anyclass (Numbering a, Titling a)
+
 instance Referencing i a b => Referencing i (Title a) (Title b)
 
 emptySectionContent :: SectionContent b i

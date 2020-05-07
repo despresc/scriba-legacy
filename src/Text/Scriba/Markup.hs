@@ -25,6 +25,7 @@ module Text.Scriba.Markup
   , Paragraph(..)
   , Inline(..)
   , Title(..)
+  , Heading(..)
   , DocAttrs(..)
   , LocalNumberStyle(..)
   , TitlingConfig(..)
