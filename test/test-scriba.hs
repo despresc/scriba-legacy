@@ -4,7 +4,6 @@
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
 import qualified Text.Scriba.Parse             as SP
-import qualified Text.Scriba.Render.Html       as SRH
 
 import           Data.ByteString.Lazy          as BL
 import           Data.Text                      ( Text )
@@ -93,7 +92,7 @@ tests = testGroup
   , testMarkup "manual parses into internal markup"
                "./doc/manual.scb"
                "./test/tests/manual.markup"
-  , testRenderingWith (HT.renderHtml . SRH.writeStandalone)
+  , testRenderingWith (HT.renderHtml . SM.writeStandalone)
                       "manual renders to html"
                       "./doc/manual.scb"
                       "./test/tests/manual.html"

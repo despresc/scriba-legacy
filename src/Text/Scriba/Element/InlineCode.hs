@@ -9,11 +9,12 @@ import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
-
+import qualified Text.Blaze.Html5              as Html
 
 newtype InlineCode = InlineCode
   { getInlineCode :: Text
@@ -28,3 +29,6 @@ inlineCodeToText (InlineCode t) = [t]
 
 pCode :: Scriba Element InlineCode
 pCode = InlineCode . T.concat <$> whileMatchTy "code" (allContentOf simpleText)
+
+instance RH.Render InlineCode where
+  render (InlineCode t) = pure $ Html.code $ Html.toHtml t

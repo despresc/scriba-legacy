@@ -5,17 +5,21 @@
 
 module Text.Scriba.Element.DisplayMath where
 
-import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 import           Text.Scriba.Element.Identifier
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Maybe                     ( isNothing )
+import qualified Data.List                     as List
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 data MathItem = MathItem
   { miIdentifier :: Maybe Identifier
@@ -90,3 +94,27 @@ pGathered = whileMatchTy "gathered" $ do
 
 instance Numbering i DisplayMath
 
+-- TODO: assumes mathjax or katex
+instance RH.Render DisplayMath where
+  render d = do
+    d' <- renderDisplayMathContent d
+    pure $ Html.span Html.! HtmlA.class_ "math display" $ "\\[" <> d' <> "\\]"
+   where
+    renderDisplayMathContent (Formula mi    ) = RH.render mi
+    renderDisplayMathContent (Gathered _ mis) = do
+      mis' <- traverse RH.render mis
+      let mis'' = List.intersperse "\\\\\n" mis'
+      pure $ do
+        "\\begin{gather*}"
+        sequence_ mis''
+        "\\end{gather*}"
+
+-- TODO: not great
+instance RH.Render MathItem where
+  render (MathItem mId mnum _ t) = pure $ Html.toHtml $ withLabNum t
+   where
+    withNum Nothing  = id
+    withNum (Just n) = (<> ("\\tag{" <> n <> "}"))
+    withLab Nothing  = id
+    withLab (Just x) = (<> ("\\label{" <> getIdentifier x <> "}"))
+    withLabNum = withLab mId . withNum mnum

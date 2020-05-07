@@ -12,10 +12,13 @@ import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 newtype SourceRef = SourceRef
   { sourceRefTarget :: Identifier
@@ -56,3 +59,25 @@ resolveRef :: SourceRef -> RefM i (Ref i)
 resolveRef (SourceRef i) = do
   (cn, nc, num) <- lookupRefData i
   pure $ Ref i cn nc num
+
+-- TODO: wrap separator?
+-- TODO: we're special-casing formula for now, so references to math
+-- work out. Later we'll want to configure mathjax's tagging.
+instance RH.Render a => RH.Render (Ref a) where
+  render (Ref (Identifier lab) containername (UsedNumberConfig _ mpref msep) num)
+    = do
+      mpref' <- traverse RH.render mpref
+      msep'  <- traverse RH.render msep
+      pure
+        $      Html.a
+        Html.! HtmlA.class_ "ref"
+        Html.! HtmlA.href (Html.toValue refVal)
+        $      do
+                 RH.renderMaybe mpref' $ Html.span Html.! HtmlA.class_ "prefix"
+                 RH.renderMaybe msep' id
+                 Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
+   where
+    refVal = case getContainerName containername of
+      "formula" -> "#mjx-eqn-" <> lab
+      _         -> "#" <> lab
+

@@ -13,12 +13,14 @@ import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 import           Text.Scriba.Element.Section
 import           Text.Scriba.Element.TitleComponent
-
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Map.Strict                ( Map )
 import           Data.Set                       ( Set )
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -73,5 +75,18 @@ instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Doc f 
     m' <- referencing m
     b' <- referencing b
     pure $ Doc da f' m' b'
--- TODO not totally sure if wise?
--- instance Referencing i a b => Referencing i (DocAttrs a) (DocAttrs b)
+
+-- TODO: selectively render empty sections?
+-- TODO: Should the title be a Maybe?
+instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Doc b j i) where
+  render (Doc t f m b) = do
+    t' <- RH.render $ Heading $ docTitle t
+    RH.bumpHeaderDepth $ do
+      f' <- RH.render f
+      m' <- RH.render m
+      b' <- RH.render b
+      pure $ Html.section Html.! HtmlA.class_ "scribaDoc" $ do
+        Html.header t'
+        Html.section Html.! HtmlA.class_ "frontMatter" $ f'
+        Html.section Html.! HtmlA.class_ "mainMatter" $ m'
+        Html.section Html.! HtmlA.class_ "backMatter" $ b'

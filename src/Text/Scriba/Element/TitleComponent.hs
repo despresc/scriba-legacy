@@ -3,6 +3,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Element.TitleComponent where
 
@@ -10,12 +11,15 @@ import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Applicative            ( (<|>) )
 import           Data.Functor                   ( (<&>) )
 import           Data.Maybe                     ( mapMaybe )
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -- TODO: it may be simpler to put all of this in Titling
 
@@ -82,3 +86,22 @@ runTemplate (Just template) ts tp tn tb =
   beforeAll x (a : as) = x <> [a] <> beforeAll x as
   beforeAll _ []       = []
 runTemplate Nothing _ _ _ _ = Nothing
+
+instance RH.Render i => RH.Render (TitleComponent i) where
+  render (TitleComponent t a v b) =
+    Html.span Html.! HtmlA.class_ wrapClass <$> body
+   where
+    wrapClass = case t of
+      TitlePrefix -> "titlePrefix"
+      TitleNote   -> "titleNote"
+      TitleNumber -> "number"
+      TitleSep    -> "titleSep"
+      TitleBody   -> "titleBody"
+    body = do
+      a' <- RH.render a
+      v' <- RH.render v
+      b' <- RH.render b
+      pure $ do
+        Html.span Html.! HtmlA.class_ "before" $ a'
+        v'
+        Html.span Html.! HtmlA.class_ "after" $ b'

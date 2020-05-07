@@ -8,13 +8,15 @@
 
 module Text.Scriba.Element.Paragraph where
 
-import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
 
 newtype Paragraph i = Paragraph
   { getParagraph :: [i]
@@ -40,3 +42,6 @@ pParagraph p = do
     case pres of
       AsPara -> pure ()
       _      -> empty
+
+instance RH.Render a => RH.Render (Paragraph a) where
+  render (Paragraph c) = Html.p <$> RH.render c

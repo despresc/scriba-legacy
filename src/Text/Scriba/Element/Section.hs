@@ -10,20 +10,25 @@
 
 module Text.Scriba.Element.Section where
 
-import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Element.TitleComponent
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Applicative            ( (<|>) )
 import           Control.Monad                  ( join )
 import           Control.Monad.Reader           ( asks )
+import           Control.Monad.State            ( gets )
 import           Data.Functor                   ( (<&>) )
 import qualified Data.Map.Strict               as M
+import           Data.Maybe                     ( fromMaybe )
 import           Data.Text                      ( Text )
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -134,3 +139,42 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
                    c'
 
 instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Section f a) (Section g b)
+
+-- TODO: add the section type as a class or data attribute
+
+-- TODO: for untitled sections, perhaps conditionally add an anonymous
+-- break? They would be necessary when we first render a sibling
+-- untitled section. Some kind of state variable, I think.
+instance (RH.Render (b i), RH.Render i) => RH.Render (Section b i) where
+  render (Section _ ml _ t _ c) = do
+    t' <- traverse (RH.render . Heading) t
+    let ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> ml
+    RH.bumpHeaderDepth $ do
+      c' <- RH.render c
+      pure $ Html.section RH.?? ident $ fromMaybe mempty t' <> c'
+
+-- TODO: Distinguish the preamble from the subsections?
+instance (RH.Render (b i), RH.Render i) => RH.Render (SectionContent b i) where
+  render (SectionContent bs cs) = do
+    bs' <- RH.render bs
+    cs' <- RH.render cs
+    pure $ Html.div Html.! HtmlA.class_ "sectionContent" $ bs' <> cs'
+
+-- Add a sectionTitle class?
+instance RH.Render i => RH.Render (Title i) where
+  render (Title t) = do
+    t' <- RH.render t
+    pure $ Html.span Html.! HtmlA.class_ "title" $ t'
+
+instance RH.Render i => RH.Render (Heading i) where
+  render (Heading t) = do
+    lvl <- gets RH.rsHeaderDepth
+    headAtLevel lvl <$> RH.render t
+   where
+    headAtLevel n = case n of
+      1 -> Html.h1
+      2 -> Html.h2
+      3 -> Html.h3
+      4 -> Html.h4
+      5 -> Html.h5
+      _ -> Html.h6

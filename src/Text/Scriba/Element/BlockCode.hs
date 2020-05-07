@@ -5,14 +5,17 @@
 
 module Text.Scriba.Element.BlockCode where
 
-import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -35,3 +38,12 @@ pBlockCode :: Scriba Element BlockCode
 pBlockCode = do
   t <- whileMatchTy "codeBlock" $ allContentOf simpleText
   pure $ BlockCode $ commonIndentStrip $ T.concat t
+
+instance RH.Render BlockCode where
+  render (BlockCode t) =
+    pure
+      $      Html.div
+      Html.! HtmlA.class_ "codeBlock"
+      $      Html.pre
+      $      Html.code
+      $      Html.toHtml t

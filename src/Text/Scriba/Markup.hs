@@ -54,16 +54,18 @@ module Text.Scriba.Markup
   , ContainerName(..)
   , MathItem(..)
   , decorate
+  , writeStandalone
   )
 where
 
-import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Counters
-import           Text.Scriba.Intermediate
-import           Text.Scriba.Element
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Element
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad                  ( join )
 import           Control.Monad.Except           ( MonadError(..) )
@@ -80,6 +82,8 @@ import           Data.Void                      ( Void
                                                 , absurd
                                                 )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -737,3 +741,58 @@ decorate d = do
   (numdat, nd) <- runNumDoc d
   let td = runTitleDoc nd
   runRefDoc (getRefEnv numdat) td
+
+-- * Rendering
+
+-- TODO: could have a generic deriving thing here, I suppose. Would
+-- want it to be output-agnostic, if possible.
+
+instance RH.Render i => RH.Render (Block i) where
+  render (Bformal fb) = RH.render fb
+  render (Bcode   t ) = RH.render t
+  render (Bpar    p ) = RH.render p
+  render (Blist   b ) = RH.render b
+
+instance RH.Render a => RH.Render (Inline a) where
+  render (Istr            s) = RH.render s
+  render (Iemph           s) = RH.render s
+  render (Iquote          s) = RH.render s
+  render (IinlineMath     s) = RH.render s
+  render (IdisplayMath    s) = RH.render s
+  render (Icode           s) = RH.render s
+  render (IpageMark       s) = RH.render s
+  render (ItitleComponent s) = RH.render s
+  render (Iref            s) = RH.render s
+  render (Icontrol        s) = RH.render s
+
+
+-- TODO: should probably remove this
+-- TODO: for standalone rendering we should probably put the title of
+-- the document in the header.
+-- TODO: add configurability, especially re: the math.
+-- TODO: have a header include option for documents. Hard-coding a
+-- style path for the manual is obviously poor.
+renderStandalone
+  :: (RH.Render (b i), RH.Render i, RH.Render j)
+  => Doc b j i
+  -> RH.RenderM Html.Html
+renderStandalone d@(Doc dm _ _ _) = do
+  d' <- RH.render d
+  let tplain = docPlainTitle dm
+  pure $ Html.docTypeHtml $ do
+    Html.head $ do
+      Html.title $ Html.toHtml tplain
+      Html.script
+        Html.! HtmlA.id "MathJax-script"
+        Html.! HtmlA.async ""
+        Html.! HtmlA.src
+                 "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+        $      ""
+      Html.link Html.! HtmlA.href "../../doc/manual.css" Html.! HtmlA.rel
+        "stylesheet"
+    Html.body d'
+
+writeStandalone
+  :: (RH.Render (b i), RH.Render i, RH.Render j) => Doc b j i -> Html.Html
+writeStandalone d =
+  fst $ RH.runRender (renderStandalone d) RH.initialRenderState

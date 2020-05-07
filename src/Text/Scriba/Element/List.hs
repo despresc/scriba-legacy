@@ -7,16 +7,19 @@
 
 module Text.Scriba.Element.List where
 
-import           Text.Scriba.Element.Identifier
-import           Text.Scriba.Element.MixedBody
-import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Element.Identifier
+import           Text.Scriba.Element.MixedBody
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -44,8 +47,7 @@ data OlistItem b i = OlistItem
 instance (Numbering a (b i), Numbering a i) => Numbering a (List b i) where
   numbering (Olist items) = do
     resetCounter "item:olist"
-    a <- Olist <$> traverse numberItem items
-    pure a
+    Olist <$> traverse numberItem items
    where
     numberItem (OlistItem mId mnum cont) =
       bracketNumbering (Just "item:olist") mId $ \mnumgen -> do
@@ -93,3 +95,17 @@ pListItem p = asNode pItem
   pItem = do
     matchTy "item"
     whileParsingElem "item" $ content p
+
+instance (RH.Render (b i), RH.Render i) => RH.Render (List b i) where
+  render b = case b of
+    Ulist l -> Html.ul <$> renderListItems l
+    Olist l -> Html.ol <$> RH.render l
+   where
+    renderListItems = RH.foldBy renderListItem
+    renderListItem bs = Html.li <$> RH.render bs
+
+instance (RH.Render (b i), RH.Render i) => RH.Render (OlistItem b i) where
+  render (OlistItem mId _ c) = do
+    c' <- RH.render c
+    pure $ Html.li RH.?? ident $ c'
+    where ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> mId

@@ -8,14 +8,15 @@
 
 module Text.Scriba.Element.Quote where
 
-import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
-
+import qualified Text.Blaze.Html5              as Html
 
 newtype Quote i = Quote
   { getQuote :: [i]
@@ -29,3 +30,6 @@ quoteToText f (Quote i) = concatMap f i
 
 pQuote :: Scriba Node a -> Scriba Element (Quote a)
 pQuote = fmap Quote . whileMatchTy "q" . allContentOf
+
+instance RH.Render a => RH.Render (Quote a) where
+  render (Quote i) = Html.q <$> RH.render i

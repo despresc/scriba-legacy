@@ -7,14 +7,15 @@
 
 module Text.Scriba.Element.Formal where
 
-import           Text.Scriba.Element.MixedBody
-import           Text.Scriba.Element.TitleComponent
-import           Text.Scriba.Element.Identifier
-import           Text.Scriba.Intermediate
 import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Element.MixedBody
+import           Text.Scriba.Element.TitleComponent
+import           Text.Scriba.Element.Identifier
+import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad                  ( join )
 import           Control.Monad.Reader           ( asks )
@@ -23,6 +24,8 @@ import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -139,3 +142,23 @@ instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Form
                   (conc' <|> join concgen)
 
 instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Formal f a) (Formal g b)
+
+-- TODO: add the type as a data-scribaType? Though we might want that
+-- to equal formalBlock here. Might want to record the number as well.
+-- TODO: Should the title be "formalTitle"?
+-- TODO: wrap the title separator? Also the title separator should be
+-- rendered conditional on there being a title at all.
+-- TODO: Have something in the margin indicating an anchor point?
+instance (RH.Render (b i), RH.Render i) => RH.Render (Formal b i) where
+  render (Formal mty ml _ mtitle _ mtitlesep body concl) = do
+    title'    <- traverse RH.render mtitle
+    titlesep' <- traverse RH.render mtitlesep
+    body'     <- RH.render body
+    concl'    <- traverse RH.render concl
+    let cls   = "formalBlock" <> maybe "" (" " <>) mty
+        ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> ml
+    pure $ Html.div Html.! HtmlA.class_ (Html.toValue cls) RH.?? ident $ do
+      RH.renderMaybe title' $ Html.span Html.! HtmlA.class_ "title"
+      RH.renderMaybe titlesep' $ Html.span Html.! HtmlA.class_ "titleSep"
+      body'
+      RH.renderMaybe concl' $ Html.span Html.! HtmlA.class_ "conclusion"
