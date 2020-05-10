@@ -150,16 +150,17 @@ indentText = do
   lvl    <- getIndent
   case n `compare` lvl of
     LT ->
-      fail $ "insufficient indent: got " <> show n <> ", expected: " <> show lvl
+      fail $ "insufficient indent: got " <> show n <> ", expected " <> show lvl
     _ -> do
       t' <- splitIndent lvl t
       pure $ "\n" <> t'
+
 
 -- TODO: duplication with indentText
 indentTextNoNewline :: Parser Text
 indentTextNoNewline = do
   (n, t) <- indentNoNewline
-  lvl <- getIndent
+  lvl    <- getIndent
   case n `compare` lvl of
     LT ->
       fail $ "insufficient indent: got " <> show n <> ", expected: " <> show lvl
@@ -303,14 +304,24 @@ pParaText =
 
 -- | Parse indented inline text.
 pInlineText :: Parser Text
+-- TODO: tries?
+-- TODO: duplication
 pInlineText =
-  MP.label "paragraph text"
+  MP.label "inline text"
     $   fmap T.concat
     $   MP.some
     $   pInlineTextLine
-    <|> pLineSpace1
-    <|> pInlineIndent
+    <|> blankThenText
  where
+  blankLine = MP.try $ do
+    void "\n"
+    t <- pLineSpace
+    void $ MP.lookAhead "\n"
+    pure $ "\n" <> t
+  blankThenText = MP.try $ do
+    ts <- MP.many blankLine
+    t  <- indentText
+    pure $ T.concat $ ts <> [t]
   pInlineIndent = MP.try $ do
     t  <- indentText
     t' <- pLineSpace
@@ -362,11 +373,16 @@ pBlankLines :: Parser ()
 pBlankLines = void $ MP.many $ MP.try $ do
   void "\n"
   scLineSpace
-  MP.lookAhead "\n"
+  MP.lookAhead (void "\n" <|> MP.eof)
 
+-- This consumes all blank lines until just before a line with
+-- non-whitespace content in it (or the end of input), then consumes
+-- an optional newline. Thus this will stop at the beginning of a
+-- line, with that line's indent intact (or at the end of the file).
 -- TODO: so many names
 pBlockNodeSep :: Parser ()
-pBlockNodeSep = MP.optional pLineSpace >> pBlankLines >> void (MP.optional "\n")
+pBlockNodeSep =
+  scLineSpace >> pBlankLines >> void (MP.optional "\n")
 
 pSpace :: Parser ()
 pSpace = void $ MP.many pBlankLine >> MP.optional (indentText >> scLineSpace)
@@ -391,7 +407,7 @@ pAttrs sc = MP.label "attributes" $ do
   inls <- pInlineAttrs sc
   blks <- MP.many $ do
     sp <- MP.getSourcePos
-    let ilvl = subtract 1 . MP.unPos $ MP.sourceColumn sp
+    let ilvl = MP.unPos $ MP.sourceColumn sp
     a <- pBlockElement ilvl pElemTy <*> pure sp
     void sc
     pure a
@@ -453,20 +469,33 @@ pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
 
 -- TODO: need to think about the whitespace consumers allowed between
 -- all the parts.
+-- TODO: inlined pAttrs for now.
+-- TODO: restore inline attributes and args.
 pBlockElement
   :: Int -> Parser ty -> Parser (SourcePos -> Element ty BlockContent)
 pBlockElement ilvl pTy = (pBlockMark >>) $ atIndent ilvl $ do
   scLineSpace
   mty <- pTy
-  void pBlockNodeSep
-  attrs <- pAttrs pBlockNodeSep
-  args  <- MP.option [] $ pArgs pBlockNodeSep
+  scLineSpace
+  attrs <- MP.label "attributes" $ do
+    -- inls <- pInlineAttrs sc
+    blks <- MP.many $ MP.try $ do
+      sp <- MP.getSourcePos
+      let ilvl = MP.unPos $ MP.sourceColumn sp
+      void indentTextNoNewline
+      a <- pBlockElement ilvl pElemTy <*> pure sp
+      pBlockNodeSep
+      pure a
+    pure $ Attrs [] blks
+
+--  args  <- MP.option [] $ pArgs pBlockNodeSep
   con   <- pContent
-  pure $ \s -> Element s mty attrs args con
+  pure $ \s -> Element s mty attrs [] con
  where
-  pContent =
-    MP.option BlockNil
-      $   pBlockParContent
+  pContent = MP.option BlockNil $ MP.try $ do
+    pBlockNodeSep
+    void indentTextNoNewline
+    pBlockParContent
       <|> pBlockUnparContent
       <|> pBlockVerbContent
 
@@ -494,13 +523,24 @@ pBlockVerbContent = do
   void pVerbatimBodyStart
   scLineSpace
   t <- pBlockVerbText
-  pure $ BlockVerbatim src $ T.strip t
+  pure $ BlockVerbatim src $ stripNewline t
+  where stripNewline t = maybe t snd $ T.uncons t
 
+-- TODO: duplication with blankLine?
+-- TODO: any of these tries necessary?
 pBlockVerbText :: Parser Text
-pBlockVerbText = fmap T.concat $ MP.many $ pInsig <|> pNewlineInsig
+pBlockVerbText = fmap T.concat $ MP.many blankThenText
  where
-  pInsig        = MP.takeWhile1P Nothing (/= '\n')
-  pNewlineInsig = indentText
+  blankLine = MP.try $ do
+    void "\n"
+    t <- pLineSpace
+    void $ MP.lookAhead "\n"
+    pure $ "\n" <> t
+  blankThenText = MP.try $ do
+    ts   <- MP.many blankLine
+    t    <- indentText
+    rest <- MP.takeWhileP Nothing (/= '\n')
+    pure $ T.concat $ ts <> [t, rest]
 
 -- TODO: for now, block nodes require at least a leading newline to be
 -- parsed properly. This forbids regular block nodes from appearing at
@@ -511,7 +551,7 @@ pBlockNode :: Parser BlockNode
 pBlockNode = do
   void indentTextNoNewline
   src <- MP.getSourcePos
-  let indentLvl = subtract 1 . MP.unPos $ MP.sourceColumn src
+  let indentLvl = MP.unPos $ MP.sourceColumn src
   bn <-
     ((BlockBlock .) <$> pBlockElement indentLvl (MP.optional pElemTy)) <|> pPar
   pure $ bn src
@@ -530,9 +570,9 @@ parseWithAt
   :: Parser a -> Text -> Int -> Text -> Either (ParseErrorBundle Text Void) a
 parseWithAt p fn n = MP.parse (runParser p n) (T.unpack fn)
 
-parseWithAt'
-  :: Parser a -> Text -> Int -> Text -> Either Text a
-parseWithAt' p fn n = either (Left . T.pack . MP.errorBundlePretty) Right . parseWithAt p fn n
+parseWithAt' :: Parser a -> Text -> Int -> Text -> Either Text a
+parseWithAt' p fn n =
+  either (Left . T.pack . MP.errorBundlePretty) Right . parseWithAt p fn n
 
 parseWith :: Parser a -> Text -> Text -> Either (ParseErrorBundle Text Void) a
 parseWith p fn = parseWithAt p fn 0
@@ -547,11 +587,11 @@ parseBlocks' = parseWith' (MP.many (pBlockNode <* pBlockNodeSep) <* MP.eof)
 -- TODO: temporary
 parseTesting :: Parser a -> Int -> Text -> Either Text (Text, a)
 parseTesting p inp = parseWithAt' go "<test>" inp
-  where
-    go = do
-      a <- p
-      s <- MP.getParserState
-      pure (MP.stateInput s, a)
+ where
+  go = do
+    a <- p
+    s <- MP.getParserState
+    pure (MP.stateInput s, a)
 
 {-
 

@@ -1,9 +1,16 @@
-A test of a plain paragraph
+A test of a plain paragraph.
+Of a couple of lines
 
 And another paragraph
 
+& tight1
+& tight2
+
 & block
   |Very interesting inline content
+  continuing
+
+  for a couple of lines
 
 & block
   & attr1|Foo
@@ -12,6 +19,11 @@ And another paragraph
   Very interesting block content
 
   And some more block content
+
+  & codeBlock `
+    Some code here
+
+    which continues until this point.
 
 & block2
   & attr3
