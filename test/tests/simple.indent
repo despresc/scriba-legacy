@@ -1,0 +1,19 @@
+A test of a plain paragraph
+
+And another paragraph
+
+& block
+  |Very interesting inline content
+
+& block
+  & attr1|Foo
+  & attr2|Bar
+  ---
+  Very interesting block content
+
+  And some more block content
+
+& block2
+  & attr3
+  & attr4
+  |Interesting inline block content

@@ -1,0 +1,51 @@
+[ BlockPar
+    SourcePos
+      { sourceName = "simple.indent"
+      , sourceLine = Pos 1
+      , sourceColumn = Pos 1
+      }
+    [ InlineText
+        SourcePos
+          { sourceName = "simple.indent"
+          , sourceLine = Pos 1
+          , sourceColumn = Pos 1
+          }
+        "A test of a plain paragraph"
+    ]
+, BlockPar
+    SourcePos
+      { sourceName = "simple.indent"
+      , sourceLine = Pos 3
+      , sourceColumn = Pos 1
+      }
+    [ InlineText
+        SourcePos
+          { sourceName = "simple.indent"
+          , sourceLine = Pos 3
+          , sourceColumn = Pos 1
+          }
+        "And another paragraph"
+    ]
+, BlockBlock
+    Element
+      { srcPos =
+          SourcePos
+            { sourceName = "simple.indent"
+            , sourceLine = Pos 5
+            , sourceColumn = Pos 1
+            }
+      , etype = Just "block"
+      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+      , args = []
+      , content =
+          BlockInlines
+            [ InlineText
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 6
+                  , sourceColumn = Pos 4
+                  }
+                "Very interesting inline content\n\n& block\n  & attr1|Foo\n  & attr2|Bar\n  ---\n  Very interesting block content\n\n  And some more block content\n\n& block2\n  & attr3\n  & attr4\n  |Interesting inline block content"
+            ]
+      }
+]

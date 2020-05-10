@@ -1,6 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+import qualified Text.Scriba.Source.Indent as SPI
+
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
 import qualified Text.Scriba.Source.Parse      as SP
@@ -78,12 +80,19 @@ testRenderingWith f name src gold = goldenWith go name src gold
     (T.pack $ takeFileName src)
     t
 
+-- Only parsing blocks
+testIndentParse :: String -> FilePath -> FilePath -> TestTree
+testIndentParse name src gold = goldenWith go name src gold
+  where
+    go t = byteShow $ either (error . T.unpack) id $ SPI.parseBlocks' (T.pack $ takeFileName src) t
+
 -- TODO: one single test block for the manual?
 -- TODO: make sure the README example parses _correctly_.
 tests :: TestTree
 tests = testGroup
   "tests"
-  [ inTests testParse "README example parses" "bayes.scb"  "bayes.parse"
+  [ inTests testIndentParse "simple markup parses"  "simple.indent" "simple.indentparse"
+  , inTests testParse "README example parses" "bayes.scb"  "bayes.parse"
   , inTests testParse "simple markup parses"  "simple.scb" "simple.parse"
   , inTests testIntermediate
             "simple markup parses into the node format"
