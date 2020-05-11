@@ -3,7 +3,7 @@
   & bar|baz
 
 A test of a plain paragraph.
-Of a couple of lines, with some {emph|markup}
+Of a couple of lines, with some {emph {id|interesting} |markup}
 
 And another paragraph
 

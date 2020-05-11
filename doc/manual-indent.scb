@@ -1,0 +1,315 @@
+&scriba
+  &title|The scriba markup language and document system
+  &type|article
+  &formula
+   &numbering
+     &relative@subsection
+     &style@decimal
+   &ref
+     &prefix|eqn.
+     &sep|{` `}
+  &lists
+    &olist
+      &style@decimal decimal decimal decimal
+  &formalBlocks
+    &theorem
+      &title
+        &prefix|Theorem
+        &note
+	  &before|(
+          &after|)
+        &n
+	  &after|.
+      &titleSep|{`. `}
+      &numbering
+        &relative@section
+        &style@decimal
+    &lemma
+      &title
+        &numberFirst
+	&prefix|Lemma
+      	&n
+	  &after|.
+      &titleSep|{`. `}
+      &numbering
+        &share@theorem
+        &style@decimal
+    &proof
+      &title
+        &prefix|Proof
+      &titleSep|{`. `}
+      &conclusion|∎
+  &sections
+    &section
+      &title
+        &prefix|Section
+        &n
+	  &after|.
+      &numbering
+        &absolute
+        &style@decimal
+    &subsection
+      &title
+        &n
+	  &after|.
+      &numbering
+        &relative@section
+        &style@decimal
+      &ref
+        &prefix|§
+
+Scriba is a plain text markup language emphasizing extensibility,
+clarity, and ease of use. It is also a compiler, taking source scriba
+documents and rendering them to multi-page HTML, EPUB, and TeX. The
+format includes flexible markup constructs designed to represent a
+range of historical scientific material, but these can be used equally
+well for new publications.
+
+# section
+  & title|An introduction to the language
+
+## subsection
+  & title|Paragraphs
+
+The bulk of your document will most likely be paragraphs, sequences of
+normal text and marked-up content representing a single idea in your
+writing. A paragraph in scriba is a type of {emph|block}, and contains
+{emph|paragraph text} and {emph|elements}. Two sample paragraphs are
+given below:
+
+& codeBlock
+  & language|scriba
+  `
+  There was nothing so very remarkable in that; nor did Alice think
+  it so very much out of the way to hear the Rabbit say to itself,
+  {q|Oh dear! Oh dear! I shall be late!} (when she thought it over
+  afterwards, it occurred to her that she ought to have wondered at
+  this, but at the time it all seemed quite natural); but when the
+  Rabbit actually {emph|took a watch out of its waistcoat-pocket},
+  and looked at it, and then hurried on, Alice started to her feet,
+  for it flashed across her mind that she had never before seen a
+  rabbit with either a waistcoat-pocket, or a watch to take out of
+  it, and burning with curiosity, she ran across the field after it,
+  and fortunately was just in time to see it pop down a large
+  rabbit-hole under the hedge.
+
+  In another moment down went Alice after it, never once considering
+  how in the world she was to get out again.
+
+Plain paragraph text is any span of unicode characters other than
+{code`\`}, {code`{`}, or {code`}`}, with the additional restriction
+that paragraph text cannot contain blank lines; like in the example
+above, these signal the end of the paragraph. Those three characters
+can be represented in paragraph text using the sequences {code`\\`},
+{code`\{`}, and {code`\}`}, should you need them in text.
+
+The other feature of paragraph markup is {emph|inline elements}, which
+are used to give further meaning to your text and to control scriba's
+many features. Simple elements start with {code`{tag|`} and end with
+{code`}`}. The paragraphs above have a {code`q`} element, representing
+quoted text and likely to be rendered between quotation marks, and an
+{code`emph`} element, representing emphasized text and likely to be
+rendered in italic type.
+
+## subsection
+  & title|Sections
+
+The content of your document can be organized into {emph|sections},
+representing self-contained units of discussion. These have types,
+titles, and a body of blocks and subsections. Sections look like this:
+
+& codeBlock `
+  # {title|An introduction to the language}
+
+  ## {title|Paragraphs}
+
+  The bulk of your document …
+
+The first component of a section is its {emph|header}. The section
+header starts with {code`# sectionType`}, the number of consecutive
+{code`#`} becoming the overall {emph|level} of the section. The
+section content begins after the attributes of the section and at
+least one blank line, and continues until a section of at most that
+level, or the end of the document, is reached. In the example above,
+the {q|Paragraphs} section would continue until a level 2 or level 1
+section were encountered. The section type is optional; section types
+classify the section, can denote built-in document structure, and can
+influence processing and rendering behaviour. Sections without a type
+become a generic {code`section`}.
+
+Sections, like other elements, can have {emph|attributes}. The only
+recognized attribute of a section, for now, is its title. In future,
+sections will have many attributes, like number, language, alternate
+titles for the table of contents or page header, and so on. The
+attributes of sections can be listed on multiple consecutive lines, as
+long as no blank line occurs between them.
+
+## subsection
+  & title|Blocks
+
+The other type of syntactic form in scriba is the {emph|block}
+element. Blocks group their content and give it extra meaning, and can
+appear wherever paragraphs or section headers can. Some blocks are
+shown in the following code sample:
+
+&codeBlock
+  &language|scriba
+  `
+  &codeBlock language|scriba
+    `
+    An {emph|interesting} proposition.
+
+  & olist
+    ---
+    &item|First item
+    &item|Second item
+
+Blocks are written like inline elements, complete with attributes and
+arguments, except they are preceded by a {code`&`}. They differ from
+inline elements in their content: blocks have {emph|verbatim},
+{emph|block}, and {emph|inline} content. Verbatim content is signalled
+by a {code|`} (backtick) character, starts on the next line, then runs
+until the sequence {code|`\}} appears on a line indented by at most as
+much as the start-of-block {code|&} character is. The content itself
+becomes plain text; no control characters are recognized in it. Block
+content is signalled by a {code|&} character, and consists of a
+sequence of blocks and paragraphs, like section content without
+section headers. Finally, inline content is signalled by a {code||}
+and can contain text and inline elements.
+
+## subsection
+  & title|Mathematics
+
+Formal mathematical content can be included in a document with
+particular inline elements. Inline formulas like {math`f(x, y) =
+x^{y+6}`}, and displayed formulas like
+{dmath {id|displayFormulaExample} `
+  \mathbf{B}(P) = \frac{\mu_0}{4\pi}
+  \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
+  \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
+`}
+are available, among other more complex constructs. The formulas
+themselves are written in TeX syntax by default, and rendering in HTML
+is handled with MathJax. Be aware that amsmath-style environments like
+{code|gathered} or {code|alignedat} should not be used inside
+{code|math} or {code|dmath} elements themselves. Scriba itself
+implements some of these environments as elements, so that they can
+interact with its built-in numbering and referencing
+capabilities. This means that we can refer to
+{ref@displayFormulaExample} with {code`{ref@displayFormulaExample}`}
+and have the reference be rendered properly.
+
+
+The examples of formulas above were entered into the source like so:
+
+&codeBlock
+  &language|scriba
+  `
+  Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
+  {dmath {id|displayFormulaExample} `
+    \mathbf{B}(P) = \frac{\mu_0}{4\pi}
+    \int\frac{\mathbf{I}\times\hat{r}'}{r'^2}dl = \frac{\mu_0}{4\pi}\,I\!
+    \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
+  `}
+  are available, among …
+
+Since TeX syntax is heavily reliant on braces and backlashes, it will
+often be necessary for you to escape them in some way when entering
+math in that notation. In the inline example math example above, an
+{emph|inline verbatim body} was used for this purpose. Like block
+verbatim content, such a body starts with a {code|`} character instead
+of a {code||}. Inline verbatim content runs until it encounters a
+{code```}`}, and inside it any double-backtick {code|``} sequences
+collapse to a single backtick. The effect of this is to disable any
+other special character processing, even comments, so that the syntax
+of other languages can be included into scriba without too much
+overhead. This is only a syntactic convenience in this case; the
+inline example above could equally well have been written
+{code`{math|f(x, y) = x^\{y+6\}}`}.
+
+## subsection
+  &title|The overall document structure
+
+Will contain a description of documents as a whole.
+
+# section
+  &title|Element reference
+
+## subsection
+  &title|gathered
+
+The {code|gathered} element represents a series of lines of
+formulas. It contains a sequence of {code|line} elements, each with
+optional {code|id}, {code|n}, and {code|noNum} attributes and LaTeX
+math content. This element is inline.
+
+An example of some gathered equations
+{gathered|
+{line
+  |2+2=4}
+{line {noNum}
+  |4+4=8}
+{line {id|thirdGathered}
+  |8+8=16}
+}
+inside a paragraph, with a reference ({ref@thirdGathered}) to one of them.
+
+## subsection
+  &title|formalBlock
+
+The {code|formalBlock} element represents a formal part of the
+document, with optional {code|title}, {code|conclusion}, and
+{code|type} attributes. It can contain block or inline content. It can
+be used to represent theorems, propositions, exercises, proofs, and
+other amsthm-style elements.
+
+Some examples:
+
+&formalBlock
+  &type|lemma
+  |A preliminary lemma.
+
+&formalBlock
+  &type|theorem
+  &titleNote|an interesting one
+  |The statement of some theorem of interest.
+
+& formalBlock
+  &type|proof
+  &titleNote|of the interesting theorem
+  |Details of the proof
+
+##subsection
+  &id|elem-olist
+  &title|olist
+
+The {code|olist} block element represents an ordered list. It contains
+a whitespace-separated list of {code|item} elements.
+
+An example:
+
+&olist
+  ---
+  &item
+    ---
+    Some preamble.
+  
+    &olist
+      ---
+      &item {id|elem-ref-nest}
+        |First element in first element
+  &item|Second element
+  &item|Third element
+
+The items of a list can be referenced, like this
+({ref@elem-ref-nest}) reference to one of the items above.
+
+## subsection {id|elem-ref} {title|ref}
+
+The {code|ref} inline element represents a reference to another
+element. It takes a single argument, the identifier of another element
+in the document. In future, it may be able to reference elements
+across documents, and to take multiple identifier arguments.
+
+For example, we can reference {ref@elem-ref}, this section, using
+{code`{ref@elem-ref}`}.
