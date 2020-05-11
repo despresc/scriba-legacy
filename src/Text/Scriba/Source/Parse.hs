@@ -4,7 +4,7 @@
 
 module Text.Scriba.Source.Parse where
 
-import Text.Scriba.Source.Common
+import           Text.Scriba.Source.Common
 
 import           Control.Applicative            ( (<|>)
                                                 , empty
@@ -15,12 +15,9 @@ import           Data.Char                      ( isAlphaNum
 import           Data.Functor                   ( void
                                                 , ($>)
                                                 )
-import           Data.Map.Strict                ( Map )
-import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Void                      ( Void )
-import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( Parsec
                                                 , ParseErrorBundle
                                                 , (<?>)
@@ -339,12 +336,13 @@ pElement sc pTy pCon = do
 -- consume space after each attribute.
 pAttrs :: Parser space -> Parser Attrs
 pAttrs sc = fmap go . MP.many . MP.label "attribute" $ do
-  src                   <- MP.getSourcePos
-  a <- pAttr <*> pure src
+  src <- MP.getSourcePos
+  a   <- pAttr <*> pure src
   void sc
   pure a
-  where pAttr = pBraced "attribute" $ pElement pSpace pElemTy pInlineContent
-        go as = Attrs as []
+ where
+  pAttr = pBraced "attribute" $ pElement pSpace pElemTy pInlineContent
+  go as = Attrs as []
 
 -- | Parse the arguments of an element, which is a sequence of
 -- argument nodes starting with a @\@@ marker.

@@ -513,6 +513,15 @@ pBlockVerbText = fmap T.concat $ MP.many blankThenText
 -- the very start of a document. Might want to change that. We could
 -- instead change the block node separation strategy so that we will
 -- have already consumed the newline.
+
+-- TODO: It might also be wiser to have combinators to parse indented
+-- space of different kinds, with callbacks for sufficient and
+-- insufficient indent. This could be used for a parser that would
+-- parse some (or many) of a form, then call a particular callback if
+-- the subsequent indentation is sufficient. The sufficient indent
+-- case would leave the input at a non-whitespace character, and the
+-- insufficient indent case would leave the input at the start of the
+-- line (or at the newline before the line).
 pBlockNode :: Parser BlockNode
 pBlockNode = do
   void indentTextNoNewline
@@ -552,7 +561,7 @@ pSecHeader = do
   pure $ \s -> SecHeader n s mty attrs' []
  where
   pSecBlockSep = void $ scLineSpace >> MP.optional "\n"
-  pNumberRun = (T.length <$> MP.takeWhile1P Nothing (== '#')) <* scLineSpace
+  pNumberRun   = (T.length <$> MP.takeWhile1P Nothing (== '#')) <* scLineSpace
 
 {-
 pSecHeader :: Parser (SourcePos -> SecHeader)

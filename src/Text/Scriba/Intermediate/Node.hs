@@ -8,8 +8,7 @@ import           Text.Scriba.Source.Common      ( InlineContent(..)
                                                 , InlineElement
                                                 , BlockContent(..)
                                                 )
-import qualified Text.Scriba.Source.Common      as P
-import qualified Text.Scriba.Source.Parse      as P
+import qualified Text.Scriba.Source.Common     as P
 
 import           Data.Char                      ( isSpace )
 import           Data.Map.Strict                ( Map )
@@ -92,10 +91,11 @@ fromAttr (s, at, ar, con) =
 -- TODO: duplication
 fromAttrs :: P.Attrs -> Attrs
 fromAttrs (P.Attrs inlattrs blkattrs) = M.fromList $ inlattrs' <> blkattrs'
-  where
-    fromAttrElement disp f (P.Element s t at ar c) = (t, (Meta s disp (fromAttrs at) (fromInlineNodes ar), f c))
-    inlattrs' = fmap (fromAttrElement AsInline fromInlineContent) inlattrs
-    blkattrs' = fmap (fromAttrElement AsInline fromBlockContent) blkattrs
+ where
+  fromAttrElement disp f (P.Element s t at ar c) =
+    (t, (Meta s disp (fromAttrs at) (fromInlineNodes ar), f c))
+  inlattrs' = fmap (fromAttrElement AsInline fromInlineContent) inlattrs
+  blkattrs' = fmap (fromAttrElement AsInline fromBlockContent) blkattrs
 
 -- * Inline conversion
 
