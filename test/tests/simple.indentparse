@@ -10,7 +10,29 @@
           , sourceLine = Pos 1
           , sourceColumn = Pos 1
           }
-        "A test of a plain paragraph.\nOf a couple of lines"
+        "A test of a plain paragraph.\nOf a couple of lines, with some "
+    , InlineBraced
+        Element
+          { srcPos =
+              SourcePos
+                { sourceName = "simple.indent"
+                , sourceLine = Pos 2
+                , sourceColumn = Pos 33
+                }
+          , etype = Just "emph"
+          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+          , args = []
+          , content =
+              InlineSequence
+                [ InlineText
+                    SourcePos
+                      { sourceName = "simple.indent"
+                      , sourceLine = Pos 2
+                      , sourceColumn = Pos 39
+                      }
+                    "markup"
+                ]
+          }
     ]
 , BlockPar
     SourcePos
@@ -60,18 +82,129 @@
             , sourceLine = Pos 9
             , sourceColumn = Pos 1
             }
-      , etype = Just "block"
-      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+      , etype = Just "blockOnlyAttr"
+      , attrs =
+          Attrs
+            { inlineAttrs = []
+            , blockAttrs =
+                [ Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 10
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "attr1"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content = BlockNil
+                    }
+                , Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 11
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "attr2"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content = BlockNil
+                    }
+                ]
+            }
+      , args = []
+      , content = BlockNil
+      }
+, BlockBlock
+    Element
+      { srcPos =
+          SourcePos
+            { sourceName = "simple.indent"
+            , sourceLine = Pos 13
+            , sourceColumn = Pos 1
+            }
+      , etype = Just "blockWithAtInl"
+      , attrs =
+          Attrs
+            { inlineAttrs = []
+            , blockAttrs =
+                [ Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 14
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "at"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content =
+                        BlockInlines
+                          [ InlineText
+                              SourcePos
+                                { sourceName = "simple.indent"
+                                , sourceLine = Pos 14
+                                , sourceColumn = Pos 8
+                                }
+                              "Foo"
+                          ]
+                    }
+                , Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 15
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "at2"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content =
+                        BlockInlines
+                          [ InlineText
+                              SourcePos
+                                { sourceName = "simple.indent"
+                                , sourceLine = Pos 15
+                                , sourceColumn = Pos 9
+                                }
+                              "Bar"
+                          ]
+                    }
+                ]
+            }
       , args = []
       , content =
           BlockInlines
             [ InlineText
                 SourcePos
                   { sourceName = "simple.indent"
-                  , sourceLine = Pos 10
+                  , sourceLine = Pos 16
                   , sourceColumn = Pos 4
                   }
-                "Very interesting inline content\n continuing\n\n for a couple of lines"
+                "Very interesting inline content\n continuing\n\n for a couple of lines\n\n and "
+            , InlineBraced
+                Element
+                  { srcPos =
+                      SourcePos
+                        { sourceName = "simple.indent"
+                        , sourceLine = Pos 21
+                        , sourceColumn = Pos 7
+                        }
+                  , etype = Just "emph"
+                  , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                  , args = []
+                  , content =
+                      InlineSequence
+                        [ InlineText
+                            SourcePos
+                              { sourceName = "simple.indent"
+                              , sourceLine = Pos 21
+                              , sourceColumn = Pos 13
+                              }
+                            "including\n some\n\n inline markup"
+                        ]
+                  }
             ]
       }
 , BlockBlock
@@ -79,121 +212,29 @@
       { srcPos =
           SourcePos
             { sourceName = "simple.indent"
-            , sourceLine = Pos 15
+            , sourceLine = Pos 26
             , sourceColumn = Pos 1
             }
-      , etype = Just "block"
+      , etype = Just "blockOnlyBlock"
       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
       , args = []
-      , content = BlockNil
-      }
-, BlockBlock
-    Element
-      { srcPos =
-          SourcePos
-            { sourceName = "simple.indent"
-            , sourceLine = Pos 16
-            , sourceColumn = Pos 3
-            }
-      , etype = Just "attr1"
-      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-      , args = []
-      , content = BlockNil
-      }
-, BlockPar
-    SourcePos
-      { sourceName = "simple.indent"
-      , sourceLine = Pos 16
-      , sourceColumn = Pos 10
-      }
-    [ InlineText
-        SourcePos
-          { sourceName = "simple.indent"
-          , sourceLine = Pos 16
-          , sourceColumn = Pos 10
-          }
-        "|Foo\n  & attr2|Bar\n  ---\n  Very interesting block content"
-    ]
-, BlockPar
-    SourcePos
-      { sourceName = "simple.indent"
-      , sourceLine = Pos 21
-      , sourceColumn = Pos 3
-      }
-    [ InlineText
-        SourcePos
-          { sourceName = "simple.indent"
-          , sourceLine = Pos 21
-          , sourceColumn = Pos 3
-          }
-        "And some more block content"
-    ]
-, BlockBlock
-    Element
-      { srcPos =
-          SourcePos
-            { sourceName = "simple.indent"
-            , sourceLine = Pos 23
-            , sourceColumn = Pos 3
-            }
-      , etype = Just "codeBlock"
-      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-      , args = []
-      , content = BlockNil
-      }
-, BlockPar
-    SourcePos
-      { sourceName = "simple.indent"
-      , sourceLine = Pos 23
-      , sourceColumn = Pos 15
-      }
-    [ InlineText
-        SourcePos
-          { sourceName = "simple.indent"
-          , sourceLine = Pos 23
-          , sourceColumn = Pos 15
-          }
-        "`\n    Some code here"
-    ]
-, BlockPar
-    SourcePos
-      { sourceName = "simple.indent"
-      , sourceLine = Pos 26
-      , sourceColumn = Pos 5
-      }
-    [ InlineText
-        SourcePos
-          { sourceName = "simple.indent"
-          , sourceLine = Pos 26
-          , sourceColumn = Pos 5
-          }
-        "which continues until this point."
-    ]
-, BlockBlock
-    Element
-      { srcPos =
-          SourcePos
-            { sourceName = "simple.indent"
-            , sourceLine = Pos 28
-            , sourceColumn = Pos 1
-            }
-      , etype = Just "block2"
-      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-      , args = []
-      , content = BlockNil
-      }
-, BlockBlock
-    Element
-      { srcPos =
-          SourcePos
-            { sourceName = "simple.indent"
-            , sourceLine = Pos 29
-            , sourceColumn = Pos 3
-            }
-      , etype = Just "attr3"
-      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-      , args = []
-      , content = BlockNil
+      , content =
+          BlockBlocks
+            [ BlockPar
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 28
+                  , sourceColumn = Pos 3
+                  }
+                [ InlineText
+                    SourcePos
+                      { sourceName = "simple.indent"
+                      , sourceLine = Pos 28
+                      , sourceColumn = Pos 3
+                      }
+                    "Some blockOnlyBlock content"
+                ]
+            ]
       }
 , BlockBlock
     Element
@@ -201,25 +242,159 @@
           SourcePos
             { sourceName = "simple.indent"
             , sourceLine = Pos 30
-            , sourceColumn = Pos 3
+            , sourceColumn = Pos 1
             }
-      , etype = Just "attr4"
-      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+      , etype = Just "block"
+      , attrs =
+          Attrs
+            { inlineAttrs = []
+            , blockAttrs =
+                [ Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 31
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "attr1"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content =
+                        BlockInlines
+                          [ InlineText
+                              SourcePos
+                                { sourceName = "simple.indent"
+                                , sourceLine = Pos 31
+                                , sourceColumn = Pos 11
+                                }
+                              "Foo"
+                          ]
+                    }
+                , Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 32
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "attr2"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content =
+                        BlockInlines
+                          [ InlineText
+                              SourcePos
+                                { sourceName = "simple.indent"
+                                , sourceLine = Pos 32
+                                , sourceColumn = Pos 11
+                                }
+                              "Bar"
+                          ]
+                    }
+                ]
+            }
       , args = []
-      , content = BlockNil
+      , content =
+          BlockBlocks
+            [ BlockPar
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 34
+                  , sourceColumn = Pos 3
+                  }
+                [ InlineText
+                    SourcePos
+                      { sourceName = "simple.indent"
+                      , sourceLine = Pos 34
+                      , sourceColumn = Pos 3
+                      }
+                    "Very interesting block content"
+                ]
+            , BlockPar
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 36
+                  , sourceColumn = Pos 3
+                  }
+                [ InlineText
+                    SourcePos
+                      { sourceName = "simple.indent"
+                      , sourceLine = Pos 36
+                      , sourceColumn = Pos 3
+                      }
+                    "And some more block content"
+                ]
+            , BlockBlock
+                Element
+                  { srcPos =
+                      SourcePos
+                        { sourceName = "simple.indent"
+                        , sourceLine = Pos 38
+                        , sourceColumn = Pos 3
+                        }
+                  , etype = Just "codeBlock"
+                  , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                  , args = []
+                  , content =
+                      BlockVerbatim
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 38
+                          , sourceColumn = Pos 15
+                          }
+                        " Some code here\n\n which continues until this point."
+                  }
+            ]
       }
-, BlockPar
-    SourcePos
-      { sourceName = "simple.indent"
-      , sourceLine = Pos 31
-      , sourceColumn = Pos 3
+, BlockBlock
+    Element
+      { srcPos =
+          SourcePos
+            { sourceName = "simple.indent"
+            , sourceLine = Pos 43
+            , sourceColumn = Pos 1
+            }
+      , etype = Just "block2"
+      , attrs =
+          Attrs
+            { inlineAttrs = []
+            , blockAttrs =
+                [ Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 44
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "attr3"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content = BlockNil
+                    }
+                , Element
+                    { srcPos =
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 45
+                          , sourceColumn = Pos 3
+                          }
+                    , etype = "attr4"
+                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                    , args = []
+                    , content = BlockNil
+                    }
+                ]
+            }
+      , args = []
+      , content =
+          BlockInlines
+            [ InlineText
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 46
+                  , sourceColumn = Pos 4
+                  }
+                "Interesting inline block content"
+            ]
       }
-    [ InlineText
-        SourcePos
-          { sourceName = "simple.indent"
-          , sourceLine = Pos 31
-          , sourceColumn = Pos 3
-          }
-        "|Interesting inline block content"
-    ]
 ]

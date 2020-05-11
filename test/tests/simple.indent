@@ -1,16 +1,31 @@
 A test of a plain paragraph.
-Of a couple of lines
+Of a couple of lines, with some {emph|markup}
 
 And another paragraph
 
 & tight1
 & tight2
 
-& block
+& blockOnlyAttr
+  & attr1
+  & attr2
+
+& blockWithAtInl
+  & at|Foo
+  & at2|Bar
   |Very interesting inline content
   continuing
 
   for a couple of lines
+
+  and {emph|including
+  some
+
+  inline markup}
+
+& blockOnlyBlock
+  ---
+  Some blockOnlyBlock content
 
 & block
   & attr1|Foo

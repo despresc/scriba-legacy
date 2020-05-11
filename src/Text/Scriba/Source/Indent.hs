@@ -24,8 +24,6 @@ import           Data.Char                      ( isAlphaNum
 import           Data.Functor                   ( void
                                                 , ($>)
                                                 )
-import           Data.Map.Strict                ( Map )
-import qualified Data.Map.Strict               as M
 import           Data.String                    ( IsString(..) )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -34,11 +32,9 @@ import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( Parsec
                                                 , ParseErrorBundle
                                                 , (<?>)
-                                                , Pos
                                                 , SourcePos
                                                 )
 import qualified Text.Megaparsec               as MP
-import qualified Text.Megaparsec.Char          as MP
 import qualified Text.Megaparsec.Char.Lexer    as MPL
 
 {-
@@ -322,10 +318,6 @@ pInlineText =
     ts <- MP.many blankLine
     t  <- indentText
     pure $ T.concat $ ts <> [t]
-  pInlineIndent = MP.try $ do
-    t  <- indentText
-    t' <- pLineSpace
-    pure $ t <> t'
 
 -- | Argument text is inline text except that it cannot contain spaces
 -- or a character from @|&`@.
@@ -381,8 +373,7 @@ pBlankLines = void $ MP.many $ MP.try $ do
 -- line, with that line's indent intact (or at the end of the file).
 -- TODO: so many names
 pBlockNodeSep :: Parser ()
-pBlockNodeSep =
-  scLineSpace >> pBlankLines >> void (MP.optional "\n")
+pBlockNodeSep = scLineSpace >> pBlankLines >> void (MP.optional "\n")
 
 pSpace :: Parser ()
 pSpace = void $ MP.many pBlankLine >> MP.optional (indentText >> scLineSpace)
@@ -477,27 +468,31 @@ pBlockElement ilvl pTy = (pBlockMark >>) $ atIndent ilvl $ do
   scLineSpace
   mty <- pTy
   scLineSpace
-  attrs <- MP.label "attributes" $ do
-    -- inls <- pInlineAttrs sc
-    blks <- MP.many $ MP.try $ do
-      sp <- MP.getSourcePos
-      let ilvl = MP.unPos $ MP.sourceColumn sp
-      void indentTextNoNewline
-      a <- pBlockElement ilvl pElemTy <*> pure sp
-      pBlockNodeSep
-      pure a
-    pure $ Attrs [] blks
-
---  args  <- MP.option [] $ pArgs pBlockNodeSep
-  con   <- pContent
-  pure $ \s -> Element s mty attrs [] con
+  pTight mty <|> pLoose mty
  where
   pContent = MP.option BlockNil $ MP.try $ do
-    pBlockNodeSep
     void indentTextNoNewline
-    pBlockParContent
-      <|> pBlockUnparContent
+    pBlockParContent <|> pBlockUnparContent <|> pBlockVerbContent
+  pTight mty = do
+    c <-
+      pBlockUnparContent
       <|> pBlockVerbContent
+      <|> (MP.notFollowedBy indentText $> BlockNil)
+    pure $ \s -> Element s mty (Attrs [] []) [] c
+  pLoose mty = do
+    pBlockNodeSep
+    attrs' <- MP.label "attributes" $ do
+      -- inls <- pInlineAttrs sc
+      blks <- MP.many $ MP.try $ do
+        void indentTextNoNewline
+        sp <- MP.getSourcePos
+        let ilvl' = MP.unPos $ MP.sourceColumn sp
+        a <- pBlockElement ilvl' pElemTy <*> pure sp
+        pBlockNodeSep
+        pure a
+      pure $ Attrs [] blks
+    con <- pContent
+    pure $ \s -> Element s mty attrs' [] con
 
 -- | Parses paragraphed block content
 
@@ -506,7 +501,7 @@ pBlockElement ilvl pTy = (pBlockMark >>) $ atIndent ilvl $ do
 pBlockParContent :: Parser BlockContent
 pBlockParContent = do
   void pBlockBodyStart
-  pSpace
+  pBlockNodeSep
   BlockBlocks <$> MP.many (pBlockNode <* pBlockNodeSep)
 
 -- TODO: can I just use the inline seq content parser from inline element?
