@@ -333,6 +333,8 @@ pArgText =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c
 
 -- TODO: make aware of indent!
+-- TODO: duplication with blankLine
+-- TODO: could combine blankLine and indentText branches by using indentTextNoNewline
 pInlineVerbText :: Parser Text
 pInlineVerbText =
   fmap T.concat
@@ -340,6 +342,7 @@ pInlineVerbText =
     $   pInsig
     <|> pBacktickEsc
     <|> pInsigBacktick
+    <|> blankLine
     <|> indentText
  where
   pInsig =
@@ -349,6 +352,11 @@ pInlineVerbText =
   pInsigBacktick =
     MP.label "'`' not before '}'" $ MP.try $ MP.chunk "`" <* MP.notFollowedBy
       (MP.single '}')
+  blankLine = MP.try $ do
+    void "\n"
+    t <- pLineSpace
+    void $ MP.lookAhead "\n"
+    pure $ "\n" <> t
 
 -- | Parses something between the start and end inline element
 -- braces. Also takes a description of what the thing is, for
@@ -470,10 +478,10 @@ pBlockElement ilvl pTy = (pBlockMark >>) $ atIndent ilvl $ do
   scLineSpace
   pTight mty <|> pLoose mty
  where
-  pContent = MP.option BlockNil $ MP.try $ do
+  pContent = MP.option BlockNil $ do
     void indentTextNoNewline
     pBlockParContent <|> pBlockUnparContent <|> pBlockVerbContent
-  pTight mty = do
+  pTight mty = MP.try $ do
     c <-
       pBlockUnparContent
       <|> pBlockVerbContent

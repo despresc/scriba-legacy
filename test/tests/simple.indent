@@ -44,3 +44,20 @@ And another paragraph
   & attr3
   & attr4
   |Interesting inline block content
+
+{`&`} an inline verbatim test with some {code`
+Verbatim
+
+content`}.
+
+& block3
+   |Content on the next line
+
+& codeBlockWeird
+  |{`Some inline stuff
+                     with indent
+  here
+
+  `}
+
+And more.

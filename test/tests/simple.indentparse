@@ -397,4 +397,136 @@
                 "Interesting inline block content"
             ]
       }
+, BlockPar
+    SourcePos
+      { sourceName = "simple.indent"
+      , sourceLine = Pos 48
+      , sourceColumn = Pos 1
+      }
+    [ InlineBraced
+        Element
+          { srcPos =
+              SourcePos
+                { sourceName = "simple.indent"
+                , sourceLine = Pos 48
+                , sourceColumn = Pos 1
+                }
+          , etype = Nothing
+          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+          , args = []
+          , content =
+              InlineVerbatim
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 48
+                  , sourceColumn = Pos 2
+                  }
+                "&"
+          }
+    , InlineText
+        SourcePos
+          { sourceName = "simple.indent"
+          , sourceLine = Pos 48
+          , sourceColumn = Pos 6
+          }
+        " an inline verbatim test with some "
+    , InlineBraced
+        Element
+          { srcPos =
+              SourcePos
+                { sourceName = "simple.indent"
+                , sourceLine = Pos 48
+                , sourceColumn = Pos 41
+                }
+          , etype = Just "code"
+          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+          , args = []
+          , content =
+              InlineVerbatim
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 48
+                  , sourceColumn = Pos 46
+                  }
+                "\nVerbatim\n\ncontent"
+          }
+    , InlineText
+        SourcePos
+          { sourceName = "simple.indent"
+          , sourceLine = Pos 51
+          , sourceColumn = Pos 10
+          }
+        "."
+    ]
+, BlockBlock
+    Element
+      { srcPos =
+          SourcePos
+            { sourceName = "simple.indent"
+            , sourceLine = Pos 53
+            , sourceColumn = Pos 1
+            }
+      , etype = Just "block3"
+      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+      , args = []
+      , content =
+          BlockInlines
+            [ InlineText
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 54
+                  , sourceColumn = Pos 5
+                  }
+                "Content on the next line"
+            ]
+      }
+, BlockBlock
+    Element
+      { srcPos =
+          SourcePos
+            { sourceName = "simple.indent"
+            , sourceLine = Pos 56
+            , sourceColumn = Pos 1
+            }
+      , etype = Just "codeBlockWeird"
+      , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+      , args = []
+      , content =
+          BlockInlines
+            [ InlineBraced
+                Element
+                  { srcPos =
+                      SourcePos
+                        { sourceName = "simple.indent"
+                        , sourceLine = Pos 57
+                        , sourceColumn = Pos 4
+                        }
+                  , etype = Nothing
+                  , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                  , args = []
+                  , content =
+                      InlineVerbatim
+                        SourcePos
+                          { sourceName = "simple.indent"
+                          , sourceLine = Pos 57
+                          , sourceColumn = Pos 5
+                          }
+                        "Some inline stuff\n                    with indent\n here\n\n "
+                  }
+            ]
+      }
+, BlockPar
+    SourcePos
+      { sourceName = "simple.indent"
+      , sourceLine = Pos 63
+      , sourceColumn = Pos 1
+      }
+    [ InlineText
+        SourcePos
+          { sourceName = "simple.indent"
+          , sourceLine = Pos 63
+          , sourceColumn = Pos 1
+          }
+        "And more."
+    ]
 ]
