@@ -5,20 +5,21 @@ Doc
     , sourceColumn = Pos 1
     }
   Attrs
-    { getAttrs =
-        fromList
-          [ ( "someInterestingNode"
-            , ( SourcePos
+    { inlineAttrs =
+        [ Element
+            { srcPos =
+                SourcePos
                   { sourceName = "simple.scb"
                   , sourceLine = Pos 2
                   , sourceColumn = Pos 3
                   }
-              , Attrs { getAttrs = fromList [] }
-              , []
-              , InlineNil
-              )
-            )
-          ]
+            , etype = "someInterestingNode"
+            , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+            , args = []
+            , content = InlineNil
+            }
+        ]
+    , blockAttrs = []
     }
   [ SecHeaderNode
       (SecHeader
@@ -30,16 +31,18 @@ Doc
            }
          (Just "section")
          Attrs
-           { getAttrs =
-               fromList
-                 [ ( "thing"
-                   , ( SourcePos
+           { inlineAttrs =
+               [ Element
+                   { srcPos =
+                       SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 4
                          , sourceColumn = Pos 13
                          }
-                     , Attrs { getAttrs = fromList [] }
-                     , [ InlineText
+                   , etype = "thing"
+                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                   , args =
+                       [ InlineText
                            SourcePos
                              { sourceName = "simple.scb"
                              , sourceLine = Pos 4
@@ -47,10 +50,10 @@ Doc
                              }
                            "other"
                        ]
-                     , InlineNil
-                     )
-                   )
-                 ]
+                   , content = InlineNil
+                   }
+               ]
+           , blockAttrs = []
            }
          [])
   , SecHeaderNode
@@ -63,31 +66,35 @@ Doc
            }
          (Just "subsection")
          Attrs
-           { getAttrs =
-               fromList
-                 [ ( "foo"
-                   , ( SourcePos
+           { inlineAttrs =
+               [ Element
+                   { srcPos =
+                       SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 6
                          , sourceColumn = Pos 15
                          }
-                     , Attrs
-                         { getAttrs =
-                             fromList
-                               [ ( "bar"
-                                 , ( SourcePos
+                   , etype = "foo"
+                   , attrs =
+                       Attrs
+                         { inlineAttrs =
+                             [ Element
+                                 { srcPos =
+                                     SourcePos
                                        { sourceName = "simple.scb"
                                        , sourceLine = Pos 6
                                        , sourceColumn = Pos 20
                                        }
-                                   , Attrs { getAttrs = fromList [] }
-                                   , []
-                                   , InlineNil
-                                   )
-                                 )
-                               ]
+                                 , etype = "bar"
+                                 , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                                 , args = []
+                                 , content = InlineNil
+                                 }
+                             ]
+                         , blockAttrs = []
                          }
-                     , [ InlineText
+                   , args =
+                       [ InlineText
                            SourcePos
                              { sourceName = "simple.scb"
                              , sourceLine = Pos 6
@@ -95,7 +102,8 @@ Doc
                              }
                            "other"
                        ]
-                     , InlineSequence
+                   , content =
+                       InlineSequence
                          [ InlineText
                              SourcePos
                                { sourceName = "simple.scb"
@@ -104,9 +112,9 @@ Doc
                                }
                              " stuff "
                          ]
-                     )
-                   )
-                 ]
+                   }
+               ]
+           , blockAttrs = []
            }
          [])
   , SecBlock
@@ -119,7 +127,7 @@ Doc
                  , sourceColumn = Pos 3
                  }
            , etype = Just "codeBlockDemonstration"
-           , attrs = Attrs { getAttrs = fromList [] }
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
            , args = []
            , content =
                BlockVerbatim
@@ -146,7 +154,7 @@ Doc
                      , sourceColumn = Pos 3
                      }
                , etype = Nothing
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineVerbatim
@@ -175,17 +183,19 @@ Doc
                , etype = Just "code"
                , attrs =
                    Attrs
-                     { getAttrs =
-                         fromList
-                           [ ( "lang"
-                             , ( SourcePos
+                     { inlineAttrs =
+                         [ Element
+                             { srcPos =
+                                 SourcePos
                                    { sourceName = "simple.scb"
                                    , sourceLine = Pos 14
                                    , sourceColumn = Pos 39
                                    }
-                               , Attrs { getAttrs = fromList [] }
-                               , []
-                               , InlineSequence
+                             , etype = "lang"
+                             , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                             , args = []
+                             , content =
+                                 InlineSequence
                                    [ InlineText
                                        SourcePos
                                          { sourceName = "simple.scb"
@@ -194,9 +204,9 @@ Doc
                                          }
                                        "thing"
                                    ]
-                               )
-                             )
-                           ]
+                             }
+                         ]
+                     , blockAttrs = []
                      }
                , args =
                    [ InlineText
@@ -227,7 +237,7 @@ Doc
                  , sourceColumn = Pos 1
                  }
            , etype = Just "paragraphedBlock"
-           , attrs = Attrs { getAttrs = fromList [] }
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
            , args = []
            , content =
                BlockBlocks
@@ -240,7 +250,7 @@ Doc
                              , sourceColumn = Pos 1
                              }
                        , etype = Just "one"
-                       , attrs = Attrs { getAttrs = fromList [] }
+                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                        , args = []
                        , content = BlockNil
                        }
@@ -267,7 +277,7 @@ Doc
                              , sourceColumn = Pos 1
                              }
                        , etype = Just "unparagraphed"
-                       , attrs = Attrs { getAttrs = fromList [] }
+                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                        , args = []
                        , content =
                            BlockInlines
@@ -305,7 +315,7 @@ Doc
                      , sourceColumn = Pos 3
                      }
                , etype = Just "emph"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineSequence
@@ -334,7 +344,7 @@ Doc
                      , sourceColumn = Pos 34
                      }
                , etype = Just "physPage"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineSequence
@@ -363,7 +373,7 @@ Doc
                      , sourceColumn = Pos 6
                      }
                , etype = Just "math"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineVerbatim
@@ -390,7 +400,7 @@ Doc
                      , sourceColumn = Pos 43
                      }
                , etype = Just "math"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineSequence
@@ -427,7 +437,7 @@ Doc
                      , sourceColumn = Pos 1
                      }
                , etype = Nothing
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineVerbatim
@@ -458,55 +468,19 @@ Doc
            , etype = Just "formalBlock"
            , attrs =
                Attrs
-                 { getAttrs =
-                     fromList
-                       [ ( "conclusion"
-                         , ( SourcePos
-                               { sourceName = "simple.scb"
-                               , sourceLine = Pos 29
-                               , sourceColumn = Pos 69
-                               }
-                           , Attrs { getAttrs = fromList [] }
-                           , []
-                           , InlineSequence
-                               [ InlineText
-                                   SourcePos
-                                     { sourceName = "simple.scb"
-                                     , sourceLine = Pos 29
-                                     , sourceColumn = Pos 81
-                                     }
-                                   "QED"
-                               ]
-                           )
-                         )
-                       , ( "title"
-                         , ( SourcePos
-                               { sourceName = "simple.scb"
-                               , sourceLine = Pos 29
-                               , sourceColumn = Pos 30
-                               }
-                           , Attrs { getAttrs = fromList [] }
-                           , []
-                           , InlineSequence
-                               [ InlineText
-                                   SourcePos
-                                     { sourceName = "simple.scb"
-                                     , sourceLine = Pos 29
-                                     , sourceColumn = Pos 37
-                                     }
-                                   "Theorem 5 (an interesting one)"
-                               ]
-                           )
-                         )
-                       , ( "type"
-                         , ( SourcePos
+                 { inlineAttrs =
+                     [ Element
+                         { srcPos =
+                             SourcePos
                                { sourceName = "simple.scb"
                                , sourceLine = Pos 29
                                , sourceColumn = Pos 15
                                }
-                           , Attrs { getAttrs = fromList [] }
-                           , []
-                           , InlineSequence
+                         , etype = "type"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content =
+                             InlineSequence
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.scb"
@@ -515,9 +489,51 @@ Doc
                                      }
                                    "theorem"
                                ]
-                           )
-                         )
-                       ]
+                         }
+                     , Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 29
+                               , sourceColumn = Pos 30
+                               }
+                         , etype = "title"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content =
+                             InlineSequence
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "simple.scb"
+                                     , sourceLine = Pos 29
+                                     , sourceColumn = Pos 37
+                                     }
+                                   "Theorem 5 (an interesting one)"
+                               ]
+                         }
+                     , Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 29
+                               , sourceColumn = Pos 69
+                               }
+                         , etype = "conclusion"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content =
+                             InlineSequence
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "simple.scb"
+                                     , sourceLine = Pos 29
+                                     , sourceColumn = Pos 81
+                                     }
+                                   "QED"
+                               ]
+                         }
+                     ]
+                 , blockAttrs = []
                  }
            , args = []
            , content =
@@ -554,7 +570,7 @@ Doc
                      , sourceColumn = Pos 34
                      }
                , etype = Just "elem"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content =
                    InlineSequence
@@ -583,7 +599,7 @@ Doc
                      , sourceColumn = Pos 61
                      }
                , etype = Just "elem"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args =
                    [ InlineText
                        SourcePos
@@ -620,7 +636,7 @@ Doc
                      , sourceColumn = Pos 5
                      }
                , etype = Just "elem2"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args =
                    [ InlineText
                        SourcePos
@@ -652,31 +668,33 @@ Doc
            }
          (Just "sec2")
          Attrs
-           { getAttrs =
-               fromList
-                 [ ( "attr1"
-                   , ( SourcePos
+           { inlineAttrs =
+               [ Element
+                   { srcPos =
+                       SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 36
                          , sourceColumn = Pos 8
                          }
-                     , Attrs { getAttrs = fromList [] }
-                     , []
-                     , InlineNil
-                     )
-                   )
-                 , ( "attr2"
-                   , ( SourcePos
+                   , etype = "attr1"
+                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                   , args = []
+                   , content = InlineNil
+                   }
+               , Element
+                   { srcPos =
+                       SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 37
                          , sourceColumn = Pos 8
                          }
-                     , Attrs { getAttrs = fromList [] }
-                     , []
-                     , InlineNil
-                     )
-                   )
-                 ]
+                   , etype = "attr2"
+                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                   , args = []
+                   , content = InlineNil
+                   }
+               ]
+           , blockAttrs = []
            }
          [])
   , SecBlock
@@ -695,7 +713,7 @@ Doc
                      , sourceColumn = Pos 1
                      }
                , etype = Just "attr3"
-               , attrs = Attrs { getAttrs = fromList [] }
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args = []
                , content = InlineNil
                }

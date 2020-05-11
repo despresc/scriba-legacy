@@ -7,6 +7,8 @@
 
 module Text.Scriba.Source.Indent where
 
+import           Text.Scriba.Source.Common
+
 import           Control.Applicative            ( (<|>)
                                                 , empty
                                                 , Alternative
@@ -28,7 +30,6 @@ import           Data.String                    ( IsString(..) )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           Data.Void                      ( Void )
-import           GHC.Generics                   ( Generic )
 import           Text.Megaparsec                ( Parsec
                                                 , ParseErrorBundle
                                                 , (<?>)
@@ -44,58 +45,6 @@ Some kind of better lexical structure?
 `#` at the beginning of the line must be the start of a section
 
 -}
-
-data Doc = Doc SourcePos Attrs [SecNode]
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data Attrs = Attrs
-  { inlineAttrs :: [Element Text InlineContent]
-  , blockAttrs ::  [Element Text BlockContent]
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-data SecNode
-  = SecHeaderNode SecHeader
-  | SecBlock BlockNode
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data Element t c = Element
-  { srcPos :: SourcePos
-  , etype :: t
-  , attrs :: Attrs
-  , args :: [InlineNode]
-  , content :: c
-  } deriving (Eq, Ord, Show, Read, Generic)
-
-data InlineContent
-  = InlineSequence [InlineNode]
-  | InlineVerbatim SourcePos Text
-  | InlineNil
-  deriving (Eq, Ord, Show, Read, Generic)
-
-type BlockElement = Element (Maybe Text) BlockContent
-
-data BlockContent
-  = BlockBlocks [BlockNode]
-  | BlockInlines [InlineNode]
-  | BlockVerbatim SourcePos Text
-  | BlockNil
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data SecHeader = SecHeader Int SourcePos (Maybe Text) Attrs [InlineNode]
- deriving (Eq, Ord, Show, Read, Generic)
-
-data BlockNode
-  = BlockBlock BlockElement
-  | BlockPar SourcePos [InlineNode]
-  deriving (Eq, Ord, Show, Read, Generic)
-
-data InlineNode
-  = InlineBraced InlineElement
-  | InlineText SourcePos Text
-  | InlineComment SourcePos Text
-  deriving (Eq, Ord, Show, Read, Generic)
-
-type InlineElement = Element (Maybe Text) InlineContent
 
 -- * Parsing
 
@@ -171,6 +120,13 @@ pLineSpace1 = MP.takeWhile1P (Just "line space") $ \c -> isSpace c && c /= '\n'
 
 pLineSpace :: Parser Text
 pLineSpace = MP.takeWhileP (Just "line space") $ \c -> isSpace c && c /= '\n'
+
+pBlankLine :: Parser Text
+pBlankLine = do
+  void "\n"
+  t <- pLineSpace
+  void $ MP.lookAhead "\n"
+  pure $ "\n" <> t
 
 -- TODO: Important! Should the comment parser be aware of the ambient
 -- indentation? Test, at least, that nothing is messed up by not
@@ -368,7 +324,6 @@ pBraced t = MP.between ("{" <?> "start of " <> t) ("}" <?> "end of " <> t)
 -- non-empty line that has been indented by at least the ambient
 -- indent level.
 -- TODO: Not great
-
 pBlankLines :: Parser ()
 pBlankLines = void $ MP.many $ MP.try $ do
   void "\n"
@@ -380,13 +335,20 @@ pBlankLines = void $ MP.many $ MP.try $ do
 -- an optional newline. Thus this will stop at the beginning of a
 -- line, with that line's indent intact (or at the end of the file).
 -- TODO: so many names
+
+-- TODO: maybe we should change the whitespace model slightly? Say for
+-- block nodes, maybe we should call (this >> indentText(NoNewline))
+-- at the *beginning* of block attribute parsing. Essentially we want
+-- to have a many-type combinator that takes care of indentation for
+-- us.
 pBlockNodeSep :: Parser ()
 pBlockNodeSep = scLineSpace >> pBlankLines >> void (MP.optional "\n")
 
+-- TODO: try required?
 pSpace :: Parser ()
-pSpace = void $ MP.many pBlankLine >> MP.optional (indentText >> scLineSpace)
+pSpace = void $ MP.many scBlankLine >> MP.optional (indentText >> scLineSpace)
  where
-  pBlankLine = MP.try $ do
+  scBlankLine = MP.try $ do
     void "\n"
     scLineSpace
     MP.lookAhead "\n"
@@ -506,6 +468,7 @@ pBlockElement ilvl pTy = (pBlockMark >>) $ atIndent ilvl $ do
 
 -- TODO: the optional pSpace is bad. Should we just make the beginning
 -- newline optional in pSpace?
+-- TODO: use pBlockNodes
 pBlockParContent :: Parser BlockContent
 pBlockParContent = do
   void pBlockBodyStart
@@ -564,6 +527,96 @@ pParagraph :: Parser [InlineNode]
 -- TODO: add the paragraph header form.
 pParagraph = MP.some pParaNode where pParaNode = pInlineNodeWith pParaText
 
+-- | A section header is a sequence of one or more number signs, then
+-- an element type and attributes.
+
+-- TODO: duplication with BlockElement
+pSecHeader :: Parser (SourcePos -> SecHeader)
+pSecHeader = do
+  n <- pNumberRun
+  scLineSpace
+  mty <- MP.optional pElemTy
+  scLineSpace
+  pSecBlockSep
+  attrs' <- MP.label "attributes" $ do
+    -- inls <- pInlineAttrs sc
+    blks <- MP.many $ MP.try $ do
+      void indentTextNoNewline
+      sp <- MP.getSourcePos
+      let ilvl' = MP.unPos $ MP.sourceColumn sp
+      a <- pBlockElement ilvl' pElemTy <*> pure sp
+      pSecBlockSep
+      pure a
+    pure $ Attrs [] blks
+  scLineSpace >> void "\n" <|> MP.eof
+  pure $ \s -> SecHeader n s mty attrs' []
+ where
+  pSecBlockSep = void $ scLineSpace >> MP.optional "\n"
+  pNumberRun = (T.length <$> MP.takeWhile1P Nothing (== '#')) <* scLineSpace
+
+{-
+pSecHeader :: Parser (SourcePos -> SecHeader)
+pSecHeader = do
+  n <- pNumberRun
+  let toHeader (Element s t at ar ()) = SecHeader n s t at ar
+  f <- pElement pAtMostOneNewline (MP.optional pElemTy) (pure ())
+  -- TODO: I _think_ I should enforce a newline.
+  -- TODO: Here we see that we should be aware of eof issues with whitespace.
+  -- Make sure that enforced whitespace allows eof where possible.
+  void pBlankLine <|> MP.eof
+  pure $ toHeader . f
+ where
+
+  pAtMostOneNewline = pLineSpace >> MP.optional ("\n" >> pLineSpace)
+-}
+
+-- TODO: simply have section headers be a type of block node?
+pSecContent :: Parser [SecNode]
+pSecContent = MP.many $ pSecNode <* pBlockNodeSep
+
+pBlockNodes :: Parser [BlockNode]
+pBlockNodes = MP.many (pBlockNode <* pBlockNodeSep)
+
+pSecBlock :: Int -> Parser (SourcePos -> BlockNode)
+-- TODO: somewhat duplicates pBlockNode
+pSecBlock indentLvl =
+  ((BlockBlock .) <$> pBlockElement indentLvl (MP.optional pElemTy)) <|> pPar
+  where pPar = pParagraph >>= \p -> pure (\src -> BlockPar src p)
+
+-- | A section node is either a block node or a section header
+
+-- TODO: This assumes that section nodes occur at zero indent!
+pSecNode :: Parser SecNode
+pSecNode = do
+  src <- MP.getSourcePos
+  let indentLvl = subtract 1 . MP.unPos $ MP.sourceColumn src
+  f <- (SecHeaderNode .) <$> pSecHeader <|> (SecBlock .) <$> pSecBlock indentLvl
+  pure $ f src
+
+-- ** Full document
+
+-- TODO: don't just discard the body of the scriba element. Should
+-- warn if it's present!
+-- TODO: should probably have a more lax "block element parser" to
+-- which various component parsers are passed. Certainly would be
+-- better than this.
+pDocAttrs :: SourcePos -> Parser Attrs
+pDocAttrs sp = MP.label "scriba element (document meta)" $ MP.try $ do
+  Element _ ty attrs' _ _ <- pBlockElement 1 pElemTy <*> pure sp
+  case ty of
+    "scriba" -> pure attrs'
+    _        -> empty
+
+pDoc :: Parser Doc
+pDoc = do
+  src <- MP.getSourcePos
+  pBlockNodeSep
+  at <- MP.option (Attrs [] []) (pDocAttrs src)
+  pSpace
+  c <- pSecContent
+  MP.eof
+  pure $ Doc src at c
+
 -- * Parsing
 
 -- TODO: the indent is set to zero. Might want a version where that is
@@ -587,6 +640,9 @@ parseWith' p fn =
 parseBlocks' :: Text -> Text -> Either Text [BlockNode]
 parseBlocks' = parseWith' (MP.many (pBlockNode <* pBlockNodeSep) <* MP.eof)
 
+parseDoc' :: Text -> Text -> Either Text Doc
+parseDoc' = parseWith' pDoc
+
 -- TODO: temporary
 parseTesting :: Parser a -> Int -> Text -> Either Text (Text, a)
 parseTesting p inp = parseWithAt' go "<test>" inp
@@ -595,6 +651,7 @@ parseTesting p inp = parseWithAt' go "<test>" inp
     a <- p
     s <- MP.getParserState
     pure (MP.stateInput s, a)
+
 
 {-
 

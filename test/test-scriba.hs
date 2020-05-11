@@ -6,6 +6,7 @@ import qualified Text.Scriba.Source.Indent as SPI
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
 import qualified Text.Scriba.Source.Parse      as SP
+import qualified Text.Scriba.Source.Common     as SC
 
 import           Data.ByteString.Lazy          as BL
 import           Data.Text                      ( Text )
@@ -20,7 +21,7 @@ import           Test.Tasty.Golden
 import qualified Text.Show.Pretty              as Pretty
 import qualified Text.Blaze.Html.Renderer.Text as HT
 
-parseOrExplode :: Text -> Text -> SP.Doc
+parseOrExplode :: Text -> Text -> SC.Doc
 parseOrExplode name t = case SP.parseDoc' name t of
   Left  e -> error $ T.unpack e
   Right a -> a
@@ -84,7 +85,7 @@ testRenderingWith f name src gold = goldenWith go name src gold
 testIndentParse :: String -> FilePath -> FilePath -> TestTree
 testIndentParse name src gold = goldenWith go name src gold
   where
-    go t = byteShow $ either (error . T.unpack) id $ SPI.parseBlocks' (T.pack $ takeFileName src) t
+    go t = byteShow $ either (error . T.unpack) id $ SPI.parseDoc' (T.pack $ takeFileName src) t
 
 -- TODO: one single test block for the manual?
 -- TODO: make sure the README example parses _correctly_.

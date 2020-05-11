@@ -1,3 +1,7 @@
+# section
+  & foo|bar
+  & bar|baz
+
 A test of a plain paragraph.
 Of a couple of lines, with some {emph|markup}
 

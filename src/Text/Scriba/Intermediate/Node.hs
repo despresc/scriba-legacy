@@ -3,11 +3,12 @@
 
 module Text.Scriba.Intermediate.Node where
 
-import           Text.Scriba.Source.Parse       ( InlineContent(..)
+import           Text.Scriba.Source.Common      ( InlineContent(..)
                                                 , InlineNode(..)
                                                 , InlineElement
                                                 , BlockContent(..)
                                                 )
+import qualified Text.Scriba.Source.Common      as P
 import qualified Text.Scriba.Source.Parse      as P
 
 import           Data.Char                      ( isSpace )
@@ -79,14 +80,22 @@ showNodeType NodeText{} = "text"
 
 -- * Meta conversion
 
+{-
 fromAttr :: P.Attr -> Attr
 fromAttr (s, at, ar, con) =
   ( Meta s AsInline (fromAttrs at) (mapMaybe fromInlineNode ar)
   , fromInlineContent con
   )
+-}
 
+-- TODO: warn on duplicate attributes?
+-- TODO: duplication
 fromAttrs :: P.Attrs -> Attrs
-fromAttrs (P.Attrs m) = M.map fromAttr m
+fromAttrs (P.Attrs inlattrs blkattrs) = M.fromList $ inlattrs' <> blkattrs'
+  where
+    fromAttrElement disp f (P.Element s t at ar c) = (t, (Meta s disp (fromAttrs at) (fromInlineNodes ar), f c))
+    inlattrs' = fmap (fromAttrElement AsInline fromInlineContent) inlattrs
+    blkattrs' = fmap (fromAttrElement AsInline fromBlockContent) blkattrs
 
 -- * Inline conversion
 

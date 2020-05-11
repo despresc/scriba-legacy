@@ -4,6 +4,8 @@
 
 module Text.Scriba.Source.Parse where
 
+import Text.Scriba.Source.Common
+
 import           Control.Applicative            ( (<|>)
                                                 , empty
                                                 )
@@ -45,6 +47,7 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
 
 -}
 
+{-
 -- * Document syntax
 
 -- | A document has metadata and sectional content.
@@ -116,6 +119,7 @@ data InlineContent
   | InlineVerbatim SourcePos Text
   | InlineNil
   deriving (Eq, Ord, Show, Read, Generic)
+-}
 
 -- * Parsing
 
@@ -334,12 +338,13 @@ pElement sc pTy pCon = do
 -- | Parse the attributes of an element. The @space@ parser is used to
 -- consume space after each attribute.
 pAttrs :: Parser space -> Parser Attrs
-pAttrs sc = fmap attrsFromList . MP.many . MP.label "attribute" $ do
+pAttrs sc = fmap go . MP.many . MP.label "attribute" $ do
   src                   <- MP.getSourcePos
-  Element s t at ar con <- pAttr <*> pure src
+  a <- pAttr <*> pure src
   void sc
-  pure (t, (s, at, ar, con))
+  pure a
   where pAttr = pBraced "attribute" $ pElement pSpace pElemTy pInlineContent
+        go as = Attrs as []
 
 -- | Parse the arguments of an element, which is a sequence of
 -- argument nodes starting with a @\@@ marker.
@@ -479,7 +484,7 @@ pDoc :: Parser Doc
 pDoc = do
   src <- MP.getSourcePos
   pSpace
-  at <- MP.option mempty pDocAttrs
+  at <- MP.option (Attrs [] []) pDocAttrs
   pSpace
   c <- pSecContent
   MP.eof
