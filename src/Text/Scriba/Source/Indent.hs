@@ -70,6 +70,8 @@ import qualified Text.Megaparsec.Char.Lexer    as MPL
     start of block body, start of inline body, start of inline
     element, or start of verbatim body
 
+- Remove the requirement that section attributes must end in a ---, if present?
+
 -}
 
 -- Parser definitions
@@ -159,6 +161,14 @@ cSpace = void $ MP.takeWhileP Nothing isSpace
 
 cLineSpace :: Parser ()
 cLineSpace = void $ MP.takeWhileP Nothing $ \c -> isSpace c && c /= '\n'
+
+-- TODO: try?
+pBlankLine :: Parser Text
+pBlankLine = MP.try $ do
+  void "\n"
+  t <- pLineSpace
+  void $ MP.lookAhead "\n"
+  pure $ "\n" <> t
 
 {-
 lineSpace1 :: Parser Text
@@ -345,15 +355,26 @@ pSecNode = SecHeaderNode <$> pSecHeader <|> SecBlock <$> pSecBlock
 -- an element type and attributes.
 
 -- TODO: duplication with BlockElement
--- TODO: add attributes and arguments
 pSecHeader :: Parser SecHeader
 pSecHeader = do
   sp <- MP.getSourcePos
   n  <- pNumberRun
   cLineSpace
   mty <- MP.optional pElemTy
-  pure $ SecHeader n sp mty (Attrs [] []) []
-  where pNumberRun = T.length <$> MP.takeWhile1P Nothing (== '#')
+  at  <- pSecAttributes
+  pure $ SecHeader n sp mty at []
+ where
+  pNumberRun     = T.length <$> MP.takeWhile1P Nothing (== '#')
+  pSecAttributes = pNilAttributes <|> pPresentAttributes
+  pNilAttributes =
+    MP.label "blank line" $ MP.try $ "\n" >> pBlankLine $> Attrs [] []
+  pPresentAttributes = do
+    cSpace
+    ia <- pInlineAttrs cSpace
+    ba <- pBlockAttrs cSpace
+    void pBlockBodyStart <?> "end of section attributes"
+    pure $ Attrs ia ba
+
 
 -- TODO: observe that this assumes an ambient indent of 0.
 pSecBlock :: Parser BlockNode
@@ -476,13 +497,8 @@ pBlockVerbContent = do
 pBlockVerbText :: Parser Text
 pBlockVerbText = fmap T.concat $ MP.many blankThenText
  where
-  blankLine = MP.try $ do
-    void "\n"
-    t <- pLineSpace
-    void $ MP.lookAhead "\n"
-    pure $ "\n" <> t
   blankThenText = MP.try $ do
-    ts   <- MP.many blankLine
+    ts   <- MP.many pBlankLine
     t    <- indentText
     rest <- MP.takeWhileP Nothing (/= '\n')
     pure $ T.concat $ ts <> [t, rest]
@@ -645,7 +661,7 @@ indentText = MP.try $ do
   t <- pLineSpace
   guardIndented
   lvl <- getIndent
-  t' <- splitIndent lvl t
+  t'  <- splitIndent lvl t
   pure $ "\n" <> t'
 
 -- | Parse indented text that may end with a de-indent or end of
@@ -711,7 +727,7 @@ pInlineVerbText =
     $   pInsig
     <|> pBacktickEsc
     <|> pInsigBacktick
-    <|> blankLine
+    <|> pBlankLine
     <|> indentText
  where
   pInsig =
@@ -721,11 +737,6 @@ pInlineVerbText =
   pInsigBacktick =
     MP.label "'`' not before '}'" $ MP.try $ MP.chunk "`" <* MP.notFollowedBy
       (MP.single '}')
-  blankLine = MP.try $ do
-    void "\n"
-    t <- pLineSpace
-    void $ MP.lookAhead "\n"
-    pure $ "\n" <> t
 
 -- | Parses something between the start and end inline element
 -- braces. Also takes a description of what the thing is, for
