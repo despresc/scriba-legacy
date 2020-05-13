@@ -167,11 +167,13 @@ pDocAttrs :: Parser Attrs
 pDocAttrs = do
   sp <- MP.getSourcePos
   MP.try $ pBlockMark >> cLineSpace >> void "scriba"
+  cSpace
   atIndent (posIndent sp + 1) $ do
-    ia <- pInlineAttrs cSpace
-    atDeindent (Attrs ia []) $ do
-      ba <- pBlockAttrs cSpace
-      pure $ Attrs ia ba
+    atDeindent (Attrs [] []) $ do
+      ia <- pInlineAttrs cSpace
+      atDeindent (Attrs ia []) $ do
+        ba <- pBlockAttrs cSpace
+        pure $ Attrs ia ba
 
 pSecContent :: Parser [SecNode]
 pSecContent = MP.many $ pSecNode <* cSpace
@@ -202,9 +204,11 @@ pSecHeader = do
   pNilAttributes     = MP.try $ pBlankLine $> Attrs [] []
   pPresentAttributes = atIndent 1 $ do
     cSpace
-    ia <- pInlineAttrs cSpace
-    ba <- pBlockAttrs cSpace
-    pure $ Attrs ia ba
+    atDeindent (Attrs [] []) $ do
+      ia <- pInlineAttrs cSpace
+      atDeindent (Attrs ia []) $ do
+        ba <- pBlockAttrs cSpace
+        pure $ Attrs ia ba
 
 -- TODO: observe that this assumes an ambient indent of 0.
 pSecBlock :: Parser BlockNode
@@ -543,3 +547,11 @@ parseWith' p fn =
 
 parseDoc' :: Text -> Text -> Either Text Doc
 parseDoc' = parseWith' pDoc
+
+parseTesting :: Parser a -> Int -> Text -> Either Text (Text, a)
+parseTesting p inp = parseWithAt' go "<test>" inp
+ where
+  go = do
+    a <- p
+    s <- MP.getParserState
+    pure (MP.stateInput s, a)

@@ -4,13 +4,67 @@ Doc
     , sourceLine = Pos 1
     , sourceColumn = Pos 1
     }
-  Attrs { inlineAttrs = [] , blockAttrs = [] }
+  Attrs
+    { inlineAttrs = []
+    , blockAttrs =
+        [ Element
+            { srcPos =
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 2
+                  , sourceColumn = Pos 3
+                  }
+            , etype = "attribute"
+            , attrs =
+                Attrs
+                  { inlineAttrs = []
+                  , blockAttrs =
+                      [ Element
+                          { srcPos =
+                              SourcePos
+                                { sourceName = "simple.indent"
+                                , sourceLine = Pos 3
+                                , sourceColumn = Pos 5
+                                }
+                          , etype = "childAttr"
+                          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                          , args = []
+                          , content = BlockNil
+                          }
+                      ]
+                  }
+            , args = []
+            , content = BlockNil
+            }
+        , Element
+            { srcPos =
+                SourcePos
+                  { sourceName = "simple.indent"
+                  , sourceLine = Pos 4
+                  , sourceColumn = Pos 3
+                  }
+            , etype = "siblingAttr"
+            , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+            , args = []
+            , content =
+                BlockInlines
+                  [ InlineText
+                      SourcePos
+                        { sourceName = "simple.indent"
+                        , sourceLine = Pos 4
+                        , sourceColumn = Pos 16
+                        }
+                      "With content"
+                  ]
+            }
+        ]
+    }
   [ SecHeaderNode
       (SecHeader
          1
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 1
+           , sourceLine = Pos 6
            , sourceColumn = Pos 1
            }
          (Just "section")
@@ -20,7 +74,7 @@ Doc
                    { srcPos =
                        SourcePos
                          { sourceName = "simple.indent"
-                         , sourceLine = Pos 1
+                         , sourceLine = Pos 6
                          , sourceColumn = Pos 11
                          }
                    , etype = "id"
@@ -31,7 +85,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 1
+                               , sourceLine = Pos 6
                                , sourceColumn = Pos 15
                                }
                              "thing"
@@ -46,7 +100,7 @@ Doc
          2
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 3
+           , sourceLine = Pos 8
            , sourceColumn = Pos 1
            }
          (Just "subsection")
@@ -57,7 +111,7 @@ Doc
                    { srcPos =
                        SourcePos
                          { sourceName = "simple.indent"
-                         , sourceLine = Pos 4
+                         , sourceLine = Pos 9
                          , sourceColumn = Pos 3
                          }
                    , etype = "foo"
@@ -68,7 +122,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 4
+                               , sourceLine = Pos 9
                                , sourceColumn = Pos 9
                                }
                              "bar"
@@ -82,7 +136,7 @@ Doc
          3
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 6
+           , sourceLine = Pos 11
            , sourceColumn = Pos 1
            }
          (Just "subsubsection")
@@ -92,7 +146,7 @@ Doc
                    { srcPos =
                        SourcePos
                          { sourceName = "simple.indent"
-                         , sourceLine = Pos 6
+                         , sourceLine = Pos 11
                          , sourceColumn = Pos 19
                          }
                    , etype = "id"
@@ -103,7 +157,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 6
+                               , sourceLine = Pos 11
                                , sourceColumn = Pos 23
                                }
                              "thing"
@@ -115,7 +169,7 @@ Doc
                    { srcPos =
                        SourcePos
                          { sourceName = "simple.indent"
-                         , sourceLine = Pos 7
+                         , sourceLine = Pos 12
                          , sourceColumn = Pos 3
                          }
                    , etype = "foo"
@@ -126,7 +180,7 @@ Doc
                          [ InlineText
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 7
+                               , sourceLine = Pos 12
                                , sourceColumn = Pos 9
                                }
                              "bar"
@@ -141,7 +195,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 9
+                 , sourceLine = Pos 14
                  , sourceColumn = Pos 1
                  }
            , etype = Just "foo"
@@ -152,7 +206,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 9
+                       , sourceLine = Pos 14
                        , sourceColumn = Pos 7
                        }
                      "bar"
@@ -164,7 +218,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 10
+                 , sourceLine = Pos 15
                  , sourceColumn = Pos 1
                  }
            , etype = Just "bar"
@@ -175,7 +229,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 10
+                       , sourceLine = Pos 15
                        , sourceColumn = Pos 7
                        }
                      "baz"
@@ -185,13 +239,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 12
+           , sourceLine = Pos 17
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "simple.indent"
-               , sourceLine = Pos 12
+               , sourceLine = Pos 17
                , sourceColumn = Pos 1
                }
              "A test of a plain paragraph.\nOf a couple of lines, with some "
@@ -200,7 +254,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "simple.indent"
-                     , sourceLine = Pos 13
+                     , sourceLine = Pos 18
                      , sourceColumn = Pos 33
                      }
                , etype = Just "emph"
@@ -211,7 +265,7 @@ Doc
                              { srcPos =
                                  SourcePos
                                    { sourceName = "simple.indent"
-                                   , sourceLine = Pos 13
+                                   , sourceLine = Pos 18
                                    , sourceColumn = Pos 39
                                    }
                              , etype = "id"
@@ -222,7 +276,7 @@ Doc
                                    [ InlineText
                                        SourcePos
                                          { sourceName = "simple.indent"
-                                         , sourceLine = Pos 13
+                                         , sourceLine = Pos 18
                                          , sourceColumn = Pos 43
                                          }
                                        "foo"
@@ -235,7 +289,7 @@ Doc
                    [ InlineText
                        SourcePos
                          { sourceName = "simple.indent"
-                         , sourceLine = Pos 13
+                         , sourceLine = Pos 18
                          , sourceColumn = Pos 50
                          }
                        "bar"
@@ -245,7 +299,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.indent"
-                           , sourceLine = Pos 13
+                           , sourceLine = Pos 18
                            , sourceColumn = Pos 55
                            }
                          "markup"
@@ -256,13 +310,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 15
+           , sourceLine = Pos 20
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "simple.indent"
-               , sourceLine = Pos 15
+               , sourceLine = Pos 20
                , sourceColumn = Pos 1
                }
              "And another paragraph"
@@ -273,7 +327,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 17
+                 , sourceLine = Pos 22
                  , sourceColumn = Pos 1
                  }
            , etype = Just "tight1"
@@ -287,7 +341,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 18
+                 , sourceLine = Pos 23
                  , sourceColumn = Pos 1
                  }
            , etype = Just "tight2"
@@ -301,7 +355,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 20
+                 , sourceLine = Pos 25
                  , sourceColumn = Pos 1
                  }
            , etype = Just "blockOnlyAttr"
@@ -313,7 +367,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 21
+                               , sourceLine = Pos 26
                                , sourceColumn = Pos 3
                                }
                          , etype = "attr1"
@@ -325,7 +379,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 22
+                               , sourceLine = Pos 27
                                , sourceColumn = Pos 3
                                }
                          , etype = "attr2"
@@ -344,7 +398,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 24
+                 , sourceLine = Pos 29
                  , sourceColumn = Pos 1
                  }
            , etype = Just "blockWithAtInl"
@@ -356,7 +410,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 25
+                               , sourceLine = Pos 30
                                , sourceColumn = Pos 3
                                }
                          , etype = "at"
@@ -367,7 +421,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.indent"
-                                     , sourceLine = Pos 25
+                                     , sourceLine = Pos 30
                                      , sourceColumn = Pos 8
                                      }
                                    "Foo"
@@ -377,7 +431,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 26
+                               , sourceLine = Pos 31
                                , sourceColumn = Pos 3
                                }
                          , etype = "at2"
@@ -388,7 +442,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.indent"
-                                     , sourceLine = Pos 26
+                                     , sourceLine = Pos 31
                                      , sourceColumn = Pos 9
                                      }
                                    "Bar"
@@ -402,7 +456,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 27
+                       , sourceLine = Pos 32
                        , sourceColumn = Pos 4
                        }
                      "Very interesting inline content\ncontinuing\n\nfor a couple of lines\n\nand "
@@ -411,7 +465,7 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "simple.indent"
-                             , sourceLine = Pos 32
+                             , sourceLine = Pos 37
                              , sourceColumn = Pos 7
                              }
                        , etype = Just "emph"
@@ -422,7 +476,7 @@ Doc
                              [ InlineText
                                  SourcePos
                                    { sourceName = "simple.indent"
-                                   , sourceLine = Pos 32
+                                   , sourceLine = Pos 37
                                    , sourceColumn = Pos 13
                                    }
                                  "including\nsome\n\ninline markup"
@@ -436,7 +490,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 37
+                 , sourceLine = Pos 42
                  , sourceColumn = Pos 1
                  }
            , etype = Just "blockOnlyBlock"
@@ -447,13 +501,13 @@ Doc
                  [ BlockPar
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 39
+                       , sourceLine = Pos 44
                        , sourceColumn = Pos 3
                        }
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.indent"
-                           , sourceLine = Pos 39
+                           , sourceLine = Pos 44
                            , sourceColumn = Pos 3
                            }
                          "Some blockOnlyBlock content"
@@ -466,7 +520,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 41
+                 , sourceLine = Pos 46
                  , sourceColumn = Pos 1
                  }
            , etype = Just "block"
@@ -478,7 +532,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 42
+                               , sourceLine = Pos 47
                                , sourceColumn = Pos 3
                                }
                          , etype = "attr1"
@@ -489,7 +543,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.indent"
-                                     , sourceLine = Pos 42
+                                     , sourceLine = Pos 47
                                      , sourceColumn = Pos 11
                                      }
                                    "Foo"
@@ -499,7 +553,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 43
+                               , sourceLine = Pos 48
                                , sourceColumn = Pos 3
                                }
                          , etype = "attr2"
@@ -510,7 +564,7 @@ Doc
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.indent"
-                                     , sourceLine = Pos 43
+                                     , sourceLine = Pos 48
                                      , sourceColumn = Pos 11
                                      }
                                    "Bar"
@@ -524,13 +578,13 @@ Doc
                  [ BlockPar
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 45
+                       , sourceLine = Pos 50
                        , sourceColumn = Pos 3
                        }
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.indent"
-                           , sourceLine = Pos 45
+                           , sourceLine = Pos 50
                            , sourceColumn = Pos 3
                            }
                          "Very interesting block content"
@@ -538,13 +592,13 @@ Doc
                  , BlockPar
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 47
+                       , sourceLine = Pos 52
                        , sourceColumn = Pos 3
                        }
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.indent"
-                           , sourceLine = Pos 47
+                           , sourceLine = Pos 52
                            , sourceColumn = Pos 3
                            }
                          "And some more block content"
@@ -554,7 +608,7 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "simple.indent"
-                             , sourceLine = Pos 49
+                             , sourceLine = Pos 54
                              , sourceColumn = Pos 3
                              }
                        , etype = Just "codeBlock"
@@ -564,7 +618,7 @@ Doc
                            BlockVerbatim
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 50
+                               , sourceLine = Pos 55
                                , sourceColumn = Pos 5
                                }
                              " Some code here\n           and a little indented\n which continues until this point."
@@ -577,7 +631,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 55
+                 , sourceLine = Pos 60
                  , sourceColumn = Pos 1
                  }
            , etype = Just "block2"
@@ -589,7 +643,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 56
+                               , sourceLine = Pos 61
                                , sourceColumn = Pos 3
                                }
                          , etype = "attr3"
@@ -601,7 +655,7 @@ Doc
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 57
+                               , sourceLine = Pos 62
                                , sourceColumn = Pos 3
                                }
                          , etype = "attr4"
@@ -617,7 +671,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 58
+                       , sourceLine = Pos 63
                        , sourceColumn = Pos 4
                        }
                      "Interesting inline block content"
@@ -627,7 +681,7 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 60
+           , sourceLine = Pos 65
            , sourceColumn = Pos 1
            }
          [ InlineBraced
@@ -635,7 +689,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "simple.indent"
-                     , sourceLine = Pos 60
+                     , sourceLine = Pos 65
                      , sourceColumn = Pos 1
                      }
                , etype = Nothing
@@ -645,7 +699,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 60
+                       , sourceLine = Pos 65
                        , sourceColumn = Pos 2
                        }
                      "&"
@@ -653,7 +707,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "simple.indent"
-               , sourceLine = Pos 60
+               , sourceLine = Pos 65
                , sourceColumn = Pos 6
                }
              " an inline verbatim test with some "
@@ -662,7 +716,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "simple.indent"
-                     , sourceLine = Pos 60
+                     , sourceLine = Pos 65
                      , sourceColumn = Pos 41
                      }
                , etype = Just "code"
@@ -672,7 +726,7 @@ Doc
                    InlineVerbatim
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 60
+                       , sourceLine = Pos 65
                        , sourceColumn = Pos 46
                        }
                      "\nVerbatim\n\ncontent"
@@ -680,7 +734,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "simple.indent"
-               , sourceLine = Pos 63
+               , sourceLine = Pos 68
                , sourceColumn = Pos 10
                }
              "."
@@ -691,7 +745,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 65
+                 , sourceLine = Pos 70
                  , sourceColumn = Pos 1
                  }
            , etype = Just "block3"
@@ -702,7 +756,7 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "simple.indent"
-                       , sourceLine = Pos 66
+                       , sourceLine = Pos 71
                        , sourceColumn = Pos 5
                        }
                      "Content on the next line"
@@ -714,7 +768,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.indent"
-                 , sourceLine = Pos 68
+                 , sourceLine = Pos 73
                  , sourceColumn = Pos 1
                  }
            , etype = Just "codeBlockWeird"
@@ -727,7 +781,7 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "simple.indent"
-                             , sourceLine = Pos 69
+                             , sourceLine = Pos 74
                              , sourceColumn = Pos 4
                              }
                        , etype = Nothing
@@ -737,7 +791,7 @@ Doc
                            InlineVerbatim
                              SourcePos
                                { sourceName = "simple.indent"
-                               , sourceLine = Pos 69
+                               , sourceLine = Pos 74
                                , sourceColumn = Pos 5
                                }
                              "Some inline stuff\n                    with indent\n here\n\n "
@@ -748,13 +802,13 @@ Doc
       (BlockPar
          SourcePos
            { sourceName = "simple.indent"
-           , sourceLine = Pos 75
+           , sourceLine = Pos 80
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "simple.indent"
-               , sourceLine = Pos 75
+               , sourceLine = Pos 80
                , sourceColumn = Pos 1
                }
              "And more."

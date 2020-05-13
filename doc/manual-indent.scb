@@ -38,7 +38,7 @@
       &title
         &prefix|Proof
       &titleSep|{`. `}
-      &conclusion|∎
+      &conclusion| ∎
   &sections
     &section
       &title
@@ -78,9 +78,8 @@ writing. A paragraph in scriba is a type of {emph|block}, and contains
 given below:
 
 & codeBlock
-  ```
   & language|scriba
-  `
+  ```
   There was nothing so very remarkable in that; nor did Alice think
   it so very much out of the way to hear the Rabbit say to itself,
   {q|Oh dear! Oh dear! I shall be late!} (when she thought it over
@@ -156,9 +155,10 @@ shown in the following code sample:
 
 &codeBlock
   &language|scriba
-  `
-  &codeBlock language|scriba
-    `
+  ```
+  &codeBlock
+    &language|scriba
+    ```
     An {emph|interesting} proposition.
 
   & olist
@@ -279,7 +279,7 @@ Some examples:
 & formalBlock
   &type|proof
   &titleNote|of the interesting theorem
-  |Details of the proof
+  |Details of the proof.
 
 ##subsection
   &id|elem-olist
