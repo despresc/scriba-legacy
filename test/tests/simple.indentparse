@@ -85,15 +85,49 @@ Doc
                      , sourceColumn = Pos 33
                      }
                , etype = Just "emph"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
+               , attrs =
+                   Attrs
+                     { inlineAttrs =
+                         [ Element
+                             { srcPos =
+                                 SourcePos
+                                   { sourceName = "simple.indent"
+                                   , sourceLine = Pos 7
+                                   , sourceColumn = Pos 39
+                                   }
+                             , etype = "id"
+                             , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                             , args = []
+                             , content =
+                                 InlineSequence
+                                   [ InlineText
+                                       SourcePos
+                                         { sourceName = "simple.indent"
+                                         , sourceLine = Pos 7
+                                         , sourceColumn = Pos 43
+                                         }
+                                       "foo"
+                                   ]
+                             }
+                         ]
+                     , blockAttrs = []
+                     }
+               , args =
+                   [ InlineText
+                       SourcePos
+                         { sourceName = "simple.indent"
+                         , sourceLine = Pos 7
+                         , sourceColumn = Pos 50
+                         }
+                       "bar"
+                   ]
                , content =
                    InlineSequence
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.indent"
                            , sourceLine = Pos 7
-                           , sourceColumn = Pos 39
+                           , sourceColumn = Pos 55
                            }
                          "markup"
                      ]
