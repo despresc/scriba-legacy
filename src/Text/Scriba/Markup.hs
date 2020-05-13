@@ -781,6 +781,7 @@ renderStandalone d@(Doc dm _ _ _) = do
   let tplain = docPlainTitle dm
   pure $ Html.docTypeHtml $ do
     Html.head $ do
+      Html.meta Html.! HtmlA.charset "UTF-8"
       Html.title $ Html.toHtml tplain
       Html.script
         Html.! HtmlA.id "MathJax-script"
