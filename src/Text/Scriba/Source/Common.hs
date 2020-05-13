@@ -15,8 +15,8 @@ data Doc = Doc SourcePos Attrs [SecNode]
   deriving (Eq, Ord, Show, Read, Generic)
 
 data Attrs = Attrs
-  { inlineAttrs :: [Element Text InlineContent]
-  , blockAttrs ::  [Element Text BlockContent]
+  { inlineAttrs :: [InlineAttr]
+  , blockAttrs ::  [BlockAttr]
   } deriving (Eq, Ord, Show, Read, Generic)
 
 data SecNode
@@ -31,6 +31,10 @@ data Element t c = Element
   , args :: [InlineNode]
   , content :: c
   } deriving (Eq, Ord, Show, Read, Generic)
+
+type InlineAttr = Element Text InlineContent
+
+type BlockAttr = Element Text BlockContent
 
 data InlineContent
   = InlineSequence [InlineNode]

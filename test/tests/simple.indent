@@ -1,9 +1,10 @@
 # section
-  & foo|bar
-  & bar|baz
+
+& foo|bar
+& bar|baz
 
 A test of a plain paragraph.
-Of a couple of lines, with some {emph {id|interesting} |markup}
+Of a couple of lines, with some {emph|markup}
 
 And another paragraph
 
@@ -39,9 +40,10 @@ And another paragraph
 
   And some more block content
 
-  & codeBlock `
+  & codeBlock
+    ```
     Some code here
-
+              and a little indented
     which continues until this point.
 
 & block2
