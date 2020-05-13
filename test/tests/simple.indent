@@ -1,13 +1,10 @@
 # section {id|thing}
----
 
 ## subsection
   & foo|bar
----
 
 ### subsubsection {id|thing}
   & foo|bar
----
 
 & foo|bar
 & bar|baz

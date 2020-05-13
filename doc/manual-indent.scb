@@ -78,6 +78,7 @@ writing. A paragraph in scriba is a type of {emph|block}, and contains
 given below:
 
 & codeBlock
+  ```
   & language|scriba
   `
   There was nothing so very remarkable in that; nor did Alice think
@@ -118,7 +119,8 @@ The content of your document can be organized into {emph|sections},
 representing self-contained units of discussion. These have types,
 titles, and a body of blocks and subsections. Sections look like this:
 
-& codeBlock `
+& codeBlock
+  ```
   # {title|An introduction to the language}
 
   ## {title|Paragraphs}
@@ -204,7 +206,7 @@ The examples of formulas above were entered into the source like so:
 
 &codeBlock
   &language|scriba
-  `
+  ```
   Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
   {dmath {id|displayFormulaExample} `
     \mathbf{B}(P) = \frac{\mu_0}{4\pi}

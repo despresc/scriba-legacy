@@ -123,7 +123,7 @@ cLineSpace = void $ MP.takeWhileP Nothing $ \c -> isSpace c && c /= '\n'
 
 -- TODO: try?
 pBlankLine :: Parser Text
-pBlankLine = MP.try $ do
+pBlankLine = MP.label "blank line" $ MP.try $ do
   void "\n"
   t <- pLineSpace
   void $ MP.lookAhead "\n"
@@ -186,26 +186,25 @@ pSecNode = SecHeaderNode <$> pSecHeader <|> SecBlock <$> pSecBlock
 -- an element type and attributes.
 
 -- TODO: duplication with BlockElement
+-- TODO: not sure how I like the pNilAttributes handling.
 pSecHeader :: Parser SecHeader
 pSecHeader = do
   sp <- MP.getSourcePos
   n  <- pNumberRun
   cLineSpace
   mty <- MP.optional pElemTy
-  at  <- pSecAttributes
+  cLineSpace
+  at <- pSecAttributes
   pure $ SecHeader n sp mty at []
  where
-  pNumberRun     = T.length <$> MP.takeWhile1P Nothing (== '#')
-  pSecAttributes = pNilAttributes <|> pPresentAttributes
-  pNilAttributes =
-    MP.label "blank line" $ MP.try $ "\n" >> pBlankLine $> Attrs [] []
-  pPresentAttributes = do
+  pNumberRun         = T.length <$> MP.takeWhile1P Nothing (== '#')
+  pSecAttributes     = pNilAttributes <|> pPresentAttributes
+  pNilAttributes     = MP.try $ pBlankLine $> Attrs [] []
+  pPresentAttributes = atIndent 1 $ do
     cSpace
     ia <- pInlineAttrs cSpace
     ba <- pBlockAttrs cSpace
-    void pBlockBodyStart <?> "end of section attributes"
     pure $ Attrs ia ba
-
 
 -- TODO: observe that this assumes an ambient indent of 0.
 pSecBlock :: Parser BlockNode
@@ -528,8 +527,7 @@ pBraced t p = do
 
 -- * Parsing
 
-parseWithAt
-  :: Parser a -> Text -> Int -> Text -> Either ParseError a
+parseWithAt :: Parser a -> Text -> Int -> Text -> Either ParseError a
 parseWithAt p fn n = MP.parse (runParser p n) (T.unpack fn)
 
 parseWithAt' :: Parser a -> Text -> Int -> Text -> Either Text a
