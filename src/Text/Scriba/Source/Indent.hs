@@ -132,115 +132,6 @@ pBlankLine = MP.try $ do
 posIndent :: SourcePos -> Int
 posIndent = (subtract 1) . MP.unPos . MP.sourceColumn
 
-{-
--- | @'guardAtLevel' p q lvl txt@ runs @q txt@ if @lvl@ is at least
--- the level of the environment, and otherwise runs @p lvl txt@.
-
--- TODO: we have other guard functions. Use this one for all?
-guardAtLevel :: Int -> Text -> IndentParser a -> (Text -> Parser a) -> Parser a
-guardAtLevel lvl txt p q = do
-  n <- getIndent
-  if lvl >= n then q txt else p lvl txt
--}
-
-{-
--- | Consume white space, then return the source position.
-spaceIndent :: Parser SourcePos
-spaceIndent = cSpace >> MP.getSourcePos
--}
-
-{-
--- TODO: have this replace BlockNodeSep, probably
-pBlockNodeSep :: Parser (Maybe Int)
-pBlockNodeSep = scLineSpace >> do
-  mnew <- MP.lookAhead $ MP.optional "\n"
-  case mnew of
-    Nothing -> pure Nothing
-    Just _  -> pBlankLines >> void (MP.optional "\n") >> do
-      (n, _) <- indentNoNewline
-      lvl    <- getIndent
-      if n < lvl then pure $ Just n else scLineSpace $> Nothing
--}
-
-{-
-guardIndent :: SourcePos -> (SourcePos -> Parser a) -> Parser a
-guardIndent sp p = do
-  let n = posIndent sp
-  currLvl <- getIndent
-  if n < currLvl
-    then fail $ "insufficient indent: got " <> show n <> ", expected " <> show currLvl
-    else p sp
--}
-
-{-
--- Consume whitespace between elements.
-pInlineElemSep :: Parser SourcePos
-pInlineElemSep = do
-  sp <- spaceIndent
-  let n = posIndent sp
-  currLvl <- getIndent
-  if n < 
-scLineSpace >> do
-  mnew <- MP.lookAhead $ MP.optional "\n"
-  case mnew of
-    Nothing -> pure ()
-    Just _  -> pBlankLines >> void (MP.optional "\n") >> do
-      (n, _) <- indentNoNewline
-      lvl    <- getIndent
-      if n < lvl
-        then fail
-          ("insufficient indent: got " <> show n <> ", expected " <> show lvl)
-        else pure ()
-  where
-    -- Should consume all inline space
-    scInlineSpace = undefined
--}
-
--- TODO: HERE. Should just admit defeat and have paragraph, block
--- element, and related parsers simply blindly consume whitespace, and
--- use getSourcePos for the indentation level, having only block
--- verbatim content not do this. That should simplify a lot of the
--- parsers. E.g. with pInlineElemSep, we can just call a space
--- consumer, then use getSourcePos to verify that the indentation
--- level is correct. We could even pass along the sourcepos that we
--- get at the end of the space consumer, for efficiency purposes.
---
--- Note that we will still (probably) need to develop a manual parser
--- that lets us have comments in the indent, for use with inline and
--- block verbatim text. I think. Mostly just a block comment parser
--- that also reports the length of the last line of the comment, I
--- think, with tab-awareness (MP only seems to assign different
--- character width to tabs). We could also forbid comments from
--- appearing in the indent, I suppose?
-
-
-{-
--- TODO: perhaps should just have one continuation?
-pManyAfterSpace
-  :: Parser a -> ([a] -> IndentParser b) -> ([a] -> Parser b) -> Parser b
-pManyAfterSpace pForm pLow pHigh = go id
- where
-  go f = do
-    mi <- pBlockNodeSep
-    case mi of
-      Just (n, excess) -> pLow (f []) n excess
-      Nothing          -> do
-        ma <- MP.optional pForm
-        case ma of
-          Nothing -> pHigh (f [])
-          Just a  -> go (f . (a :))
--}
-
-{-
--- TODO: Important! Should the comment parser be aware of the ambient
--- indentation? Test, at least, that nothing is messed up by not
--- having such an awareness. E.g. I would hope that a comment spanning
--- more than one line would always work out.
-scLineSpace :: Parser ()
-scLineSpace =
-  MPL.space (void pLineSpace1) empty (void $ pCommentStart >> pCommentBody)
--}
-
 -- Run the first parser if a de-indent is encountered.
 atDeindent :: a -> Parser a -> Parser a
 atDeindent low pHigh = do
@@ -344,30 +235,6 @@ pBlockElement pTy = do
           c <- pBlockContent
           pure $ Element sp ty (Attrs ia ba) as c
 
-{-
-  einls <- pManyAfterSpace' standaloneInlineElem
-  case einls of
-    Left  inls -> pure $ Element sp ty (Attrs inls []) [] BlockNil
-    Right inls -> do
-      eblks <- pManyAfterSpace' standaloneBlockElem
-      case eblks of
-        Left  blks -> pure $ Element sp ty (Attrs inls blks) [] BlockNil
-        Right blks -> do
-          con <- pContent
-          pure $ Element sp ty (Attrs inls blks) [] con
- where
-  standaloneInlineElem = MP.getSourcePos <**> pInlineElementTyped
-  standaloneBlockElem  = do
-    sp <- MP.getSourcePos
-    let ilvl' = MP.unPos $ MP.sourceColumn sp
-    pBlockElement ilvl' pElemTy <*> pure sp
-  pContent =
-    MP.option BlockNil
-      $   pBlockParContent
-      <|> pBlockUnparContent
-      <|> pBlockVerbContent
--}
-
 manyIndented :: Parser space -> Parser a -> Parser [a]
 manyIndented sc p = go id
  where
@@ -405,7 +272,6 @@ pInlineElement pTy = pBraced "inline element" $ \src -> do
 pBlockContent :: Parser BlockContent
 pBlockContent =
   pBlockParContent <|> pBlockUnparContent <|> pBlockVerbContent <|> pBlockNil
---    <|> pBlockVerbContent -- TODO: restore
 
 pBlockParContent :: Parser BlockContent
 pBlockParContent = do
@@ -621,29 +487,6 @@ pInlineText =
     guardIndented
     pure $ "\n" <> T.filter (== '\n') t
 
-
-{-
--- | Parse indented inline text. This only works for braced indented
--- text, since a de-indent is forbidden inside of them.
-pInlineText :: Parser Text
--- TODO: tries?
--- TODO: duplication
--- TODO: make 
-pInlineText =
-  MP.label "inline text"
-    $   fmap T.concat
-    $   MP.some
-    $   pInlineTextLine
-    <|> blankLine
-    <|> indentText
- where
-  blankLine = MP.try $ do
-    void "\n"
-    t <- pLineSpace
-    void $ MP.lookAhead "\n"
-    pure $ "\n" <> t
--}
-
 -- | Argument text is inline text except that it cannot contain spaces
 -- or a character from @|&`@.
 pArgText :: Parser Text
@@ -657,9 +500,6 @@ pArgText =
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c
 
--- TODO: make aware of indent!
--- TODO: duplication with blankLine
--- TODO: could combine blankLine and indentText branches by using indentTextNoNewline
 pInlineVerbText :: Parser Text
 pInlineVerbText =
   fmap T.concat
