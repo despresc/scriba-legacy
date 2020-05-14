@@ -15,6 +15,7 @@ import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 newtype InlineCode = InlineCode
   { getInlineCode :: Text
@@ -31,4 +32,6 @@ pCode :: Scriba Element InlineCode
 pCode = InlineCode . T.concat <$> whileMatchTy "code" (allContentOf simpleText)
 
 instance RH.Render InlineCode where
-  render (InlineCode t) = pure $ Html.code $ Html.toHtml t
+  render (InlineCode t) =
+    pure $ Html.span Html.! HtmlA.class_ "inlineCode" $ Html.code $ Html.toHtml
+      t

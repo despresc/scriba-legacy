@@ -34,8 +34,11 @@ h3 {
 }
 
 code {
-    white-space: pre-wrap;
     font-size: 0.9rem;
+}
+
+.inlineCode > code {
+    white-space: pre-wrap;
 }
 
 .formalBlock {

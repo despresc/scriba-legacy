@@ -23,16 +23,16 @@ rabbit-hole under the hedge.
 
 In another moment down went Alice after it, never once considering
 how in the world she was to get out again.</code></pre></div><p>Plain paragraph text is any span of unicode characters other than
-<code>\</code>, <code>{</code>, or <code>}</code>, with the additional restriction
+<span class="inlineCode"><code>\</code></span>, <span class="inlineCode"><code>{</code></span>, or <span class="inlineCode"><code>}</code></span>, with the additional restriction
 that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
-can be represented in paragraph text using the sequences <code>\\</code>,
-<code>\{</code>, and <code>\}</code>, should you need them in text.</p><p>The other feature of paragraph markup is <em>inline elements</em>, which
+can be represented in paragraph text using the sequences <span class="inlineCode"><code>\\</code></span>,
+<span class="inlineCode"><code>\{</code></span>, and <span class="inlineCode"><code>\}</code></span>, should you need them in text.</p><p>The other feature of paragraph markup is <em>inline elements</em>, which
 are used to give further meaning to your text and to control scriba&#39;s
-many features. Simple elements start with <code>{tag|</code> and end with
-<code>}</code>. The paragraphs above have a <code>q</code> element, representing
+many features. Simple elements start with <span class="inlineCode"><code>{tag|</code></span> and end with
+<span class="inlineCode"><code>}</code></span>. The paragraphs above have a <span class="inlineCode"><code>q</code></span> element, representing
 quoted text and likely to be rendered between quotation marks, and an
-<code>emph</code> element, representing emphasized text and likely to be
+<span class="inlineCode"><code>emph</code></span> element, representing emphasized text and likely to be
 rendered in italic type.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Sections<span class="after"></span></span></span></h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
 representing self-contained units of discussion. These have types,
 titles, and a body of blocks and subsections. Sections look like this:</p><div class="codeBlock"><pre><code># {title|An introduction to the language}
@@ -40,8 +40,8 @@ titles, and a body of blocks and subsections. Sections look like this:</p><div c
 ## {title|Paragraphs}
 
 The bulk of your document …</code></pre></div><p>The first component of a section is its <em>header</em>. The section
-header starts with <code># sectionType</code>, the number of consecutive
-<code>#</code> becoming the overall <em>level</em> of the section. The
+header starts with <span class="inlineCode"><code># sectionType</code></span>, the number of consecutive
+<span class="inlineCode"><code>#</code></span> becoming the overall <em>level</em> of the section. The
 section content begins after the attributes of the section and at
 least one blank line, and continues until a section of at most that
 level, or the end of the document, is reached. In the example above,
@@ -49,7 +49,7 @@ the <q>Paragraphs</q> section would continue until a level 2 or level 1
 section were encountered. The section type is optional; section types
 classify the section, can denote built-in document structure, and can
 influence processing and rendering behaviour. Sections without a type
-become a generic <code>section</code>.</p><p>Sections, like other elements, can have <em>attributes</em>. The only
+become a generic <span class="inlineCode"><code>section</code></span>.</p><p>Sections, like other elements, can have <em>attributes</em>. The only
 recognized attribute of a section, for now, is its title. In future,
 sections will have many attributes, like number, language, alternate
 titles for the table of contents or page header, and so on. The
@@ -66,16 +66,16 @@ shown in the following code sample:</p><div class="codeBlock"><pre><code>&amp;co
   ---
   &amp;item|First item
   &amp;item|Second item</code></pre></div><p>Blocks are written like inline elements, complete with attributes and
-arguments, except they are preceded by a <code>&amp;</code>. They differ from
+arguments, except they are preceded by a <span class="inlineCode"><code>&amp;</code></span>. They differ from
 inline elements in their content: blocks have <em>verbatim</em>,
 <em>block</em>, and <em>inline</em> content. Verbatim content is signalled
-by a <code>`</code> (backtick) character, starts on the next line, then runs
-until the sequence <code>`}</code> appears on a line indented by at most as
-much as the start-of-block <code>&amp;</code> character is. The content itself
+by a <span class="inlineCode"><code>`</code></span> (backtick) character, starts on the next line, then runs
+until the sequence <span class="inlineCode"><code>`}</code></span> appears on a line indented by at most as
+much as the start-of-block <span class="inlineCode"><code>&amp;</code></span> character is. The content itself
 becomes plain text; no control characters are recognized in it. Block
-content is signalled by a <code>&amp;</code> character, and consists of a
+content is signalled by a <span class="inlineCode"><code>&amp;</code></span> character, and consists of a
 sequence of blocks and paragraphs, like section content without
-section headers. Finally, inline content is signalled by a <code>|</code>
+section headers. Finally, inline content is signalled by a <span class="inlineCode"><code>|</code></span>
 and can contain text and inline elements.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.4<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Mathematics<span class="after"></span></span></span></h3><div class="sectionContent"><p>Formal mathematical content can be included in a document with
 particular inline elements. Inline formulas like <span class="math inline">\(f(x, y) =
 x^{y+6}\)</span>, and displayed formulas like
@@ -87,12 +87,12 @@ x^{y+6}\)</span>, and displayed formulas like
 are available, among other more complex constructs. The formulas
 themselves are written in TeX syntax by default, and rendering in HTML
 is handled with MathJax. Be aware that amsmath-style environments like
-<code>gathered</code> or <code>alignedat</code> should not be used inside
-<code>math</code> or <code>dmath</code> elements themselves. Scriba itself
+<span class="inlineCode"><code>gathered</code></span> or <span class="inlineCode"><code>alignedat</code></span> should not be used inside
+<span class="inlineCode"><code>math</code></span> or <span class="inlineCode"><code>dmath</code></span> elements themselves. Scriba itself
 implements some of these environments as elements, so that they can
 interact with its built-in numbering and referencing
 capabilities. This means that we can refer to
-<a class="ref" href="#mjx-eqn-displayFormulaExample"><span class="prefix">eqn.</span> <span class="number">1.4.1</span></a> with <code>{ref@displayFormulaExample}</code>
+<a class="ref" href="#mjx-eqn-displayFormulaExample"><span class="prefix">eqn.</span> <span class="number">1.4.1</span></a> with <span class="inlineCode"><code>{ref@displayFormulaExample}</code></span>
 and have the reference be rendered properly.</p><p>The examples of formulas above were entered into the source like so:</p><div class="codeBlock"><pre><code>Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
 {dmath {id|displayFormulaExample} `
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
@@ -103,29 +103,29 @@ are available, among …</code></pre></div><p>Since TeX syntax is heavily relian
 often be necessary for you to escape them in some way when entering
 math in that notation. In the inline example math example above, an
 <em>inline verbatim body</em> was used for this purpose. Like block
-verbatim content, such a body starts with a <code>`</code> character instead
-of a <code>|</code>. Inline verbatim content runs until it encounters a
-<code>`}</code>, and inside it any double-backtick <code>``</code> sequences
+verbatim content, such a body starts with a <span class="inlineCode"><code>`</code></span> character instead
+of a <span class="inlineCode"><code>|</code></span>. Inline verbatim content runs until it encounters a
+<span class="inlineCode"><code>`}</code></span>, and inside it any double-backtick <span class="inlineCode"><code>``</code></span> sequences
 collapse to a single backtick. The effect of this is to disable any
 other special character processing, even comments, so that the syntax
 of other languages can be included into scriba without too much
 overhead. This is only a syntactic convenience in this case; the
 inline example above could equally well have been written
-<code>{math|f(x, y) = x^\{y+6\}}</code>.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.5<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>The overall document structure<span class="after"></span></span></span></h3><div class="sectionContent"><p>Will contain a description of documents as a whole.</p></div></section></div></section><section><h2><span class="title"><span class="titlePrefix"><span class="before"></span>Section<span class="after"></span></span> <span class="number"><span class="before"></span>2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Element reference<span class="after"></span></span></span></h2><div class="sectionContent"><section><h3><span class="title"><span class="number"><span class="before"></span>2.1<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>gathered<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>gathered</code> element represents a series of lines of
-formulas. It contains a sequence of <code>line</code> elements, each with
-optional <code>id</code>, <code>n</code>, and <code>noNum</code> attributes and LaTeX
+<span class="inlineCode"><code>{math|f(x, y) = x^\{y+6\}}</code></span>.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.5<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>The overall document structure<span class="after"></span></span></span></h3><div class="sectionContent"><p>Will contain a description of documents as a whole.</p></div></section></div></section><section><h2><span class="title"><span class="titlePrefix"><span class="before"></span>Section<span class="after"></span></span> <span class="number"><span class="before"></span>2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Element reference<span class="after"></span></span></span></h2><div class="sectionContent"><section><h3><span class="title"><span class="number"><span class="before"></span>2.1<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>gathered<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <span class="inlineCode"><code>gathered</code></span> element represents a series of lines of
+formulas. It contains a sequence of <span class="inlineCode"><code>line</code></span> elements, each with
+optional <span class="inlineCode"><code>id</code></span>, <span class="inlineCode"><code>n</code></span>, and <span class="inlineCode"><code>noNum</code></span> attributes and LaTeX
 math content. This element is inline.</p><p>An example of some gathered equations
 <span class="math display">\[\begin{gather*}2+2=4\tag{2.1.1}\\
 4+4=8\\
 8+8=16\tag{2.1.2}\label{thirdGathered}\end{gather*}\]</span>
-inside a paragraph, with a reference (<a class="ref" href="#mjx-eqn-thirdGathered"><span class="prefix">eqn.</span> <span class="number">2.1.2</span></a>) to one of them.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>formalBlock<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>formalBlock</code> element represents a formal part of the
-document, with optional <code>title</code>, <code>conclusion</code>, and
-<code>type</code> attributes. It can contain block or inline content. It can
+inside a paragraph, with a reference (<a class="ref" href="#mjx-eqn-thirdGathered"><span class="prefix">eqn.</span> <span class="number">2.1.2</span></a>) to one of them.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>formalBlock<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <span class="inlineCode"><code>formalBlock</code></span> element represents a formal part of the
+document, with optional <span class="inlineCode"><code>title</code></span>, <span class="inlineCode"><code>conclusion</code></span>, and
+<span class="inlineCode"><code>type</code></span> attributes. It can contain block or inline content. It can
 be used to represent theorems, propositions, exercises, proofs, and
-other amsthm-style elements.</p><p>Some examples:</p><div class="formalBlock lemma"><span class="title"><span class="number"><span class="before"></span>2.1<span class="after">.</span></span> <span class="titlePrefix"><span class="before"></span>Lemma<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">A preliminary lemma.</span></div><div class="formalBlock theorem"><span class="title"><span class="titlePrefix"><span class="before"></span>Theorem<span class="after"></span></span> <span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleNote"><span class="before">(</span>an interesting one<span class="after">)</span></span></span><span class="titleSep">. </span><span class="body">The statement of some theorem of interest.</span></div><div class="formalBlock proof"><span class="title"><span class="titlePrefix"><span class="before"></span>Proof<span class="after"></span></span> <span class="titleNote"><span class="before"></span>of the interesting theorem<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">Details of the proof.</span><span class="conclusion"> ∎</span></div></div></section><section id="elem-olist"><h3><span class="title"><span class="number"><span class="before"></span>2.3<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>olist<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
-a whitespace-separated list of <code>item</code> elements.</p><p>An example:</p><ol><li><div class="body"><p>Some preamble.</p><ol><li id="elem-ref-nest"><span class="body">First element in first element</span></li></ol></div></li><li><span class="body">Second element</span></li><li><span class="body">Third element</span></li></ol><p>The items of a list can be referenced, like this
-(<a class="ref" href="#elem-ref-nest"><span class="prefix">item</span> <span class="number">1.a</span></a>) reference to one of the items above.</p></div></section><section id="elem-ref"><h3><span class="title"><span class="number"><span class="before"></span>2.4<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>ref<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>ref</code> inline element represents a reference to another
+other amsthm-style elements.</p><p>Some examples:</p><div class="formalBlock lemma"><span class="title"><span class="number"><span class="before"></span>2.1<span class="after">.</span></span> <span class="titlePrefix"><span class="before"></span>Lemma<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">A preliminary lemma.</span></div><div class="formalBlock theorem"><span class="title"><span class="titlePrefix"><span class="before"></span>Theorem<span class="after"></span></span> <span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleNote"><span class="before">(</span>an interesting one<span class="after">)</span></span></span><span class="titleSep">. </span><span class="body">The statement of some theorem of interest.</span></div><div class="formalBlock proof"><span class="title"><span class="titlePrefix"><span class="before"></span>Proof<span class="after"></span></span> <span class="titleNote"><span class="before"></span>of the interesting theorem<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">Details of the proof.</span><span class="conclusion"> ∎</span></div></div></section><section id="elem-olist"><h3><span class="title"><span class="number"><span class="before"></span>2.3<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>olist<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <span class="inlineCode"><code>olist</code></span> block element represents an ordered list. It contains
+a whitespace-separated list of <span class="inlineCode"><code>item</code></span> elements.</p><p>An example:</p><ol><li><div class="body"><p>Some preamble.</p><ol><li id="elem-ref-nest"><span class="body">First element in first element</span></li></ol></div></li><li><span class="body">Second element</span></li><li><span class="body">Third element</span></li></ol><p>The items of a list can be referenced, like this
+(<a class="ref" href="#elem-ref-nest"><span class="prefix">item</span> <span class="number">1.a</span></a>) reference to one of the items above.</p></div></section><section id="elem-ref"><h3><span class="title"><span class="number"><span class="before"></span>2.4<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>ref<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <span class="inlineCode"><code>ref</code></span> inline element represents a reference to another
 element. It takes a single argument, the identifier of another element
 in the document. In future, it may be able to reference elements
 across documents, and to take multiple identifier arguments.</p><p>For example, we can reference <a class="ref" href="#elem-ref"><span class="prefix">§</span><span class="number">2.4</span></a>, this section, using
-<code>{ref@elem-ref}</code>.</p></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
+<span class="inlineCode"><code>{ref@elem-ref}</code></span>.</p></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
