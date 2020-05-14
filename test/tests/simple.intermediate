@@ -1021,6 +1021,88 @@ NodeElem
                                                       }
                                                 ]
                                             }
+                                      , NodeElem
+                                          Element
+                                            { eType = Nothing
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "simple.scb"
+                                                        , sourceLine = Pos 84
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsPara
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 1
+                                                      }
+                                                    "A "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 40
+                                                      }
+                                                    " test of comments"
+                                                ]
+                                            }
+                                      , NodeElem
+                                          Element
+                                            { eType = Just "commentTest"
+                                            , eMeta =
+                                                Meta
+                                                  { loc =
+                                                      SourcePos
+                                                        { sourceName = "simple.scb"
+                                                        , sourceLine = Pos 86
+                                                        , sourceColumn = Pos 1
+                                                        }
+                                                  , sourcePres = AsBlock
+                                                  , metaAttrs = fromList []
+                                                  , metaArgs = []
+                                                  }
+                                            , eBody =
+                                                [ NodeElem
+                                                    Element
+                                                      { eType = Nothing
+                                                      , eMeta =
+                                                          Meta
+                                                            { loc =
+                                                                SourcePos
+                                                                  { sourceName = "simple.scb"
+                                                                  , sourceLine = Pos 88
+                                                                  , sourceColumn = Pos 3
+                                                                  }
+                                                            , sourcePres = AsPara
+                                                            , metaAttrs = fromList []
+                                                            , metaArgs = []
+                                                            }
+                                                      , eBody =
+                                                          [ NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 88
+                                                                , sourceColumn = Pos 3
+                                                                }
+                                                              "And "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 90
+                                                                , sourceColumn = Pos 22
+                                                                }
+                                                              " more. "
+                                                          ]
+                                                      }
+                                                ]
+                                            }
                                       ]
                                   }
                             ]

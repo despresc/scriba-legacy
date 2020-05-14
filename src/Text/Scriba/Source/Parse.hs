@@ -398,8 +398,9 @@ pElementArgsStart = "@" <?> "start of arguments"
 -- TODO: should probably accumulate with a snoc list, or a text
 -- builder. That might be true of the plain text parsers as well,
 -- honestly.
--- TODO: rethink comments in the presence of indentation sensitivity.
-pCommentBody :: Parser Text
+-- TODO: rethink comments in the presence of indentation
+-- sensitivity. If they're just a form of ignored inline node then
+-- they should be parsed as such.
 pCommentBody = T.concat <$> go 0
  where
   insigChar =

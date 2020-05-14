@@ -887,4 +887,77 @@ Doc
                      ]
                }
          ])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 84
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 1
+               }
+             "A "
+         , InlineComment
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 3
+               }
+             "comment that shouldn't be visible"
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 40
+               }
+             " test of comments"
+         ])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 86
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "commentTest"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args = []
+           , content =
+               BlockBlocks
+                 [ BlockPar
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 88
+                       , sourceColumn = Pos 3
+                       }
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 88
+                           , sourceColumn = Pos 3
+                           }
+                         "And "
+                     , InlineComment
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 88
+                           , sourceColumn = Pos 7
+                           }
+                         " a test of comments\n\n  in indented text "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 90
+                           , sourceColumn = Pos 22
+                           }
+                         " more. "
+                     ]
+                 ]
+           })
   ]

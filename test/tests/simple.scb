@@ -80,3 +80,11 @@ content`}.
 And more.
 
 Insignificant \backslash and a \\{elem|significant one} and {elem@more\{|test}
+
+A {%comment that shouldn't be visible%} test of comments
+
+& commentTest
+  ---
+  And {% a test of comments
+
+  in indented text %} more. 
