@@ -88,12 +88,12 @@ tests = testGroup
             "simple.scb"
             "simple.intermediate"
   , testMarkup "manual parses into internal markup"
-               "./doc/manual.scb"
+               "./doc/manual/manual.scb"
                "./test/tests/manual.markup"
   , testRenderingWith (HT.renderHtml . SM.writeStandalone)
                       "manual renders to html"
-                      "./doc/manual.scb"
-                      "./test/tests/manual.html"
+                      "./doc/manual/manual.scb"
+                      "./doc/manual/manual.html"
   ]
 
 main :: IO ()

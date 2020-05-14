@@ -789,7 +789,7 @@ renderStandalone d@(Doc dm _ _ _) = do
         Html.! HtmlA.src
                  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
         $      ""
-      Html.link Html.! HtmlA.href "../../doc/manual.css" Html.! HtmlA.rel
+      Html.link Html.! HtmlA.href "./manual.css" Html.! HtmlA.rel
         "stylesheet"
     Html.body d'
 
