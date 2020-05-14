@@ -161,7 +161,7 @@ shown in the following code sample:
     ```
     An {emph|interesting} proposition.
 
-  & olist
+  &olist
     ---
     &item|First item
     &item|Second item
@@ -200,7 +200,6 @@ interact with its built-in numbering and referencing
 capabilities. This means that we can refer to
 {ref@displayFormulaExample} with {code`{ref@displayFormulaExample}`}
 and have the reference be rendered properly.
-
 
 The examples of formulas above were entered into the source like so:
 
