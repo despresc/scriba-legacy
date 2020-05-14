@@ -21,10 +21,16 @@ section.scribaDoc {
     width: 70%;
 }
 
-.codeBlock {
-    margin-left: auto;
-    margin-right: auto;
-    width: 40em;
+h1 {
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
 }
 
 code {
