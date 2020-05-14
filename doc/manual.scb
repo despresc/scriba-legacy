@@ -1,109 +1,62 @@
-{scriba
-{title|The scriba markup language and document system}
-{type|article}
-{formula
-  {numbering {relative@subsection}
-             {style@decimal}}
-  {ref {prefix|eqn.}
-       {sep| }}}
-{lists
-  {_olist
-    {style@decimal decimal decimal decimal}}}
-{formalBlocks
-  {theorem
-    {title
-      {prefix|Theorem}
-      {note {before|(}
-            {after|)}}
-      {n {after|.}}}
-    {titleSep|. }
-    {numbering {relative@section}
-               {style@decimal}}}
-  {lemma
-    {title
-      {numberFirst}
-      {prefix|Lemma}
-	{n {after|.}}}
-    {titleSep|. }
-    {numbering {share@theorem}
-               {style@decimal}}}
-  {proof
-    {title
-      {prefix|Proof}}
-    {titleSep|. }
-    {conclusion|∎}}}
-{sections
-  {section
-    {title
-      {prefix|Section}
-      {n {after|.}}}
-    {numbering {absolute}
-               {style@decimal}}}
-  {subsection
-    {title
-      {n {after|.}}}
-    {numbering {relative@section}
-               {style@decimal}}
-    {ref
-      {prefix|§}}}}}
-
-{% TODO:
-
-- Gather TODOs that pertain to design from the subsections and put
-  them here.
-
-- Rework the bits of these sections that talk about permissible
-  content. They're too technical for what should be a gentler
-  discussion of the language, I think.
-
-A disussion of macros and aliases:
-
-Okay. Macros and aliases.
-
-Say I want to have a "theorem" block. It's a fancy type of
-Formal. It's numbered in some way. There might be a `comment` or a
-`name` attribute in it, and the title ought to be rendered as
-
-Theorem <number> <if name then "(<name>)">
-
-possibly with a period at the end, though that might be considered a
-style thing.
-
-How is that reflected in the internal representation?
-
-Do we wrap it in a (CustomBlock "theorem"), maybe? Or maybe formal
-blocks have an optional `type` attribute associated with them, so that
-can be put there, and the custom theorem block can instead be a user
-function.
-
-Things that can be numbered and referenced ought to have some kind of
-a type, at least, for numbering purposes. Even a notional or built-in
-one, like "equation".
-
-If these have a type, what about elements that can appear as an inline
-or a block? I'm thinking of Gauss' inline propositions, which are
-unnumbered. For now, that could be covered by an inline "formal
-statement" element, I suppose, that would be untyped. Otherwise we
-could have a unified "formal statement" kind of element, but we'd need
-to be able to control numbering on such things, notably to disable
-their numbering if they appear inline.
-
-Something like formalStmt?
-
-Okay, but what about figures? I suppose they can have types too, just
-like the rest. Maybe everything has an implicit type at the outset?
-Figures have a default "figure" type for the purposes of numbering.
-Now, figures have content, a caption, and a caption title, but this
-can be handled like formal blocks, with some kind of template thing.
-
-Of course we still need to develop a numbering specification system,
-but that can wait, perhaps.
-
-Tables can have captions. Not sure what to do about that. Obviously
-people would expect to have their tables say "Table 6: ..." by
-default, not "Figure 6: ..."
-
-%}
+&scriba
+  &title|The scriba markup language and document system
+  &type|article
+  &formula
+   &numbering
+     &relative@subsection
+     &style@decimal
+   &ref
+     &prefix|eqn.
+     &sep|{` `}
+  &lists
+    &olist
+      &style@decimal decimal decimal decimal
+  &formalBlocks
+    &theorem
+      &title
+        &prefix|Theorem
+        &note
+          &before|(
+          &after|)
+        &n
+          &after|.
+      &titleSep|{`. `}
+      &numbering
+        &relative@section
+        &style@decimal
+    &lemma
+      &title
+        &numberFirst
+        &prefix|Lemma
+        &n
+          &after|.
+      &titleSep|{`. `}
+      &numbering
+        &share@theorem
+        &style@decimal
+    &proof
+      &title
+        &prefix|Proof
+      &titleSep|{`. `}
+      &conclusion| ∎
+  &sections
+    &section
+      &title
+        &prefix|Section
+        &n
+          &after|.
+      &numbering
+        &absolute
+        &style@decimal
+    &subsection
+      &title
+        &n
+          &after|.
+      &numbering
+        &relative@section
+        &style@decimal
+      &ref
+        &prefix|§
 
 Scriba is a plain text markup language emphasizing extensibility,
 clarity, and ease of use. It is also a compiler, taking source scriba
@@ -112,9 +65,11 @@ format includes flexible markup constructs designed to represent a
 range of historical scientific material, but these can be used equally
 well for new publications.
 
-# section {title|An introduction to the language}
+# section
+  & title|An introduction to the language
 
-## subsection {title|Paragraphs}
+## subsection
+  & title|Paragraphs
 
 The bulk of your document will most likely be paragraphs, sequences of
 normal text and marked-up content representing a single idea in your
@@ -122,7 +77,9 @@ writing. A paragraph in scriba is a type of {emph|block}, and contains
 {emph|paragraph text} and {emph|elements}. Two sample paragraphs are
 given below:
 
-&{codeBlock {language|scriba}`
+& codeBlock
+  & language|scriba
+  ```
   There was nothing so very remarkable in that; nor did Alice think
   it so very much out of the way to hear the Rabbit say to itself,
   {q|Oh dear! Oh dear! I shall be late!} (when she thought it over
@@ -138,38 +95,36 @@ given below:
 
   In another moment down went Alice after it, never once considering
   how in the world she was to get out again.
-`}
 
 Plain paragraph text is any span of unicode characters other than
 {code`\`}, {code`{`}, or {code`}`}, with the additional restriction
 that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
 can be represented in paragraph text using the sequences {code`\\`},
-{code`\{`}, and {code`\}`}, should you need them in text. {%TODO:
-mention paragraphs not starting with &%}
+{code`\{`}, and {code`\}`}, should you need them in text.
 
 The other feature of paragraph markup is {emph|inline elements}, which
 are used to give further meaning to your text and to control scriba's
-many features.{%TODO: link here when this section is writtten%} Simple
-elements start with {code`{tag|`} and end with {code`}`}. The
-paragraphs above have a {code`q`} element, representing quoted text
-and likely to be rendered between quotation marks, and an {code`emph`}
-element, representing emphasized text and likely to be rendered in
-italic type.
+many features. Simple elements start with {code`{tag|`} and end with
+{code`}`}. The paragraphs above have a {code`q`} element, representing
+quoted text and likely to be rendered between quotation marks, and an
+{code`emph`} element, representing emphasized text and likely to be
+rendered in italic type.
 
-## subsection {title|Sections}
+## subsection
+  & title|Sections
 
 The content of your document can be organized into {emph|sections},
 representing self-contained units of discussion. These have types,
 titles, and a body of blocks and subsections. Sections look like this:
 
-&{codeBlock {language|scriba} `
+& codeBlock
+  ```
   # {title|An introduction to the language}
 
   ## {title|Paragraphs}
 
   The bulk of your document …
-`}
 
 The first component of a section is its {emph|header}. The section
 header starts with {code`# sectionType`}, the number of consecutive
@@ -190,23 +145,26 @@ titles for the table of contents or page header, and so on. The
 attributes of sections can be listed on multiple consecutive lines, as
 long as no blank line occurs between them.
 
-## subsection {title|Blocks}
+## subsection
+  & title|Blocks
 
 The other type of syntactic form in scriba is the {emph|block}
 element. Blocks group their content and give it extra meaning, and can
 appear wherever paragraphs or section headers can. Some blocks are
 shown in the following code sample:
 
-&{codeBlock {language|scriba} `
-  &{codeBlock {language|scriba} `
+&codeBlock
+  &language|scriba
+  ```
+  &codeBlock
+    &language|scriba
+    ```
     An {emph|interesting} proposition.
-  `}
 
-  &{olist|
-  {item|First item}
-  {item|Second item}
-  }
-`}
+  &olist
+    ---
+    &item|First item
+    &item|Second item
 
 Blocks are written like inline elements, complete with attributes and
 arguments, except they are preceded by a {code`&`}. They differ from
@@ -221,7 +179,8 @@ sequence of blocks and paragraphs, like section content without
 section headers. Finally, inline content is signalled by a {code||}
 and can contain text and inline elements.
 
-## subsection {title|Mathematics}
+## subsection
+  & title|Mathematics
 
 Formal mathematical content can be included in a document with
 particular inline elements. Inline formulas like {math`f(x, y) =
@@ -242,10 +201,11 @@ capabilities. This means that we can refer to
 {ref@displayFormulaExample} with {code`{ref@displayFormulaExample}`}
 and have the reference be rendered properly.
 
-
 The examples of formulas above were entered into the source like so:
 
-&{codeBlock {language|scriba} `
+&codeBlock
+  &language|scriba
+  ```
   Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
   {dmath {id|displayFormulaExample} `
     \mathbf{B}(P) = \frac{\mu_0}{4\pi}
@@ -253,7 +213,6 @@ The examples of formulas above were entered into the source like so:
     \int\frac{d\boldsymbol{l}\times\hat{r}'}{r'^2}
   `}
   are available, among …
-`}
 
 Since TeX syntax is heavily reliant on braces and backlashes, it will
 often be necessary for you to escape them in some way when entering
@@ -269,58 +228,16 @@ overhead. This is only a syntactic convenience in this case; the
 inline example above could equally well have been written
 {code`{math|f(x, y) = x^\{y+6\}}`}.
 
-{%TODO:
-
-- link to amsmath, sections on numbering and referencing, maybe
-  whatever manual section discusses mathematics in more detail.
-
-- link to the block section's discussion of block verbatim content
-
-- some kind of codeFigure custom block?
-
-- Maybe have some kind of fancy rendering of TeX?
-
-- Move the inline verbatim discussion to a section on inline elements?
-  The mention of the start-of-paragraph & issue could be included
-  there too.
-
-%}
-
-{%TODO: Notes on amsthm-style formal blocks %}
-
-## subsection {title|The overall document structure}
+## subsection
+  &title|The overall document structure
 
 Will contain a description of documents as a whole.
 
-# section {title|Element reference}
+# section
+  &title|Element reference
 
-{% TODO:
-
-- Might be nice to have a precis here, once we have those.
-
-- Should this entries be definition lists? Not sure exactly how to
-  represent a data sheet.
-
-- Should have examples, indicate how everything will get processed and
-  rendered, and indicate the permitted locations of elements.
-
-- The examples should be in a figure block. Possibly a two-part block,
-  with the code and the rendered output.
-
-- Perhaps this should be an appendix?
-
-- This might make an interesting macro/template test section, since a
-  lot of this content is very regular. Automatic importing of the spec
-  that gets generated from the node parsers and putting that at the
-  end of the section, that sort of thing. There could be a custom
-  element that takes an element name and inserts that name
-  code-formatted and with a link to to the relevant element reference
-  section. Could we express a macro for the example/code sample figure
-  that I want in each section?
-
-%}
-
-## subsection {title|gathered}
+## subsection
+  &title|gathered
 
 The {code|gathered} element represents a series of lines of
 formulas. It contains a sequence of {code|line} elements, each with
@@ -338,7 +255,8 @@ An example of some gathered equations
 }
 inside a paragraph, with a reference ({ref@thirdGathered}) to one of them.
 
-## subsection {title|formalBlock}
+## subsection
+  &title|formalBlock
 
 The {code|formalBlock} element represents a formal part of the
 document, with optional {code|title}, {code|conclusion}, and
@@ -346,53 +264,50 @@ document, with optional {code|title}, {code|conclusion}, and
 be used to represent theorems, propositions, exercises, proofs, and
 other amsthm-style elements.
 
-{% TODO: Title templating might be nice here. Sort of unfortunate that
-the period and space need to be added manually. Though that can be
-fixed by custom CSS, which is also not supported. %}
-
 Some examples:
 
-&{formalBlock
-   {type|lemma}
-|A preliminary lemma.
-}
+&formalBlock
+  &type|lemma
+  |A preliminary lemma.
 
-&{formalBlock
-   {type|theorem}
-   {titleNote|an interesting one}
-|The statement of some theorem of interest.
-}
+&formalBlock
+  &type|theorem
+  &titleNote|an interesting one
+  |The statement of some theorem of interest.
 
-&{formalBlock
-    {type|proof}
-    {titleNote|of the interesting theorem}
-|Details of the proof
-}
+& formalBlock
+  &type|proof
+  &titleNote|of the interesting theorem
+  |Details of the proof.
 
-## subsection {id|elem-olist} {title|olist}
+##subsection
+  &id|elem-olist
+  &title|olist
 
 The {code|olist} block element represents an ordered list. It contains
 a whitespace-separated list of {code|item} elements.
 
 An example:
 
-&{olist&
+&olist
+  ---
+  &item
+    ---
+    Some preamble.
 
-&{item&
-  Some preamble.
-
-  &{olist|
-    {item {id|elem-ref-nest}|First element in first element}
-  }
-}
-&{item|Second element}
-&{item|Third element}
-}
+    &olist
+      ---
+      &item {id|elem-ref-nest}
+        |First element in first element
+  &item|Second element
+  &item|Third element
 
 The items of a list can be referenced, like this
 ({ref@elem-ref-nest}) reference to one of the items above.
 
-## subsection {id|elem-ref} {title|ref}
+## subsection
+  & id|elem-ref
+  & title|ref
 
 The {code|ref} inline element represents a reference to another
 element. It takes a single argument, the identifier of another element

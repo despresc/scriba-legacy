@@ -30,20 +30,13 @@ Doc
            , args = []
            , content =
                BlockInlines
-                 [ InlineText
-                     SourcePos
-                       { sourceName = "bayes.scb"
-                       , sourceLine = Pos 3
-                       , sourceColumn = Pos 11
-                       }
-                     "\n"
-                 , InlineBraced
+                 [ InlineBraced
                      Element
                        { srcPos =
                            SourcePos
                              { sourceName = "bayes.scb"
                              , sourceLine = Pos 4
-                             , sourceColumn = Pos 1
+                             , sourceColumn = Pos 4
                              }
                        , etype = Just "physPage"
                        , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -54,7 +47,7 @@ Doc
                                  SourcePos
                                    { sourceName = "bayes.scb"
                                    , sourceLine = Pos 4
-                                   , sourceColumn = Pos 11
+                                   , sourceColumn = Pos 14
                                    }
                                  "376"
                              ]
@@ -63,7 +56,7 @@ Doc
                      SourcePos
                        { sourceName = "bayes.scb"
                        , sourceLine = Pos 4
-                       , sourceColumn = Pos 15
+                       , sourceColumn = Pos 18
                        }
                      " "
                  , InlineBraced
@@ -72,7 +65,7 @@ Doc
                            SourcePos
                              { sourceName = "bayes.scb"
                              , sourceLine = Pos 4
-                             , sourceColumn = Pos 16
+                             , sourceColumn = Pos 19
                              }
                        , etype = Just "emph"
                        , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -83,7 +76,7 @@ Doc
                                  SourcePos
                                    { sourceName = "bayes.scb"
                                    , sourceLine = Pos 4
-                                   , sourceColumn = Pos 22
+                                   , sourceColumn = Pos 25
                                    }
                                  "Given"
                              ]
@@ -92,16 +85,16 @@ Doc
                      SourcePos
                        { sourceName = "bayes.scb"
                        , sourceLine = Pos 4
-                       , sourceColumn = Pos 28
+                       , sourceColumn = Pos 31
                        }
-                     " the number of times in which an unknown event has\nhappened and failed: "
+                     " the number of times in which an unknown\nevent has happened and failed: "
                  , InlineBraced
                      Element
                        { srcPos =
                            SourcePos
                              { sourceName = "bayes.scb"
                              , sourceLine = Pos 5
-                             , sourceColumn = Pos 22
+                             , sourceColumn = Pos 35
                              }
                        , etype = Just "emph"
                        , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -112,7 +105,7 @@ Doc
                                  SourcePos
                                    { sourceName = "bayes.scb"
                                    , sourceLine = Pos 5
-                                   , sourceColumn = Pos 28
+                                   , sourceColumn = Pos 41
                                    }
                                  "Required"
                              ]
@@ -121,9 +114,9 @@ Doc
                      SourcePos
                        { sourceName = "bayes.scb"
                        , sourceLine = Pos 5
-                       , sourceColumn = Pos 37
+                       , sourceColumn = Pos 50
                        }
-                     " the chance that the probability of its happening\nin a single trial lies somewhere between any two degrees of probability that can\nbe named.\n"
+                     " the chance that the\nprobability of its happening in a single trial lies somewhere\nbetween any two degrees of probability that can be named."
                  ]
            })
   , SecHeaderNode
@@ -131,29 +124,30 @@ Doc
          2
          SourcePos
            { sourceName = "bayes.scb"
-           , sourceLine = Pos 10
+           , sourceLine = Pos 9
            , sourceColumn = Pos 1
            }
          (Just "section")
          Attrs
-           { inlineAttrs =
+           { inlineAttrs = []
+           , blockAttrs =
                [ Element
                    { srcPos =
                        SourcePos
                          { sourceName = "bayes.scb"
                          , sourceLine = Pos 10
-                         , sourceColumn = Pos 12
+                         , sourceColumn = Pos 3
                          }
                    , etype = "number"
                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                    , args = []
                    , content =
-                       InlineSequence
+                       BlockInlines
                          [ InlineText
                              SourcePos
                                { sourceName = "bayes.scb"
                                , sourceLine = Pos 10
-                               , sourceColumn = Pos 20
+                               , sourceColumn = Pos 12
                                }
                              "I"
                          ]
@@ -162,25 +156,24 @@ Doc
                    { srcPos =
                        SourcePos
                          { sourceName = "bayes.scb"
-                         , sourceLine = Pos 10
-                         , sourceColumn = Pos 23
+                         , sourceLine = Pos 11
+                         , sourceColumn = Pos 3
                          }
                    , etype = "fullTitle"
                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                    , args = []
                    , content =
-                       InlineSequence
+                       BlockInlines
                          [ InlineText
                              SourcePos
                                { sourceName = "bayes.scb"
-                               , sourceLine = Pos 10
-                               , sourceColumn = Pos 34
+                               , sourceLine = Pos 11
+                               , sourceColumn = Pos 15
                                }
                              "Section I"
                          ]
                    }
                ]
-           , blockAttrs = []
            }
          [])
   , SecBlock
@@ -189,7 +182,7 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "bayes.scb"
-                 , sourceLine = Pos 12
+                 , sourceLine = Pos 13
                  , sourceColumn = Pos 1
                  }
            , etype = Just "definition"
@@ -202,8 +195,8 @@ Doc
                        { srcPos =
                            SourcePos
                              { sourceName = "bayes.scb"
-                             , sourceLine = Pos 13
-                             , sourceColumn = Pos 1
+                             , sourceLine = Pos 15
+                             , sourceColumn = Pos 3
                              }
                        , etype = Just "olist"
                        , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -215,8 +208,8 @@ Doc
                                    { srcPos =
                                        SourcePos
                                          { sourceName = "bayes.scb"
-                                         , sourceLine = Pos 14
-                                         , sourceColumn = Pos 1
+                                         , sourceLine = Pos 17
+                                         , sourceColumn = Pos 5
                                          }
                                    , etype = Just "li"
                                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -226,8 +219,8 @@ Doc
                                          [ InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 14
-                                               , sourceColumn = Pos 6
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 8
                                                }
                                              "Several events are "
                                          , InlineBraced
@@ -235,8 +228,8 @@ Doc
                                                { srcPos =
                                                    SourcePos
                                                      { sourceName = "bayes.scb"
-                                                     , sourceLine = Pos 14
-                                                     , sourceColumn = Pos 25
+                                                     , sourceLine = Pos 18
+                                                     , sourceColumn = Pos 27
                                                      }
                                                , etype = Just "emph"
                                                , attrs =
@@ -247,8 +240,8 @@ Doc
                                                      [ InlineText
                                                          SourcePos
                                                            { sourceName = "bayes.scb"
-                                                           , sourceLine = Pos 14
-                                                           , sourceColumn = Pos 31
+                                                           , sourceLine = Pos 18
+                                                           , sourceColumn = Pos 33
                                                            }
                                                          "inconsistent"
                                                      ]
@@ -256,62 +249,10 @@ Doc
                                          , InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 14
-                                               , sourceColumn = Pos 44
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 46
                                                }
-                                             ", when if one of them happens, none of the\nrest can."
-                                         ]
-                                   }
-                             , BlockBlock
-                                 Element
-                                   { srcPos =
-                                       SourcePos
-                                         { sourceName = "bayes.scb"
-                                         , sourceLine = Pos 17
-                                         , sourceColumn = Pos 1
-                                         }
-                                   , etype = Just "li"
-                                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                                   , args = []
-                                   , content =
-                                       BlockInlines
-                                         [ InlineText
-                                             SourcePos
-                                               { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 17
-                                               , sourceColumn = Pos 6
-                                               }
-                                             "Two events are "
-                                         , InlineBraced
-                                             Element
-                                               { srcPos =
-                                                   SourcePos
-                                                     { sourceName = "bayes.scb"
-                                                     , sourceLine = Pos 17
-                                                     , sourceColumn = Pos 21
-                                                     }
-                                               , etype = Just "emph"
-                                               , attrs =
-                                                   Attrs { inlineAttrs = [] , blockAttrs = [] }
-                                               , args = []
-                                               , content =
-                                                   InlineSequence
-                                                     [ InlineText
-                                                         SourcePos
-                                                           { sourceName = "bayes.scb"
-                                                           , sourceLine = Pos 17
-                                                           , sourceColumn = Pos 27
-                                                           }
-                                                         "contrary"
-                                                     ]
-                                               }
-                                         , InlineText
-                                             SourcePos
-                                               { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 17
-                                               , sourceColumn = Pos 36
-                                               }
-                                             " when one, or other of them must; and both together\ncannot happen."
+                                             ", when if one of them\nhappens, none of the rest can."
                                          ]
                                    }
                              , BlockBlock
@@ -320,7 +261,7 @@ Doc
                                        SourcePos
                                          { sourceName = "bayes.scb"
                                          , sourceLine = Pos 20
-                                         , sourceColumn = Pos 1
+                                         , sourceColumn = Pos 5
                                          }
                                    , etype = Just "li"
                                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -330,17 +271,17 @@ Doc
                                          [ InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 20
-                                               , sourceColumn = Pos 6
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 8
                                                }
-                                             "An event is said to "
+                                             "Two events are "
                                          , InlineBraced
                                              Element
                                                { srcPos =
                                                    SourcePos
                                                      { sourceName = "bayes.scb"
-                                                     , sourceLine = Pos 20
-                                                     , sourceColumn = Pos 26
+                                                     , sourceLine = Pos 21
+                                                     , sourceColumn = Pos 23
                                                      }
                                                , etype = Just "emph"
                                                , attrs =
@@ -351,19 +292,19 @@ Doc
                                                      [ InlineText
                                                          SourcePos
                                                            { sourceName = "bayes.scb"
-                                                           , sourceLine = Pos 20
-                                                           , sourceColumn = Pos 32
+                                                           , sourceLine = Pos 21
+                                                           , sourceColumn = Pos 29
                                                            }
-                                                         "fail"
+                                                         "contrary"
                                                      ]
                                                }
                                          , InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 20
-                                               , sourceColumn = Pos 37
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 38
                                                }
-                                             ", when it cannot happen; or, which comes to the same\nthing, when its contrary has happened."
+                                             " when one, or other of them must;\nand both together cannot happen."
                                          ]
                                    }
                              , BlockBlock
@@ -372,7 +313,7 @@ Doc
                                        SourcePos
                                          { sourceName = "bayes.scb"
                                          , sourceLine = Pos 23
-                                         , sourceColumn = Pos 1
+                                         , sourceColumn = Pos 5
                                          }
                                    , etype = Just "li"
                                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -382,39 +323,17 @@ Doc
                                          [ InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 23
-                                               , sourceColumn = Pos 6
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 8
                                                }
-                                             "An event is said to be determined when it has either happened or failed."
-                                         ]
-                                   }
-                             , BlockBlock
-                                 Element
-                                   { srcPos =
-                                       SourcePos
-                                         { sourceName = "bayes.scb"
-                                         , sourceLine = Pos 25
-                                         , sourceColumn = Pos 1
-                                         }
-                                   , etype = Just "li"
-                                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                                   , args = []
-                                   , content =
-                                       BlockInlines
-                                         [ InlineText
-                                             SourcePos
-                                               { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 25
-                                               , sourceColumn = Pos 6
-                                               }
-                                             "The "
+                                             "An event is said to "
                                          , InlineBraced
                                              Element
                                                { srcPos =
                                                    SourcePos
                                                      { sourceName = "bayes.scb"
-                                                     , sourceLine = Pos 25
-                                                     , sourceColumn = Pos 10
+                                                     , sourceLine = Pos 24
+                                                     , sourceColumn = Pos 28
                                                      }
                                                , etype = Just "emph"
                                                , attrs =
@@ -425,8 +344,82 @@ Doc
                                                      [ InlineText
                                                          SourcePos
                                                            { sourceName = "bayes.scb"
-                                                           , sourceLine = Pos 25
-                                                           , sourceColumn = Pos 16
+                                                           , sourceLine = Pos 24
+                                                           , sourceColumn = Pos 34
+                                                           }
+                                                         "fail"
+                                                     ]
+                                               }
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 39
+                                               }
+                                             ", when it cannot happen; or,\nwhich comes to the same thing, when its contrary has happened."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.scb"
+                                         , sourceLine = Pos 26
+                                         , sourceColumn = Pos 5
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "An event is said to be determined when it has either happened\nor failed."
+                                         ]
+                                   }
+                             , BlockBlock
+                                 Element
+                                   { srcPos =
+                                       SourcePos
+                                         { sourceName = "bayes.scb"
+                                         , sourceLine = Pos 29
+                                         , sourceColumn = Pos 5
+                                         }
+                                   , etype = Just "li"
+                                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                                   , args = []
+                                   , content =
+                                       BlockInlines
+                                         [ InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "The "
+                                         , InlineBraced
+                                             Element
+                                               { srcPos =
+                                                   SourcePos
+                                                     { sourceName = "bayes.scb"
+                                                     , sourceLine = Pos 30
+                                                     , sourceColumn = Pos 12
+                                                     }
+                                               , etype = Just "emph"
+                                               , attrs =
+                                                   Attrs { inlineAttrs = [] , blockAttrs = [] }
+                                               , args = []
+                                               , content =
+                                                   InlineSequence
+                                                     [ InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 18
                                                            }
                                                          "probability of any event"
                                                      ]
@@ -434,17 +427,17 @@ Doc
                                          , InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 25
-                                               , sourceColumn = Pos 41
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 43
                                                }
-                                             " is the ratio between the value at which an\nexpectation depending on the happening of the event ought to be computed, and\nthe value of the thing expected upon "
+                                             " is the ratio between the\nvalue at which an expectation depending on the happening of the\nevent ought to be computed, and the value of the thing expected\nupon "
                                          , InlineBraced
                                              Element
                                                { srcPos =
                                                    SourcePos
                                                      { sourceName = "bayes.scb"
-                                                     , sourceLine = Pos 27
-                                                     , sourceColumn = Pos 38
+                                                     , sourceLine = Pos 33
+                                                     , sourceColumn = Pos 13
                                                      }
                                                , etype = Just "reg"
                                                , attrs =
@@ -454,8 +447,8 @@ Doc
                                                              { srcPos =
                                                                  SourcePos
                                                                    { sourceName = "bayes.scb"
-                                                                   , sourceLine = Pos 27
-                                                                   , sourceColumn = Pos 42
+                                                                   , sourceLine = Pos 33
+                                                                   , sourceColumn = Pos 17
                                                                    }
                                                              , etype = "old"
                                                              , attrs =
@@ -469,8 +462,8 @@ Doc
                                                                    [ InlineText
                                                                        SourcePos
                                                                          { sourceName = "bayes.scb"
-                                                                         , sourceLine = Pos 27
-                                                                         , sourceColumn = Pos 47
+                                                                         , sourceLine = Pos 33
+                                                                         , sourceColumn = Pos 22
                                                                          }
                                                                        "it's"
                                                                    ]
@@ -479,8 +472,8 @@ Doc
                                                              { srcPos =
                                                                  SourcePos
                                                                    { sourceName = "bayes.scb"
-                                                                   , sourceLine = Pos 27
-                                                                   , sourceColumn = Pos 52
+                                                                   , sourceLine = Pos 33
+                                                                   , sourceColumn = Pos 27
                                                                    }
                                                              , etype = "new"
                                                              , attrs =
@@ -494,8 +487,8 @@ Doc
                                                                    [ InlineText
                                                                        SourcePos
                                                                          { sourceName = "bayes.scb"
-                                                                         , sourceLine = Pos 27
-                                                                         , sourceColumn = Pos 57
+                                                                         , sourceLine = Pos 33
+                                                                         , sourceColumn = Pos 32
                                                                          }
                                                                        "its"
                                                                    ]
@@ -509,8 +502,8 @@ Doc
                                          , InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 27
-                                               , sourceColumn = Pos 62
+                                               , sourceLine = Pos 33
+                                               , sourceColumn = Pos 37
                                                }
                                              " happening."
                                          ]
@@ -520,8 +513,8 @@ Doc
                                    { srcPos =
                                        SourcePos
                                          { sourceName = "bayes.scb"
-                                         , sourceLine = Pos 29
-                                         , sourceColumn = Pos 1
+                                         , sourceLine = Pos 34
+                                         , sourceColumn = Pos 5
                                          }
                                    , etype = Just "li"
                                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -531,8 +524,8 @@ Doc
                                          [ InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 29
-                                               , sourceColumn = Pos 6
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 8
                                                }
                                              "By "
                                          , InlineBraced
@@ -540,8 +533,8 @@ Doc
                                                { srcPos =
                                                    SourcePos
                                                      { sourceName = "bayes.scb"
-                                                     , sourceLine = Pos 29
-                                                     , sourceColumn = Pos 9
+                                                     , sourceLine = Pos 35
+                                                     , sourceColumn = Pos 11
                                                      }
                                                , etype = Just "emph"
                                                , attrs =
@@ -552,8 +545,8 @@ Doc
                                                      [ InlineText
                                                          SourcePos
                                                            { sourceName = "bayes.scb"
-                                                           , sourceLine = Pos 29
-                                                           , sourceColumn = Pos 15
+                                                           , sourceLine = Pos 35
+                                                           , sourceColumn = Pos 17
                                                            }
                                                          "chance"
                                                      ]
@@ -561,8 +554,8 @@ Doc
                                          , InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 29
-                                               , sourceColumn = Pos 22
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 24
                                                }
                                              " I mean the same as probability."
                                          ]
@@ -572,8 +565,8 @@ Doc
                                    { srcPos =
                                        SourcePos
                                          { sourceName = "bayes.scb"
-                                         , sourceLine = Pos 31
-                                         , sourceColumn = Pos 1
+                                         , sourceLine = Pos 36
+                                         , sourceColumn = Pos 5
                                          }
                                    , etype = Just "li"
                                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
@@ -583,10 +576,10 @@ Doc
                                          [ InlineText
                                              SourcePos
                                                { sourceName = "bayes.scb"
-                                               , sourceLine = Pos 31
-                                               , sourceColumn = Pos 6
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 8
                                                }
-                                             "Events are independent when the happening of any one of them does neither\nincrease nor abate the probability of the rest."
+                                             "Events are independent when the happening of any one of them\ndoes neither increase nor abate the probability of the rest."
                                          ]
                                    }
                              ]

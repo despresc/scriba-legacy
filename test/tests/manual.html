@@ -27,14 +27,13 @@ how in the world she was to get out again.</code></pre></div><p>Plain paragraph 
 that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
 can be represented in paragraph text using the sequences <code>\\</code>,
-<code>\{</code>, and <code>\}</code>, should you need them in text. </p><p>The other feature of paragraph markup is <em>inline elements</em>, which
+<code>\{</code>, and <code>\}</code>, should you need them in text.</p><p>The other feature of paragraph markup is <em>inline elements</em>, which
 are used to give further meaning to your text and to control scriba&#39;s
-many features. Simple
-elements start with <code>{tag|</code> and end with <code>}</code>. The
-paragraphs above have a <code>q</code> element, representing quoted text
-and likely to be rendered between quotation marks, and an <code>emph</code>
-element, representing emphasized text and likely to be rendered in
-italic type.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Sections<span class="after"></span></span></span></h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
+many features. Simple elements start with <code>{tag|</code> and end with
+<code>}</code>. The paragraphs above have a <code>q</code> element, representing
+quoted text and likely to be rendered between quotation marks, and an
+<code>emph</code> element, representing emphasized text and likely to be
+rendered in italic type.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Sections<span class="after"></span></span></span></h3><div class="sectionContent"><p>The content of your document can be organized into <em>sections</em>,
 representing self-contained units of discussion. These have types,
 titles, and a body of blocks and subsections. Sections look like this:</p><div class="codeBlock"><pre><code># {title|An introduction to the language}
 
@@ -58,14 +57,15 @@ attributes of sections can be listed on multiple consecutive lines, as
 long as no blank line occurs between them.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>1.3<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>Blocks<span class="after"></span></span></span></h3><div class="sectionContent"><p>The other type of syntactic form in scriba is the <em>block</em>
 element. Blocks group their content and give it extra meaning, and can
 appear wherever paragraphs or section headers can. Some blocks are
-shown in the following code sample:</p><div class="codeBlock"><pre><code>&amp;{codeBlock {language|scriba} `
+shown in the following code sample:</p><div class="codeBlock"><pre><code>&amp;codeBlock
+  &amp;language|scriba
+  ```
   An {emph|interesting} proposition.
-`}
 
-&amp;{olist|
-{item|First item}
-{item|Second item}
-}</code></pre></div><p>Blocks are written like inline elements, complete with attributes and
+&amp;olist
+  ---
+  &amp;item|First item
+  &amp;item|Second item</code></pre></div><p>Blocks are written like inline elements, complete with attributes and
 arguments, except they are preceded by a <code>&amp;</code>. They differ from
 inline elements in their content: blocks have <em>verbatim</em>,
 <em>block</em>, and <em>inline</em> content. Verbatim content is signalled
@@ -122,14 +122,10 @@ inside a paragraph, with a reference (<a class="ref" href="#mjx-eqn-thirdGathere
 document, with optional <code>title</code>, <code>conclusion</code>, and
 <code>type</code> attributes. It can contain block or inline content. It can
 be used to represent theorems, propositions, exercises, proofs, and
-other amsthm-style elements.</p><p>Some examples:</p><div class="formalBlock lemma"><span class="title"><span class="number"><span class="before"></span>2.1<span class="after">.</span></span> <span class="titlePrefix"><span class="before"></span>Lemma<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">A preliminary lemma.
-</span></div><div class="formalBlock theorem"><span class="title"><span class="titlePrefix"><span class="before"></span>Theorem<span class="after"></span></span> <span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleNote"><span class="before">(</span>an interesting one<span class="after">)</span></span></span><span class="titleSep">. </span><span class="body">The statement of some theorem of interest.
-</span></div><div class="formalBlock proof"><span class="title"><span class="titlePrefix"><span class="before"></span>Proof<span class="after"></span></span> <span class="titleNote"><span class="before"></span>of the interesting theorem<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">Details of the proof
-</span><span class="conclusion">∎</span></div></div></section><section id="elem-olist"><h3><span class="title"><span class="number"><span class="before"></span>2.3<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>olist<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
+other amsthm-style elements.</p><p>Some examples:</p><div class="formalBlock lemma"><span class="title"><span class="number"><span class="before"></span>2.1<span class="after">.</span></span> <span class="titlePrefix"><span class="before"></span>Lemma<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">A preliminary lemma.</span></div><div class="formalBlock theorem"><span class="title"><span class="titlePrefix"><span class="before"></span>Theorem<span class="after"></span></span> <span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleNote"><span class="before">(</span>an interesting one<span class="after">)</span></span></span><span class="titleSep">. </span><span class="body">The statement of some theorem of interest.</span></div><div class="formalBlock proof"><span class="title"><span class="titlePrefix"><span class="before"></span>Proof<span class="after"></span></span> <span class="titleNote"><span class="before"></span>of the interesting theorem<span class="after"></span></span></span><span class="titleSep">. </span><span class="body">Details of the proof.</span><span class="conclusion"> ∎</span></div></div></section><section id="elem-olist"><h3><span class="title"><span class="number"><span class="before"></span>2.3<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>olist<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>olist</code> block element represents an ordered list. It contains
 a whitespace-separated list of <code>item</code> elements.</p><p>An example:</p><ol><li><div class="body"><p>Some preamble.</p><ol><li id="elem-ref-nest"><span class="body">First element in first element</span></li></ol></div></li><li><span class="body">Second element</span></li><li><span class="body">Third element</span></li></ol><p>The items of a list can be referenced, like this
 (<a class="ref" href="#elem-ref-nest"><span class="prefix">item</span> <span class="number">1.a</span></a>) reference to one of the items above.</p></div></section><section id="elem-ref"><h3><span class="title"><span class="number"><span class="before"></span>2.4<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>ref<span class="after"></span></span></span></h3><div class="sectionContent"><p>The <code>ref</code> inline element represents a reference to another
 element. It takes a single argument, the identifier of another element
 in the document. In future, it may be able to reference elements
 across documents, and to take multiple identifier arguments.</p><p>For example, we can reference <a class="ref" href="#elem-ref"><span class="prefix">§</span><span class="number">2.4</span></a>, this section, using
-<code>{ref@elem-ref}</code>.
-</p></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>
+<code>{ref@elem-ref}</code>.</p></div></section></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

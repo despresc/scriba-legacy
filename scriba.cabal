@@ -57,7 +57,6 @@ library
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
     Text.Scriba.Source.Common
-    Text.Scriba.Source.Indent
     Text.Scriba.Source.Parse
     Text.Scriba.Render.Html
 

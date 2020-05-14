@@ -1,39 +1,82 @@
-{scriba
-  {someInterestingNode}}
+&scriba
+  &attribute
+    &childAttr
+  &siblingAttr|With content
 
-  # section {thing@other}
+# section {id|thing}
 
-## subsection {foo {bar} @ other | stuff }
+## subsection
+  & foo|bar
 
-  &{codeBlockDemonstration `
-        Things in here.
-  and
-    more
- `}
+### subsubsection {id|thing}
+  & foo|bar
 
-  {`&\{}`} verbatim testing and {code {lang|thing} @ 2o3info32inf ` content `}
+& foo|bar
+& bar|baz
 
-&{paragraphedBlock&
-&{one}
+A test of a plain paragraph.
+Of a couple of lines, with some {emph {id|foo} @ bar |markup}
 
-Two
+And another paragraph
 
-&{unparagraphed|of things}
-}
+& tight1
+& tight2
 
-A {emph|simple} paragraph with a {physPage|24} marker and some
-math {math`2+2=5`} and a little more math {math|5×9=42}.
+& blockOnlyAttr
+  & attr1
+  & attr2
 
-{`&`} some verbatim testing.
+& blockWithAtInl
+  & at|Foo
+  & at2|Bar
+  |Very interesting inline content
+  continuing
 
-&{formalBlock {type|theorem} {title|Theorem 5 (an interesting one)} {conclusion|QED}|
-The statement of an interesting theorem.
-}
+  for a couple of lines
+
+  and {emph|including
+  some
+
+  inline markup}
+
+& blockOnlyBlock
+  ---
+  Some blockOnlyBlock content
+
+& block
+  & attr1|Foo
+  & attr2|Bar
+  ---
+  Very interesting block content
+
+  And some more block content
+
+  & codeBlock
+    ```
+    Some code here
+              and a little indented
+    which continues until this point.
+
+& block2
+  & attr3
+  & attr4
+  |Interesting inline block content
+
+{`&`} an inline verbatim test with some {code`
+Verbatim
+
+content`}.
+
+& block3
+   |Content on the next line
+
+& codeBlockWeird
+  |{`Some inline stuff
+                     with indent
+  here
+
+  `}
+
+And more.
 
 Insignificant \backslash and a \\{elem|significant one} and {elem@more\{|test}
-and {elem2@more\|test}
-
-# sec2 {attr1}
-       {attr2}
-
-{attr3}

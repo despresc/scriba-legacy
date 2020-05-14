@@ -1,12 +1,10 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-import qualified Text.Scriba.Source.Indent     as SPI
-
 import qualified Text.Scriba.Intermediate      as SI
 import qualified Text.Scriba.Markup            as SM
-import qualified Text.Scriba.Source.Parse      as SP
 import qualified Text.Scriba.Source.Common     as SC
+import qualified Text.Scriba.Source.Parse      as SP
 
 import           Data.ByteString.Lazy          as BL
 import           Data.Text                      ( Text )
@@ -50,8 +48,6 @@ goldenWith f name src gold = goldenVsString name gold $ do
 inTests :: (b -> FilePath -> FilePath -> a) -> b -> FilePath -> FilePath -> a
 inTests f x p q = f x ("./test/tests/" <> p) ("./test/tests/" <> q)
 
--- TODO: should probably have a few pipeline functions in the top
--- level. Would reduce duplication.
 testParse :: String -> FilePath -> FilePath -> TestTree
 testParse name src gold = goldenWith go name src gold
   where go t = byteShow $ parseOrExplode (T.pack $ takeFileName src) t
@@ -68,7 +64,6 @@ testMarkup name src gold = goldenWith go name src gold
     (T.pack $ takeFileName src)
     t
 
--- TODO: duplication
 testRenderingWith
   :: (SM.Doc SM.Block (SM.Inline Void) (SM.Inline Void) -> TL.Text)
   -> String
@@ -81,39 +76,12 @@ testRenderingWith f name src gold = goldenWith go name src gold
     (T.pack $ takeFileName src)
     t
 
-testIndentParse :: String -> FilePath -> FilePath -> TestTree
-testIndentParse name src gold = goldenWith go name src gold
- where
-  go t = byteShow $ either (error . T.unpack) id $ SPI.parseDoc'
-    (T.pack $ takeFileName src)
-    t
-
-testIndentRenderingWith
-  :: (SM.Doc SM.Block (SM.Inline Void) (SM.Inline Void) -> TL.Text)
-  -> String
-  -> FilePath
-  -> FilePath
-  -> TestTree
-testIndentRenderingWith f name src gold = goldenWith go name src gold
- where
-  go t =
-    TLE.encodeUtf8
-      $ f
-      $ markupOrExplode
-      $ SI.fromDoc
-      $ either (error . T.unpack) id
-      $ SPI.parseDoc' (T.pack $ takeFileName src) t
-
 -- TODO: one single test block for the manual?
 -- TODO: make sure the README example parses _correctly_.
 tests :: TestTree
 tests = testGroup
   "tests"
-  [ inTests testIndentParse
-            "simple indented markup parses"
-            "simple.indent"
-            "simple.indentparse"
-  , inTests testParse "README example parses" "bayes.scb"  "bayes.parse"
+  [ inTests testParse "README example parses" "bayes.scb"  "bayes.parse"
   , inTests testParse "simple markup parses"  "simple.scb" "simple.parse"
   , inTests testIntermediate
             "simple markup parses into the node format"
@@ -126,10 +94,6 @@ tests = testGroup
                       "manual renders to html"
                       "./doc/manual.scb"
                       "./test/tests/manual.html"
-  , testIndentRenderingWith (HT.renderHtml . SM.writeStandalone)
-                            "indented manual renders to html"
-                            "./doc/manual-indent.scb"
-                            "./test/tests/manual-indent.html"
   ]
 
 main :: IO ()

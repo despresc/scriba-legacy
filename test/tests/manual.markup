@@ -69,7 +69,7 @@ Doc
                               , ttemplatePrefixFirst = True
                               }
                       , fconfTitleSep = Just [ Istr Str { getStr = ". " } ]
-                      , fconfConcl = Just [ Istr Str { getStr = "\8718" } ]
+                      , fconfConcl = Just [ Istr Str { getStr = " \8718" } ]
                       }
                   )
                 , ( "theorem"
@@ -404,8 +404,7 @@ Doc
                                               , Istr Str { getStr = ", and " }
                                               , Icode InlineCode { getInlineCode = "\\}" }
                                               , Istr
-                                                  Str
-                                                    { getStr = ", should you need them in text. " }
+                                                  Str { getStr = ", should you need them in text." }
                                               ]
                                           }
                                     , Bpar
@@ -424,26 +423,24 @@ Doc
                                               , Istr
                                                   Str
                                                     { getStr =
-                                                        ", which\nare used to give further meaning to your text and to control scriba's\nmany features."
+                                                        ", which\nare used to give further meaning to your text and to control scriba's\nmany features. Simple elements start with "
                                                     }
-                                              , Istr
-                                                  Str { getStr = " Simple\nelements start with " }
                                               , Icode InlineCode { getInlineCode = "{tag|" }
-                                              , Istr Str { getStr = " and end with " }
+                                              , Istr Str { getStr = " and end with\n" }
                                               , Icode InlineCode { getInlineCode = "}" }
                                               , Istr
-                                                  Str { getStr = ". The\nparagraphs above have a " }
+                                                  Str { getStr = ". The paragraphs above have a " }
                                               , Icode InlineCode { getInlineCode = "q" }
                                               , Istr
                                                   Str
                                                     { getStr =
-                                                        " element, representing quoted text\nand likely to be rendered between quotation marks, and an "
+                                                        " element, representing\nquoted text and likely to be rendered between quotation marks, and an\n"
                                                     }
                                               , Icode InlineCode { getInlineCode = "emph" }
                                               , Istr
                                                   Str
                                                     { getStr =
-                                                        "\nelement, representing emphasized text and likely to be rendered in\nitalic type."
+                                                        " element, representing emphasized text and likely to be\nrendered in italic type."
                                                     }
                                               ]
                                           }
@@ -612,7 +609,7 @@ Doc
                                     , Bcode
                                         BlockCode
                                           { getBlockCode =
-                                              "&{codeBlock {language|scriba} `\n  An {emph|interesting} proposition.\n`}\n\n&{olist|\n{item|First item}\n{item|Second item}\n}"
+                                              "&codeBlock\n  &language|scriba\n  ```\n  An {emph|interesting} proposition.\n\n&olist\n  ---\n  &item|First item\n  &item|Second item"
                                           }
                                     , Bpar
                                         Paragraph
@@ -1125,7 +1122,7 @@ Doc
                                           , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
                                               MixedInline
-                                                [ Istr Str { getStr = "A preliminary lemma.\n" } ]
+                                                [ Istr Str { getStr = "A preliminary lemma." } ]
                                           , fConclusion = Nothing
                                           }
                                     , Bformal
@@ -1165,7 +1162,7 @@ Doc
                                                 [ Istr
                                                     Str
                                                       { getStr =
-                                                          "The statement of some theorem of interest.\n"
+                                                          "The statement of some theorem of interest."
                                                       }
                                                 ]
                                           , fConclusion = Nothing
@@ -1202,8 +1199,8 @@ Doc
                                           , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                                           , fContent =
                                               MixedInline
-                                                [ Istr Str { getStr = "Details of the proof\n" } ]
-                                          , fConclusion = Just [ Istr Str { getStr = "\8718" } ]
+                                                [ Istr Str { getStr = "Details of the proof." } ]
+                                          , fConclusion = Just [ Istr Str { getStr = " \8718" } ]
                                           }
                                     ]
                                 , secChildren = []
@@ -1400,7 +1397,7 @@ Doc
                                               , Istr Str { getStr = ", this section, using\n" }
                                               , Icode
                                                   InlineCode { getInlineCode = "{ref@elem-ref}" }
-                                              , Istr Str { getStr = ".\n" }
+                                              , Istr Str { getStr = "." }
                                               ]
                                           }
                                     ]

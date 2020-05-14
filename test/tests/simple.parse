@@ -5,7 +5,8 @@ Doc
     , sourceColumn = Pos 1
     }
   Attrs
-    { inlineAttrs =
+    { inlineAttrs = []
+    , blockAttrs =
         [ Element
             { srcPos =
                 SourcePos
@@ -13,21 +14,58 @@ Doc
                   , sourceLine = Pos 2
                   , sourceColumn = Pos 3
                   }
-            , etype = "someInterestingNode"
+            , etype = "attribute"
+            , attrs =
+                Attrs
+                  { inlineAttrs = []
+                  , blockAttrs =
+                      [ Element
+                          { srcPos =
+                              SourcePos
+                                { sourceName = "simple.scb"
+                                , sourceLine = Pos 3
+                                , sourceColumn = Pos 5
+                                }
+                          , etype = "childAttr"
+                          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                          , args = []
+                          , content = BlockNil
+                          }
+                      ]
+                  }
+            , args = []
+            , content = BlockNil
+            }
+        , Element
+            { srcPos =
+                SourcePos
+                  { sourceName = "simple.scb"
+                  , sourceLine = Pos 4
+                  , sourceColumn = Pos 3
+                  }
+            , etype = "siblingAttr"
             , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
             , args = []
-            , content = InlineNil
+            , content =
+                BlockInlines
+                  [ InlineText
+                      SourcePos
+                        { sourceName = "simple.scb"
+                        , sourceLine = Pos 4
+                        , sourceColumn = Pos 16
+                        }
+                      "With content"
+                  ]
             }
         ]
-    , blockAttrs = []
     }
   [ SecHeaderNode
       (SecHeader
          1
          SourcePos
            { sourceName = "simple.scb"
-           , sourceLine = Pos 4
-           , sourceColumn = Pos 3
+           , sourceLine = Pos 6
+           , sourceColumn = Pos 1
            }
          (Just "section")
          Attrs
@@ -36,21 +74,22 @@ Doc
                    { srcPos =
                        SourcePos
                          { sourceName = "simple.scb"
-                         , sourceLine = Pos 4
-                         , sourceColumn = Pos 13
+                         , sourceLine = Pos 6
+                         , sourceColumn = Pos 11
                          }
-                   , etype = "thing"
+                   , etype = "id"
                    , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                   , args =
-                       [ InlineText
-                           SourcePos
-                             { sourceName = "simple.scb"
-                             , sourceLine = Pos 4
-                             , sourceColumn = Pos 20
-                             }
-                           "other"
-                       ]
-                   , content = InlineNil
+                   , args = []
+                   , content =
+                       InlineSequence
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 6
+                               , sourceColumn = Pos 15
+                               }
+                             "thing"
+                         ]
                    }
                ]
            , blockAttrs = []
@@ -61,60 +100,93 @@ Doc
          2
          SourcePos
            { sourceName = "simple.scb"
-           , sourceLine = Pos 6
+           , sourceLine = Pos 8
            , sourceColumn = Pos 1
            }
          (Just "subsection")
+         Attrs
+           { inlineAttrs = []
+           , blockAttrs =
+               [ Element
+                   { srcPos =
+                       SourcePos
+                         { sourceName = "simple.scb"
+                         , sourceLine = Pos 9
+                         , sourceColumn = Pos 3
+                         }
+                   , etype = "foo"
+                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                   , args = []
+                   , content =
+                       BlockInlines
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 9
+                               , sourceColumn = Pos 9
+                               }
+                             "bar"
+                         ]
+                   }
+               ]
+           }
+         [])
+  , SecHeaderNode
+      (SecHeader
+         3
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 11
+           , sourceColumn = Pos 1
+           }
+         (Just "subsubsection")
          Attrs
            { inlineAttrs =
                [ Element
                    { srcPos =
                        SourcePos
                          { sourceName = "simple.scb"
-                         , sourceLine = Pos 6
-                         , sourceColumn = Pos 15
+                         , sourceLine = Pos 11
+                         , sourceColumn = Pos 19
                          }
-                   , etype = "foo"
-                   , attrs =
-                       Attrs
-                         { inlineAttrs =
-                             [ Element
-                                 { srcPos =
-                                     SourcePos
-                                       { sourceName = "simple.scb"
-                                       , sourceLine = Pos 6
-                                       , sourceColumn = Pos 20
-                                       }
-                                 , etype = "bar"
-                                 , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                                 , args = []
-                                 , content = InlineNil
-                                 }
-                             ]
-                         , blockAttrs = []
-                         }
-                   , args =
-                       [ InlineText
-                           SourcePos
-                             { sourceName = "simple.scb"
-                             , sourceLine = Pos 6
-                             , sourceColumn = Pos 28
-                             }
-                           "other"
-                       ]
+                   , etype = "id"
+                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                   , args = []
                    , content =
                        InlineSequence
                          [ InlineText
                              SourcePos
                                { sourceName = "simple.scb"
-                               , sourceLine = Pos 6
-                               , sourceColumn = Pos 35
+                               , sourceLine = Pos 11
+                               , sourceColumn = Pos 23
                                }
-                             " stuff "
+                             "thing"
                          ]
                    }
                ]
-           , blockAttrs = []
+           , blockAttrs =
+               [ Element
+                   { srcPos =
+                       SourcePos
+                         { sourceName = "simple.scb"
+                         , sourceLine = Pos 12
+                         , sourceColumn = Pos 3
+                         }
+                   , etype = "foo"
+                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                   , args = []
+                   , content =
+                       BlockInlines
+                         [ InlineText
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 12
+                               , sourceColumn = Pos 9
+                               }
+                             "bar"
+                         ]
+                   }
+               ]
            }
          [])
   , SecBlock
@@ -123,64 +195,69 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.scb"
-                 , sourceLine = Pos 8
-                 , sourceColumn = Pos 3
+                 , sourceLine = Pos 14
+                 , sourceColumn = Pos 1
                  }
-           , etype = Just "codeBlockDemonstration"
+           , etype = Just "foo"
            , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
            , args = []
            , content =
-               BlockVerbatim
-                 SourcePos
-                   { sourceName = "simple.scb"
-                   , sourceLine = Pos 8
-                   , sourceColumn = Pos 28
-                   }
-                 "        Things in here.\n  and\n    more"
+               BlockInlines
+                 [ InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 14
+                       , sourceColumn = Pos 7
+                       }
+                     "bar"
+                 ]
+           })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 15
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "bar"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args = []
+           , content =
+               BlockInlines
+                 [ InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 15
+                       , sourceColumn = Pos 7
+                       }
+                     "baz"
+                 ]
            })
   , SecBlock
       (BlockPar
          SourcePos
            { sourceName = "simple.scb"
-           , sourceLine = Pos 14
-           , sourceColumn = Pos 3
+           , sourceLine = Pos 17
+           , sourceColumn = Pos 1
            }
-         [ InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 14
-                     , sourceColumn = Pos 3
-                     }
-               , etype = Nothing
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content =
-                   InlineVerbatim
-                     SourcePos
-                       { sourceName = "simple.scb"
-                       , sourceLine = Pos 14
-                       , sourceColumn = Pos 4
-                       }
-                     "&\\{}"
-               }
-         , InlineText
+         [ InlineText
              SourcePos
                { sourceName = "simple.scb"
-               , sourceLine = Pos 14
-               , sourceColumn = Pos 11
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 1
                }
-             " verbatim testing and "
+             "A test of a plain paragraph.\nOf a couple of lines, with some "
          , InlineBraced
              Element
                { srcPos =
                    SourcePos
                      { sourceName = "simple.scb"
-                     , sourceLine = Pos 14
+                     , sourceLine = Pos 18
                      , sourceColumn = Pos 33
                      }
-               , etype = Just "code"
+               , etype = Just "emph"
                , attrs =
                    Attrs
                      { inlineAttrs =
@@ -188,10 +265,10 @@ Doc
                              { srcPos =
                                  SourcePos
                                    { sourceName = "simple.scb"
-                                   , sourceLine = Pos 14
+                                   , sourceLine = Pos 18
                                    , sourceColumn = Pos 39
                                    }
-                             , etype = "lang"
+                             , etype = "id"
                              , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                              , args = []
                              , content =
@@ -199,10 +276,10 @@ Doc
                                    [ InlineText
                                        SourcePos
                                          { sourceName = "simple.scb"
-                                         , sourceLine = Pos 14
-                                         , sourceColumn = Pos 45
+                                         , sourceLine = Pos 18
+                                         , sourceColumn = Pos 43
                                          }
-                                       "thing"
+                                       "foo"
                                    ]
                              }
                          ]
@@ -212,20 +289,37 @@ Doc
                    [ InlineText
                        SourcePos
                          { sourceName = "simple.scb"
-                         , sourceLine = Pos 14
-                         , sourceColumn = Pos 54
+                         , sourceLine = Pos 18
+                         , sourceColumn = Pos 50
                          }
-                       "2o3info32inf"
+                       "bar"
                    ]
                , content =
-                   InlineVerbatim
-                     SourcePos
-                       { sourceName = "simple.scb"
-                       , sourceLine = Pos 14
-                       , sourceColumn = Pos 67
-                       }
-                     " content "
+                   InlineSequence
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 18
+                           , sourceColumn = Pos 55
+                           }
+                         "markup"
+                     ]
                }
+         ])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 20
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 20
+               , sourceColumn = Pos 1
+               }
+             "And another paragraph"
          ])
   , SecBlock
       (BlockBlock
@@ -233,229 +327,71 @@ Doc
            { srcPos =
                SourcePos
                  { sourceName = "simple.scb"
-                 , sourceLine = Pos 16
+                 , sourceLine = Pos 22
                  , sourceColumn = Pos 1
                  }
-           , etype = Just "paragraphedBlock"
+           , etype = Just "tight1"
            , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
            , args = []
-           , content =
-               BlockBlocks
-                 [ BlockBlock
-                     Element
-                       { srcPos =
-                           SourcePos
-                             { sourceName = "simple.scb"
-                             , sourceLine = Pos 17
-                             , sourceColumn = Pos 1
-                             }
-                       , etype = Just "one"
-                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                       , args = []
-                       , content = BlockNil
-                       }
-                 , BlockPar
-                     SourcePos
-                       { sourceName = "simple.scb"
-                       , sourceLine = Pos 19
-                       , sourceColumn = Pos 1
-                       }
-                     [ InlineText
-                         SourcePos
-                           { sourceName = "simple.scb"
-                           , sourceLine = Pos 19
-                           , sourceColumn = Pos 1
-                           }
-                         "Two"
-                     ]
-                 , BlockBlock
-                     Element
-                       { srcPos =
-                           SourcePos
-                             { sourceName = "simple.scb"
-                             , sourceLine = Pos 21
-                             , sourceColumn = Pos 1
-                             }
-                       , etype = Just "unparagraphed"
-                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                       , args = []
-                       , content =
-                           BlockInlines
-                             [ InlineText
-                                 SourcePos
-                                   { sourceName = "simple.scb"
-                                   , sourceLine = Pos 21
-                                   , sourceColumn = Pos 17
-                                   }
-                                 "of things"
-                             ]
-                       }
-                 ]
+           , content = BlockNil
            })
   , SecBlock
-      (BlockPar
-         SourcePos
-           { sourceName = "simple.scb"
-           , sourceLine = Pos 24
-           , sourceColumn = Pos 1
-           }
-         [ InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 24
-               , sourceColumn = Pos 1
-               }
-             "A "
-         , InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 24
-                     , sourceColumn = Pos 3
-                     }
-               , etype = Just "emph"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content =
-                   InlineSequence
-                     [ InlineText
-                         SourcePos
-                           { sourceName = "simple.scb"
-                           , sourceLine = Pos 24
-                           , sourceColumn = Pos 9
-                           }
-                         "simple"
-                     ]
-               }
-         , InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 24
-               , sourceColumn = Pos 16
-               }
-             " paragraph with a "
-         , InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 24
-                     , sourceColumn = Pos 34
-                     }
-               , etype = Just "physPage"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content =
-                   InlineSequence
-                     [ InlineText
-                         SourcePos
-                           { sourceName = "simple.scb"
-                           , sourceLine = Pos 24
-                           , sourceColumn = Pos 44
-                           }
-                         "24"
-                     ]
-               }
-         , InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 24
-               , sourceColumn = Pos 47
-               }
-             " marker and some\nmath "
-         , InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 25
-                     , sourceColumn = Pos 6
-                     }
-               , etype = Just "math"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content =
-                   InlineVerbatim
-                     SourcePos
-                       { sourceName = "simple.scb"
-                       , sourceLine = Pos 25
-                       , sourceColumn = Pos 11
-                       }
-                     "2+2=5"
-               }
-         , InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 25
-               , sourceColumn = Pos 19
-               }
-             " and a little more math "
-         , InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 25
-                     , sourceColumn = Pos 43
-                     }
-               , etype = Just "math"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content =
-                   InlineSequence
-                     [ InlineText
-                         SourcePos
-                           { sourceName = "simple.scb"
-                           , sourceLine = Pos 25
-                           , sourceColumn = Pos 49
-                           }
-                         "5\215\&9=42"
-                     ]
-               }
-         , InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 25
-               , sourceColumn = Pos 56
-               }
-             "."
-         ])
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 23
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "tight2"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args = []
+           , content = BlockNil
+           })
   , SecBlock
-      (BlockPar
-         SourcePos
-           { sourceName = "simple.scb"
-           , sourceLine = Pos 27
-           , sourceColumn = Pos 1
-           }
-         [ InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 27
-                     , sourceColumn = Pos 1
-                     }
-               , etype = Nothing
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content =
-                   InlineVerbatim
-                     SourcePos
-                       { sourceName = "simple.scb"
-                       , sourceLine = Pos 27
-                       , sourceColumn = Pos 2
-                       }
-                     "&"
-               }
-         , InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 27
-               , sourceColumn = Pos 6
-               }
-             " some verbatim testing."
-         ])
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 25
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "blockOnlyAttr"
+           , attrs =
+               Attrs
+                 { inlineAttrs = []
+                 , blockAttrs =
+                     [ Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 26
+                               , sourceColumn = Pos 3
+                               }
+                         , etype = "attr1"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content = BlockNil
+                         }
+                     , Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 27
+                               , sourceColumn = Pos 3
+                               }
+                         , etype = "attr2"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content = BlockNil
+                         }
+                     ]
+                 }
+           , args = []
+           , content = BlockNil
+           })
   , SecBlock
       (BlockBlock
          Element
@@ -465,75 +401,54 @@ Doc
                  , sourceLine = Pos 29
                  , sourceColumn = Pos 1
                  }
-           , etype = Just "formalBlock"
+           , etype = Just "blockWithAtInl"
            , attrs =
                Attrs
-                 { inlineAttrs =
+                 { inlineAttrs = []
+                 , blockAttrs =
                      [ Element
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.scb"
-                               , sourceLine = Pos 29
-                               , sourceColumn = Pos 15
+                               , sourceLine = Pos 30
+                               , sourceColumn = Pos 3
                                }
-                         , etype = "type"
+                         , etype = "at"
                          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                          , args = []
                          , content =
-                             InlineSequence
+                             BlockInlines
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.scb"
-                                     , sourceLine = Pos 29
-                                     , sourceColumn = Pos 21
+                                     , sourceLine = Pos 30
+                                     , sourceColumn = Pos 8
                                      }
-                                   "theorem"
+                                   "Foo"
                                ]
                          }
                      , Element
                          { srcPos =
                              SourcePos
                                { sourceName = "simple.scb"
-                               , sourceLine = Pos 29
-                               , sourceColumn = Pos 30
+                               , sourceLine = Pos 31
+                               , sourceColumn = Pos 3
                                }
-                         , etype = "title"
+                         , etype = "at2"
                          , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                          , args = []
                          , content =
-                             InlineSequence
+                             BlockInlines
                                [ InlineText
                                    SourcePos
                                      { sourceName = "simple.scb"
-                                     , sourceLine = Pos 29
-                                     , sourceColumn = Pos 37
+                                     , sourceLine = Pos 31
+                                     , sourceColumn = Pos 9
                                      }
-                                   "Theorem 5 (an interesting one)"
-                               ]
-                         }
-                     , Element
-                         { srcPos =
-                             SourcePos
-                               { sourceName = "simple.scb"
-                               , sourceLine = Pos 29
-                               , sourceColumn = Pos 69
-                               }
-                         , etype = "conclusion"
-                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                         , args = []
-                         , content =
-                             InlineSequence
-                               [ InlineText
-                                   SourcePos
-                                     { sourceName = "simple.scb"
-                                     , sourceLine = Pos 29
-                                     , sourceColumn = Pos 81
-                                     }
-                                   "QED"
+                                   "Bar"
                                ]
                          }
                      ]
-                 , blockAttrs = []
                  }
            , args = []
            , content =
@@ -541,23 +456,374 @@ Doc
                  [ InlineText
                      SourcePos
                        { sourceName = "simple.scb"
-                       , sourceLine = Pos 29
-                       , sourceColumn = Pos 86
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 4
                        }
-                     "\nThe statement of an interesting theorem.\n"
+                     "Very interesting inline content\ncontinuing\n\nfor a couple of lines\n\nand "
+                 , InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "simple.scb"
+                             , sourceLine = Pos 37
+                             , sourceColumn = Pos 7
+                             }
+                       , etype = Just "emph"
+                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                       , args = []
+                       , content =
+                           InlineSequence
+                             [ InlineText
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 37
+                                   , sourceColumn = Pos 13
+                                   }
+                                 "including\nsome\n\ninline markup"
+                             ]
+                       }
+                 ]
+           })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 42
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "blockOnlyBlock"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args = []
+           , content =
+               BlockBlocks
+                 [ BlockPar
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 44
+                       , sourceColumn = Pos 3
+                       }
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 44
+                           , sourceColumn = Pos 3
+                           }
+                         "Some blockOnlyBlock content"
+                     ]
+                 ]
+           })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 46
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "block"
+           , attrs =
+               Attrs
+                 { inlineAttrs = []
+                 , blockAttrs =
+                     [ Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 47
+                               , sourceColumn = Pos 3
+                               }
+                         , etype = "attr1"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content =
+                             BlockInlines
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "simple.scb"
+                                     , sourceLine = Pos 47
+                                     , sourceColumn = Pos 11
+                                     }
+                                   "Foo"
+                               ]
+                         }
+                     , Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 48
+                               , sourceColumn = Pos 3
+                               }
+                         , etype = "attr2"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content =
+                             BlockInlines
+                               [ InlineText
+                                   SourcePos
+                                     { sourceName = "simple.scb"
+                                     , sourceLine = Pos 48
+                                     , sourceColumn = Pos 11
+                                     }
+                                   "Bar"
+                               ]
+                         }
+                     ]
+                 }
+           , args = []
+           , content =
+               BlockBlocks
+                 [ BlockPar
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 50
+                       , sourceColumn = Pos 3
+                       }
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 3
+                           }
+                         "Very interesting block content"
+                     ]
+                 , BlockPar
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 52
+                       , sourceColumn = Pos 3
+                       }
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 3
+                           }
+                         "And some more block content"
+                     ]
+                 , BlockBlock
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "simple.scb"
+                             , sourceLine = Pos 54
+                             , sourceColumn = Pos 3
+                             }
+                       , etype = Just "codeBlock"
+                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                       , args = []
+                       , content =
+                           BlockVerbatim
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 55
+                               , sourceColumn = Pos 5
+                               }
+                             " Some code here\n           and a little indented\n which continues until this point."
+                       }
+                 ]
+           })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 60
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "block2"
+           , attrs =
+               Attrs
+                 { inlineAttrs = []
+                 , blockAttrs =
+                     [ Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 61
+                               , sourceColumn = Pos 3
+                               }
+                         , etype = "attr3"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content = BlockNil
+                         }
+                     , Element
+                         { srcPos =
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 62
+                               , sourceColumn = Pos 3
+                               }
+                         , etype = "attr4"
+                         , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                         , args = []
+                         , content = BlockNil
+                         }
+                     ]
+                 }
+           , args = []
+           , content =
+               BlockInlines
+                 [ InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 4
+                       }
+                     "Interesting inline block content"
                  ]
            })
   , SecBlock
       (BlockPar
          SourcePos
            { sourceName = "simple.scb"
-           , sourceLine = Pos 33
+           , sourceLine = Pos 65
+           , sourceColumn = Pos 1
+           }
+         [ InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 65
+                     , sourceColumn = Pos 1
+                     }
+               , etype = Nothing
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 65
+                       , sourceColumn = Pos 2
+                       }
+                     "&"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 6
+               }
+             " an inline verbatim test with some "
+         , InlineBraced
+             Element
+               { srcPos =
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 65
+                     , sourceColumn = Pos 41
+                     }
+               , etype = Just "code"
+               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+               , args = []
+               , content =
+                   InlineVerbatim
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 65
+                       , sourceColumn = Pos 46
+                       }
+                     "\nVerbatim\n\ncontent"
+               }
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 68
+               , sourceColumn = Pos 10
+               }
+             "."
+         ])
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 70
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "block3"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args = []
+           , content =
+               BlockInlines
+                 [ InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 5
+                       }
+                     "Content on the next line"
+                 ]
+           })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 73
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "codeBlockWeird"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args = []
+           , content =
+               BlockInlines
+                 [ InlineBraced
+                     Element
+                       { srcPos =
+                           SourcePos
+                             { sourceName = "simple.scb"
+                             , sourceLine = Pos 74
+                             , sourceColumn = Pos 4
+                             }
+                       , etype = Nothing
+                       , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+                       , args = []
+                       , content =
+                           InlineVerbatim
+                             SourcePos
+                               { sourceName = "simple.scb"
+                               , sourceLine = Pos 74
+                               , sourceColumn = Pos 5
+                               }
+                             "Some inline stuff\n                    with indent\n here\n\n "
+                       }
+                 ]
+           })
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 80
            , sourceColumn = Pos 1
            }
          [ InlineText
              SourcePos
                { sourceName = "simple.scb"
-               , sourceLine = Pos 33
+               , sourceLine = Pos 80
+               , sourceColumn = Pos 1
+               }
+             "And more."
+         ])
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 82
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
                , sourceColumn = Pos 1
                }
              "Insignificant \\backslash and a \\"
@@ -566,7 +832,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "simple.scb"
-                     , sourceLine = Pos 33
+                     , sourceLine = Pos 82
                      , sourceColumn = Pos 34
                      }
                , etype = Just "elem"
@@ -577,7 +843,7 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.scb"
-                           , sourceLine = Pos 33
+                           , sourceLine = Pos 82
                            , sourceColumn = Pos 40
                            }
                          "significant one"
@@ -586,7 +852,7 @@ Doc
          , InlineText
              SourcePos
                { sourceName = "simple.scb"
-               , sourceLine = Pos 33
+               , sourceLine = Pos 82
                , sourceColumn = Pos 56
                }
              " and "
@@ -595,7 +861,7 @@ Doc
                { srcPos =
                    SourcePos
                      { sourceName = "simple.scb"
-                     , sourceLine = Pos 33
+                     , sourceLine = Pos 82
                      , sourceColumn = Pos 61
                      }
                , etype = Just "elem"
@@ -604,7 +870,7 @@ Doc
                    [ InlineText
                        SourcePos
                          { sourceName = "simple.scb"
-                         , sourceLine = Pos 33
+                         , sourceLine = Pos 82
                          , sourceColumn = Pos 67
                          }
                        "more{"
@@ -614,108 +880,11 @@ Doc
                      [ InlineText
                          SourcePos
                            { sourceName = "simple.scb"
-                           , sourceLine = Pos 33
+                           , sourceLine = Pos 82
                            , sourceColumn = Pos 74
                            }
                          "test"
                      ]
-               }
-         , InlineText
-             SourcePos
-               { sourceName = "simple.scb"
-               , sourceLine = Pos 33
-               , sourceColumn = Pos 79
-               }
-             "\nand "
-         , InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 34
-                     , sourceColumn = Pos 5
-                     }
-               , etype = Just "elem2"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args =
-                   [ InlineText
-                       SourcePos
-                         { sourceName = "simple.scb"
-                         , sourceLine = Pos 34
-                         , sourceColumn = Pos 12
-                         }
-                       "more\\"
-                   ]
-               , content =
-                   InlineSequence
-                     [ InlineText
-                         SourcePos
-                           { sourceName = "simple.scb"
-                           , sourceLine = Pos 34
-                           , sourceColumn = Pos 18
-                           }
-                         "test"
-                     ]
-               }
-         ])
-  , SecHeaderNode
-      (SecHeader
-         1
-         SourcePos
-           { sourceName = "simple.scb"
-           , sourceLine = Pos 36
-           , sourceColumn = Pos 1
-           }
-         (Just "sec2")
-         Attrs
-           { inlineAttrs =
-               [ Element
-                   { srcPos =
-                       SourcePos
-                         { sourceName = "simple.scb"
-                         , sourceLine = Pos 36
-                         , sourceColumn = Pos 8
-                         }
-                   , etype = "attr1"
-                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                   , args = []
-                   , content = InlineNil
-                   }
-               , Element
-                   { srcPos =
-                       SourcePos
-                         { sourceName = "simple.scb"
-                         , sourceLine = Pos 37
-                         , sourceColumn = Pos 8
-                         }
-                   , etype = "attr2"
-                   , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-                   , args = []
-                   , content = InlineNil
-                   }
-               ]
-           , blockAttrs = []
-           }
-         [])
-  , SecBlock
-      (BlockPar
-         SourcePos
-           { sourceName = "simple.scb"
-           , sourceLine = Pos 39
-           , sourceColumn = Pos 1
-           }
-         [ InlineBraced
-             Element
-               { srcPos =
-                   SourcePos
-                     { sourceName = "simple.scb"
-                     , sourceLine = Pos 39
-                     , sourceColumn = Pos 1
-                     }
-               , etype = Just "attr3"
-               , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
-               , args = []
-               , content = InlineNil
                }
          ])
   ]
