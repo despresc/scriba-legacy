@@ -127,3 +127,13 @@ ul > .body > p:first-child {
 .reg > .old {
     display: none;
 }
+
+/* Way to make responsive? Should probably have config.*/
+
+.workTitle::before {
+    content: "„"
+}
+
+.workTitle::after {
+    content: "“"
+}

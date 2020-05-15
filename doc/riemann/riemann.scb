@@ -290,54 +290,54 @@ die Form
 {dmath`
   ±\frac 1{2\pi i}\frac 1{\log x}
                ∫_{a - ∞ i}^{a + ∞ i}
-               \frac{d \bigl(\frac 1s \log(1 - \frac sβ) \bigr)}{ds}
+               \frac{d \bigl(\frac 1s \log(1 - \frac s\beta) \bigr)}{ds}
                x^s ds\text{.}
 `}
 
 Nun ist aber
 {dmath`
-  \frac{d \bigl(\frac 1s \log(1 - \frac sβ)\bigr)}{dβ}
-  = \frac 1{(β - s)β}\text{,}
+  \frac{d \bigl(\frac 1s \log(1 - \frac s\beta)\bigr)}{d\beta}
+  = \frac 1{(\beta - s)\beta}\text{,}
 `}
 und, wenn der reelle Theil von {math|s} grösser als der reelle Theil
-von {math|β} ist,
+von {math|\beta} ist,
 {dmath {id|addedNegation} `
-  -\frac 1{2\pi i} ∫_{a - ∞i}^{a + ∞i}\frac{x^s ds}{(β - s)β}
-  = \frac{x^β}β
-  = ∫_∞^x x^{β - 1} \,dx\text{,}
+  -\frac 1{2\pi i} ∫_{a - ∞i}^{a + ∞i}\frac{x^s ds}{(\beta - s)\beta}
+  = \frac{x^\beta}\beta
+  = ∫_∞^x x^{\beta - 1} \,dx\text{,}
 `}
 oder
 {dmath`
-  = ∫_0^x x^{β - 1} dx\text{,}
+  = ∫_0^x x^{\beta - 1} dx\text{,}
 `}
-je nachdem der reelle Theil von {math|β} negativ oder positiv ist. Man hat daher
+je nachdem der reelle Theil von {math|\beta} negativ oder positiv ist. Man hat daher
 {dmath`
   -\frac 1{2\pi i}\frac 1{\log x}
                ∫_{a - ∞ i}^{a + ∞ i}
-               \frac{d \bigl( \frac 1s \log \bigl(1 - \frac sβ \bigr)\bigr)}{ds}
+               \frac{d \bigl( \frac 1s \log \bigl(1 - \frac s\beta \bigr)\bigr)}{ds}
                x^s ds \\
   = -\frac 1{2\pi i} ∫_{a - ∞i}^{a + ∞i}
-       \frac 1s \log \bigl(1 - \frac sβ\bigr)
+       \frac 1s \log \bigl(1 - \frac s\beta\bigr)
            x^s ds \\
 `}
 {physPage|678}
 {dmath`
-  = ∫_∞^x \frac{x^{β - 1}}{\log x} dx + \text{ const. im ersten}
+  = ∫_∞^x \frac{x^{\beta - 1}}{\log x} dx + \text{ const. im ersten}
 `}
 {dmath`
   \text{und }
-  = ∫_0^x \frac{x^{β - 1}}{\log x} dx + \text{ const. im zweiten Falle.}
+  = ∫_0^x \frac{x^{\beta - 1}}{\log x} dx + \text{ const. im zweiten Falle.}
 `}
 
 Im ersten Falle bestimmt sich die Integrationsconstante, wenn man den
-reellen Theil von {math|β} negativ unendlich werden läßt; im zweiten
+reellen Theil von {math|\beta} negativ unendlich werden läßt; im zweiten
 Falle erhält das Integral von {math|0} bis {math|x} um {math|2\pi i}
 verschiedene Werthe, je nachdem die Integration durch complexe Werthe
 mit positivem oder negativem Arcus geschieht, und wird, auf jenem Wege
 genommen, unendlich klein, wenn der Coefficient von {math|i} in dem
-Werthe von {math|β} positiv unendlich wird, auf letzterem aber, wenn
+Werthe von {math|\beta} positiv unendlich wird, auf letzterem aber, wenn
 dieser Coefficient negativ unendlich wird. Hieraus ergiebt sich, wie
-auf der linken Seite {math|\log(1 - \frac sβ)} zu bestimmen ist, damit
+auf der linken Seite {math|\log(1 - \frac s\beta)} zu bestimmen ist, damit
 die Integrationsconstante wegfällt.
 
 Durch Einsetzung dieser Werthe in den Ausdruck für {math|f(x)} erhält man
