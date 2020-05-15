@@ -1,0 +1,75 @@
+{% TODO: Finish reforming this, especially once citations are handled
+semi-intelligently.
+
+# editorialNotes {lang|en-US}
+
+This digitization is based on Riemann's paper as it appears in the
+{cite{ref|monatsberichte}|Monatsberichte der Königlichen Preussische
+Akademie des Wissenschaften zu Berlin, dp. 687-696} which is a record
+of the proceedings of the Royal Prussian Academy of Sciences (now the
+Berlin-Brandenburg Academy of Sciences and Humanities after several
+reformations). The digitization thus includes the prefatory note
+present from the proceedings. Also consulted was the copy of the paper
+as it appears in {cite@gesammelte|{dp. 152-160}} and the scan of an
+early manuscript available from the
+{url@https://www.claymath.org/sites/default/files/riemann1859.pdf|Clay
+Mathematics Institute}. Finally, the
+{url@https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Zeta/|transcript
+and related materials} on the web by David Wilkins were useful as a
+starting point for the transcription.
+
+The differences between the two versions are mainly orthographic. In
+the version from the {cite.gesammelte}, all capital letters with
+diaeresis are replaced with that letter followed by an {q.e}. Thus
+{q|Änderung} becomes {q|Aenderung}. This version also does not make
+use of the {q|ß} character, so {q|Größe} becomes {q|Grösse}. Both were
+typesetting practices of the publisher of that version at the time,
+according to {cite@onthemanuscript}. This is most notable in the
+title, which in the {cite@monatsberichte} version is {title|Über die
+Anzahl der Primzahlen unter einer gegebenen Größe} but is given as
+{title|Ueber die Anzahl der Primzahlen unter einer gegebenen Grösse}
+in the {cite@gesammelte}. This transcript keeps the orthography of the
+Monatsberichte version.
+
+The text is consistent orthographically, with at least one
+exception. The name Gauss is written as Gauß in one place and Gauss in
+another. This has been regularized to Gauß. Later German orthographic
+reforms have not been applied.
+
+The mathematics has been set differently in certain places without
+comment.  Inline fractions are displayed with a solidus, where in the
+original a bar is used. The n-ary sum and product symbols are used
+where in the original the Greek letters {q.Σ} and {q.Π} were used, and
+these may be rendered larger relative to the rest of the formulae in
+which they appear compared to the original. In general, the original
+formulae as given in the original are kept, though their rendering by
+TeX or other systems may not be exactly the same.
+
+Several changes to the mathematics have been made that do not qualify as
+inconsequential typesetting differences:
+{ulist.
+
+{li. In {ref.#funcAppSwitched} a line with {math.(x)ψ} in it was
+changed to {math.ψ(x)}.}
+
+{li. In {ref.#insertedSummation} a {math.∑^α} was inserted that appears
+in the manuscript and the %cite[gesammelte] version but not in the
+{cite.monatsberichte} version.}
+
+{li. In {ref.#addedNegation} a {math.-} sign was added to the left of
+the equation that does not appear in the {cite.monatsberichte}
+version. It does appears in the {cite.gesammelte} version, and it
+makes mathematical sense for a negative sign to appear here. The
+manuscript does not seem to contain this exact formula. It is possible
+that the scan is deficient.}}
+
+The Biodiversity Library interprets the {cite.monatsberichte} as a
+journal, with 1859 as the volume number. We instead interpret it,
+bibliographically, as the proceedings of a series of meetings, as is
+the case. As the text itself says, the paper was produced during the 3
+Nov. 1859 plenary meeting of the Academy.  Nevertheless, this excerpt
+is encoded as an article, with the introduction in the original
+encoded as a preface, since we do not have a more specific form for
+such proceedings as yet.
+
+%}

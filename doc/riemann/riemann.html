@@ -1,0 +1,363 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="UTF-8"><title>Über die Anzahl der Primzahlen unter einer gegebenen Größe</title><script>MathJax={"tex":{"macros":{"Li":"\\mathit{Li}"}}};</script><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script><link href="./manual.css" rel="stylesheet"></head><body><section class="scribaDoc"><header><h1><span class="title">Über die Anzahl der Primzahlen unter einer gegebenen Größe</span></h1></header><section class="frontMatter"><div class="sectionContent"></div></section><section class="mainMatter"><div class="sectionContent"><section><div class="sectionContent"><section><div class="sectionContent"><p><span class="physPage">671</span> Hierauf trug Hr. <span class="personalName">Kummer</span> folgende von
+Hrn. <span class="personalName">Riemann</span>, Correspondenten der Akademie, mittelst eines an
+den Sekretar Hrn. <span class="personalName">Encke</span> gerichteten Schreibens vom 19. October
+d. J. eingesandte Mittheilung <span class="workTitle">über die Anzahl der Primzahlen
+unter einer gegebenen Größe</span> vor:</p></div></section></div></section><section><div class="sectionContent"><p>Meinen Dank für die Auszeichnung, welche mir die Akademie durch die
+Aufnahme unter ihre Correspondenten hat zu Theil werden lassen, glaube
+ich am besten dadurch zu erkennen zu geben, daß ich von der hierdurch
+erhaltenen Erlaubniß baldigst Gebrauch mache durch Mittheilung einer
+Untersuchung über die Häufigkeit der Primzahlen; ein Gegenstand,
+welcher durch das Interesse, welches <span class="personalName"><span class="reg"><span class="old">Gauss</span><span class="new">Gauß</span></span></span>
+und <span class="personalName">Dirichlet</span> demselben längere Zeit geschenkt haben, einer
+solchen Mittheilung vielleicht nicht ganz unwerth erscheint.</p><p>Bei dieser Untersuchung diente mir als Ausgangspunkt die von
+<span class="personalName">Euler</span> gemachte Bemerkung, daß das Product
+<span class="math display">\[
+  \prod\frac 1{1 - \frac 1{p^s}} = \sum\frac 1{n^s}\text{,}
+\]</span>
+<span class="physPage">672</span> wenn für <span class="math inline">\(p\)</span> alle Primzahlen, für <span class="math inline">\(n\)</span> alle
+ganzen Zahlen gesetzt werden. Die Function der complexen
+Veränderlichen <span class="math inline">\(s\)</span>, welche durch diese beiden Ausdrücke, so lange
+sie convergiren, dargestellt wird, bezeichne ich durch
+<span class="math inline">\(\zeta(s)\)</span>. Beide convergiren nur, so lange der reelle Theil von
+<span class="math inline">\(s\)</span> größer als <span class="math inline">\(1\)</span> ist; es läßt sich indeß leicht ein immer
+gültig bleibender Ausdruck der Function finden. Durch Anwendung der
+Gleichung
+<span class="math display">\[
+  ∫_0^∞ e^{-nx} x^{s-1} dx = \frac{\Pi(s-1)}{n^s}
+\]</span>
+erhält man zunächst
+<span class="math display">\[
+\Pi(s-1)\zeta(s) = ∫_0^∞ \frac{x^{s-1} dx}{e^x - 1}\text{.}
+\]</span></p><p>Betrachtet man nun das Integral
+<span class="math display">\[
+  ∫\frac{(-x)^{s-1} dx}{e^x - 1}\text{,}
+\]</span>
+von <span class="math inline">\(+∞\)</span> bis <span class="math inline">\(+∞\)</span> positiv um ein Größengebiet erstreckt,
+welches den Werth <span class="math inline">\(0\)</span>, aber keinen andern Unstetigkeitswerth der
+Function unter dem Integralzeichen im Innern enthält, so ergiebt sich
+dieses leicht als gleich
+<span class="math display">\[
+  (e^{-\pi si} - e^{\pi si})∫_0^∞ \frac{x^{s-1} dx}{e^x - 1}\text{,}
+\]</span>
+vorausgesetzt, daß in der vieldeutigen Function <span class="math inline">\((-x)^{s-1} =
+e^{(s-1)}\log(-x)\)</span> der Logarithmus von <span class="math inline">\(-x\)</span> so bestimmt worden ist, daß
+er für ein negatives <span class="math inline">\(x\)</span> reell wird. Man hat daher
+<span class="math display">\[
+  2\sin \pi s \Pi(s-1)\zeta(s) = i∫_∞^∞ \frac{(-x)^{s-1} dx}{e^x - 1}\text{,}
+\]</span>
+das Integral in der eben angegebenen Bedeutung verstanden.</p><p>Diese Gleichung giebt nun den Werth der Function <span class="math inline">\(\zeta(s)\)</span> für jedes
+beliebige complexe <span class="math inline">\(s\)</span> und zeigt, daß sie einwerthig und für alle
+endlichen Werthe von <span class="math inline">\(s\)</span>, außer <span class="math inline">\(1\)</span>, endlich ist, so wie
+auch, daß sie verschwindet, wenn <span class="math inline">\(s\)</span> gleich einer negativen geraden
+Zahl ist.</p><p>Wenn der reelle Theil von <span class="math inline">\(s\)</span> negativ ist, kann das Integral,
+statt positiv um das angegebene Größengebiet, auch negativ um das
+Größengebiet welches sämmtliche übrigen complexen <span class="physPage">673</span>
+Größen enthält erstreckt werden, da das Integral durch Werthe mit
+unendlich großem Modul dann unendlich klein ist. Im Innern dieses
+Größengebiets aber wird die Function unter dem Integralzeichen nur
+unstetig, wenn <span class="math inline">\(x\)</span> gleich einem ganzen Vielfachen von <span class="math inline">\(±2\pi i\)</span>
+wird und das Integral ist daher gleich der Summe der Integrale negativ
+um diese Werthe genommen. Das Integral um den Werth <span class="math inline">\(n2\pi i\)</span> aber
+ist <span class="math inline">\(= (-n2\pi i)^{s-1}(-2\pi i)\)</span>; man erhält daher
+<span class="math display">\[
+  2\sin \pi s \Pi(s-1)\zeta(x) = (2\pi )^s \sum n^{s-1}\bigl((-i)^{s-1} + i^{s-1}\bigr)\text{,}
+\]</span>
+also eine Relation zwischen <span class="math inline">\(\zeta(s)\)</span> und <span class="math inline">\(\zeta(1-s)\)</span>, welche sich
+mit Benutzung bekannter Eigenschaften der Function <span class="math inline">\(\Pi\)</span> auch so
+ausdrücken läßt:
+<span class="math display">\[
+  \Pi(\frac s2 - 1)\pi^{-\frac s2} \zeta(s)
+\]</span>
+bleibt ungeändert, wenn <span class="math inline">\(s\)</span> in <span class="math inline">\(1-s\)</span> verwandelt wird.</p><p>Diese Eigenschaft der Function veranlaßte mich statt <span class="math inline">\(\Pi(s-1)\)</span> das
+Integral <span class="math inline">\(\Pi(\frac s2 - 1)\)</span> in dem allgemeinen Gliede der Reihe
+<span class="math inline">\(\sum \frac 1{n^s}\)</span> einzuführen, wodurch man einen sehr bequemen
+Ausdruck der Function <span class="math inline">\(\zeta(s)\)</span> erhält. In der That hat man
+<span class="math display">\[
+  \frac 1{n^s} \Pi(\frac s2 - 1) \pi^{\frac s2} = ∫_0^∞ e^{-nn\pi x} x^{\frac s2 - 1} dx\text{,}
+\]</span>
+also, wenn man
+<span class="math display">\[
+  \sum_1^∞ e^{-nn\pi x} = \psi(x)
+\]</span>
+setzt,
+<span class="math display">\[
+  \Pi(\frac s2 - 1)\pi^{-\frac s2}\zeta(s) = ∫_0^∞ \psi(x)x^{\frac s2 - 1} dx\text{,}
+\]</span>
+oder da <span class="math inline">\(2\psi(x) + 1 = x^{-\frac 12}(2\psi(\frac 1x) + 1)\)</span>,
+(<span class="cite">Jacobi. Fund. S. 184</span>)
+<span class="math display">\[\begin{gather*} \Pi(\frac s2 - 1) \pi^{-\frac s2} \zeta(s)
+       = ∫_1^∞ \psi(x)x^{\frac s2 - 1} dx
+       + ∫_0^1 \psi(\frac 1x) x^{\frac s2 - \frac 32} dx
+\\
+ + \frac 12 ∫_0^1(x^{\frac s2 - \frac 32} - x^{\frac s2 - 1}) dx
+\\
+ = \frac 1{s(s-1)} + ∫_1^∞ \psi(x) (x^{\frac s2 - 1} + x^{-\frac 12 - \frac s2}) dx\text{.}
+\end{gather*}\]</span></p><p><span class="physPage">674</span> Ich setze nun <span class="math inline">\(s = \frac 12 + ti\)</span> und
+<span class="math display">\[
+  \Pi(\frac s2)(s - 1) \pi^{-\frac s2}\zeta(s) = \xi(t)\text{,}
+\]</span>
+so daß
+<span class="math display">\[
+  \xi(t) = \frac 12 - (tt + \frac 14)∫_1^∞ \psi(x) x^{-\frac 34} \cos(\frac 12 t\log x) dx
+\]</span>
+oder auch
+<span class="math display">\[
+  \xi(t) = 4 ∫_1^∞ \frac {d\bigl(x^{\frac 32} \psi&#39;(x)\bigr)}{dx} x^{−\frac 14} \cos(\frac 12 t \log x )dx\text{.}
+\]</span></p><p>Diese Function ist für alle endlichen Werthe von <span class="math inline">\(t\)</span> endlich, und
+läßt sich nach Potenzen von <span class="math inline">\(tt\)</span> in eine sehr schnell
+convergirende Reihe entwickeln. Da für einen Werth von <span class="math inline">\(s\)</span>,
+dessen reeller Bestandtheil größer als <span class="math inline">\(1\)</span> ist, <span class="math inline">\(\log \zeta(s) =
+- \sum \log (1 - p^{-s})\)</span> endlich bleibt und von den Logarithmen der
+übrigen Factoren von <span class="math inline">\(\xi(t)\)</span> dasselbe gilt, so kann die Function
+<span class="math inline">\(\xi(t)\)</span> nur verschwinden, wenn der imaginäre Theil von <span class="math inline">\(t\)</span>
+zwischen <span class="math inline">\(\frac 12 i\)</span> und <span class="math inline">\(-\frac 12 i\)</span> liegt.  Die Anzahl
+der Wurzeln von <span class="math inline">\(\xi(t) = 0\)</span>, deren reeller Theil zwischen <span class="math inline">\(0\)</span>
+und <span class="math inline">\(T\)</span> liegt, ist etwa <span class="math inline">\(= \frac T{2\pi} \log \frac T{2\pi} -
+\frac T{2\pi}\)</span>; denn das Integral <span class="math inline">\(∫d\log \xi(t)\)</span> positiv um den
+Inbegriff der Werthe von <span class="math inline">\(t\)</span> erstreckt, deren imaginärer Theil
+zwischen <span class="math inline">\(\frac 12 i\)</span> und <span class="math inline">\(-\frac 12 i\)</span> und deren reeller
+Theil zwischen <span class="math inline">\(0\)</span> und <span class="math inline">\(T\)</span> liegt, ist, (bis auf einen
+Bruchtheil von der Ordnung der Größe <span class="math inline">\(\frac 1T\)</span>) gleich <span class="math inline">\((T
+\log \frac T{2\pi} - T) i\)</span>; dieses Integral aber ist gleich der Anzahl
+der in diesem Gebiet liegenden Wurzeln von <span class="math inline">\(\xi(t) = 0\)</span>,
+multiplicirt mit <span class="math inline">\(2\pi i\)</span>. Man findet nun in der That etwa so viel
+reelle Wurzeln innerhalb dieser Grenzen, und es ist sehr
+wahrscheinlich, daß alle Wurzeln reell sind. Hievon wäre allerdings
+ein strenger Beweis zu wünschen; ich habe indeß die Aufsuchung
+desselben, nach einigen flüchtigen vergeblichen Versuchen vorläufig
+bei Seite gelassen, da er für den nächsten Zweck meiner Untersuchung
+entbehrlich schien.</p><p><span class="physPage">675</span> Bezeichnet man durch <span class="math inline">\(\alpha\)</span> jede Wurzel der Gleichung
+<span class="math inline">\(\xi(\alpha) = 0\)</span>, so kann man <span class="math inline">\(\log \xi(t)\)</span> durch
+<span class="math display">\[
+  \sum \log \bigl(1 - \frac{tt}{\alpha\alpha} \bigr)
+    + \log \xi(0)
+\]</span>
+ausdrücken; denn da die Dichtigkeit der Wurzeln von der Größe <span class="math inline">\(t\)</span>
+mit <span class="math inline">\(t\)</span> nur wie <span class="math inline">\(\log \frac t{2\pi}\)</span> wächst, so convergirt
+dieser Ausdruck und wird für ein unendliches <span class="math inline">\(t\)</span> nur unendlich
+wie <span class="math inline">\(t \log t\)</span>; er unterscheidet sich also von <span class="math inline">\(\log \xi(t)\)</span>
+um eine Function von <span class="math inline">\(tt\)</span>, die für ein endliches <span class="math inline">\(t\)</span> stetig
+und endlich bleibt und mit <span class="math inline">\(tt\)</span> dividirt für ein unendliches
+<span class="math inline">\(t\)</span> unendlich klein wird. Dieser Unterschied ist folglich eine
+Constante, deren Werth durch Einsetzung von <span class="math inline">\(t = 0\)</span> bestimmt
+werden kann.</p><p>Mit diesen Hülfsmitteln läßt sich nun die Anzahl der Primzahlen, die
+kleiner als <span class="math inline">\(x\)</span> sind, bestimmen.</p><p>Es sei <span class="math inline">\(F(x)\)</span>, wenn <span class="math inline">\(x\)</span> nicht gerade einer Primzahl gleich
+ist, gleich dieser Anzahl, wenn aber <span class="math inline">\(x\)</span> eine Primzahl ist, um
+<span class="math inline">\(\frac 12\)</span> größer, so daß für ein <span class="math inline">\(x\)</span>, bei welchem
+<span class="math inline">\(F(x)\)</span> sich sprungweise ändert,
+<span class="math display">\[
+  F(x) = \frac{F(x + 0) + F(x - 0)}2\text{.}
+\]</span></p><p>Ersetzt man nun in
+<span class="math display">\[
+  \log \zeta(s) = - \sum \log (1 - p^{-s})
+  = \sum p^{-s}
+  + \frac 12 \sum p^{-2s}
+  + \frac 13 \sum p^{-3s} + …
+\]</span>
+<span class="math display">\[
+  p^{-s} \text{ durch } s∫_p^∞ x^{-s-1}dx, p^{-2s} \text{ durch } s∫_{p^2}^∞ x^{-s-1} dx, …\text{,}
+\]</span>
+so erhält man
+<span class="math display">\[
+  \frac{\log \zeta(s)}s
+  = ∫_1^∞ f(x) x^{-s-1} dx\text{,}
+\]</span>
+wenn man
+<span class="math display">\[
+  F(x)
+  + \frac 12 F(x^{\frac 12})
+  + \frac 13 F(x^{\frac 13})
+  + …
+\]</span>
+durch <span class="math inline">\(f(x)\)</span> bezeichnet.</p><p>Diese Gleichung ist gültig für jeden complexen Werth <span class="math inline">\(a + bi\)</span> von
+<span class="math inline">\(s\)</span>, wenn <span class="math inline">\(a &gt; 1\)</span>. Wenn aber in diesem Umfange die Gleichung
+<span class="math display">\[
+  g(s) = ∫_0^∞ h(x) x^{-s} d \log x
+\]</span>
+<span class="physPage">676</span> gilt, so kann man mit Hülfe des <span class="personalName">Fourier</span>’schen
+Satzes die Function <span class="math inline">\(h\)</span> durch die Function <span class="math inline">\(g\)</span> ausdrücken. Die
+Gleichung zerfällt, wenn <span class="math inline">\(h(x)\)</span> reell ist und
+<span class="math display">\[
+  g(a + bi) = g_1(b) + i g_2(b)\text{,}
+\]</span>
+in den beiden folgenden:
+<span class="math display">\[
+  g_1(b)
+  = ∫_0^∞ h(x) x^{-a} \cos(b\log x) d \log x\text{,}
+\]</span>
+<span class="math display">\[
+  i g_2(b) = -i∫_0^∞ h(x) x^{-a} \sin(b\log x) d \log x\text{.}
+\]</span></p><p>Wenn man beide Gleichungen mit <span class="math inline">\((\cos(b\log y) + i\sin(b\log y))
+db\)</span> multiplicirt und von <span class="math inline">\(-∞\)</span> bis <span class="math inline">\(+∞\)</span> integrirt, so erhält
+man in beiden auf der rechten Seite nach dem <span class="personalName">Fourier</span>’schen
+Satze <span class="math inline">\(\pi h(y) y^{-a}\)</span>, also, wenn man beide Gleichungen addirt
+und mit <span class="math inline">\(i y^a\)</span> multiplicirt,
+<span class="math display">\[
+  2\pi i h(y) = ∫_{a - ∞i}^{a + ∞i} g(s) y^s ds\text{,}
+\]</span>
+worin die Integration so auszuführen ist, daß der reelle Theil von <span class="math inline">\(s\)</span>
+constant bleibt.</p><p>Das Integral stellt für einen Werth von <span class="math inline">\(y\)</span>, bei welchem eine
+sprungweise Änderung der Function <span class="math inline">\(h(y)\)</span> stattfindet, den
+Mittelwerth aus den Werthen der Function <span class="math inline">\(h\)</span> zu beiden Seiten des
+Sprunges dar. Bei der hier vorausgesetzten Bestimmungsweise der
+Function <span class="math inline">\(f(x)\)</span> besitzt diese dieselbe Eigenschaft, und man hat
+daher völlig allgemein
+<span class="math display">\[
+  f(y)
+  = \frac 1{2\pi i} ∫_{a - ∞ i}^{a + ∞ i} \frac{\log \zeta(s)}{s} y^s ds\text{.}
+\]</span></p><p>Für <span class="math inline">\(\log \zeta\)</span> kann man nun den früher gefundenen Ausdruck
+<span class="math display">\[
+  \frac s2 \log \pi
+  - \log(s - 1)
+  - \log \pi\bigl(\frac s2 \bigr)
+  + \sum^\alpha \log \bigl(1 + \frac{(s - \frac{1}{2})^2}{\alpha\alpha} \bigr)
+  + \log \xi(0)
+\label{insertedSummation}\]</span>
+substituiren; die Integrale der einzelnen Glieder dieses Ausdrucks
+würden aber dann in’s Unendliche ausgedehnt nicht convergiren, weshalb
+es zweckmäßig ist, die Gleichung vorher durch partielle Integration in
+<span class="math display">\[
+  f(x)
+  = - \frac 1{2\pi i} \frac 1{\log x}
+      ∫_{a - ∞i}^{a + ∞i} \frac{d \frac{\log \zeta(s)}s}{ds} x^s ds
+\]</span>
+<span class="physPage">677</span> umzuformen.</p><p>Da
+<span class="math display">\[
+  - \log \pi \bigl( \frac{s}{2} \bigr)
+  = \lim \bigl( \sum_{n=1}^{n=m}
+           \log \bigl( 1 + \frac{s}{2n} \bigr)
+           - \frac{s}{2} \log m \bigr)\text{,}
+\]</span>
+für <span class="math inline">\(m = ∞\)</span>, also
+<span class="math display">\[
+  - \frac{d\frac 1s\log \Pi\frac s2}{ds}
+  = \sum_1^∞ \frac{d \frac 1s \log (1 + \frac s{2n})}{ds}\text{,}
+\]</span>
+so erhalten dann sämmtliche Glieder des Ausdruckes für <span class="math inline">\(f(x)\)</span> mit Ausnahme von
+<span class="math display">\[
+  \frac 1{2\pi i}\frac 1{\log x}∫_{a - ∞i}^{a + ∞i}\frac 1{ss} \log \xi(0) x^s ds
+  = \log \xi(0)
+\]</span>
+die Form
+<span class="math display">\[
+  ±\frac 1{2\pi i}\frac 1{\log x}
+               ∫_{a - ∞ i}^{a + ∞ i}
+               \frac{d \bigl(\frac 1s \log(1 - \frac sβ) \bigr)}{ds}
+               x^s ds\text{.}
+\]</span></p><p>Nun ist aber
+<span class="math display">\[
+  \frac{d \bigl(\frac 1s \log(1 - \frac sβ)\bigr)}{dβ}
+  = \frac 1{(β - s)β}\text{,}
+\]</span>
+und, wenn der reelle Theil von <span class="math inline">\(s\)</span> grösser als der reelle Theil
+von <span class="math inline">\(β\)</span> ist,
+<span class="math display">\[
+  -\frac 1{2\pi i} ∫_{a - ∞i}^{a + ∞i}\frac{x^s ds}{(β - s)β}
+  = \frac{x^β}β
+  = ∫_∞^x x^{β - 1} \,dx\text{,}
+\label{addedNegation}\]</span>
+oder
+<span class="math display">\[
+  = ∫_0^x x^{β - 1} dx\text{,}
+\]</span>
+je nachdem der reelle Theil von <span class="math inline">\(β\)</span> negativ oder positiv ist. Man hat daher
+<span class="math display">\[
+  -\frac 1{2\pi i}\frac 1{\log x}
+               ∫_{a - ∞ i}^{a + ∞ i}
+               \frac{d \bigl( \frac 1s \log \bigl(1 - \frac sβ \bigr)\bigr)}{ds}
+               x^s ds \\
+  = -\frac 1{2\pi i} ∫_{a - ∞i}^{a + ∞i}
+       \frac 1s \log \bigl(1 - \frac sβ\bigr)
+           x^s ds \\
+\]</span>
+<span class="physPage">678</span>
+<span class="math display">\[
+  = ∫_∞^x \frac{x^{β - 1}}{\log x} dx + \text{ const. im ersten}
+\]</span>
+<span class="math display">\[
+  \text{und }
+  = ∫_0^x \frac{x^{β - 1}}{\log x} dx + \text{ const. im zweiten Falle.}
+\]</span></p><p>Im ersten Falle bestimmt sich die Integrationsconstante, wenn man den
+reellen Theil von <span class="math inline">\(β\)</span> negativ unendlich werden läßt; im zweiten
+Falle erhält das Integral von <span class="math inline">\(0\)</span> bis <span class="math inline">\(x\)</span> um <span class="math inline">\(2\pi i\)</span>
+verschiedene Werthe, je nachdem die Integration durch complexe Werthe
+mit positivem oder negativem Arcus geschieht, und wird, auf jenem Wege
+genommen, unendlich klein, wenn der Coefficient von <span class="math inline">\(i\)</span> in dem
+Werthe von <span class="math inline">\(β\)</span> positiv unendlich wird, auf letzterem aber, wenn
+dieser Coefficient negativ unendlich wird. Hieraus ergiebt sich, wie
+auf der linken Seite <span class="math inline">\(\log(1 - \frac sβ)\)</span> zu bestimmen ist, damit
+die Integrationsconstante wegfällt.</p><p>Durch Einsetzung dieser Werthe in den Ausdruck für <span class="math inline">\(f(x)\)</span> erhält man
+<span class="math display">\[
+  f(x)
+  = \Li(x)
+  - \sum^\alpha\bigl( \Li(x^{\frac 12 + \alpha i})
+            + \Li(x^{\frac 12 - \alpha i})\bigr)
+  + ∫_x^∞ \frac 1{x^2 - 1} \frac{dx}{x \log x}
+  + \log \xi(0)\text{,}
+\]</span>
+wenn in <span class="math inline">\(\sum^\alpha\)</span> für <span class="math inline">\(\alpha\)</span> sämmtliche positiven (oder einen
+positiven reellen Theil enthaltenden) Wurzeln der Gleichung <span class="math inline">\(\xi(\alpha)
+= 0\)</span>, ihrer Größe nach geordnet, gesetzt werden. Es läßt sich, mit
+Hülfe einer genaueren Discussion der Function <span class="math inline">\(\xi\)</span>, leicht zeigen,
+daß bei dieser Anordnung der Werth der Reihe
+<span class="math display">\[
+  \sum\bigl(\Li(x^{\frac 12 + \alpha i})
+         + \Li(x^{\frac 12 - \alpha i})\bigr)\log x
+\]</span>
+mit dem Grenzwerth, gegen welchen
+<span class="math display">\[
+  \frac 1{2\pi i} ∫_{a - bi}^{a + bi}
+               \frac{d \frac 1s \sum\log(1 + \frac{(s - \frac 12)^2}{\alpha\alpha})}{ds} x^s ds
+\]</span>
+<span class="physPage">679</span> bei unaufhörlichem Wachsen der Größe <span class="math inline">\(b\)</span> convergirt,
+übereinstimmt; durch veränderte Anordnung aber würde sie jeden
+beliebigen reellen Werth erhalten können.</p><p>Aus <span class="math inline">\(f(x)\)</span> findet sich <span class="math inline">\(F(x)\)</span> mittelst der durch Umkehrung
+der Relation
+<span class="math display">\[
+  f(x) = \sum \frac 1n F(x^{\frac 1n})
+\]</span>
+sich ergebenden Gleichung
+<span class="math display">\[
+  F(x) = \sum(-1)^μ \frac 1m f( x^{\frac 1m})\text{,}
+\]</span>
+worin für <span class="math inline">\(m\)</span> der Reihe nach die durch kein Quadrat außer
+<span class="math inline">\(1\)</span> theilbaren Zahlen zu setzen sind und <span class="math inline">\(μ\)</span> die Anzahl der
+Primfactoren von <span class="math inline">\(m\)</span> bezeichnet.</p><p>Beschränkt man <span class="math inline">\(\sum^\alpha\)</span> auf eine endliche Zahl von Gliedern, so
+giebt die Derivirte des Ausdrucks für <span class="math inline">\(f(x)\)</span> oder, bis auf einen
+mit wachsendem <span class="math inline">\(x\)</span> sehr schnell abnehmenden Theil,
+<span class="math display">\[
+  \frac 1{\log x}
+  - 2\sum^\alpha \frac{\cos (\alpha\log x) x^{-\frac 12}}{\log x}
+\]</span>
+einen angenäherten Ausdruck für die Dichtigkeit der Primzahlen <span class="math inline">\(+\)</span> der
+halben Dichtigkeit der Primzahlquadrate <span class="math inline">\(+\frac 13\)</span> von der
+Dichtigkeit der Primzahlcuben u. s. w. von der Größe <span class="math inline">\(x\)</span>.</p><p>Die bekannte Näherungsformel <span class="math inline">\(F(x) = \Li(x)\)</span> ist also nur bis auf
+Größen von der Ordnung der Größe <span class="math inline">\(x^{\frac 12}\)</span> richtig und
+giebt einen etwas zu großen Werth; denn die nicht periodischen Glieder
+in dem Ausdrucke von <span class="math inline">\(F(x)\)</span> sind, von Größen, die mit <span class="math inline">\(x\)</span>
+nicht in’s Unendliche wachsen, abgesehen:
+<span class="math display">\[
+  \Li(x)
+  - \frac 12\Li(x^{\frac 12})
+  - \frac 13\Li(x^{\frac 13})
+  - \frac 15\Li(x^{\frac 15})
+  + \frac 16\Li(x^{\frac 16})
+  - \frac 17\Li(x^{\frac 17})
+  + \cdots
+\]</span></p><p>In der That hat sich bei der von <span class="personalName">Gauß</span> und <span class="personalName">Goldschmidt</span>
+vorgenommenen und bis zu <span class="math inline">\(x =\)</span> drei Millionen fortgesetzten
+Vergleichung von <span class="math inline">\(\Li(x)\)</span> mit der Anzahl der Primzahlen unter
+<span class="math inline">\(x\)</span> diese Anzahl schon vom ersten Hunderttausend an stets
+<span class="physPage">680</span> kleiner als <span class="math inline">\(\Li(x)\)</span> ergeben, und zwar wächst die
+Differenz unter manchen Schwankungen allmählich mit <span class="math inline">\(x\)</span>. Aber
+auch die von den periodischen Gliedern abhängige stellenweise
+Verdichtung und Verdünnung der Primzahlen hat schon bei den Zählungen
+die Aufmerksamkeit erregt, ohne daß jedoch hierin eine Gesetzmäßigkeit
+bemerkt worden wäre. Bei einer etwaigen neuen Zählung würde es
+interessant sein, den Einfluß der einzelnen in dem Ausdrucke für die
+Dichtigkeit der Primzahlen enthaltenen periodischen Glieder zu
+verfolgen. Einen regelmäßigeren Gang als <span class="math inline">\(F(x)\)</span> würde die
+Function <span class="math inline">\(f(x)\)</span> zeigen, welche sich schon im ersten Hundert sehr
+deutlich als mit <span class="math inline">\(\Li(x) + \log \xi(0)\)</span> im Mittel übereinstimmend
+erkennen läßt.</p></div></section></div></section><section class="backMatter"><div class="sectionContent"></div></section></section></body></html>

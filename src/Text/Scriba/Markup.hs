@@ -55,6 +55,7 @@ module Text.Scriba.Markup
   , MathItem(..)
   , decorate
   , writeStandalone
+  , MathJaxConfig(..)
   )
 where
 
@@ -67,8 +68,13 @@ import           Text.Scriba.Element
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
-import           Control.Monad                  ( join )
+import           Control.Monad                  ( join
+                                                , unless
+                                                )
 import           Control.Monad.Except           ( MonadError(..) )
+import           Data.Aeson                     ( ToJSON(..) )
+import qualified Data.Aeson                    as Aeson
+import           Data.Char                      ( isAlpha )
 import           Data.Functor                   ( ($>) )
 import           Data.Maybe                     ( mapMaybe
                                                 , fromMaybe
@@ -78,6 +84,8 @@ import qualified Data.Map.Merge.Strict         as M
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
+import qualified Data.Text.Lazy                as TL
+import qualified Data.Text.Lazy.Encoding       as TLE
 import           Data.Void                      ( Void
                                                 , absurd
                                                 )
@@ -206,6 +214,10 @@ data Inline a
   = Istr !Str
   | Iemph !(Emph (Inline a))
   | Iquote !(Quote (Inline a))
+  | Iname !(Name (Inline a))
+  | IworkTitle !(WorkTitle (Inline a))
+  | Iregularize !(Regularize (Inline a))
+  | Icite !(Cite (Inline a))
   | IinlineMath !InlineMath
   | IdisplayMath !DisplayMath
   | Icode !InlineCode
@@ -230,6 +242,10 @@ instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
   referencing (Istr            x) = Istr <$> referencing x
   referencing (Iemph           x) = Iemph <$> referencing x
   referencing (Iquote          x) = Iquote <$> referencing x
+  referencing (Iname           x) = Iname <$> referencing x
+  referencing (IworkTitle      x) = IworkTitle <$> referencing x
+  referencing (Iregularize     x) = Iregularize <$> referencing x
+  referencing (Icite           x) = Icite <$> referencing x
   referencing (IinlineMath     x) = IinlineMath <$> referencing x
   referencing (IdisplayMath    x) = IdisplayMath <$> referencing x
   referencing (Icode           x) = Icode <$> referencing x
@@ -260,6 +276,10 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (Istr            i ) = strToText i
   inlineToText (Iemph           is) = emphToText inlineToText is
   inlineToText (Iquote          is) = quoteToText inlineToText is
+  inlineToText (Iname           is) = nameToText inlineToText is
+  inlineToText (IworkTitle      is) = workTitleToText inlineToText is
+  inlineToText (Iregularize     is) = regularizeToText inlineToText is
+  inlineToText (Icite           is) = citeToText inlineToText is
   inlineToText (IinlineMath     t ) = inlineMathToText t
   inlineToText (IdisplayMath    d ) = displayMathToText d
   inlineToText (Icode           t ) = inlineCodeToText t
@@ -314,17 +334,18 @@ pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
         , nc <*> pure FilterByCounterDep
         )
 
+defaultListConfig :: NumberConfig (Inline a)
+defaultListConfig = NumberConfig
+  ( NumberStyle (FilterByContainer "item:olist") Nothing
+  $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
+  )
+  (Just [Istr $ Str "item"])
+  (Just [Istr $ Str " "])
+
 -- TODO: add actual config
 pListConfig :: Scriba Element (NumberConfig (Inline a))
-pListConfig = meta $ attrs $ attrDef "olist" defaultListConfig $ pure
-  defaultListConfig
- where
-  defaultListConfig = NumberConfig
-    ( NumberStyle (FilterByContainer "item:olist") Nothing
-    $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
-    )
-    (Just [Istr $ Str "item"])
-    (Just [Istr $ Str " "])
+pListConfig =
+  meta $ attrs $ attrDef "olist" defaultListConfig $ pure defaultListConfig
 
 -- TODO: more exotic orderings. Perhaps make prefix/numberFirst
 -- exclusive as well. Also options for suppressing particular
@@ -487,6 +508,14 @@ pInline =
       <$> pEmph pInline
       <|> Iquote
       <$> pQuote pInline
+      <|> Iname
+      <$> pName pInline
+      <|> IworkTitle
+      <$> pWorkTitle pInline
+      <|> Iregularize
+      <$> pRegularize pInline
+      <|> Icite
+      <$> pCite pInline
       <|> IpageMark
       <$> pPageMark
       <|> IinlineMath
@@ -511,6 +540,14 @@ pInlineCore =
       <$> pEmph pInlineCore
       <|> Iquote
       <$> pQuote pInlineCore
+      <|> Iname
+      <$> pName pInlineCore
+      <|> IworkTitle
+      <$> pWorkTitle pInlineCore
+      <|> Iregularize
+      <$> pRegularize pInlineCore
+      <|> Icite
+      <$> pCite pInlineCore
       <|> IpageMark
       <$> pPageMark
       <|> IinlineMath
@@ -578,6 +615,31 @@ pControl = IcRef <$> pSourceRef
 
 -- ** Document parsing
 
+-- TODO: Validation?
+pMathMacros :: Scriba Attrs (Map Text (Int, Text))
+pMathMacros = allAttrsOf pMathMacro
+ where
+  pMathMacro = do
+    t <-
+      ty
+      $   inspect
+      >>= maybe (throwError $ Msg "unexpected nameless math macro") pure
+    unless (T.all isAlpha t)
+      $  throwError
+      $  Msg
+      $  "math macro name \""
+      <> t
+      <> "\" should be entirely alphabetic characters"
+    n <- meta $ attrs $ attrDef "args" 0 $ do
+      nr <- allContentOf simpleText
+      case safeRead (T.concat nr) of
+        Just n | n >= 0 -> pure n
+        _               -> throwError $ Msg "expected positive integer"
+    c <- T.concat <$> allContentOf simpleText
+    pure (n, c)
+
+
+
 -- TODO: have a pSectionNamed :: Text -> Scriba Element Section to
 -- deal with special sections, like the matter?
 -- TODO: deal with this allContent invocation (and any other
@@ -600,10 +662,11 @@ pDoc = do
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
       t       <- mattr "title" $ allContentOf pInlineCore
+      mmacros <- mattr "mathMacros" $ meta $ attrs pMathMacros
       tplain  <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
       fconfig <- mattr "formalBlocks" pFormalConfig
       sconfig <- mattr "sections" pSectionConfig
-      lconfig <- attr "lists" pListConfig
+      lconfig <- attrDef "lists" defaultListConfig pListConfig
       let lCrel = ("item:olist", Just $ Relative [])
       (dmathCrel, dmathNumConf) <-
         fmap unzips $ attrMaybe "formula" $ meta $ attrs pNumberRef
@@ -643,6 +706,7 @@ pDoc = do
                       (TitlingConfig fconf sconf)
                       elemrel'
                       crel
+                      mmacros
     content $ pExplicitMatter dm <|> pBare dm
  where
   pMatter t = asNode $ do
@@ -715,10 +779,14 @@ runRefDoc rd d = runRefM (referencing d) rd
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
 traverseInline :: (a -> Inline b) -> Inline a -> Inline b
-traverseInline f (Icontrol a) = f a
-traverseInline f (Iemph    e) = Iemph $ fmap (traverseInline f) e
-traverseInline f (Iquote   e) = Iquote $ fmap (traverseInline f) e
-traverseInline f (Iref     e) = Iref $ fmap (traverseInline f) e
+traverseInline f (Icontrol    a) = f a
+traverseInline f (Iemph       e) = Iemph $ fmap (traverseInline f) e
+traverseInline f (Iquote      e) = Iquote $ fmap (traverseInline f) e
+traverseInline f (Iname       e) = Iname $ fmap (traverseInline f) e
+traverseInline f (IworkTitle  e) = IworkTitle $ fmap (traverseInline f) e
+traverseInline f (Iregularize e) = Iregularize $ fmap (traverseInline f) e
+traverseInline f (Icite       e) = Icite $ fmap (traverseInline f) e
+traverseInline f (Iref        e) = Iref $ fmap (traverseInline f) e
 traverseInline f (ItitleComponent e) =
   ItitleComponent $ fmap (traverseInline f) e
 traverseInline _ (Istr         s) = Istr s
@@ -757,6 +825,10 @@ instance RH.Render a => RH.Render (Inline a) where
   render (Istr            s) = RH.render s
   render (Iemph           s) = RH.render s
   render (Iquote          s) = RH.render s
+  render (Iname           s) = RH.render s
+  render (IworkTitle      s) = RH.render s
+  render (Iregularize     s) = RH.render s
+  render (Icite           s) = RH.render s
   render (IinlineMath     s) = RH.render s
   render (IdisplayMath    s) = RH.render s
   render (Icode           s) = RH.render s
@@ -765,6 +837,23 @@ instance RH.Render a => RH.Render (Inline a) where
   render (Iref            s) = RH.render s
   render (Icontrol        s) = RH.render s
 
+-- TODO: move this elsewhere?
+newtype MathJaxConfig = MathJaxConfig
+  { mjMacros :: Map Text (Int, Text)
+  }
+
+instance ToJSON MathJaxConfig where
+  toJSON (MathJaxConfig macros) = Aeson.object
+    ["tex" Aeson..= Aeson.object ["macros" Aeson..= jmacros]]
+   where
+    jmacros = toJSON $ M.map renderMacro macros
+    renderMacro (n, t) | n == 0    = toJSON t
+                       | otherwise = toJSON [toJSON t, toJSON n]
+
+renderMathJaxConfig :: DocAttrs i -> TL.Text
+renderMathJaxConfig dm =
+  TLE.decodeUtf8 $ "MathJax=" <> Aeson.encode (toJSON mjc) <> ";"
+  where mjc = MathJaxConfig $ docMathMacros dm
 
 -- TODO: should probably remove this
 -- TODO: for standalone rendering we should probably put the title of
@@ -772,6 +861,7 @@ instance RH.Render a => RH.Render (Inline a) where
 -- TODO: add configurability, especially re: the math.
 -- TODO: have a header include option for documents. Hard-coding a
 -- style path for the manual is obviously poor.
+-- TODO: improve math macro rendering, of course. Should use aeson.
 renderStandalone
   :: (RH.Render (b i), RH.Render i, RH.Render j)
   => Doc b j i
@@ -783,14 +873,14 @@ renderStandalone d@(Doc dm _ _ _) = do
     Html.head $ do
       Html.meta Html.! HtmlA.charset "UTF-8"
       Html.title $ Html.toHtml tplain
+      Html.script $ Html.toHtml (renderMathJaxConfig dm)
       Html.script
         Html.! HtmlA.id "MathJax-script"
         Html.! HtmlA.async ""
         Html.! HtmlA.src
                  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
         $      ""
-      Html.link Html.! HtmlA.href "./manual.css" Html.! HtmlA.rel
-        "stylesheet"
+      Html.link Html.! HtmlA.href "./manual.css" Html.! HtmlA.rel "stylesheet"
     Html.body d'
 
 writeStandalone

@@ -28,6 +28,7 @@ library
                , blaze-markup
                , roman-numerals
                , digits
+               , aeson
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate.Common
@@ -52,6 +53,10 @@ library
     Text.Scriba.Element.Section
     Text.Scriba.Element.Identifier
     Text.Scriba.Element.Ref
+    Text.Scriba.Element.Cite
+    Text.Scriba.Element.Name
+    Text.Scriba.Element.WorkTitle
+    Text.Scriba.Element.Regularize
     Text.Scriba.Intermediate
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse

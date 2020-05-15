@@ -47,6 +47,7 @@ data DocAttrs i = DocAttrs
   , docTitlingConfig :: TitlingConfig i
   , docElemCounterRel :: Map ContainerName (CounterName, NumberConfig i)
   , docCounterRel :: Map CounterName (Set CounterName)
+  , docMathMacros :: Map Text (Int, Text)
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 emptySurround :: Surround a

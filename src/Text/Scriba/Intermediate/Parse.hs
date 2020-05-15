@@ -370,6 +370,10 @@ pOnlySpace = do
         else expectsGotAt ["element", "whitespace"] sp "text"
     _ -> pure ()
 
+safeRead :: Read a => Text -> Maybe a
+safeRead t = case reads (T.unpack t) of
+  [(x, "")] -> Just x
+  _         -> Nothing
 
 -- TODO: improve, especially the expectations.
 -- TODO: might want to lock multiple "while parsing" lines behind a

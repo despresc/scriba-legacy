@@ -94,6 +94,10 @@ tests = testGroup
                       "manual renders to html"
                       "./doc/manual/manual.scb"
                       "./doc/manual/manual.html"
+  , testRenderingWith (HT.renderHtml . SM.writeStandalone)
+                      "riemann renders to html"
+                      "./doc/riemann/riemann.scb"
+                      "./doc/riemann/riemann.html"
   ]
 
 main :: IO ()

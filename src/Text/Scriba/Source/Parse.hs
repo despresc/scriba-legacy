@@ -1,5 +1,4 @@
 {-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -132,25 +131,30 @@ pBlankLine = MP.label "blank line" $ MP.try $ do
   pure $ "\n" <> t
 
 posIndent :: SourcePos -> Int
-posIndent = (subtract 1) . MP.unPos . MP.sourceColumn
+posIndent = subtract 1 . MP.unPos . MP.sourceColumn
+
+guardLevel :: (Int -> Int -> Parser a) -> Parser a -> Parser a
+guardLevel pLow pHigh = do
+  sp <- MP.getSourcePos
+  let n = posIndent sp
+  lvl <- getIndent
+  if n < lvl then pLow n lvl else pHigh
 
 -- Run the first parser if a de-indent is encountered.
 atDeindent :: a -> Parser a -> Parser a
-atDeindent low pHigh = do
-  sp <- MP.getSourcePos
-  let n = posIndent sp
-  lvl <- getIndent
-  if n < lvl then pure low else pHigh
+atDeindent low = guardLevel (const $ const $ pure low)
 
 guardIndented :: Parser ()
-guardIndented = do
-  sp <- MP.getSourcePos
-  let n = posIndent sp
-  lvl <- getIndent
-  if n < lvl
-    then
-      fail $ "insufficient indent: got " <> show n <> ", expected " <> show lvl
-    else pure ()
+guardIndented =
+  guardLevel
+      (\n lvl ->
+        fail
+          $  "insufficient indent: got "
+          <> show n
+          <> ", expected "
+          <> show lvl
+      )
+    $ pure ()
 
 -- Document parts
 
@@ -170,12 +174,11 @@ pDocAttrs = do
   sp <- MP.getSourcePos
   MP.try $ pBlockMark >> cLineSpace >> void "scriba"
   cSpace
-  atIndent (posIndent sp + 1) $ do
-    atDeindent (Attrs [] []) $ do
-      ia <- pInlineAttrs cSpace
-      atDeindent (Attrs ia []) $ do
-        ba <- pBlockAttrs cSpace
-        pure $ Attrs ia ba
+  atIndent (posIndent sp + 1) $ atDeindent (Attrs [] []) $ do
+    ia <- pInlineAttrs cSpace
+    atDeindent (Attrs ia []) $ do
+      ba <- pBlockAttrs cSpace
+      pure $ Attrs ia ba
 
 pSecContent :: Parser [SecNode]
 pSecContent = MP.many $ pSecNode <* cSpace
@@ -236,9 +239,9 @@ pBlockElement pTy = do
       ba <- pBlockAttrs cSpace
       atDeindent (Element sp ty (Attrs ia ba) [] BlockNil) $ do
         as <- MP.option [] $ pArgs cSpace
-        atDeindent (Element sp ty (Attrs ia ba) as BlockNil) $ do
-          c <- pBlockContent
-          pure $ Element sp ty (Attrs ia ba) as c
+        atDeindent (Element sp ty (Attrs ia ba) as BlockNil)
+          $   Element sp ty (Attrs ia ba) as
+          <$> pBlockContent
 
 manyIndented :: Parser space -> Parser a -> Parser [a]
 manyIndented sc p = go id
@@ -290,23 +293,18 @@ pBlockUnparContent = BlockInlines <$> pSeq
   where pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
 
 pBlockNil :: Parser BlockContent
-pBlockNil = MP.label "de-indented content" $ do
-  sp <- MP.getSourcePos
-  let n = posIndent sp
-  lvl <- getIndent
-  if n < lvl then pure BlockNil else empty
+pBlockNil = MP.label "de-indented content" $ atDeindent BlockNil empty
 
 pBlockVerbContent :: Parser BlockContent
 pBlockVerbContent = do
   src <- MP.getSourcePos
   void pVerbatimBlockBodyStart
   cLineSpace
-  t <- pBlockVerbText
-  pure $ BlockVerbatim src $ stripNewline t
+  BlockVerbatim src . stripNewline <$> pBlockVerbText
   where stripNewline t = maybe t snd $ T.uncons t
 
 pBlockVerbText :: Parser Text
-pBlockVerbText = fmap T.concat $ MP.many blankThenText
+pBlockVerbText = T.concat <$> MP.many blankThenText
  where
   blankThenText = MP.try $ do
     ts   <- MP.many pBlankLine
@@ -322,8 +320,7 @@ pBlockNode = BlockBlock <$> pBlockElement (MP.optional pElemTy) <|> pPar
  where
   pPar = do
     sp <- MP.getSourcePos
-    p  <- pParagraph
-    pure $ BlockPar sp p
+    BlockPar sp <$> pParagraph
 
 pInlineContent :: Parser InlineContent
 pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
@@ -401,6 +398,7 @@ pElementArgsStart = "@" <?> "start of arguments"
 -- TODO: rethink comments in the presence of indentation
 -- sensitivity. If they're just a form of ignored inline node then
 -- they should be parsed as such.
+pCommentBody :: Parser Text
 pCommentBody = T.concat <$> go 0
  where
   insigChar =
@@ -552,7 +550,7 @@ parseDoc' :: Text -> Text -> Either Text Doc
 parseDoc' = parseWith' pDoc
 
 parseTesting :: Parser a -> Int -> Text -> Either Text (Text, a)
-parseTesting p inp = parseWithAt' go "<test>" inp
+parseTesting p = parseWithAt' go "<test>"
  where
   go = do
     a <- p
