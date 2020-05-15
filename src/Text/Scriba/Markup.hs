@@ -56,6 +56,7 @@ module Text.Scriba.Markup
   , decorate
   , writeStandalone
   , MathJaxConfig(..)
+  , StandaloneConfig(..)
   )
 where
 
@@ -655,7 +656,8 @@ pMathMacros = allAttrsOf pMathMacro
 -- going on.
 -- TODO: add configuration for elemrel
 -- TODO: better math numbering support. The elemrel thing is particularly bad.
--- TODO: list config should not be mandatory.
+-- TODO: the explicit matter parsing is not correct - you should need
+-- to specify only a subset of the *Matter
 pDoc :: Scriba Element (Doc Block (Inline a) (Inline InlineControl))
 pDoc = do
   matchTy "scriba"
@@ -715,7 +717,7 @@ pDoc = do
   pExplicitMatter dm = do
     f <- one $ pMatter "frontMatter"
     m <- one $ pMatter "mainMatter"
-    b <- one $ pMatter "endMatter"
+    b <- one $ pMatter "backMatter"
     zero
     pure $ Doc dm f m b
   pBare dm = do
@@ -855,18 +857,24 @@ renderMathJaxConfig dm =
   TLE.decodeUtf8 $ "MathJax=" <> Aeson.encode (toJSON mjc) <> ";"
   where mjc = MathJaxConfig $ docMathMacros dm
 
+newtype StandaloneConfig = StandaloneConfig
+  { standaloneCSS :: FilePath
+  }
+
 -- TODO: should probably remove this
 -- TODO: for standalone rendering we should probably put the title of
 -- the document in the header.
 -- TODO: add configurability, especially re: the math.
 -- TODO: have a header include option for documents. Hard-coding a
 -- style path for the manual is obviously poor.
--- TODO: improve math macro rendering, of course. Should use aeson.
+-- TODO: Have StandaloneConfig instead be (StandaloneConfig a) and
+-- make it an HTML instance? If we are keeping it, of course.
 renderStandalone
   :: (RH.Render (b i), RH.Render i, RH.Render j)
-  => Doc b j i
+  => StandaloneConfig
+  -> Doc b j i
   -> RH.RenderM Html.Html
-renderStandalone d@(Doc dm _ _ _) = do
+renderStandalone (StandaloneConfig csspath) d@(Doc dm _ _ _) = do
   d' <- RH.render d
   let tplain = docPlainTitle dm
   pure $ Html.docTypeHtml $ do
@@ -880,10 +888,10 @@ renderStandalone d@(Doc dm _ _ _) = do
         Html.! HtmlA.src
                  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
         $      ""
-      Html.link Html.! HtmlA.href "./manual.css" Html.! HtmlA.rel "stylesheet"
+      Html.link Html.! HtmlA.href (Html.toValue csspath) Html.! HtmlA.rel "stylesheet"
     Html.body d'
 
 writeStandalone
-  :: (RH.Render (b i), RH.Render i, RH.Render j) => Doc b j i -> Html.Html
-writeStandalone d =
-  fst $ RH.runRender (renderStandalone d) RH.initialRenderState
+  :: (RH.Render (b i), RH.Render i, RH.Render j) => StandaloneConfig -> Doc b j i -> Html.Html
+writeStandalone sc d =
+  fst $ RH.runRender (renderStandalone sc d) RH.initialRenderState

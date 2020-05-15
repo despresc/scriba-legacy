@@ -90,14 +90,16 @@ tests = testGroup
   , testMarkup "manual parses into internal markup"
                "./doc/manual/manual.scb"
                "./test/tests/manual.markup"
-  , testRenderingWith (HT.renderHtml . SM.writeStandalone)
-                      "manual renders to html"
-                      "./doc/manual/manual.scb"
-                      "./doc/manual/manual.html"
-  , testRenderingWith (HT.renderHtml . SM.writeStandalone)
-                      "riemann renders to html"
-                      "./doc/riemann/riemann.scb"
-                      "./doc/riemann/riemann.html"
+  , testRenderingWith
+    (HT.renderHtml . SM.writeStandalone (SM.StandaloneConfig "./manual.css"))
+    "manual renders to html"
+    "./doc/manual/manual.scb"
+    "./doc/manual/manual.html"
+  , testRenderingWith
+    (HT.renderHtml . SM.writeStandalone (SM.StandaloneConfig "./riemann.css"))
+    "riemann renders to html"
+    "./doc/riemann/riemann.scb"
+    "./doc/riemann/riemann.html"
   ]
 
 main :: IO ()

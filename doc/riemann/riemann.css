@@ -1,0 +1,129 @@
+body {
+    max-width: 1058px;
+    margin-top: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+p {
+    text-indent: 2em;
+    text-align: justify;
+    hyphens: auto;
+    line-height: 1.3;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+section.scribaDoc {
+    margin-left: 58px;
+    width: 70%;
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+code {
+    font-size: 0.9rem;
+}
+
+.inlineCode > code {
+    white-space: pre-wrap;
+}
+
+.formalBlock {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.formalBlock > .title > .titlePrefix {
+    font-weight: bold;
+}
+
+.formalBlock > .title > .number {
+    font-weight: bold;
+}
+
+.formalBlock > .body {
+    font-style: italic;
+}
+
+.formalBlock.proof > .title {
+    font-style: italic;
+    font-weight: normal;
+}
+
+.formalBlock.proof > .body {
+    font-style: normal;
+    font-weight: normal;
+}
+
+.formalBlock.proof > .title > .titlePrefix {
+    font-style: italic;
+    font-weight: normal;
+}
+
+ol {
+    list-style: decimal;
+}
+
+ol ol {
+    list-style: lower-latin;
+}
+
+ol ol ol {
+    list-style: lower-roman;
+}
+
+ol ol ol ol {
+    list-style: decimal;
+}
+
+li > .body > p:first-child {
+    text-indent: 0;
+}
+
+ul > .body > p:first-child {
+    text-indent: 0;
+}
+
+/* Riemann-specific css */
+
+.physPage {
+    display: none;
+}
+
+
+/* Should instead have a secBreak class and an option to specify that
+   particular untitled sections should have such a break. Or simply
+   offer a secBreak/secTransition marker. */
+
+.mainMatter::before {
+  content : "";
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  margin-bottom: 1.2em;
+  height  : 1px;
+  width   : 25%;  /* or 100px */
+  border-bottom: 1.5px solid black;
+}
+
+.personalName {
+    font-variant: small-caps;
+}
+
+.reg > .old {
+    display: none;
+}
