@@ -664,6 +664,7 @@ pDoc = do
   whileParsingElem "scriba" $ do
     dm <- meta $ attrs $ do
       t       <- mattr "title" $ allContentOf pInlineCore
+      mlang <- attrMaybe "lang" $ T.strip . T.concat <$> allContentOf simpleText
       mmacros <- mattr "mathMacros" $ meta $ attrs pMathMacros
       tplain  <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
       fconfig <- mattr "formalBlocks" pFormalConfig
@@ -704,6 +705,7 @@ pDoc = do
             <> toCNKey fnstyleRaw
         elemrel' = mergeRel elemrel mergedStyles
       pure $ DocAttrs (Title t)
+                      mlang
                       (fromMaybe (stripMarkup (const []) t) tplain)
                       (TitlingConfig fconf sconf)
                       elemrel'
@@ -888,10 +890,14 @@ renderStandalone (StandaloneConfig csspath) d@(Doc dm _ _ _) = do
         Html.! HtmlA.src
                  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
         $      ""
-      Html.link Html.! HtmlA.href (Html.toValue csspath) Html.! HtmlA.rel "stylesheet"
+      Html.link Html.! HtmlA.href (Html.toValue csspath) Html.! HtmlA.rel
+        "stylesheet"
     Html.body d'
 
 writeStandalone
-  :: (RH.Render (b i), RH.Render i, RH.Render j) => StandaloneConfig -> Doc b j i -> Html.Html
+  :: (RH.Render (b i), RH.Render i, RH.Render j)
+  => StandaloneConfig
+  -> Doc b j i
+  -> Html.Html
 writeStandalone sc d =
   fst $ RH.runRender (renderStandalone sc d) RH.initialRenderState

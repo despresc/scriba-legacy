@@ -40,9 +40,12 @@ data Doc b j i = Doc (DocAttrs j) (SectionContent b i) (SectionContent b i) (Sec
 -- TODO: should I mapKey the docNumberStyle here?
 
 -- TODO: I need the numberconfig to have something like Void type, for
--- now. Otherwise I need to resolve control elements inside prefixes and things
+-- now. Otherwise I need to resolve control elements inside prefixes
+-- and things
+-- TODO: have languages be validated
 data DocAttrs i = DocAttrs
   { docTitle :: Title i
+  , docLang :: Maybe Text
   , docPlainTitle :: Text
   , docTitlingConfig :: TitlingConfig i
   , docElemCounterRel :: Map ContainerName (CounterName, NumberConfig i)
@@ -86,7 +89,8 @@ instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Doc b j i) wh
       f' <- RH.render f
       m' <- RH.render m
       b' <- RH.render b
-      pure $ Html.section Html.! HtmlA.class_ "scribaDoc" $ do
+      let mlang = HtmlA.lang . Html.toValue <$> docLang t
+      pure $ Html.section Html.! HtmlA.class_ "scribaDoc" RH.?? mlang $ do
         Html.header t'
         Html.section Html.! HtmlA.class_ "frontMatter" $ f'
         Html.section Html.! HtmlA.class_ "mainMatter" $ m'

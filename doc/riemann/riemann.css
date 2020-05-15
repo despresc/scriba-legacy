@@ -131,9 +131,9 @@ ul > .body > p:first-child {
 /* Way to make responsive? Should probably have config.*/
 
 .workTitle::before {
-    content: "„"
+    content: open-quote;
 }
 
 .workTitle::after {
-    content: "“"
+    content: close-quote;
 }
