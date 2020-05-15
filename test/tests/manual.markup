@@ -7,7 +7,7 @@ Doc
                   Str { getStr = "The scriba markup language and document system" }
               ]
           }
-    , docLang = Nothing
+    , docLang = Just "en-US"
     , docPlainTitle = "The scriba markup language and document system"
     , docTitlingConfig =
         TitlingConfig
