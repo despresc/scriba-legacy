@@ -116,7 +116,7 @@ ul > .body > p:first-child {
   margin-top: 1em;
   margin-bottom: 1.2em;
   height  : 1px;
-  width   : 25%;  /* or 100px */
+  width   : 25%;
   border-bottom: 1.5px solid black;
 }
 
