@@ -94,105 +94,6 @@ import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
-{- TODO:
-
-- Better errors everywhere (use source positions, for one thing)
-
-- Clarify whitespace policy. Right now none of the parsers allow
-  whitespace around elements when recognizing them. This is fine when
-  the output comes from a parsed sml document, but maybe we don't want
-  to rely on that. That also means that elements with unusual
-  presentations might not be parsed correctly.
-
-- Page mark (physPage) might need to be some kind of locator term, or
-  at least some kind of parsed value (to support, e.g., linking to
-  page images).
-
-- related: formal blocks might be used for "discussion", "note", or
-  "proof". These discussion-type blocks are often discussions of
-  particular things (theorem-like blocks, other sections, other books
-  or things in other books if we have linking). We could have some
-  kind of "relates to #thing" property, but we would have to decide
-  how that gets rendered - maybe we use a title template to have "(of
-  Theorem 7.4)" appended to "Proof" in the title of a formal block?
-
-- simple local imports (more or less parsed textual inclusion to split
-  up a document into multiple files). Would probably need a "main" or
-  "index" document.
-
-- document linker. This can manifest in a few ways:
-
-  - cross-document linking. Each volume of an encyclopedia or
-    collected works could be digitized separately, then linked
-    together into a big composite document. Would allow checked
-    inter-document links (see discussion related to formal blocks)
-
-  - composite documents. Sort of the above: combine multiple articles
-    into a single custom journal issue, take a document and annotate
-    it with your commentary, that sort of thing.
-
-- fallbacks and conditional rendering for the various output formats?
-  Say for internal links in non-hypertext formats. Though there we
-  might have some automatic fallback options (e.g. if we link to a
-  numbered thing we could put its type and number in parentheses after
-  the link text).
-
-- the parsers need to be aware of failure while consuming input! I
-  don't think our current error discipline handles this very
-  well. E.g. if we have a document with a # frontMatter then our
-  parser ought to attempt to parse the document with an explicit
-  matter structure. What it should _not_ do, and what it currently
-  does, is fall back to parsing it with the implicit matter structure.
-
-- for inline Code, we may want to do what some markdowns do and turn
-  newlines into spaces
-
-- a reasonable number of the `one text` usages could instead be
-  `allContentOf ...` with a concat.
-
-- facility for replacing typewriter apostrophe with right single
-  quotation mark? Might just be a style guide thing, though.
-
-- the Doc should probably have room for a plain text title in its
-  attributes. Something to put in the HTML title, the database, and so
-  on.
-
-- Now that we have an "AsPara" presentation, we may want to parse
-  things presented as paragraphs as paragraphs and not give them the
-  "p" type in Intermediate. We should also let source presentation
-  influence errors, so that, say, an unexpected syntactic paragraph
-  would give the error "unexpected paragraph", not "unexpected element
-  p".
-
-- For the formal and section config, we might want different styles as
-  in amsmath, perhaps custom ones too. What these entail could be
-  configurable through css and the tex header.
-
-- For lists, and numbered things generally, we should assume a default
-  numbering style, so that references to numbered list items can still
-  be rendered visually in HTML. Alternate styles could still be set,
-  but this would have to be done in-document, and it would be the
-  responsibility of the user (if not using whatever standalone
-  rendering we support) to ensure that the CSS matches what the
-  document assumes. We could still ship with CSS styles for the
-  numbers, and simply put different classes on the rendered lists, of
-  course.
-
-- label/ref. Things that can be numbered should have reference
-  prefixes, with upper/lower case and plural forms (for multiple
-  collected references).
-
-Unified element type configuration? Elements can have have
-
-- identifiers
-- numbers
-
-- We currently have the noNum attribute for suppressing the numbering
-  of displayed equations. It might be better to have boolean syntax
-  for these things. !num and ~num for true and false? unsure.
-
--}
-
 data Block a
   = Bformal !(Formal Block a)
   | Bcode !BlockCode
@@ -203,14 +104,6 @@ data Block a
 deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
 instance Referencing i (Inline a) (Inline b) => Referencing i (Block (Inline a)) (Block (Inline b))
 
--- TODO: rename Math to InlineMath?
--- TODO: Number is [Inline] because I'm lazy with runVaried. It should
--- probably be Text, and might want to record the Int that produced
--- that number, or maybe be a list of number parts? We might want to
--- call it something different. Tag, or something.
--- TODO: Should probably make this type more modular. Would allow us
--- greater control over the usage of inlines, allow greater
--- modularization of functions
 data Inline a
   = Istr !Str
   | Iemph !(Emph (Inline a))
@@ -228,17 +121,7 @@ data Inline a
   | Icontrol !a
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering i, Titling i)
 
--- TODO: could make this more flexible with a "without" class
-
--- TODO: figure something out here.
--- I have a (SourceRef -> RefM i (Ref i)). I can promote that, right
--- now, to an InlineControl -> RefM i (Ref i)
--- Then I can promote that to an (Inline InlineControl -> RefM i
--- (Inline i)) The issue is that to be aware of that, the deriving
--- mechanism needs to be aware of the monadic nature of Inline, and so
--- be able to take what is in effect an (a -> Inline b) and turn that
--- into an (Inline a -> Inline b). So essentially I need another class
--- to make this nice
+-- TODO: add a class for better instance derivation?
 instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
   referencing (Istr            x) = Istr <$> referencing x
   referencing (Iemph           x) = Iemph <$> referencing x
@@ -293,21 +176,6 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
 
 -- ** Document attribute parsing
 
--- TODO: put in checks on the possible {type} of formal blocks?
-
--- TODO: think about the title sep more carefully.
-
--- TODO: should have a NumberingConfig, TitlingConfig, etc., I think,
--- keyed by the type of the element. Then we can operate on numbered
--- things somewhat uniformly internally.
-
--- TODO: reconside the name of "title" for the title
--- template/configuration. Also reconsider the other configuration
--- names. They should have the same name as the corresponding title
--- attributes.
--- TODO: move this (and the other attribute parsers) to Titling.
--- TODO: Should the number config be a Maybe (and be in with
--- ContainerRelation?)
 pFormalConfig
   :: Scriba
        Element
@@ -343,16 +211,10 @@ defaultListConfig = NumberConfig
   (Just [Istr $ Str "item"])
   (Just [Istr $ Str " "])
 
--- TODO: add actual config
 pListConfig :: Scriba Element (NumberConfig (Inline a))
 pListConfig =
   meta $ attrs $ attrDef "olist" defaultListConfig $ pure defaultListConfig
 
--- TODO: more exotic orderings. Perhaps make prefix/numberFirst
--- exclusive as well. Also options for suppressing particular
--- components, if, say, you wanted something numbered but not have it
--- actually appear in the title.
--- TODO: title separator customization?
 pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
 pTitleTemplate t = do
   pref        <- attrDef "prefix" emptySurround pSurround
@@ -370,8 +232,6 @@ pTitleTemplate t = do
     FormalTemplate  -> "note"
     SectionTemplate -> "titleBody"
 
--- TODO: can't distinguish between present-but-empty content, and
--- absent content. Seems okay right now.
 pSurround :: Scriba Element (Surround (Inline a))
 pSurround = do
   (b, a) <- meta $ attrs $ do
@@ -384,13 +244,9 @@ pSurround = do
         x  -> Just x
   pure $ Surround b c' a
 
--- TODO: add in full NumberStyle parsing in some way. It might be good
--- to have the config be dependent on the carrier of the container
--- type, so that list item numbering would always (or by default) be
--- by depth. Could simply pass in a number style parser.  TODO: I need
--- to recreate this for list numbering parsing anyway, so we probably
--- don't need to return a Maybe function here. Just have the filter be
--- by relatedness.
+-- TODO: I need to recreate this for list numbering parsing anyway, so
+-- we probably don't need to return a Maybe function here. Just have
+-- the filter be by relatedness.
 pNumberRef
   :: Scriba
        Attrs
@@ -437,11 +293,7 @@ pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
       (cr, nc) <- pNumberRef
       pure (SectionConfig titleTemplate, cr, nc <*> pure FilterByCounterDep)
 
--- TODO: enforce option exclusivity? Could do that by running all
--- parsers (which should also return expectations), then throw an
--- error if at least two are Right.
 -- TODO: need some pOneArg thing, clearly
-
 -- TODO: change pNumberStyle back to a single local number style. Then
 -- create a new parser for pListConfig, since this one can't be used
 -- for it (too dissimilar).
@@ -596,14 +448,6 @@ pSection pInl = do
         _           -> empty
     ty inspect
 
--- The errors are better, but if we, e.g., have an unrecognized block,
--- then the manyOf fails, and we get an "expecting one of: section",
--- intead of also listing the blocks that we could have. Perhaps we
--- should instead have a more restrictive parser type?
--- (optparse-applicative being an example of that sort of thing) We'd
--- want better expectation setting and propagation, certainly. Maybe
--- also some conveniences like traversing a parser to get a text
--- description of the node structure that it recognizes.
 pSectionContent
   :: Scriba Node (Inline a) -> Scriba [Node] (SectionContent Block (Inline a))
 pSectionContent pInl = do
@@ -643,14 +487,10 @@ pMathMacros = allAttrsOf pMathMacro
 
 -- TODO: have a pSectionNamed :: Text -> Scriba Element Section to
 -- deal with special sections, like the matter?
--- TODO: deal with this allContent invocation (and any other
--- troublesome ones).
 -- TODO: the pBare dm and pExplicitMatter dm thing is a bit bad.
--- TODO: Enforce non-empty title for a doc? Or perhaps just warn on one.
 -- TODO: For error purposes it might be better if the meta is in a
 -- whileParsing "document meta", and the body is in a whileParsing
 -- "document body", but this is somewhat stylistic.
--- TODO: error in the container relations compiling
 -- TODO: document section config takes precedence over formal block
 -- config re: counters, in particular that there is no namespacing
 -- going on.
@@ -734,7 +574,6 @@ parseDoc = fmap snd . runScriba (asNode pDoc)
 
 -- * Decorating the document
 
--- TODO: add in configuration for prefixes and other things
 -- TODO: might want to forbid, or have special configuration for, the
 -- "item" counter.
 defaultNumberState :: DocAttrs (Inline i) -> NumberState (Inline i)
@@ -750,7 +589,6 @@ getRefEnv :: NumberData i -> RefData i
 getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
   where go (NumberDatum i cn nc num) = (i, (cn, nc, num))
 
--- TODO: don't discard the numbering information.
 runNumDoc
   :: Numbering (Inline j) a
   => Doc Block (Inline j) (Inline a)
@@ -760,7 +598,6 @@ runNumDoc
 runNumDoc d@(Doc da _ _ _) =
   flip runNumberM (defaultNumberState da) $ numbering d
 
--- TODO: type applications for titling?
 runTitleDoc
   :: forall a
    . Titling (Inline a) a
@@ -799,13 +636,6 @@ traverseInline _ (IdisplayMath s) = IdisplayMath s
 traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
 
-
--- TODO: may need errors, a state for numbering, environment for
--- titling. Or perhaps pipelined for modularity, with a shared error
--- type?
--- TODO: do something with the control elements, obviously.
--- TODO: _very_ bad hack here, with adjustEnv. Might want to add a
--- parameter to Doc.
 decorate
   :: Doc Block (Inline Void) (Inline InlineControl)
   -> Either DecorateError (Doc Block (Inline Void) (Inline Void))
@@ -863,14 +693,9 @@ newtype StandaloneConfig = StandaloneConfig
   { standaloneCSS :: FilePath
   }
 
--- TODO: should probably remove this
--- TODO: for standalone rendering we should probably put the title of
--- the document in the header.
--- TODO: add configurability, especially re: the math.
--- TODO: have a header include option for documents. Hard-coding a
--- style path for the manual is obviously poor.
 -- TODO: Have StandaloneConfig instead be (StandaloneConfig a) and
--- make it an HTML instance? If we are keeping it, of course.
+-- make it an HTML instance (with a content :: a and the rest of the
+-- config as other fields)? If we are keeping it, of course.
 renderStandalone
   :: (RH.Render (b i), RH.Render i, RH.Render j)
   => StandaloneConfig
