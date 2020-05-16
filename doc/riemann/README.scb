@@ -1,3 +1,126 @@
+{% TODO: the old metadata for the riemann paper itself, and the old
+notes in the preamble, much of which is out of date. Should go through
+and actually fix this, once a metadata/editorial note policy has been
+decided. %}
+
+%meta{
+{digitalSource
+  {source|https://archive.org/details/berichtberdiez59berl}
+  {pages|687-696}
+  {note|Internet archive copy of the entire volume with additional digitization data.}
+  {rights
+    {holder|Natural History Museum Library, London}
+    {license|CC BY-NC 3.0}}}
+{physicalSource
+  {title|Über die Anzahl der Primzahlen unter einer gegebenen Größe}
+  {alternateTitle|Ueber die Anzahl der Primzahlen unter einer gegebenen Grösse}
+  {containerTitle|Monatsberichte der Königlichen Preußische Akademie des Wissenschaften zu Berlin}
+  {author|Bernhard Riemann}
+  {event|Gesammitsitzung der Akademie}
+  {eventDate|1859-11-03}
+  {issued|1860}
+  {publisher|Königliche Akademie der Wissenschaften}
+  {publisherPlace|Berlin}
+  {pages|671-680}}
+{biblio|
+  {{label|onthemanuscript}
+   {author|Wolfgang Gabcke}
+   {date|2015-12-16}
+   {title|On a Fair Copy of Riemann’s 1859 Publication Created by Alfred Clebsch}
+   {url|https://www.claymath.org/sites/default/files/copy_of_ac3.pdf}}
+  {{label|gesammelte}
+   {type|book}
+   {title|Gesammelte mathematische Werke und Wissenschaftlicher Nachlass}
+   {author|Bernhard Riemann}
+   {editor|
+     {Heinrich Weber}
+     {Richard Dedekind}}
+   {publisher: B. G. Teubner
+   {publisherLocation: Leipzig
+   {issued: 1876
+   {numberOfPages: 556
+   {url: http://archive.org/details/bernardrgesamm00riemrich
+   {accessed: 2019-07-22 17:15:10
+   {lang: de}
+- label: wilkins
+  url: https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Zeta/
+  title: Ueber die Anzahl der Primzahlen unter einer gegebenen Grösse.
+  author: David R. Wilkins
+- label: jacobi
+  title: Fundamenta nova theoriae functionum ellipticarum
+  url: http://archive.org/details/fundamentanovat00jacogoog
+  numberOfPages: 207
+  publisher: Gebruder Borntraeger Verlagsbuchhandlung
+  publisherLocation: Königsberg
+  author: Carl Gustav Jacob Jacobi
+  accessed: 2019-07-22
+  issued: 1829
+mathMacros:
+  Li: '\mathit{Li}' # the logarithmic integral
+contextHeader: |
+  \def\AnonymousRule{%
+  \blank[small]
+  \midaligned{\setupblackrules[width=5em, height=0.4pt]\blackrule}
+  \blank[2*big]}
+
+  \definehead[preface][section][after=\AnonymousRule]
+  \setuphead[preface][number=no]
+mathType: latex
+---
+%}
+
+{%
+// make sure that n-ary product and capital Pi are correctly marked throughout!
+
+// look for things marked TODO and fix them!
+// - One marks the citation Jacobi. Fund. S. 184, which refers to jacobi's book Fundamenta nova..., page 184 (S. = german Seite = page)
+
+// We have %name to indicate mentioned names. Note that some are spaced, but some are not (e.g. Fourier in %name[Fourier]'schen) in the original. Actually, they _are_ all spaced in the Gesammelte Werke?
+
+// In the collected works, Änderung is Aenderung.
+
+// After und, wenn der reelle Theil von $s$ grösser als der reelle Theil von, we have added a negative sign that does not seem to be present in the Monatsberichte but is present in the collected works.
+
+// Should I add spacing before the differential dx and ds (etc.) in the integrals?
+
+// Instead of body, should it be main, or mainMatter?
+
+// Right now we have %url[path; display]. Not totally sure if this is a good idea.
+
+// I have a gathered* environment that in its one appearance is being used for manual, hard equation breaking. I might want to change that and implement a custom optional break thing like autobreak. I may also want to do this to other displayed equations.
+
+// I'm using %title to indicate a title without it being a citation.
+
+// We have %reg[[original][new]] for simple regularization. It isn't being used at the moment.
+
+// We have %link[url; inlines] for simple hyperlinks with optional displayed text.
+
+// How do we do references? E.g. I want to refer to specific pages of the PDF of the Monatsberichte at some point in the editorial notes. Right now it's a page range inside a %cite tag, but this really should be changed. Right now it's %cite[label; <range>] and <range> is dp. (page range), where "dp" is supposed to mean "digital page".
+
+// I have %ref[#label] to refer to an internal link in the text. Other than syntactic concerns, how should this play out when we output to PDF-for-printing? Right now I reference an equation that has no number in the original (and so shouldn't be numbered in our output). How should that degrade? Do we put in a page number? Maybe we'd also be able to include a fallback in the metadata for outputs that lack hypertext? Sure.
+
+// So right now I'm using %cite merely to refer to things, such as the Riemann's Gesammelte Werke or the Monatsberichte of 1859 as a whole. Should this be a ref? Should think about how to formalize.
+
+// In %physPage, I want to keep track of both the original physical page number and the digital page, I think. I might also want to consider the possibility that page images can come from multiple resources. Ideally we will host our own individual images and something like %physPage[600] will suffice, the resource manifest having declared a folder in which "600.tiff" or whatever resides (that coming from, say, page 570 of a scan). Otherwise we'll have to keep track of the URL of the resource, the physical page, and the page of the scan for pdfs (or some sort of internal identifier for other formats), and convert this into a hyperlink with display text the physical page.
+// For now, we assume that we have access to the pages images and can modify the page image directory to something in the meta block, so a simple %physPage[physical_page_number] suffices.
+// The current practice for %physPage is to put it immediately before the first full element of the page as best we can. So if a word straddles a page we should put it right after that word, and if, say, a math block straddles a page we will have to do the same. The start of the page is thus given as an indication, and you might have to look at the previous page to see what you're looking for. Oh, that means that we'll need a notion of linearity in the page images! Next/previous page!
+
+// I have no idea how I want to do this. For now, we have a "meta" section that
+// contains a sequence of blocks. One contains the possible math macros inside
+// the text.
+
+// I don't have a monatsberichte bibliography entry right now. I'd like to be
+// able to refer to the physical bibliography of this document itself. Can I?
+
+// Right now the jacobi entry has the modern name of the publisher in it (which
+// is essentially a German translation of their latin name). The original is
+// Fratrum Borntræger.
+
+// Note that there is a line: In Commission in Ferd. Dümmler's Verlags-Buchhandlung.
+// Should he be credited as the publisher? Or is this the press?
+
+%}
+
 {% TODO: Finish reforming this, especially once citations are handled
 semi-intelligently.
 

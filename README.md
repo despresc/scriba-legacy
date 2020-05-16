@@ -56,53 +56,207 @@ Currently the following elements are defined:
 
 `p`
 : Paragraphs. Can also be defined implicitly in paragraphed
-  blocks. They contain paragraph blocks and inline elements.
+  blocks. They contain inline elements.
 
 `emph`
-: Emphasized text.
+: Inline emphasized text.
 
 `math`
 : An inline mathematical formula or other simple construct. By default
   its content is written in TeX syntax.
 
+`dmath`
+: A displayed mathematical formula.
+
+`gathered`
+: A collection of formulas. This element contains a sequence of `line`
+  elements, each containing mathematical text.
+
 `physPage`
 : A marker indicating that a physical page break occurred at or near
-  the marker. Its content should be a page locator (only text at the
-  moment).
+  the marker. Its content is any text, but the definition of this
+  element will be modified so that a page locator term can be included
+  (for linking to page images).
+
+`name`
+: A personal name.
+
+`reg`
+: Text regularization.
+
+`ref`
+: A reference to a numbered element in the document, roughly
+  equivalent to the `\ref` construct in LaTeX. In rendered output it
+  is replaced with the reference prefix, number, and suffix of the
+  referenced element, according to the configuration of `ref` and that
+  paticular element.
+
+`title`
+: The title of a work.
+
+`cite`
+: A citation. This element currently has no automatic behaviour.
+
+`code`
+: Inline code.
+
+`codeBlock`
+: A block of code, usually inside a `figure`.
+
+`olist`
+: An ordered list. The items of an ordered list are numbered, and so
+  can be referenced. Ordered lists can also have types, but they do
+  not do anything at the moment.
+
+`ulist`
+: An unordered list.
+
+`formal`
+: A titled, numbered block. Formal blocks can be given types, and the
+  numbering and titling of a particular formal block type can be
+  individually configured.
 
 # Future directions
 
-## Generated content
+## Manual
 
-Partially related to custom blocks. We want to number things, of
-course. Things that can be numbered. If they're titled, we might want
-to use the number in their title. Something like a `genTitle` option
-in the metadata of a document? Might want to think about caching the
-result of unfolding all the definitions somehow. Serialize the form
-that we get right before rendering.
+- generally rework the introductory section, so that it is gentler,
+  less technical.
 
-Numbering has to happen before the title gets generated. It could
-happen simultaneously, I suppose.
+- mention that paragraphs can't start with &
 
-This applies to captioned things, too.
+- link to the inline element section in the paragraph section
 
-## Custom blocks
+- link to amsmath, sections on numbering and referencing, maybe
+  whatever manual section discusses mathematics in more detail.
 
-Suppose that we want a `theorem` block. It should look like a formal
-block with a title `Theorem <number> <if title then "(<title>)">`, and
-no conclusion. Do we even need the formal block at that point? What if
-we have (in some kind of `defblock` section of the meta)
+- link to the block section's discussion of block verbatim content
 
-```
-{content|
-  {title|{$theorem.prefix} {$theorem.n} {$theorem.title}}
-  {body|{$theorem._content}}}
-```
+- some kind of codeFigure custom block?
 
-How would this work in practice? Would each variable get wrapped in
-something? Maybe that would be something controllable with an
-argument? I'd want the `theorem.title` to be wrapped in something. We
-might also want to normalize the whitespace of the title. Add an
-option not to do that, if we need it.
+- Move the inline verbatim discussion to a section on inline elements?
+  The mention of the start-of-paragraph & issue could be included
+  there too.
 
-Not sure about the `_` before `content`.
+- for the element reference section, should have sample usage, a
+  precise discussion of permitted usage, interactions with the various
+  systems, and so on. Perhaps some kind of data table format for parts
+  of it? Might be a good fit for templating in some cases:
+  automatically generated data sheets from the parsers; having a
+  template take some code and put it in a figure alongside a rendered
+  example of the code, but perhaps that is too fancy to have in the
+  code document system. For the former, could have a method to import
+  tables, and then simply make sure they're generated as needed.
+
+  Other templating possibilities: turning something like `## $secElem
+  @ code` (syntax and definition to be determined) into `## subsection
+  {id|elem-code} {title|code}`. Could have an element reference
+  construct, so that `{$elemRef@code}` becomes
+  `{ref@elem-code|{code|code}}`, though that might be better-served by
+  having a custom section type with its own reference rendition
+  behaviour? Or we should just have the titles of those sections be,
+  say, `{title|{code|code}}`.
+
+- the element reference section might want to be an appendix.
+
+## Meta handling
+
+Need a consistent metadata handling policy, probably, since we will be
+rendering bibliographies and citations. CSL compatibility would be
+handy, I suppose, but all of these historical documents will probably
+need weird bespoke citation schemes. Still, a CSL-like derivation
+mechanism would be welcome, since shared citation elements are at
+least somewhat common.
+
+## Standalone rendering
+
+If we are to keep the general standalone setup (and not integrate it
+as a special case of the [library](#libraries) construct), then we
+need to
+
+## Libraries
+
+I envision a library being a collection of documents that can be
+linked to each other, referenced from other libraries and documents,
+and imported (in whole or in part) into other libraries. This could be
+extended: someone could have a personal `wiki` document that can link
+to other documents in their library (or in external libraries). Need
+to research build systems, archival practices, since we will
+(potentially) want local caching (of metadata, including linkage
+information, and of the documents themselves) and more direct
+importing ("borrowing" from a library, "rebinding" and other
+derivation mechanisms).
+
+Libraries wouldn't have to be of scriba documents entirely. As long as
+we had a way to detect (or specify, or add to) the capabilities of
+documents, the library behaviour could degrade nicely. E.g. you could
+have a pdf with a separate metadata file, or a pure metadata document
+(for use in referencing). Perhaps this will provide a mechanism for
+image handling? Could have a "book of pictures" document type that can
+be referenced from elsewhere (if not a simple shared image pool).
+
+Libraries could have a "house style" that defines the (possibly
+complex) css and latex that the build system will output, among other
+things (default pagination levels, citation and reference schemes).
+
+These would have to compile well to a print format. Need good
+fallbacks for purely link-defined constructs, though it shouldn't be
+too hard for historical documents (which were written with print
+references in mind).
+
+## Style
+
+CSS has :lang selector, so we can have styles based on language
+(e.g. differing {title} styles and whatnot).
+
+## New elements, attributes, behaviours, fixes
+
+- Global permissible attributes on everything (`id`, `lang`, whatever
+  else we decide to have).
+
+- a root `document` section? If we have editorial note support then
+  we'll need some way of distinguishing the two, if they are to appear
+  together in the document. Might be helpful for composite documents
+  as well.
+
+- Notes (foot or end according to rendition), possibly including
+  editorial notes. Different varieties of notes would need to be
+  numbered and displayed differently, of course. The mechanism would
+  most likely be through `noteMark` and `noteText`.
+
+- Figures. Similar to formal blocks, except they have a block caption
+  (that will by default be suffix). The caption can have a prefix and
+  number, like formal blocks.
+
+- Tables. There should be a top-level `table`, in addition to whatever
+  mathematical tableau functionality we provide.
+
+- citation components (authors, editors, publishers, events, and so
+  on), and automatic citation generation. Related to [meta
+  handling](#meta-handling) and [libraries](#libraries).
+
+- generated content, like a table of contents, lists of content,
+  bibliographies.
+
+- paginated output (web-paginated, that is).
+
+- a TeX/LaTeX/ConTeXt writer.
+
+- consider removing the `conclusion` section of formal blocks.
+
+- generally fix up the current style configuration in documents: allow
+  custom lists types, improve numbering and number style configuration.
+
+- A generic `span` and `div`? Would only be useful if we had global
+  attributes.
+
+- equation numbering "contexts"? Would like to have a
+  {startEqnContext}, perhaps, that would influence how the numbering
+  is applied to equations, since these things can become fairly
+  complex.
+
+- section precis.
+
+- epistolary support? salutations and valedictions (for dedications,
+  introductions, prefaces, and other such sections), with physical
+  address lines (or parts).
