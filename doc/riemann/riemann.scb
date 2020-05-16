@@ -374,10 +374,10 @@ der Relation
 `}
 sich ergebenden Gleichung
 {dmath`
-  F(x) = \sum(-1)^μ \frac 1m f( x^{\frac 1m})\text{,}
+  F(x) = \sum(-1)^\mu \frac 1m f( x^{\frac 1m})\text{,}
 `}
 worin für {math|m} der Reihe nach die durch kein Quadrat außer
-{math|1} theilbaren Zahlen zu setzen sind und {math|μ} die Anzahl der
+{math|1} theilbaren Zahlen zu setzen sind und {math|\mu} die Anzahl der
 Primfactoren von {math|m} bezeichnet.
 
 Beschränkt man {math|\sum^\alpha} auf eine endliche Zahl von Gliedern, so
