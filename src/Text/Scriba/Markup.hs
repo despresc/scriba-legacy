@@ -11,48 +11,12 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- TODO: review exports once the refactor is done
-
 module Text.Scriba.Markup
   ( Doc(..)
-  , SectionContent(..)
-  , Section(..)
   , Block(..)
-  , MixedBody(..)
-  , Formal(..)
-  , List(..)
-  , OlistItem(..)
-  , Paragraph(..)
   , Inline(..)
-  , Title(..)
-  , Heading(..)
-  , DocAttrs(..)
-  , LocalNumberStyle(..)
-  , TitlingConfig(..)
-  , unzips
-  , unzips3
-  , FormalConfig(..)
-  , runTemplate
-  , TitleTemplateStyle(..)
-  , SectionConfig(..)
   , parseDoc
   , prettyScribaError
-  , Str(..)
-  , Emph(..)
-  , Quote(..)
-  , InlineMath(..)
-  , DisplayMath(..)
-  , InlineCode(..)
-  , PageMark(..)
-  , TitlePart(..)
-  , TitleComponent(..)
-  , BlockCode(..)
-  , Ref(..)
-  , NumberConfig(..)
-  , UsedNumberConfig(..)
-  , Identifier(..)
-  , ContainerName(..)
-  , MathItem(..)
   , decorate
   , writeStandalone
   , MathJaxConfig(..)
@@ -60,7 +24,6 @@ module Text.Scriba.Markup
   )
 where
 
-import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
