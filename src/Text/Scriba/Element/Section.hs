@@ -14,17 +14,21 @@ import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Element.Identifier ( pIdent )
 import           Text.Scriba.Element.TitleComponent
+import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
-import           Control.Applicative            ( (<|>) )
 import           Control.Monad                  ( join )
 import           Control.Monad.Reader           ( asks )
 import           Control.Monad.State            ( gets )
-import           Data.Functor                   ( (<&>) )
+import           Data.Functor                   ( (<&>)
+                                                , ($>)
+                                                )
 import qualified Data.Map.Strict               as M
 import           Data.Maybe                     ( fromMaybe )
 import           Data.Text                      ( Text )
+import qualified Data.Text                     as T
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
@@ -178,3 +182,44 @@ instance RH.Render i => RH.Render (Heading i) where
       4 -> Html.h4
       5 -> Html.h5
       _ -> Html.h6
+
+-- * Parsing
+
+
+-- For now, all things presented as sections become sections.
+
+-- TODO: do the expectations actually work out here?
+-- TODO: a top level title parser?
+-- TODO: reduce duplication with pFormalConfig
+pSection :: Scriba Node (b i) -> Scriba Node i -> Scriba Element (Section b i)
+pSection pBlk pInl = do
+  mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
+  whileParsingElem (fromMaybe "section of unknown type" mty) $ do
+    (mId, mtitle, mfullTitle, mnumber) <- meta $ attrs $ do
+      mId        <- attrMaybe "id" $ content pIdent
+      mtitle     <- attrMaybe "title" $ allContentOf pInl
+      mfullTitle <- attrMaybe "fullTitle" $ allContentOf pInl
+      mnumber    <- attrMaybe "n" $ allContentOf simpleText
+      pure (mId, mtitle, mfullTitle, mnumber)
+    c <- content $ pSectionContent pBlk pInl
+    pure $ Section mty
+                   mId
+                   (Title <$> mtitle)
+                   (Title <$> mfullTitle)
+                   (T.concat <$> mnumber)
+                   c
+ where
+  presentedAsSection = do
+    meta $ do
+      Meta _ pres _ _ <- inspect
+      case pres of
+        AsSection _ -> pure ()
+        _           -> empty
+    ty inspect
+
+pSectionContent
+  :: Scriba Node (b i) -> Scriba Node i -> Scriba [Node] (SectionContent b i)
+pSectionContent pBlk pInl = do
+  pre  <- manyOf pBlk
+  subs <- remaining $ asNode (pSection pBlk pInl)
+  pure $ SectionContent pre subs

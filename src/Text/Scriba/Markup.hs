@@ -69,19 +69,10 @@ import           Text.Scriba.Element
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
-import           Control.Monad                  ( join
-                                                , unless
-                                                )
-import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Aeson                     ( ToJSON(..) )
 import qualified Data.Aeson                    as Aeson
-import           Data.Char                      ( isAlpha )
 import           Data.Functor                   ( ($>) )
-import           Data.Maybe                     ( mapMaybe
-                                                , fromMaybe
-                                                )
 import           Data.Map.Strict                ( Map )
-import qualified Data.Map.Merge.Strict         as M
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
@@ -120,6 +111,9 @@ data Inline a
   | ItitleComponent !(TitleComponent (Inline a))
   | Icontrol !a
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering i, Titling i)
+
+instance HasStr (Inline a) where
+  embedStr = Istr
 
 -- TODO: add a class for better instance derivation?
 instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
@@ -174,158 +168,6 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
 
 -- * Element parsers
 
--- ** Document attribute parsing
-
-pFormalConfig
-  :: Scriba
-       Element
-       ( Map
-           Text
-           ( FormalConfig (Inline a)
-           , Maybe ContainerRelation
-           , Maybe (NumberConfig (Inline a))
-           )
-       )
-pFormalConfig = meta $ attrs $ allAttrsOf pFormalSpec
- where
-  pFormalSpec = do
-    t <-
-      ty $ inspect >>= maybe (throwError $ Msg "a block type is required") pure
-    whileParsingElem ("formal block " <> t <> " config") $ meta $ attrs $ do
-      titleTemplate <- attrMaybe "title" $ meta $ attrs
-        (pTitleTemplate FormalTemplate)
-      titleSep <- attrMaybe "titleSep" $ allContentOf pInlineCore
-      (cr, nc) <- pNumberRef
-      concl    <- attrMaybe "conclusion" $ allContentOf pInlineCore
-      pure
-        ( FormalConfig titleTemplate titleSep concl
-        , cr
-        , nc <*> pure FilterByCounterDep
-        )
-
-defaultListConfig :: NumberConfig (Inline a)
-defaultListConfig = NumberConfig
-  ( NumberStyle (FilterByContainer "item:olist") Nothing
-  $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
-  )
-  (Just [Istr $ Str "item"])
-  (Just [Istr $ Str " "])
-
-pListConfig :: Scriba Element (NumberConfig (Inline a))
-pListConfig =
-  meta $ attrs $ attrDef "olist" defaultListConfig $ pure defaultListConfig
-
-pTitleTemplate :: TitleTemplateStyle -> Scriba Attrs (TitleTemplate (Inline a))
-pTitleTemplate t = do
-  pref        <- attrDef "prefix" emptySurround pSurround
-  tnote       <- attrDef tname emptySurround pSurround
-  tnum        <- attrDef "n" emptySurround pSurround
-  prefixFirst <- attrMaybe "prefixFirst" $ pure True
-  numberFirst <- attrMaybe "numberFirst" $ pure False
-  pure $ TitleTemplate pref
-                       tnum
-                       tnote
-                       [Istr $ Str " "]
-                       (fromMaybe True $ prefixFirst <|> numberFirst)
- where
-  tname = case t of
-    FormalTemplate  -> "note"
-    SectionTemplate -> "titleBody"
-
-pSurround :: Scriba Element (Surround (Inline a))
-pSurround = do
-  (b, a) <- meta $ attrs $ do
-    b <- mattr "before" $ allContentOf pInlineCore
-    a <- mattr "after" $ allContentOf pInlineCore
-    pure (b, a)
-  c <- allContentOf pInlineCore
-  let c' = case c of
-        [] -> Nothing
-        x  -> Just x
-  pure $ Surround b c' a
-
--- TODO: I need to recreate this for list numbering parsing anyway, so
--- we probably don't need to return a Maybe function here. Just have
--- the filter be by relatedness.
-pNumberRef
-  :: Scriba
-       Attrs
-       ( Maybe ContainerRelation
-       , Maybe (ContainerPathFilter -> NumberConfig (Inline a))
-       )
-pNumberRef = do
-  numberingConf     <- attrMaybe "numbering" pCounterDepends
-  (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
-    s <- attrMaybe "sep" $ allContentOf pInlineCore
-    p <- attrMaybe "prefix" $ allContentOf pInlineCore
-    pure (s, p)
-  let
-    (counterDepends, nc) = unzips $ do
-      (containerRel, ns) <- numberingConf
-      pure
-        ( containerRel
-        , \fm ->
-          NumberConfig (NumberStyle fm Nothing ns) (join refPref) (join refSep)
-        )
-  pure (counterDepends, nc)
-
--- TODO: reduce duplication with pFormalConfig
-pSectionConfig
-  :: Scriba
-       Element
-       ( Map
-           Text
-           ( SectionConfig (Inline a)
-           , Maybe ContainerRelation
-           , Maybe (NumberConfig (Inline a))
-           )
-       )
-pSectionConfig = meta $ attrs $ allAttrsOf pSectionSpec
- where
-  pSectionSpec = do
-    t <-
-      ty
-      $   inspect
-      >>= maybe (throwError $ Msg "a section type is required") pure
-    whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
-      titleTemplate <- attrMaybe "title" $ meta $ attrs
-        (pTitleTemplate SectionTemplate)
-      (cr, nc) <- pNumberRef
-      pure (SectionConfig titleTemplate, cr, nc <*> pure FilterByCounterDep)
-
--- TODO: need some pOneArg thing, clearly
--- TODO: change pNumberStyle back to a single local number style. Then
--- create a new parser for pListConfig, since this one can't be used
--- for it (too dissimilar).
-pCounterDepends :: Scriba Element (ContainerRelation, LocalStyle)
-pCounterDepends = meta $ attrs $ do
-  cr <-
-    label "absolute" pAbsCounter
-    <|> label "relative" pRelCounter
-    <|> label "share"    pShare
-  ns <- pNumberStyle
-  pure (cr, ns)
- where
-  pAbsCounter = attr "absolute" $ pure $ Relative []
-  pRelCounter =
-    fmap (Relative . map ContainerName) $ attr "relative" $ meta $ allArgsOf
-      simpleText
-  pShare = attr "share" $ meta $ do
-    ts <- allArgsOf simpleText
-    case ts of
-      [t] -> pure $ Share $ ContainerName t
-      _   -> throwError $ Msg "expecting exactly one counter"
-  pNumberStyle = attrDef "style" (AbsoluteStyle Decimal) $ do
-    as <- meta $ allArgsOf pLocalNumberStyle
-    case as of
-      []  -> throwError $ Msg "expecting one style, or multiple styles"
-      [t] -> pure $ AbsoluteStyle t
-      ts  -> pure $ DepthStyle ts
-  pLocalNumberStyle = do
-    (sp, t) <- text
-    whileParsing (Just sp) "local number style" $ case t of
-      "decimal" -> pure Decimal
-      _         -> throwError $ Msg "unknown number style"
 
 -- ** Block Parsing
 
@@ -417,160 +259,18 @@ pInlineCore =
 
 -- ** Section parsing
 
--- For now, all things presented as sections become sections.
-
--- TODO: do the expectations actually work out here?
--- TODO: a top level title parser?
--- TODO: reduce duplication with pFormalConfig
-pSection :: Scriba Node (Inline a) -> Scriba Element (Section Block (Inline a))
-pSection pInl = do
-  mty <- (matchTy "section" $> Just "section") <|> presentedAsSection
-  whileParsingElem (fromMaybe "section of unknown type" mty) $ do
-    (mId, mtitle, mfullTitle, mnumber) <- meta $ attrs $ do
-      mId        <- attrMaybe "id" $ content pIdent
-      mtitle     <- attrMaybe "title" $ allContentOf pInl
-      mfullTitle <- attrMaybe "fullTitle" $ allContentOf pInl
-      mnumber    <- attrMaybe "n" $ allContentOf simpleText
-      pure (mId, mtitle, mfullTitle, mnumber)
-    c <- content $ pSectionContent pInl
-    pure $ Section mty
-                   mId
-                   (Title <$> mtitle)
-                   (Title <$> mfullTitle)
-                   (T.concat <$> mnumber)
-                   c
- where
-  presentedAsSection = do
-    meta $ do
-      Meta _ pres _ _ <- inspect
-      case pres of
-        AsSection _ -> pure ()
-        _           -> empty
-    ty inspect
-
-pSectionContent
-  :: Scriba Node (Inline a) -> Scriba [Node] (SectionContent Block (Inline a))
-pSectionContent pInl = do
-  pre  <- manyOf $ pBlock pInl
-  subs <- remaining $ asNode (pSection pInl)
-  pure $ SectionContent pre subs
-
 pControl :: Scriba Element InlineControl
 pControl = IcRef <$> pSourceRef
 
 -- ** Document parsing
 
--- TODO: Validation?
-pMathMacros :: Scriba Attrs (Map Text (Int, Text))
-pMathMacros = allAttrsOf pMathMacro
- where
-  pMathMacro = do
-    t <-
-      ty
-      $   inspect
-      >>= maybe (throwError $ Msg "unexpected nameless math macro") pure
-    unless (T.all isAlpha t)
-      $  throwError
-      $  Msg
-      $  "math macro name \""
-      <> t
-      <> "\" should be entirely alphabetic characters"
-    n <- meta $ attrs $ attrDef "args" 0 $ do
-      nr <- allContentOf simpleText
-      case safeRead (T.concat nr) of
-        Just n | n >= 0 -> pure n
-        _               -> throwError $ Msg "expected positive integer"
-    c <- T.concat <$> allContentOf simpleText
-    pure (n, c)
-
-
-
--- TODO: have a pSectionNamed :: Text -> Scriba Element Section to
--- deal with special sections, like the matter?
--- TODO: the pBare dm and pExplicitMatter dm thing is a bit bad.
--- TODO: For error purposes it might be better if the meta is in a
--- whileParsing "document meta", and the body is in a whileParsing
--- "document body", but this is somewhat stylistic.
--- TODO: document section config takes precedence over formal block
--- config re: counters, in particular that there is no namespacing
--- going on.
--- TODO: add configuration for elemrel
--- TODO: better math numbering support. The elemrel thing is particularly bad.
--- TODO: the explicit matter parsing is not correct - you should need
--- to specify only a subset of the *Matter
-pDoc :: Scriba Element (Doc Block (Inline a) (Inline InlineControl))
-pDoc = do
-  matchTy "scriba"
-  whileParsingElem "scriba" $ do
-    dm <- meta $ attrs $ do
-      t       <- mattr "title" $ allContentOf pInlineCore
-      mlang <- attrMaybe "lang" $ T.strip . T.concat <$> allContentOf simpleText
-      mmacros <- mattr "mathMacros" $ meta $ attrs pMathMacros
-      tplain  <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
-      fconfig <- mattr "formalBlocks" pFormalConfig
-      sconfig <- mattr "sections" pSectionConfig
-      lconfig <- attrDef "lists" defaultListConfig pListConfig
-      let lCrel = ("item:olist", Just $ Relative [])
-      (dmathCrel, dmathNumConf) <-
-        fmap unzips $ attrMaybe "formula" $ meta $ attrs pNumberRef
-      let dmathrelRaw = [("formula", join dmathCrel)]
-      -- TODO: clean up
-      let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig
-          mkName (x, y) = (,) (ContainerName x) <$> y
-          (sconf, srelRaw, snstyleRaw) = unzips3 sconfig
-      (elemrel, crel) <-
-        case
-          compileContainerRelations
-            (  mapMaybe mkName
-            $  dmathrelRaw
-            <> [lCrel]
-            <> M.toList srelRaw
-            <> M.toList frelRaw
-            )
-        of
-          Left  e -> throwError $ Msg e
-          Right a -> pure a
-      let
-        mergeRel =
-          M.merge M.dropMissing M.dropMissing $ M.zipWithMatched $ const (,)
-        toCNKey = M.mapKeysMonotonic ContainerName
-        formulaStyle =
-          M.singleton "formula" $ join dmathNumConf <*> pure FilterByCounterDep
-        listStyle = M.singleton "item:olist" (Just lconfig)
-        mergedStyles =
-          M.mapMaybe id
-            $  listStyle
-            <> formulaStyle
-            <> toCNKey snstyleRaw
-            <> toCNKey fnstyleRaw
-        elemrel' = mergeRel elemrel mergedStyles
-      pure $ DocAttrs (Title t)
-                      mlang
-                      (fromMaybe (stripMarkup (const []) t) tplain)
-                      (TitlingConfig fconf sconf)
-                      elemrel'
-                      crel
-                      mmacros
-    content $ pExplicitMatter dm <|> pBare dm
- where
-  pMatter t = asNode $ do
-    matchTy t
-    whileParsingElem t $ content $ pSectionContent pInline
-  pExplicitMatter dm = do
-    f <- one $ pMatter "frontMatter"
-    m <- one $ pMatter "mainMatter"
-    b <- one $ pMatter "backMatter"
-    zero
-    pure $ Doc dm f m b
-  pBare dm = do
-    c <- pSectionContent pInline
-    pure $ Doc dm emptySectionContent c emptySectionContent
 
 -- * Running parsers
 
 parseDoc
   :: Node -> Either ScribaError (Doc Block (Inline a) (Inline InlineControl))
-parseDoc = fmap snd . runScriba (asNode pDoc)
+parseDoc = fmap snd . runScriba
+  (asNode $ pDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline)
 
 -- * Decorating the document
 
