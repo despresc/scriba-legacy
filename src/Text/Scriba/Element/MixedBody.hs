@@ -10,6 +10,7 @@ module Text.Scriba.Element.MixedBody where
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
 import           GHC.Generics                   ( Generic )
@@ -35,3 +36,14 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (MixedBody b i) where
     Html.span Html.! HtmlA.class_ "body" <$> RH.render ils
   render (MixedBlock blks) =
     Html.div Html.! HtmlA.class_ "body" <$> RH.render blks
+
+pBlockBody :: Scriba Node (b i) -> Scriba [Node] [b i]
+pBlockBody pBlk = remaining pBlk
+
+pInlineBody :: Scriba Node a -> Scriba [Node] [a]
+pInlineBody = remaining
+
+pMixedBody
+  :: Scriba Node (b i) -> Scriba Node i -> Scriba [Node] (MixedBody b i)
+pMixedBody pBlk pInl =
+  MixedBlock <$> pBlockBody pBlk <|> MixedInline <$> pInlineBody pInl

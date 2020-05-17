@@ -129,35 +129,17 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
   inlineToText (Icontrol        a ) = f a
 
--- * Element parsers
-
-
--- ** Block Parsing
-
 pBlock :: Scriba Node (Inline a) -> Scriba Node (Block (Inline a))
 pBlock pInl =
   asNode
     $   Bformal
-    <$> pFormal (pMixedBody pInl) (pInlineBody pInl)
+    <$> pFormal (pMixedBody (pBlock pInl) pInl) (pInlineBody pInl)
     <|> Bpar
     <$> pParagraph (pInlineBody pInl)
     <|> Bcode
     <$> pBlockCode
     <|> Blist
-    <$> pList (pMixedBody pInl)
-
-pBlockBody :: Scriba Node (Inline a) -> Scriba [Node] [Block (Inline a)]
-pBlockBody pInl = remaining $ pBlock pInl
-
-pInlineBody :: Scriba Node (Inline a) -> Scriba [Node] [Inline a]
-pInlineBody = remaining
-
-pMixedBody
-  :: Scriba Node (Inline a) -> Scriba [Node] (MixedBody Block (Inline a))
-pMixedBody pInl =
-  MixedBlock <$> pBlockBody pInl <|> MixedInline <$> pInlineBody pInl
-
--- ** Inline parsing
+    <$> pList (pMixedBody (pBlock pInl) pInl)
 
 pInline :: Scriba Node (Inline InlineControl)
 pInline =
@@ -220,13 +202,8 @@ pInlineCore =
     <|> Istr
     <$> pText
 
--- ** Section parsing
-
 pControl :: Scriba Element InlineControl
 pControl = IcRef <$> pSourceRef
-
--- ** Document parsing
-
 
 -- * Running parsers
 

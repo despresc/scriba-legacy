@@ -70,7 +70,7 @@ data Formal b i = Formal
 -- ... invocation, with the choice inside. That didn't work, because
 -- the manyOf can always succeed. Maybe I can preserve the behaviour
 -- by having the first one be a someOf?
-
+-- TODO: I can always just use pMixedBody directly...
 pFormal
   :: Scriba [Node] (MixedBody b i)
   -> Scriba [Node] [i]
