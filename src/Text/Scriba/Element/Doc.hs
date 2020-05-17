@@ -40,8 +40,6 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 - split this further. The titling config and numbering config should
   be bundled and put in a separate module.
 
-- improve runTemplate
-
 -}
 
 -- | A document with front matter, main matter, and end matter.
