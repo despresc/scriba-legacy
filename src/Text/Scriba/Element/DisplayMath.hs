@@ -85,11 +85,11 @@ pFormula = Formula <$> whileMatchTy "dmath" pMathItem
 -- TODO: enforce non-emptiness of gathered?
 pGathered :: Scriba Element DisplayMath
 pGathered = whileMatchTy "gathered" $ do
-  body   <- allContent $ pOnlySpace *> many pLines
+  body   <- allContent $ consumeWhiteSpace *> many pLines
   mIsNum <- meta $ attrs $ attrMaybe "noNum" $ pure ()
   pure $ Gathered (isNothing mIsNum) body
  where
-  pLines = one (asNode pLine) <* pOnlySpace
+  pLines = one (asNode pLine) <* consumeWhiteSpace
   pLine  = whileMatchTy "line" pMathItem
 
 instance Numbering i DisplayMath

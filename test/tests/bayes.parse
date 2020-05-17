@@ -52,7 +52,7 @@ Doc
                                  "376"
                              ]
                        }
-                 , InlineText
+                 , InlineWhite
                      SourcePos
                        { sourceName = "bayes.scb"
                        , sourceLine = Pos 4
@@ -81,13 +81,195 @@ Doc
                                  "Given"
                              ]
                        }
-                 , InlineText
+                 , InlineWhite
                      SourcePos
                        { sourceName = "bayes.scb"
                        , sourceLine = Pos 4
                        , sourceColumn = Pos 31
                        }
-                     " the number of times in which an unknown\nevent has happened and failed: "
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 32
+                       }
+                     "the"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 35
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 36
+                       }
+                     "number"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 42
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 43
+                       }
+                     "of"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 45
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 46
+                       }
+                     "times"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 51
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 52
+                       }
+                     "in"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 54
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 55
+                       }
+                     "which"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 60
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 61
+                       }
+                     "an"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 63
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 64
+                       }
+                     "unknown"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 4
+                       , sourceColumn = Pos 71
+                       }
+                     "\n"
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 4
+                       }
+                     "event"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 9
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 10
+                       }
+                     "has"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 13
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 14
+                       }
+                     "happened"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 22
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 23
+                       }
+                     "and"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 26
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 27
+                       }
+                     "failed:"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 34
+                       }
+                     " "
                  , InlineBraced
                      Element
                        { srcPos =
@@ -110,13 +292,342 @@ Doc
                                  "Required"
                              ]
                        }
-                 , InlineText
+                 , InlineWhite
                      SourcePos
                        { sourceName = "bayes.scb"
                        , sourceLine = Pos 5
                        , sourceColumn = Pos 50
                        }
-                     " the chance that the\nprobability of its happening in a single trial lies somewhere\nbetween any two degrees of probability that can be named."
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 51
+                       }
+                     "the"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 54
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 55
+                       }
+                     "chance"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 61
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 62
+                       }
+                     "that"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 66
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 67
+                       }
+                     "the"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 5
+                       , sourceColumn = Pos 70
+                       }
+                     "\n"
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 4
+                       }
+                     "probability"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 15
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 16
+                       }
+                     "of"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 18
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 19
+                       }
+                     "its"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 22
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 23
+                       }
+                     "happening"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 32
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 33
+                       }
+                     "in"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 35
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 36
+                       }
+                     "a"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 37
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 38
+                       }
+                     "single"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 44
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 45
+                       }
+                     "trial"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 50
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 51
+                       }
+                     "lies"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 55
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 56
+                       }
+                     "somewhere"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 6
+                       , sourceColumn = Pos 65
+                       }
+                     "\n"
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 4
+                       }
+                     "between"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 11
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 12
+                       }
+                     "any"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 15
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 16
+                       }
+                     "two"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 19
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 20
+                       }
+                     "degrees"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 27
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 28
+                       }
+                     "of"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 30
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 31
+                       }
+                     "probability"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 42
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 43
+                       }
+                     "that"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 47
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 48
+                       }
+                     "can"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 51
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 52
+                       }
+                     "be"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 54
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "bayes.scb"
+                       , sourceLine = Pos 7
+                       , sourceColumn = Pos 55
+                       }
+                     "named."
                  ]
            })
   , SecHeaderNode
@@ -170,7 +681,21 @@ Doc
                                , sourceLine = Pos 11
                                , sourceColumn = Pos 15
                                }
-                             "Section I"
+                             "Section"
+                         , InlineWhite
+                             SourcePos
+                               { sourceName = "bayes.scb"
+                               , sourceLine = Pos 11
+                               , sourceColumn = Pos 22
+                               }
+                             " "
+                         , InlineText
+                             SourcePos
+                               { sourceName = "bayes.scb"
+                               , sourceLine = Pos 11
+                               , sourceColumn = Pos 23
+                               }
+                             "I"
                          ]
                    }
                ]
@@ -222,7 +747,42 @@ Doc
                                                , sourceLine = Pos 18
                                                , sourceColumn = Pos 8
                                                }
-                                             "Several events are "
+                                             "Several"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 15
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 16
+                                               }
+                                             "events"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 22
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 23
+                                               }
+                                             "are"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 26
+                                               }
+                                             " "
                                          , InlineBraced
                                              Element
                                                { srcPos =
@@ -252,7 +812,161 @@ Doc
                                                , sourceLine = Pos 18
                                                , sourceColumn = Pos 46
                                                }
-                                             ", when if one of them\nhappens, none of the rest can."
+                                             ","
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 47
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 48
+                                               }
+                                             "when"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 52
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 53
+                                               }
+                                             "if"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 55
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 56
+                                               }
+                                             "one"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 59
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 60
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 62
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 63
+                                               }
+                                             "them"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 18
+                                               , sourceColumn = Pos 67
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "happens,"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 16
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 17
+                                               }
+                                             "none"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 21
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 22
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 24
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 25
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 28
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 29
+                                               }
+                                             "rest"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 33
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 19
+                                               , sourceColumn = Pos 34
+                                               }
+                                             "can."
                                          ]
                                    }
                              , BlockBlock
@@ -274,7 +988,42 @@ Doc
                                                , sourceLine = Pos 21
                                                , sourceColumn = Pos 8
                                                }
-                                             "Two events are "
+                                             "Two"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 11
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 12
+                                               }
+                                             "events"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 18
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 19
+                                               }
+                                             "are"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 22
+                                               }
+                                             " "
                                          , InlineBraced
                                              Element
                                                { srcPos =
@@ -298,13 +1047,174 @@ Doc
                                                          "contrary"
                                                      ]
                                                }
-                                         , InlineText
+                                         , InlineWhite
                                              SourcePos
                                                { sourceName = "bayes.scb"
                                                , sourceLine = Pos 21
                                                , sourceColumn = Pos 38
                                                }
-                                             " when one, or other of them must;\nand both together cannot happen."
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 39
+                                               }
+                                             "when"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 43
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 44
+                                               }
+                                             "one,"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 48
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 49
+                                               }
+                                             "or"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 51
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 52
+                                               }
+                                             "other"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 57
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 58
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 60
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 61
+                                               }
+                                             "them"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 65
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 66
+                                               }
+                                             "must;"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 21
+                                               , sourceColumn = Pos 71
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "and"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 11
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 12
+                                               }
+                                             "both"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 16
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 17
+                                               }
+                                             "together"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 25
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 26
+                                               }
+                                             "cannot"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 32
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 22
+                                               , sourceColumn = Pos 33
+                                               }
+                                             "happen."
                                          ]
                                    }
                              , BlockBlock
@@ -326,7 +1236,70 @@ Doc
                                                , sourceLine = Pos 24
                                                , sourceColumn = Pos 8
                                                }
-                                             "An event is said to "
+                                             "An"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 10
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 11
+                                               }
+                                             "event"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 16
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 17
+                                               }
+                                             "is"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 19
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 20
+                                               }
+                                             "said"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 24
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 25
+                                               }
+                                             "to"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 27
+                                               }
+                                             " "
                                          , InlineBraced
                                              Element
                                                { srcPos =
@@ -356,7 +1329,231 @@ Doc
                                                , sourceLine = Pos 24
                                                , sourceColumn = Pos 39
                                                }
-                                             ", when it cannot happen; or,\nwhich comes to the same thing, when its contrary has happened."
+                                             ","
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 40
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 41
+                                               }
+                                             "when"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 45
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 46
+                                               }
+                                             "it"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 48
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 49
+                                               }
+                                             "cannot"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 55
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 56
+                                               }
+                                             "happen;"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 63
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 64
+                                               }
+                                             "or,"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 24
+                                               , sourceColumn = Pos 67
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "which"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 13
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 14
+                                               }
+                                             "comes"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 19
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 20
+                                               }
+                                             "to"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 22
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 23
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 26
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 27
+                                               }
+                                             "same"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 31
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 32
+                                               }
+                                             "thing,"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 38
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 39
+                                               }
+                                             "when"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 43
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 44
+                                               }
+                                             "its"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 47
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 48
+                                               }
+                                             "contrary"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 56
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 57
+                                               }
+                                             "has"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 60
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 25
+                                               , sourceColumn = Pos 61
+                                               }
+                                             "happened."
                                          ]
                                    }
                              , BlockBlock
@@ -378,7 +1575,189 @@ Doc
                                                , sourceLine = Pos 27
                                                , sourceColumn = Pos 8
                                                }
-                                             "An event is said to be determined when it has either happened\nor failed."
+                                             "An"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 10
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 11
+                                               }
+                                             "event"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 16
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 17
+                                               }
+                                             "is"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 19
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 20
+                                               }
+                                             "said"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 24
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 25
+                                               }
+                                             "to"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 27
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 28
+                                               }
+                                             "be"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 30
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 31
+                                               }
+                                             "determined"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 41
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 42
+                                               }
+                                             "when"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 46
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 47
+                                               }
+                                             "it"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 49
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 50
+                                               }
+                                             "has"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 53
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 54
+                                               }
+                                             "either"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 60
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 61
+                                               }
+                                             "happened"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 27
+                                               , sourceColumn = Pos 69
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 28
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "or"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 28
+                                               , sourceColumn = Pos 10
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 28
+                                               , sourceColumn = Pos 11
+                                               }
+                                             "failed."
                                          ]
                                    }
                              , BlockBlock
@@ -400,7 +1779,14 @@ Doc
                                                , sourceLine = Pos 30
                                                , sourceColumn = Pos 8
                                                }
-                                             "The "
+                                             "The"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 11
+                                               }
+                                             " "
                                          , InlineBraced
                                              Element
                                                { srcPos =
@@ -421,16 +1807,464 @@ Doc
                                                            , sourceLine = Pos 30
                                                            , sourceColumn = Pos 18
                                                            }
-                                                         "probability of any event"
+                                                         "probability"
+                                                     , InlineWhite
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 29
+                                                           }
+                                                         " "
+                                                     , InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 30
+                                                           }
+                                                         "of"
+                                                     , InlineWhite
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 32
+                                                           }
+                                                         " "
+                                                     , InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 33
+                                                           }
+                                                         "any"
+                                                     , InlineWhite
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 36
+                                                           }
+                                                         " "
+                                                     , InlineText
+                                                         SourcePos
+                                                           { sourceName = "bayes.scb"
+                                                           , sourceLine = Pos 30
+                                                           , sourceColumn = Pos 37
+                                                           }
+                                                         "event"
                                                      ]
                                                }
-                                         , InlineText
+                                         , InlineWhite
                                              SourcePos
                                                { sourceName = "bayes.scb"
                                                , sourceLine = Pos 30
                                                , sourceColumn = Pos 43
                                                }
-                                             " is the ratio between the\nvalue at which an expectation depending on the happening of the\nevent ought to be computed, and the value of the thing expected\nupon "
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 44
+                                               }
+                                             "is"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 46
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 47
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 50
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 51
+                                               }
+                                             "ratio"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 56
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 57
+                                               }
+                                             "between"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 64
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 65
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 30
+                                               , sourceColumn = Pos 68
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "value"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 13
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 14
+                                               }
+                                             "at"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 16
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 17
+                                               }
+                                             "which"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 22
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 23
+                                               }
+                                             "an"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 25
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 26
+                                               }
+                                             "expectation"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 37
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 38
+                                               }
+                                             "depending"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 47
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 48
+                                               }
+                                             "on"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 50
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 51
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 54
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 55
+                                               }
+                                             "happening"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 64
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 65
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 67
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 68
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 31
+                                               , sourceColumn = Pos 71
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "event"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 13
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 14
+                                               }
+                                             "ought"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 19
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 20
+                                               }
+                                             "to"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 22
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 23
+                                               }
+                                             "be"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 25
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 26
+                                               }
+                                             "computed,"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 35
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 36
+                                               }
+                                             "and"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 39
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 40
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 43
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 44
+                                               }
+                                             "value"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 49
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 50
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 52
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 53
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 56
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 57
+                                               }
+                                             "thing"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 62
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 63
+                                               }
+                                             "expected"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 32
+                                               , sourceColumn = Pos 71
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 33
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "upon"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 33
+                                               , sourceColumn = Pos 12
+                                               }
+                                             " "
                                          , InlineBraced
                                              Element
                                                { srcPos =
@@ -499,13 +2333,20 @@ Doc
                                                , args = []
                                                , content = InlineNil
                                                }
-                                         , InlineText
+                                         , InlineWhite
                                              SourcePos
                                                { sourceName = "bayes.scb"
                                                , sourceLine = Pos 33
                                                , sourceColumn = Pos 37
                                                }
-                                             " happening."
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 33
+                                               , sourceColumn = Pos 38
+                                               }
+                                             "happening."
                                          ]
                                    }
                              , BlockBlock
@@ -527,7 +2368,14 @@ Doc
                                                , sourceLine = Pos 35
                                                , sourceColumn = Pos 8
                                                }
-                                             "By "
+                                             "By"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 10
+                                               }
+                                             " "
                                          , InlineBraced
                                              Element
                                                { srcPos =
@@ -551,13 +2399,90 @@ Doc
                                                          "chance"
                                                      ]
                                                }
-                                         , InlineText
+                                         , InlineWhite
                                              SourcePos
                                                { sourceName = "bayes.scb"
                                                , sourceLine = Pos 35
                                                , sourceColumn = Pos 24
                                                }
-                                             " I mean the same as probability."
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 25
+                                               }
+                                             "I"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 26
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 27
+                                               }
+                                             "mean"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 31
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 32
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 35
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 36
+                                               }
+                                             "same"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 40
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 41
+                                               }
+                                             "as"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 43
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 35
+                                               , sourceColumn = Pos 44
+                                               }
+                                             "probability."
                                          ]
                                    }
                              , BlockBlock
@@ -579,7 +2504,287 @@ Doc
                                                , sourceLine = Pos 37
                                                , sourceColumn = Pos 8
                                                }
-                                             "Events are independent when the happening of any one of them\ndoes neither increase nor abate the probability of the rest."
+                                             "Events"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 14
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 15
+                                               }
+                                             "are"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 18
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 19
+                                               }
+                                             "independent"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 30
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 31
+                                               }
+                                             "when"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 35
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 36
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 39
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 40
+                                               }
+                                             "happening"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 49
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 50
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 52
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 53
+                                               }
+                                             "any"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 56
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 57
+                                               }
+                                             "one"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 60
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 61
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 63
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 64
+                                               }
+                                             "them"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 37
+                                               , sourceColumn = Pos 68
+                                               }
+                                             "\n"
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 8
+                                               }
+                                             "does"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 12
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 13
+                                               }
+                                             "neither"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 20
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 21
+                                               }
+                                             "increase"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 29
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 30
+                                               }
+                                             "nor"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 33
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 34
+                                               }
+                                             "abate"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 39
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 40
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 43
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 44
+                                               }
+                                             "probability"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 55
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 56
+                                               }
+                                             "of"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 58
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 59
+                                               }
+                                             "the"
+                                         , InlineWhite
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 62
+                                               }
+                                             " "
+                                         , InlineText
+                                             SourcePos
+                                               { sourceName = "bayes.scb"
+                                               , sourceLine = Pos 38
+                                               , sourceColumn = Pos 63
+                                               }
+                                             "rest."
                                          ]
                                    }
                              ]

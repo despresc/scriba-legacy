@@ -54,7 +54,21 @@ Doc
                         , sourceLine = Pos 4
                         , sourceColumn = Pos 16
                         }
-                      "With content"
+                      "With"
+                  , InlineWhite
+                      SourcePos
+                        { sourceName = "simple.scb"
+                        , sourceLine = Pos 4
+                        , sourceColumn = Pos 20
+                        }
+                      " "
+                  , InlineText
+                      SourcePos
+                        { sourceName = "simple.scb"
+                        , sourceLine = Pos 4
+                        , sourceColumn = Pos 21
+                        }
+                      "content"
                   ]
             }
         ]
@@ -248,7 +262,182 @@ Doc
                , sourceLine = Pos 17
                , sourceColumn = Pos 1
                }
-             "A test of a plain paragraph.\nOf a couple of lines, with some "
+             "A"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 2
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 3
+               }
+             "test"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 7
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 8
+               }
+             "of"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 10
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 11
+               }
+             "a"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 12
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 13
+               }
+             "plain"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 18
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 19
+               }
+             "paragraph."
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 17
+               , sourceColumn = Pos 29
+               }
+             "\n"
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 1
+               }
+             "Of"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 3
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 4
+               }
+             "a"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 5
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 6
+               }
+             "couple"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 12
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 13
+               }
+             "of"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 15
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 16
+               }
+             "lines,"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 22
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 23
+               }
+             "with"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 27
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 28
+               }
+             "some"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 18
+               , sourceColumn = Pos 32
+               }
+             " "
          , InlineBraced
              Element
                { srcPos =
@@ -286,7 +475,7 @@ Doc
                      , blockAttrs = []
                      }
                , args =
-                   [ InlineText
+                   [ InlineWhite
                        SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 18
@@ -319,7 +508,35 @@ Doc
                , sourceLine = Pos 20
                , sourceColumn = Pos 1
                }
-             "And another paragraph"
+             "And"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 20
+               , sourceColumn = Pos 4
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 20
+               , sourceColumn = Pos 5
+               }
+             "another"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 20
+               , sourceColumn = Pos 12
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 20
+               , sourceColumn = Pos 13
+               }
+             "paragraph"
          ])
   , SecBlock
       (BlockBlock
@@ -459,7 +676,154 @@ Doc
                        , sourceLine = Pos 32
                        , sourceColumn = Pos 4
                        }
-                     "Very interesting inline content\ncontinuing\n\nfor a couple of lines\n\nand "
+                     "Very"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 8
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 9
+                       }
+                     "interesting"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 20
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 21
+                       }
+                     "inline"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 27
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 28
+                       }
+                     "content"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 32
+                       , sourceColumn = Pos 35
+                       }
+                     "\n"
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 33
+                       , sourceColumn = Pos 3
+                       }
+                     "continuing"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 33
+                       , sourceColumn = Pos 13
+                       }
+                     "\n\n"
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 3
+                       }
+                     "for"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 6
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 7
+                       }
+                     "a"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 8
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 9
+                       }
+                     "couple"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 15
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 16
+                       }
+                     "of"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 18
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 19
+                       }
+                     "lines"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 35
+                       , sourceColumn = Pos 24
+                       }
+                     "\n\n"
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 37
+                       , sourceColumn = Pos 3
+                       }
+                     "and"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 37
+                       , sourceColumn = Pos 6
+                       }
+                     " "
                  , InlineBraced
                      Element
                        { srcPos =
@@ -479,7 +843,49 @@ Doc
                                    , sourceLine = Pos 37
                                    , sourceColumn = Pos 13
                                    }
-                                 "including\nsome\n\ninline markup"
+                                 "including"
+                             , InlineWhite
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 37
+                                   , sourceColumn = Pos 22
+                                   }
+                                 "\n"
+                             , InlineText
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 38
+                                   , sourceColumn = Pos 3
+                                   }
+                                 "some"
+                             , InlineWhite
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 38
+                                   , sourceColumn = Pos 7
+                                   }
+                                 "\n\n"
+                             , InlineText
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 40
+                                   , sourceColumn = Pos 3
+                                   }
+                                 "inline"
+                             , InlineWhite
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 40
+                                   , sourceColumn = Pos 9
+                                   }
+                                 " "
+                             , InlineText
+                                 SourcePos
+                                   { sourceName = "simple.scb"
+                                   , sourceLine = Pos 40
+                                   , sourceColumn = Pos 10
+                                   }
+                                 "markup"
                              ]
                        }
                  ]
@@ -510,7 +916,35 @@ Doc
                            , sourceLine = Pos 44
                            , sourceColumn = Pos 3
                            }
-                         "Some blockOnlyBlock content"
+                         "Some"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 44
+                           , sourceColumn = Pos 7
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 44
+                           , sourceColumn = Pos 8
+                           }
+                         "blockOnlyBlock"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 44
+                           , sourceColumn = Pos 22
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 44
+                           , sourceColumn = Pos 23
+                           }
+                         "content"
                      ]
                  ]
            })
@@ -587,7 +1021,49 @@ Doc
                            , sourceLine = Pos 50
                            , sourceColumn = Pos 3
                            }
-                         "Very interesting block content"
+                         "Very"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 7
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 8
+                           }
+                         "interesting"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 19
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 20
+                           }
+                         "block"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 25
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 50
+                           , sourceColumn = Pos 26
+                           }
+                         "content"
                      ]
                  , BlockPar
                      SourcePos
@@ -601,7 +1077,63 @@ Doc
                            , sourceLine = Pos 52
                            , sourceColumn = Pos 3
                            }
-                         "And some more block content"
+                         "And"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 6
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 7
+                           }
+                         "some"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 11
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 12
+                           }
+                         "more"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 16
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 17
+                           }
+                         "block"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 22
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 52
+                           , sourceColumn = Pos 23
+                           }
+                         "content"
                      ]
                  , BlockBlock
                      Element
@@ -674,7 +1206,49 @@ Doc
                        , sourceLine = Pos 63
                        , sourceColumn = Pos 4
                        }
-                     "Interesting inline block content"
+                     "Interesting"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 15
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 16
+                       }
+                     "inline"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 22
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 23
+                       }
+                     "block"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 28
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 63
+                       , sourceColumn = Pos 29
+                       }
+                     "content"
                  ]
            })
   , SecBlock
@@ -704,13 +1278,97 @@ Doc
                        }
                      "&"
                }
-         , InlineText
+         , InlineWhite
              SourcePos
                { sourceName = "simple.scb"
                , sourceLine = Pos 65
                , sourceColumn = Pos 6
                }
-             " an inline verbatim test with some "
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 7
+               }
+             "an"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 9
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 10
+               }
+             "inline"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 16
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 17
+               }
+             "verbatim"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 25
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 26
+               }
+             "test"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 30
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 31
+               }
+             "with"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 35
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 36
+               }
+             "some"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 65
+               , sourceColumn = Pos 40
+               }
+             " "
          , InlineBraced
              Element
                { srcPos =
@@ -759,7 +1417,63 @@ Doc
                        , sourceLine = Pos 71
                        , sourceColumn = Pos 5
                        }
-                     "Content on the next line"
+                     "Content"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 12
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 13
+                       }
+                     "on"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 15
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 16
+                       }
+                     "the"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 19
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 20
+                       }
+                     "next"
+                 , InlineWhite
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 24
+                       }
+                     " "
+                 , InlineText
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 71
+                       , sourceColumn = Pos 25
+                       }
+                     "line"
                  ]
            })
   , SecBlock
@@ -811,7 +1525,21 @@ Doc
                , sourceLine = Pos 80
                , sourceColumn = Pos 1
                }
-             "And more."
+             "And"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 80
+               , sourceColumn = Pos 4
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 80
+               , sourceColumn = Pos 5
+               }
+             "more."
          ])
   , SecBlock
       (BlockPar
@@ -826,7 +1554,63 @@ Doc
                , sourceLine = Pos 82
                , sourceColumn = Pos 1
                }
-             "Insignificant \\backslash and a \\"
+             "Insignificant"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 14
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 15
+               }
+             "\\backslash"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 25
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 26
+               }
+             "and"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 29
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 30
+               }
+             "a"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 31
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 32
+               }
+             "\\"
          , InlineBraced
              Element
                { srcPos =
@@ -846,16 +1630,44 @@ Doc
                            , sourceLine = Pos 82
                            , sourceColumn = Pos 40
                            }
-                         "significant one"
+                         "significant"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 82
+                           , sourceColumn = Pos 51
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 82
+                           , sourceColumn = Pos 52
+                           }
+                         "one"
                      ]
                }
-         , InlineText
+         , InlineWhite
              SourcePos
                { sourceName = "simple.scb"
                , sourceLine = Pos 82
                , sourceColumn = Pos 56
                }
-             " and "
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 57
+               }
+             "and"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 82
+               , sourceColumn = Pos 60
+               }
+             " "
          , InlineBraced
              Element
                { srcPos =
@@ -867,7 +1679,7 @@ Doc
                , etype = Just "elem"
                , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args =
-                   [ InlineText
+                   [ InlineWhite
                        SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 82
@@ -900,7 +1712,14 @@ Doc
                , sourceLine = Pos 84
                , sourceColumn = Pos 1
                }
-             "A "
+             "A"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 2
+               }
+             " "
          , InlineComment
              SourcePos
                { sourceName = "simple.scb"
@@ -908,13 +1727,48 @@ Doc
                , sourceColumn = Pos 3
                }
              "comment that shouldn't be visible"
-         , InlineText
+         , InlineWhite
              SourcePos
                { sourceName = "simple.scb"
                , sourceLine = Pos 84
                , sourceColumn = Pos 40
                }
-             " test of comments"
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 41
+               }
+             "test"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 45
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 46
+               }
+             "of"
+         , InlineWhite
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 48
+               }
+             " "
+         , InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 84
+               , sourceColumn = Pos 49
+               }
+             "comments"
          ])
   , SecBlock
       (BlockBlock
@@ -942,7 +1796,14 @@ Doc
                            , sourceLine = Pos 88
                            , sourceColumn = Pos 3
                            }
-                         "And "
+                         "And"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 88
+                           , sourceColumn = Pos 6
+                           }
+                         " "
                      , InlineComment
                          SourcePos
                            { sourceName = "simple.scb"
@@ -950,13 +1811,27 @@ Doc
                            , sourceColumn = Pos 7
                            }
                          " a test of comments\n\n  in indented text "
-                     , InlineText
+                     , InlineWhite
                          SourcePos
                            { sourceName = "simple.scb"
                            , sourceLine = Pos 90
                            , sourceColumn = Pos 22
                            }
-                         " more. "
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 90
+                           , sourceColumn = Pos 23
+                           }
+                         "more."
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 90
+                           , sourceColumn = Pos 28
+                           }
+                         " "
                      ]
                  ]
            })

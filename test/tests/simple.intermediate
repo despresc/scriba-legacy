@@ -62,7 +62,21 @@ NodeElem
                             , sourceLine = Pos 4
                             , sourceColumn = Pos 16
                             }
-                          "With content"
+                          "With"
+                      , NodeWhite
+                          SourcePos
+                            { sourceName = "simple.scb"
+                            , sourceLine = Pos 4
+                            , sourceColumn = Pos 20
+                            }
+                          " "
+                      , NodeText
+                          SourcePos
+                            { sourceName = "simple.scb"
+                            , sourceLine = Pos 4
+                            , sourceColumn = Pos 21
+                            }
+                          "content"
                       ]
                     )
                   )
@@ -284,7 +298,182 @@ NodeElem
                                                       , sourceLine = Pos 17
                                                       , sourceColumn = Pos 1
                                                       }
-                                                    "A test of a plain paragraph.\nOf a couple of lines, with some "
+                                                    "A"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 2
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 3
+                                                      }
+                                                    "test"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 8
+                                                      }
+                                                    "of"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 10
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 11
+                                                      }
+                                                    "a"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 12
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 13
+                                                      }
+                                                    "plain"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 18
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 19
+                                                      }
+                                                    "paragraph."
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 17
+                                                      , sourceColumn = Pos 29
+                                                      }
+                                                    "\n"
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 1
+                                                      }
+                                                    "Of"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 3
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 4
+                                                      }
+                                                    "a"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 5
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    "couple"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 12
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 13
+                                                      }
+                                                    "of"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 15
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 16
+                                                      }
+                                                    "lines,"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 22
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 23
+                                                      }
+                                                    "with"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 27
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 28
+                                                      }
+                                                    "some"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 18
+                                                      , sourceColumn = Pos 32
+                                                      }
+                                                    " "
                                                 , NodeElem
                                                     Element
                                                       { eType = Just "emph"
@@ -328,7 +517,7 @@ NodeElem
                                                                     )
                                                                   ]
                                                             , metaArgs =
-                                                                [ NodeText
+                                                                [ NodeWhite
                                                                     SourcePos
                                                                       { sourceName = "simple.scb"
                                                                       , sourceLine = Pos 18
@@ -371,7 +560,35 @@ NodeElem
                                                       , sourceLine = Pos 20
                                                       , sourceColumn = Pos 1
                                                       }
-                                                    "And another paragraph"
+                                                    "And"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 20
+                                                      , sourceColumn = Pos 4
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 20
+                                                      , sourceColumn = Pos 5
+                                                      }
+                                                    "another"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 20
+                                                      , sourceColumn = Pos 12
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 20
+                                                      , sourceColumn = Pos 13
+                                                      }
+                                                    "paragraph"
                                                 ]
                                             }
                                       , NodeElem
@@ -525,7 +742,154 @@ NodeElem
                                                       , sourceLine = Pos 32
                                                       , sourceColumn = Pos 4
                                                       }
-                                                    "Very interesting inline content\ncontinuing\n\nfor a couple of lines\n\nand "
+                                                    "Very"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 8
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 9
+                                                      }
+                                                    "interesting"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 20
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 21
+                                                      }
+                                                    "inline"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 27
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 28
+                                                      }
+                                                    "content"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 32
+                                                      , sourceColumn = Pos 35
+                                                      }
+                                                    "\n"
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 33
+                                                      , sourceColumn = Pos 3
+                                                      }
+                                                    "continuing"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 33
+                                                      , sourceColumn = Pos 13
+                                                      }
+                                                    "\n\n"
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 3
+                                                      }
+                                                    "for"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "a"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 8
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 9
+                                                      }
+                                                    "couple"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 15
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 16
+                                                      }
+                                                    "of"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 18
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 19
+                                                      }
+                                                    "lines"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 35
+                                                      , sourceColumn = Pos 24
+                                                      }
+                                                    "\n\n"
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 37
+                                                      , sourceColumn = Pos 3
+                                                      }
+                                                    "and"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 37
+                                                      , sourceColumn = Pos 6
+                                                      }
+                                                    " "
                                                 , NodeElem
                                                     Element
                                                       { eType = Just "emph"
@@ -548,7 +912,49 @@ NodeElem
                                                                 , sourceLine = Pos 37
                                                                 , sourceColumn = Pos 13
                                                                 }
-                                                              "including\nsome\n\ninline markup"
+                                                              "including"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 37
+                                                                , sourceColumn = Pos 22
+                                                                }
+                                                              "\n"
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 38
+                                                                , sourceColumn = Pos 3
+                                                                }
+                                                              "some"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 38
+                                                                , sourceColumn = Pos 7
+                                                                }
+                                                              "\n\n"
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 40
+                                                                , sourceColumn = Pos 3
+                                                                }
+                                                              "inline"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 40
+                                                                , sourceColumn = Pos 9
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 40
+                                                                , sourceColumn = Pos 10
+                                                                }
+                                                              "markup"
                                                           ]
                                                       }
                                                 ]
@@ -591,7 +997,35 @@ NodeElem
                                                                 , sourceLine = Pos 44
                                                                 , sourceColumn = Pos 3
                                                                 }
-                                                              "Some blockOnlyBlock content"
+                                                              "Some"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 44
+                                                                , sourceColumn = Pos 7
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 44
+                                                                , sourceColumn = Pos 8
+                                                                }
+                                                              "blockOnlyBlock"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 44
+                                                                , sourceColumn = Pos 22
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 44
+                                                                , sourceColumn = Pos 23
+                                                                }
+                                                              "content"
                                                           ]
                                                       }
                                                 ]
@@ -680,7 +1114,49 @@ NodeElem
                                                                 , sourceLine = Pos 50
                                                                 , sourceColumn = Pos 3
                                                                 }
-                                                              "Very interesting block content"
+                                                              "Very"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 50
+                                                                , sourceColumn = Pos 7
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 50
+                                                                , sourceColumn = Pos 8
+                                                                }
+                                                              "interesting"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 50
+                                                                , sourceColumn = Pos 19
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 50
+                                                                , sourceColumn = Pos 20
+                                                                }
+                                                              "block"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 50
+                                                                , sourceColumn = Pos 25
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 50
+                                                                , sourceColumn = Pos 26
+                                                                }
+                                                              "content"
                                                           ]
                                                       }
                                                 , NodeElem
@@ -705,7 +1181,63 @@ NodeElem
                                                                 , sourceLine = Pos 52
                                                                 , sourceColumn = Pos 3
                                                                 }
-                                                              "And some more block content"
+                                                              "And"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 6
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 7
+                                                                }
+                                                              "some"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 11
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 12
+                                                                }
+                                                              "more"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 16
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 17
+                                                                }
+                                                              "block"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 22
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 52
+                                                                , sourceColumn = Pos 23
+                                                                }
+                                                              "content"
                                                           ]
                                                       }
                                                 , NodeElem
@@ -789,7 +1321,49 @@ NodeElem
                                                       , sourceLine = Pos 63
                                                       , sourceColumn = Pos 4
                                                       }
-                                                    "Interesting inline block content"
+                                                    "Interesting"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 63
+                                                      , sourceColumn = Pos 15
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 63
+                                                      , sourceColumn = Pos 16
+                                                      }
+                                                    "inline"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 63
+                                                      , sourceColumn = Pos 22
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 63
+                                                      , sourceColumn = Pos 23
+                                                      }
+                                                    "block"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 63
+                                                      , sourceColumn = Pos 28
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 63
+                                                      , sourceColumn = Pos 29
+                                                      }
+                                                    "content"
                                                 ]
                                             }
                                       , NodeElem
@@ -815,13 +1389,97 @@ NodeElem
                                                       , sourceColumn = Pos 2
                                                       }
                                                     "&"
-                                                , NodeText
+                                                , NodeWhite
                                                     SourcePos
                                                       { sourceName = "simple.scb"
                                                       , sourceLine = Pos 65
                                                       , sourceColumn = Pos 6
                                                       }
-                                                    " an inline verbatim test with some "
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 7
+                                                      }
+                                                    "an"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 9
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 10
+                                                      }
+                                                    "inline"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 16
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 17
+                                                      }
+                                                    "verbatim"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 25
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 26
+                                                      }
+                                                    "test"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 30
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 31
+                                                      }
+                                                    "with"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 35
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 36
+                                                      }
+                                                    "some"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 65
+                                                      , sourceColumn = Pos 40
+                                                      }
+                                                    " "
                                                 , NodeElem
                                                     Element
                                                       { eType = Just "code"
@@ -878,7 +1536,63 @@ NodeElem
                                                       , sourceLine = Pos 71
                                                       , sourceColumn = Pos 5
                                                       }
-                                                    "Content on the next line"
+                                                    "Content"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 12
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 13
+                                                      }
+                                                    "on"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 15
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 16
+                                                      }
+                                                    "the"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 19
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 20
+                                                      }
+                                                    "next"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 24
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 71
+                                                      , sourceColumn = Pos 25
+                                                      }
+                                                    "line"
                                                 ]
                                             }
                                       , NodeElem
@@ -928,7 +1642,21 @@ NodeElem
                                                       , sourceLine = Pos 80
                                                       , sourceColumn = Pos 1
                                                       }
-                                                    "And more."
+                                                    "And"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 80
+                                                      , sourceColumn = Pos 4
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 80
+                                                      , sourceColumn = Pos 5
+                                                      }
+                                                    "more."
                                                 ]
                                             }
                                       , NodeElem
@@ -953,7 +1681,63 @@ NodeElem
                                                       , sourceLine = Pos 82
                                                       , sourceColumn = Pos 1
                                                       }
-                                                    "Insignificant \\backslash and a \\"
+                                                    "Insignificant"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 14
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 15
+                                                      }
+                                                    "\\backslash"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 25
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 26
+                                                      }
+                                                    "and"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 29
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 30
+                                                      }
+                                                    "a"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 31
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 32
+                                                      }
+                                                    "\\"
                                                 , NodeElem
                                                     Element
                                                       { eType = Just "elem"
@@ -976,16 +1760,44 @@ NodeElem
                                                                 , sourceLine = Pos 82
                                                                 , sourceColumn = Pos 40
                                                                 }
-                                                              "significant one"
+                                                              "significant"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 82
+                                                                , sourceColumn = Pos 51
+                                                                }
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 82
+                                                                , sourceColumn = Pos 52
+                                                                }
+                                                              "one"
                                                           ]
                                                       }
-                                                , NodeText
+                                                , NodeWhite
                                                     SourcePos
                                                       { sourceName = "simple.scb"
                                                       , sourceLine = Pos 82
                                                       , sourceColumn = Pos 56
                                                       }
-                                                    " and "
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 57
+                                                      }
+                                                    "and"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 82
+                                                      , sourceColumn = Pos 60
+                                                      }
+                                                    " "
                                                 , NodeElem
                                                     Element
                                                       { eType = Just "elem"
@@ -1000,7 +1812,7 @@ NodeElem
                                                             , sourcePres = AsInline
                                                             , metaAttrs = fromList []
                                                             , metaArgs =
-                                                                [ NodeText
+                                                                [ NodeWhite
                                                                     SourcePos
                                                                       { sourceName = "simple.scb"
                                                                       , sourceLine = Pos 82
@@ -1043,14 +1855,56 @@ NodeElem
                                                       , sourceLine = Pos 84
                                                       , sourceColumn = Pos 1
                                                       }
-                                                    "A "
-                                                , NodeText
+                                                    "A"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 2
+                                                      }
+                                                    " "
+                                                , NodeWhite
                                                     SourcePos
                                                       { sourceName = "simple.scb"
                                                       , sourceLine = Pos 84
                                                       , sourceColumn = Pos 40
                                                       }
-                                                    " test of comments"
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 41
+                                                      }
+                                                    "test"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 45
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 46
+                                                      }
+                                                    "of"
+                                                , NodeWhite
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 48
+                                                      }
+                                                    " "
+                                                , NodeText
+                                                    SourcePos
+                                                      { sourceName = "simple.scb"
+                                                      , sourceLine = Pos 84
+                                                      , sourceColumn = Pos 49
+                                                      }
+                                                    "comments"
                                                 ]
                                             }
                                       , NodeElem
@@ -1091,14 +1945,35 @@ NodeElem
                                                                 , sourceLine = Pos 88
                                                                 , sourceColumn = Pos 3
                                                                 }
-                                                              "And "
-                                                          , NodeText
+                                                              "And"
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 88
+                                                                , sourceColumn = Pos 6
+                                                                }
+                                                              " "
+                                                          , NodeWhite
                                                               SourcePos
                                                                 { sourceName = "simple.scb"
                                                                 , sourceLine = Pos 90
                                                                 , sourceColumn = Pos 22
                                                                 }
-                                                              " more. "
+                                                              " "
+                                                          , NodeText
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 90
+                                                                , sourceColumn = Pos 23
+                                                                }
+                                                              "more."
+                                                          , NodeWhite
+                                                              SourcePos
+                                                                { sourceName = "simple.scb"
+                                                                , sourceLine = Pos 90
+                                                                , sourceColumn = Pos 28
+                                                                }
+                                                              " "
                                                           ]
                                                       }
                                                 ]

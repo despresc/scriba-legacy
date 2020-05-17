@@ -290,7 +290,7 @@ pBlockParContent = do
 -- TODO: can I just use the inline seq content parser from inline element?
 pBlockUnparContent :: Parser BlockContent
 pBlockUnparContent = BlockInlines <$> pSeq
-  where pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith pInlineText)
+  where pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith (pInlineText <|> pInlineWhite))
 
 pBlockNil :: Parser BlockContent
 pBlockNil = MP.label "de-indented content" $ atDeindent BlockNil empty
@@ -326,7 +326,7 @@ pInlineContent :: Parser InlineContent
 pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
  where
   pInlineSeqBody = fmap InlineSequence $ pInlineBodyStart >> MP.many
-    (pInlineNodeWith pInlineText)
+    (pInlineNodeWith (pInlineText <|> pInlineWhite))
   pInlineVerbBody = do
     src <- MP.getSourcePos
     -- TODO: better label?
@@ -336,7 +336,8 @@ pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
 pParagraph :: Parser [InlineNode]
 pParagraph = MP.some pParaNode where pParaNode = pInlineNodeWith pParaText
 
-pInlineNodeWith :: Parser Text -> Parser InlineNode
+-- | Parse an inline node with the given text parser.
+pInlineNodeWith :: Parser InlineNode -> Parser InlineNode
 pInlineNodeWith pText = do
   sp  <- MP.getSourcePos
   eet <- MP.eitherP (pCommentStart >> pCommentBody)
@@ -344,7 +345,7 @@ pInlineNodeWith pText = do
   pure $ case eet of
     Left  c         -> InlineComment sp c
     Right (Left  e) -> InlineBraced e
-    Right (Right t) -> InlineText sp t
+    Right (Right e) -> e
 
 -- ** Comments and whitespace
 
@@ -435,34 +436,40 @@ pBackslashToks :: Parser Text
 pBackslashToks = MP.single '\\' >> MP.option "\\" pEscChar
   where pEscChar = fmap T.singleton $ MP.satisfy $ \c -> T.any (== c) "{}\\"
 
-pInlineTextLine :: Parser Text
-pInlineTextLine =
-  MP.label "inline text"
-    $   fmap T.concat
-    $   MP.some
-    $   insigChar
-    <|> pBackslashToks
-  where insigChar = MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}\n"
+pInlineText :: Parser InlineNode
+pInlineText = MP.label "inline text" $ do
+  sp <- MP.getSourcePos
+  ts <- MP.some $ insigChar <|> pBackslashToks
+  pure $ InlineText sp (T.concat ts)
+ where
+  insigChar =
+    MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}" || isSpace c
 
 -- | Parse a newline, as long as the subsequent line is properly
 -- indented and not blank.
-pParaIndent :: Parser Text
+pParaIndent :: Parser InlineNode
 pParaIndent = MP.try $ do
+  src <- MP.getSourcePos
   void "\n"
   cLineSpace
   MP.notFollowedBy (void "\n" <|> MP.eof)
   guardIndented
-  pure "\n"
+  pure $ InlineWhite src "\n"
 
 -- | Parse indented paragraph text.
-pParaText :: Parser Text
-pParaText =
-  MP.label "paragraph text"
-    $   fmap T.concat
-    $   MP.some
-    $   pInlineTextLine
-    <|> pLineSpace1
-    <|> pParaIndent
+pParaText :: Parser InlineNode
+pParaText = MP.label "paragraph text" $ pInlineText <|> pParaWhite
+
+-- TODO: label?
+-- TODO: have a top-level pLineSpace1 that returns an InlineNode?
+-- Otherwise perhaps merge some of these parsers together.
+pParaWhite :: Parser InlineNode
+pParaWhite = MP.label "white space" $ pParaIndent <|> pLS
+  where
+    pLS = do
+      sp <- MP.getSourcePos
+      t <- pLineSpace1
+      pure $ InlineWhite sp t
 
 -- TODO: try?
 indentText :: Parser Text
@@ -474,15 +481,11 @@ indentText = MP.try $ do
   t'  <- splitIndent lvl t
   pure $ "\n" <> t'
 
--- | Parse indented text that may end with a de-indent or end of
--- input.
-pInlineText :: Parser Text
-pInlineText =
-  MP.label "inline text"
-    $   fmap T.concat
-    $   MP.some
-    $   pInlineTextLine
-    <|> subsequentlyIndented
+pInlineWhite :: Parser InlineNode
+pInlineWhite = MP.label "white space" $ do
+  src <- MP.getSourcePos
+  ts  <- MP.some $ pLineSpace1 <|> subsequentlyIndented
+  pure $ InlineWhite src $ T.concat ts
  where
   subsequentlyIndented = MP.try $ do
     void "\n"
@@ -493,13 +496,11 @@ pInlineText =
 
 -- | Argument text is inline text except that it cannot contain spaces
 -- or a character from @|&`@.
-pArgText :: Parser Text
-pArgText =
-  MP.label "argument text"
-    $   fmap T.concat
-    $   MP.some
-    $   insigChar
-    <|> pBackslashToks
+pArgText :: Parser InlineNode
+pArgText = MP.label "argument text" $ do
+  sp <- MP.getSourcePos
+  ts <- MP.some $ insigChar <|> pBackslashToks
+  pure $ InlineWhite sp (T.concat ts)
  where
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c

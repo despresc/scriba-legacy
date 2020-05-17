@@ -59,6 +59,7 @@ data BlockNode
 data InlineNode
   = InlineBraced InlineElement
   | InlineText SourcePos Text
+  | InlineWhite SourcePos Text
   | InlineComment SourcePos Text
   deriving (Eq, Ord, Show, Read, Generic)
 

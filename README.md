@@ -195,6 +195,11 @@ various aspects of it should be improved:
   `Markup` parsers into the elements themselves, perhaps adding an
   `Element/Common` module.
 
+- Reduce the number of `getSourcePos` invocations in
+  `Source/Parse`. Some parsers (like the `InlineWhite` parsers) can be
+  consolidated, and single calls can be made before attempting to
+  parse individual nodes.
+
 - Clarify whitespace policy. Right now none of the `Element` parsers
   allow whitespace around elements when recognizing them. This is fine
   when the output comes from a parsed scriba document, but maybe we

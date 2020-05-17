@@ -69,9 +69,9 @@ pList p = pOlist p <|> pUlist p
 pOlist :: Scriba [Node] (MixedBody b i) -> Scriba Element (List b i)
 pOlist p = do
   matchTy "olist"
-  content pOnlySpace
+  content consumeWhiteSpace
   fmap Olist $ whileParsingElem "olist" $ allContent $ many
-    (one pOlistItem <* pOnlySpace)
+    (one pOlistItem <* consumeWhiteSpace)
  where
   pOlistItem = asNode $ whileParsingElem "item" $ do
     (mId, mnumber) <- meta $ attrs $ do
@@ -85,9 +85,9 @@ pOlist p = do
 pUlist :: Scriba [Node] (MixedBody b i) -> Scriba Element (List b i)
 pUlist p = do
   matchTy "ulist"
-  content pOnlySpace
+  content consumeWhiteSpace
   fmap Ulist $ whileParsingElem "ulist" $ allContent $ many
-    (one (pListItem p) <* pOnlySpace)
+    (one (pListItem p) <* consumeWhiteSpace)
 
 pListItem :: Scriba [Node] (MixedBody b i) -> Scriba Node (MixedBody b i)
 pListItem p = asNode pItem

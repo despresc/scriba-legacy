@@ -297,7 +297,8 @@ asNode act = liftScriba $ \case
   NodeElem e -> do
     (e', a) <- runScriba act e
     pure (NodeElem e', a)
-  NodeText sp _ -> expectsGotAt ["element"] sp "text node"
+  NodeText  sp _ -> expectsGotAt ["element"] sp "text node"
+  NodeWhite sp _ -> expectsGotAt ["element"] sp "white space node"
 
 -- TODO: not great.
 -- TODO: maybe a popParg :: Scriba [Node] a -> Scriba [Node] a?
@@ -318,11 +319,11 @@ matchTy t = do
 whileMatchTy :: Text -> Scriba Element a -> Scriba Element a
 whileMatchTy t act = matchTy t >> whileParsingElem t act
 
--- TODO: have one that just returns the text?
--- And maybe a "symbol" one that strips leading and trailing whitespace
+-- TODO: distinguish between text and whitespace
 text :: Scriba Node (SourcePos, Text)
 text = liftScriba $ \n -> case n of
-  NodeText sp t -> pure (n, (sp, t))
+  NodeText  sp t -> pure (n, (sp, t))
+  NodeWhite sp t -> pure (n, (sp, t))
   NodeElem (Element _ (Meta sp _ _ _) _) ->
     expectsGotAt ["text node"] sp "element"
 
@@ -359,15 +360,11 @@ commonIndentStrip txt =
 -- | Consumes whitespace up to the first element or end of
 -- input. Throws an error if a text element with a non-whitespace
 -- character in it is encountered.
-pOnlySpace :: Scriba [Node] ()
-pOnlySpace = do
+consumeWhiteSpace :: Scriba [Node] ()
+consumeWhiteSpace = do
   ns <- get
   case ns of
-    NodeText sp t : ns' -> do
-      let t' = T.dropWhile isSpace t
-      if T.null t'
-        then S.put ns' >> pOnlySpace
-        else expectsGotAt ["element", "whitespace"] sp "text"
+    NodeWhite {} : ns' -> S.put ns' >> consumeWhiteSpace
     _ -> pure ()
 
 safeRead :: Read a => Text -> Maybe a
@@ -397,3 +394,5 @@ prettyScribaError (Expecting e mspt) = ex <> got
     T.intercalate ", " . map fromExpectation . Set.toAscList . getExpectations
 prettyScribaError (Msg t)  = "error: " <> t
 prettyScribaError ErrorNil = "unknown error"
+
+-- TODO: some kind of abstracted node/element parsing class?

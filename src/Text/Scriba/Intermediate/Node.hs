@@ -55,6 +55,7 @@ data Element = Element
 data Node
   = NodeElem Element
   | NodeText SourcePos Text
+  | NodeWhite SourcePos Text
   deriving (Eq, Ord, Show, Read, Generic)
 
 nodeElement :: Maybe Text -> Meta -> [Node] -> Node
@@ -70,12 +71,14 @@ instance HasPos Element where
   getPos = loc . eMeta
 
 instance HasPos Node where
-  getPos (NodeElem e  ) = getPos e
-  getPos (NodeText p _) = p
+  getPos (NodeElem e   ) = getPos e
+  getPos (NodeText  p _) = p
+  getPos (NodeWhite p _) = p
 
 showNodeType :: Node -> Text
-showNodeType NodeElem{} = "element"
-showNodeType NodeText{} = "text"
+showNodeType NodeElem{}  = "element"
+showNodeType NodeText{}  = "text"
+showNodeType NodeWhite{} = "white space"
 
 -- * Meta conversion
 
@@ -118,9 +121,10 @@ fromInlineElement (P.Element s t at ar c) =
 -- intermediate inline node, and converts an inline comment into
 -- @Nothing@.
 fromInlineNode :: InlineNode -> Maybe Node
-fromInlineNode (InlineBraced e) = Just $ fromInlineElement e
-fromInlineNode (InlineText s t) = Just $ NodeText s t
-fromInlineNode InlineComment{}  = Nothing
+fromInlineNode (InlineBraced e ) = Just $ fromInlineElement e
+fromInlineNode (InlineText  s t) = Just $ NodeText s t
+fromInlineNode (InlineWhite s t) = Just $ NodeWhite s t
+fromInlineNode InlineComment{}   = Nothing
 
 fromInlineNodes :: [InlineNode] -> [Node]
 fromInlineNodes = mapMaybe fromInlineNode
