@@ -4,7 +4,44 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
 
-module Text.Scriba.Source.Parse where
+{-|
+Description : Text stream parsers for scriba
+Copyright   : 2020 Christian Despres
+License     : BSD-2-Clause
+Maintainer  : Christian Despres
+Stability   : experimental
+
+This module defines text parsers for scriba documents, returning
+'Text.Scriba.Source.Common' types. These are intended to be passed off
+to 'Text.Scriba.Intermediate.Node' for further processing.
+-}
+
+module Text.Scriba.Source.Parse
+  ( -- * Parser definitions
+
+    -- $parserdesc
+    Parser(..)
+  , ParseError
+  , runParser
+
+  -- * Indentation parsers and handlers
+  , getIndent
+  , atIndent
+  , dropIndent
+  , posIndent
+
+  -- * White space parsers
+  , cSpace
+  , cLineSpace
+  , pBlankLine
+  , ifIndented
+  , atDeIndent
+  , guardIndented
+
+  -- * Running parsers
+  , parseDoc'
+  )
+where
 
 import           Text.Scriba.Source.Common
 
@@ -38,13 +75,6 @@ import qualified Text.Megaparsec               as MP
 
 {- TODO: 
 
-- in future, may want to cut down on the use of
-  getSourcePos. E.g. things can return the SourcePos of the form
-  immediately after them, for use in the next form. So pSpace would
-  return the SourcePos, for instance, and block parsers would pass
-  along the SourcePos of their end so that outer blocks could examine
-  that, and not need to call getSourcePos.
-
 - have the content markers for blocks create their own indentation
   context?
 
@@ -74,14 +104,51 @@ import qualified Text.Megaparsec               as MP
     start of block body, start of inline body, start of inline
     element, or start of verbatim body
 
-- Remove the requirement that section attributes must end in a ---, if present?
-
 - Parse regions. I want "when parsing ..." errors.
 
+- Change the indentation definitions around? Might be simpler to have
+  the ambient indent represent the column _beyond_ which the elements
+  should lie, so that a de-indent occurs if the source level is less
+  than or equal to the ambient level.
+
+- Consider getting rid of the p* naming convention.
+
+- In the documentation, clarify that "properly indentated" means "must
+  occur at or beyond a particular source column"
 -}
 
--- Parser definitions
+-- $parserdesc
+--
+-- Scriba is an indentation-sensitive language; the content of block
+-- elements ends when a line is encountered that is not indented by
+-- more than the block marker, and the indentation (and all leading
+-- line space, in some cases) is stripped from the content. Thus the
+-- parsers for every syntactic form that can occur inside a block
+-- (inline and block things and text) must be aware of source
+-- indentation (the indentation at a particular stream position) and
+-- the current ambient indentation level.
+--
+-- These parsers use a simple indentation strategy. Line space
+-- non-white-space text may be parsed normally. Newlines are only
+-- successfully parsed if they are followed by a properly-indented
+-- line. The main element parsers assume that all whitespace before
+-- them has been dealt with and the indentation level has been
+-- checked. Indentation itself _must_ be in the form of white space
+-- characters; comments are parsed as inline nodes and so can only
+-- appear where inline nodes can. It is also recommended that these
+-- characters be the @' '@ space character, since tabs are not yet
+-- supported as indentation for verbatim blocks (see 'dropIndent').
+--
+-- In the documentation that follows, the source indentation level is
+-- the current column position of the stream, and something is
+-- considered properly indented if its source indentation (converted
+-- to an @Int@) is greater than the ambient indentation level. The
+-- ambient indentation at the start of a document is generally going
+-- to be @0@.
 
+-- | A 'Parser' is a megaparsec parser that is to be run with an
+-- initial ambient indentation level equal to the @Int@ in the
+-- @ReaderT@.
 newtype Parser a = Parser
   { getParser :: ReaderT Int (Parsec Void Text) a
   } deriving ( Functor
@@ -92,35 +159,49 @@ newtype Parser a = Parser
              , MP.MonadParsec Void Text
              , MonadFail )
 
-runParser :: Parser a -> Int -> Parsec Void Text a
-runParser = runReaderT . getParser
-
 instance (a ~ Text) => IsString (Parser a) where
   fromString = Parser . lift . fromString
 
 instance Semigroup a => Semigroup (Parser a) where
   (<>) = liftA2 (<>)
 
+-- | Unwrap the given 'Parser'.
+runParser :: Parser a -> Int -> Parsec Void Text a
+runParser = runReaderT . getParser
+
+-- | The type of a 'Parser' error, which contains no custom error
+-- components.
 type ParseError = ParseErrorBundle Text Void
 
--- Basic indent parsers
-
+-- | Retrieve the ambient indentation level.
 getIndent :: Parser Int
 getIndent = Parser Reader.ask
 
+-- | Run the given parser at the given indentation level.
 atIndent :: Int -> Parser a -> Parser a
 atIndent n = Parser . Reader.local (const n) . getParser
 
-splitIndent :: Int -> Text -> Parser Text
-splitIndent n = pure . T.drop n
+-- | In @dropIndent n txt@, drop the first @n@ spaces from
+-- @txt@ and return the remainder. This _ought_ to be aware of tab
+-- indentation as well, but is not yet.
+dropIndent :: Int -> Text -> Parser Text
+dropIndent n = pure . T.drop n
 
--- | Parses one or more whitespace characters other than a newline.
+-- | Extract the indentation level from a 'SourcePos'.
+posIndent :: SourcePos -> Int
+posIndent = MP.unPos . MP.sourceColumn
 
+-- | Consumes any white space character.
 cSpace :: Parser ()
 cSpace = void $ MP.takeWhileP Nothing isSpace
 
+-- | Consumes any white space character other than a newline.
 cLineSpace :: Parser ()
 cLineSpace = void $ MP.takeWhileP Nothing $ \c -> isSpace c && c /= '\n'
+
+-- | Parse a blank line, in this case meaning a single newline and
+-- subsequent line space, followed by a newline. The terminal newline
+-- is not consumed.
 
 -- TODO: try?
 pBlankLine :: Parser Text
@@ -130,23 +211,25 @@ pBlankLine = MP.label "blank line" $ MP.try $ do
   void $ MP.lookAhead "\n"
   pure $ "\n" <> t
 
-posIndent :: SourcePos -> Int
-posIndent = subtract 1 . MP.unPos . MP.sourceColumn
-
-guardLevel :: (Int -> Int -> Parser a) -> Parser a -> Parser a
-guardLevel pLow pHigh = do
+-- | The @'ifIndented' low high@ parser runs @high@ if the stream is
+-- properly indented, and otherwise runs @low@ after passing it the
+-- source indentation and the ambient indentation.
+ifIndented :: (Int -> Int -> Parser a) -> Parser a -> Parser a
+ifIndented pLow pHigh = do
   sp <- MP.getSourcePos
   let n = posIndent sp
   lvl <- getIndent
-  if n < lvl then pLow n lvl else pHigh
+  if n > lvl then pHigh else pLow n lvl
 
--- Run the first parser if a de-indent is encountered.
-atDeindent :: a -> Parser a -> Parser a
-atDeindent low = guardLevel (const $ const $ pure low)
+-- | Run the supplied parser if the stream is properly indented, and
+-- otherwise return the supplied value.
+atDeIndent :: a -> Parser a -> Parser a
+atDeIndent low = ifIndented (const $ const $ pure low)
 
+-- | Fail if the stream is not properly indented.
 guardIndented :: Parser ()
 guardIndented =
-  guardLevel
+  ifIndented
       (\n lvl ->
         fail
           $  "insufficient indent: got "
@@ -156,8 +239,7 @@ guardIndented =
       )
     $ pure ()
 
--- Document parts
-
+-- TODO: start documentating here
 pDoc :: Parser Doc
 pDoc = do
   src <- MP.getSourcePos
@@ -174,9 +256,9 @@ pDocAttrs = do
   sp <- MP.getSourcePos
   MP.try $ pBlockMark >> cLineSpace >> void "scriba"
   cSpace
-  atIndent (posIndent sp + 1) $ atDeindent (Attrs [] []) $ do
+  atIndent (posIndent sp) $ atDeIndent (Attrs [] []) $ do
     ia <- pInlineAttrs cSpace
-    atDeindent (Attrs ia []) $ do
+    atDeIndent (Attrs ia []) $ do
       ba <- pBlockAttrs cSpace
       pure $ Attrs ia ba
 
@@ -209,9 +291,9 @@ pSecHeader = do
   pNilAttributes     = MP.try $ pBlankLine $> Attrs [] []
   pPresentAttributes = atIndent 1 $ do
     cSpace
-    atDeindent (Attrs [] []) $ do
+    atDeIndent (Attrs [] []) $ do
       ia <- pInlineAttrs cSpace
-      atDeindent (Attrs ia []) $ do
+      atDeIndent (Attrs ia []) $ do
         ba <- pBlockAttrs cSpace
         pure $ Attrs ia ba
 
@@ -231,22 +313,22 @@ pBlockElement pTy = do
   sp <- MP.getSourcePos
   pBlockMark
   cLineSpace
-  atIndent (posIndent sp + 1) $ do
+  atIndent (posIndent sp) $ do
     ty <- pTy
     cSpace
     ia <- pInlineAttrs cSpace
-    atDeindent (Element sp ty (Attrs ia []) [] BlockNil) $ do
+    atDeIndent (Element sp ty (Attrs ia []) [] BlockNil) $ do
       ba <- pBlockAttrs cSpace
-      atDeindent (Element sp ty (Attrs ia ba) [] BlockNil) $ do
+      atDeIndent (Element sp ty (Attrs ia ba) [] BlockNil) $ do
         as <- MP.option [] $ pArgs cSpace
-        atDeindent (Element sp ty (Attrs ia ba) as BlockNil)
+        atDeIndent (Element sp ty (Attrs ia ba) as BlockNil)
           $   Element sp ty (Attrs ia ba) as
           <$> pBlockContent
 
 manyIndented :: Parser space -> Parser a -> Parser [a]
 manyIndented sc p = go id
  where
-  go f = atDeindent (f []) $ do
+  go f = atDeIndent (f []) $ do
     ma <- MP.optional p
     case ma of
       Nothing -> pure $ f []
@@ -290,10 +372,12 @@ pBlockParContent = do
 -- TODO: can I just use the inline seq content parser from inline element?
 pBlockUnparContent :: Parser BlockContent
 pBlockUnparContent = BlockInlines <$> pSeq
-  where pSeq = pInlineBodyStart >> MP.many (pInlineNodeWith (pInlineText <|> pInlineWhite))
+ where
+  pSeq =
+    pInlineBodyStart >> MP.many (pInlineNodeWith (pInlineText <|> pInlineWhite))
 
 pBlockNil :: Parser BlockContent
-pBlockNil = MP.label "de-indented content" $ atDeindent BlockNil empty
+pBlockNil = MP.label "de-indented content" $ atDeIndent BlockNil empty
 
 pBlockVerbContent :: Parser BlockContent
 pBlockVerbContent = do
@@ -465,11 +549,11 @@ pParaText = MP.label "paragraph text" $ pInlineText <|> pParaWhite
 -- Otherwise perhaps merge some of these parsers together.
 pParaWhite :: Parser InlineNode
 pParaWhite = MP.label "white space" $ pParaIndent <|> pLS
-  where
-    pLS = do
-      sp <- MP.getSourcePos
-      t <- pLineSpace1
-      pure $ InlineWhite sp t
+ where
+  pLS = do
+    sp <- MP.getSourcePos
+    t  <- pLineSpace1
+    pure $ InlineWhite sp t
 
 -- TODO: try?
 indentText :: Parser Text
@@ -478,7 +562,7 @@ indentText = MP.try $ do
   t <- pLineSpace
   guardIndented
   lvl <- getIndent
-  t'  <- splitIndent lvl t
+  t'  <- dropIndent lvl t
   pure $ "\n" <> t'
 
 pInlineWhite :: Parser InlineNode

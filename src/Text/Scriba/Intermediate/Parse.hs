@@ -21,7 +21,6 @@ import           Control.Monad.State.Strict     ( StateT
                                                 )
 import qualified Control.Monad.State.Strict    as S
 import qualified Control.Monad.Except          as E
-import           Data.Char                      ( isSpace )
 import           Data.Foldable                  ( foldl' )
 import           Data.Functor.Compose           ( Compose(..) )
 import           Data.Maybe                     ( mapMaybe
@@ -364,8 +363,8 @@ consumeWhiteSpace :: Scriba [Node] ()
 consumeWhiteSpace = do
   ns <- get
   case ns of
-    NodeWhite {} : ns' -> S.put ns' >> consumeWhiteSpace
-    _ -> pure ()
+    NodeWhite{} : ns' -> S.put ns' >> consumeWhiteSpace
+    _                 -> pure ()
 
 safeRead :: Read a => Text -> Maybe a
 safeRead t = case reads (T.unpack t) of
