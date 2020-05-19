@@ -1,3 +1,64 @@
+# Pagination, linking
+
+We should be able to define the pagination of documents in HTML
+rendering, I think, so that the amount of content per served page is
+reasonable. This can be within the document, or perhaps outside of the
+document as well (so that multiple pagination schemes can be used at
+once on a website). Pagination could be defined through simple
+matching on section types, perhaps?
+
+There is a small issue with block content followed by subsequent
+paginated subsections. I suppose that we could simply forbid such a
+situation? Or, we could instead have pagination apply to the content
+of sections, so that in, say, *Disquisitiones Arithmeticae*, you might
+paginate by `frontMatter`, `mainMatter`, `backMatter`, which might be
+the default pagination scheme for books. In that particular book, of
+course, there was the problem of the one particularly large section,
+which had major article groupings inside it. If we paginate instead by
+`sectio`, then that one would be split up into a number of article
+group pages, followed by two major article group pages.
+
+There is still the problem of the containing sections, of course.
+
+What about page breaks? We could provide a list the section types, and
+these would have page breaks immediately before them. This creates the
+(potentially) undesirable situation of not having any parent titles on
+the pages of the children; you might expect `Chapter 7 \\ Section 1.`
+on a section page, and not merely `Section 1.`. We would need to
+filter out "empty" pages: pages without any preamble content. Either
+that, or *all* upper pages get their own pages. Something like
+`Title. \\ Preamble \\ Table of subsections`?
+
+This would be easier if we had some kind of uniform book structure, of
+course. Could simply have an "articulus" division, for instance, for
+Gauss and related books, that's simply numbered and has no further
+sectional content. Maybe a generic unnumbered section type? Either
+that or switch to milestones for those groupings and have the TOC
+somehow be aware of them. Then we might have a `secGroup` for grouping
+sections together.
+
+Let's say a section is not-necessarily-paginated, and it contains a
+paginated child (as a descendant). Then it itself must become
+paginated. Fine. For each section we decide if individual children
+should be on their own pages. If any child is on its own page then all
+the children must go on their own pages. Or perhaps all subsequent
+children? We'll do all children for now.
+
+```
+Title
+-----
+
++------------------+
+|     Content      |
+| (child sections) |
++------------------+
+
+Section preamble
+```
+
+and the `Content` will not be present if there are no paginated child
+sections.
+
 # Manual
 
 - generally rework the introductory section, so that it is gentler,
@@ -47,6 +108,10 @@ handy, I suppose, but all of these historical documents will probably
 need weird bespoke citation schemes. Still, a CSL-like derivation
 mechanism would be welcome, since shared citation elements are at
 least somewhat common.
+
+For now, we should implement a simple standalone digitized article
+style, that might, say, include the relevant bibliographic details at
+the start of the article, under the title.
 
 # Standalone rendering
 
@@ -195,6 +260,11 @@ CSS has :lang selector, so we can have styles based on language
 
 - Global permissible attributes on everything (`id`, `lang`, whatever
   else we decide to have).
+
+- auto-identification of elements? There is numbering-based
+  identification and "stable" identification (based on the first bit
+  of plain text content in the container). The former is good for
+  documents that are not expected to change very much.
 
 - A root `document` section? If we have editorial note support then
   we'll need some way of distinguishing the two, if they are to appear
