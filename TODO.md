@@ -111,7 +111,9 @@ least somewhat common.
 
 For now, we should implement a simple standalone digitized article
 style, that might, say, include the relevant bibliographic details at
-the start of the article, under the title.
+the start of the article, under the title. This might involve a simple
+"sources of:" followed by a list of rendered sources? We might not
+even want to have that _in_ the page, though.
 
 # Standalone rendering
 
@@ -214,6 +216,9 @@ various aspects of it should be improved:
 
 - Modify the container-counter relation compilation errors so they fit
   better with the current scriba errors.
+
+- Some kind of "container name" class? Would be helpful for sectioning
+  and titling.
 
 # Libraries
 

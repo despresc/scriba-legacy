@@ -235,15 +235,14 @@ runNumDoc
   -> Either
        DecorateError
        (NumberData (Inline j), Doc Block (Inline j) (Inline a))
-runNumDoc d@(Doc da _ _ _) =
-  flip runNumberM (defaultNumberState da) $ numbering d
+runNumDoc d@(Doc da _) = flip runNumberM (defaultNumberState da) $ numbering d
 
 runTitleDoc
   :: forall a
    . Titling (Inline a) a
   => Doc Block (Inline Void) (Inline a)
   -> Doc Block (Inline Void) (Inline a)
-runTitleDoc d@(Doc da _ _ _) =
+runTitleDoc d@(Doc da _) =
   flip runTitleM (traverseInline absurd <$> docTitlingConfig da)
     $ (titling :: Doc Block (Inline Void) (Inline a)
         -> TitleM (Inline a) (Doc Block (Inline Void) (Inline a))
@@ -341,7 +340,7 @@ renderStandalone
   => StandaloneConfig
   -> Doc b j i
   -> RH.RenderM Html.Html
-renderStandalone (StandaloneConfig csspath) d@(Doc dm _ _ _) = do
+renderStandalone (StandaloneConfig csspath) d@(Doc dm _) = do
   d' <- RH.render d
   let tplain = docPlainTitle dm
   pure $ Html.docTypeHtml $ do

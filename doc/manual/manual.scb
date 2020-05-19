@@ -59,12 +59,21 @@
       &ref
         &prefix|§
 
+
+{% TODO: Restore this, possibly as an introduction section? Or as an
+abstract if this remains an article. Also, we got the error "got:
+<untyped element>" when this paragraph was here originally and no
+preamble was recognized. This should be got: paragraph, or something
+like that.
+
 Scriba is a plain text markup language emphasizing extensibility,
 clarity, and ease of use. It is also a compiler, taking source scriba
 documents and rendering them to multi-page HTML, EPUB, and TeX. The
 format includes flexible markup constructs designed to represent a
 range of historical scientific material, but these can be used equally
 well for new publications.
+
+%}
 
 # section
   & title|An introduction to the language
