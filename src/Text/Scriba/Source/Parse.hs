@@ -5,41 +5,97 @@
 {-# LANGUAGE TypeFamilies #-}
 
 {-|
-Description : Text stream parsers for scriba
+Description : Text stream parsers
 Copyright   : 2020 Christian Despres
 License     : BSD-2-Clause
 Maintainer  : Christian Despres
 Stability   : experimental
 
 This module defines text parsers for scriba documents, returning
-'Text.Scriba.Source.Common' types. These are intended to be passed off
-to 'Text.Scriba.Intermediate.Node' for further processing.
+"Text.Scriba.Source.Common" types. These are intended to be passed off
+to "Text.Scriba.Intermediate.Node" for further processing.
 -}
 
+
 module Text.Scriba.Source.Parse
-  ( -- * Parser definitions
+  ( -- * The Parser monad
 
     -- $parserdesc
     Parser(..)
   , ParseError
   , runParser
 
-  -- * Indentation parsers and handlers
+  -- * Indentation and white space
   , getIndent
   , atIndent
   , dropIndent
   , posIndent
-
-  -- * White space parsers
   , cSpace
   , cLineSpace
+  , pLineSpace
+  , pLineSpace1
   , pBlankLine
   , ifIndented
   , atDeIndent
   , guardIndented
+  , manyIndented
+
+  -- * Components of elements
+  , pElemTy
+  , pInlineBodyStart
+  , pBlockBodyStart
+  , pVerbatimBodyStart
+  , pVerbatimBlockBodyStart
+  , pVerbatimBodyEnd
+  , pCommentStart
+  , pCommentEnd
+  , pBlockMark
+  , pElementArgsStart
+  , pBraced
+
+  -- * Text and comments
+  , pCommentBody
+  , pBackslashToks
+  , pInlineText
+  , indentText
+  , pParaIndent
+  , pParaText
+  , pParaWhite
+  , pInlineWhite
+  , pArgText
+  , pInlineVerbText
+  , pBlockVerbText
+
+  -- * Document elements and nodes
+  , pDoc
+  , pDocAttrs
+  , pSecContent
+  , pSecNode
+  , pSecHeader
+  , pSecBlock
+  , pBlockElement
+  , pBlockAttrs
+  , pInlineAttrs
+  , pArgs
+  , pInlineElement
+  , pBlockContent
+  , pBlockParContent
+  , pBlockUnparContent
+  , pBlockVerbContent
+  , pBlockNil
+  , pBlockNode
+  , pBlockNodes
+  , pInlineContent
+  , pParagraph
+  , pInlineNodeWith
 
   -- * Running parsers
+  , parseWithAt
+  , parseWithAt'
+  , parseWith
+  , parseWith'
   , parseDoc'
+  , parseTesting
   )
 where
 
@@ -197,7 +253,15 @@ cSpace = void $ MP.takeWhileP Nothing isSpace
 
 -- | Consumes any white space character other than a newline.
 cLineSpace :: Parser ()
-cLineSpace = void $ MP.takeWhileP Nothing $ \c -> isSpace c && c /= '\n'
+cLineSpace = void $ pLineSpace
+
+-- | Parse one or more line space characters.
+pLineSpace1 :: Parser Text
+pLineSpace1 = MP.takeWhile1P (Just "line space") $ \c -> isSpace c && c /= '\n'
+
+-- | Parse zero or more line space characters.
+pLineSpace :: Parser Text
+pLineSpace = MP.takeWhileP (Just "line space") $ \c -> isSpace c && c /= '\n'
 
 -- | Parse a blank line, in this case meaning a single newline and
 -- subsequent line space, followed by a newline. The terminal newline
@@ -239,92 +303,8 @@ guardIndented =
       )
     $ pure ()
 
--- TODO: start documentating here
-pDoc :: Parser Doc
-pDoc = do
-  src <- MP.getSourcePos
-  cSpace
-  at <- MP.option (Attrs [] []) pDocAttrs
-  cSpace
-  c <- pSecContent
-  MP.eof
-  pure $ Doc src at c
-
--- TODO: duplication with BlockElement
-pDocAttrs :: Parser Attrs
-pDocAttrs = do
-  sp <- MP.getSourcePos
-  MP.try $ pBlockMark >> cLineSpace >> void "scriba"
-  cSpace
-  atIndent (posIndent sp) $ atDeIndent (Attrs [] []) $ do
-    ia <- pInlineAttrs cSpace
-    atDeIndent (Attrs ia []) $ do
-      ba <- pBlockAttrs cSpace
-      pure $ Attrs ia ba
-
-pSecContent :: Parser [SecNode]
-pSecContent = MP.many $ pSecNode <* cSpace
-
--- | A section node is either a block node or a section header
-
--- TODO: This assumes that section nodes occur at zero indent!
-pSecNode :: Parser SecNode
-pSecNode = SecHeaderNode <$> pSecHeader <|> SecBlock <$> pSecBlock
-
--- | A section header is a sequence of one or more number signs, then
--- an element type and attributes.
-
--- TODO: duplication with BlockElement
--- TODO: not sure how I like the pNilAttributes handling.
-pSecHeader :: Parser SecHeader
-pSecHeader = do
-  sp <- MP.getSourcePos
-  n  <- pNumberRun
-  cLineSpace
-  mty <- MP.optional pElemTy
-  cLineSpace
-  at <- pSecAttributes
-  pure $ SecHeader n sp mty at []
- where
-  pNumberRun         = T.length <$> MP.takeWhile1P Nothing (== '#')
-  pSecAttributes     = pNilAttributes <|> pPresentAttributes
-  pNilAttributes     = MP.try $ pBlankLine $> Attrs [] []
-  pPresentAttributes = atIndent 1 $ do
-    cSpace
-    atDeIndent (Attrs [] []) $ do
-      ia <- pInlineAttrs cSpace
-      atDeIndent (Attrs ia []) $ do
-        ba <- pBlockAttrs cSpace
-        pure $ Attrs ia ba
-
--- TODO: observe that this assumes an ambient indent of 0.
-pSecBlock :: Parser BlockNode
-pSecBlock = do
-  sp <- MP.getSourcePos
-  BlockBlock
-    <$> pBlockElement (MP.optional pElemTy)
-    <|> BlockPar sp
-    <$> pParagraph
-
--- | Parse a block element. The passed @SourcePos@ will set the
--- indentation level and position of the parsed 'Element'.
-pBlockElement :: Parser ty -> Parser (Element ty BlockContent)
-pBlockElement pTy = do
-  sp <- MP.getSourcePos
-  pBlockMark
-  cLineSpace
-  atIndent (posIndent sp) $ do
-    ty <- pTy
-    cSpace
-    ia <- pInlineAttrs cSpace
-    atDeIndent (Element sp ty (Attrs ia []) [] BlockNil) $ do
-      ba <- pBlockAttrs cSpace
-      atDeIndent (Element sp ty (Attrs ia ba) [] BlockNil) $ do
-        as <- MP.option [] $ pArgs cSpace
-        atDeIndent (Element sp ty (Attrs ia ba) as BlockNil)
-          $   Element sp ty (Attrs ia ba) as
-          <$> pBlockContent
-
+-- | The parser @'manyIndented' sc p@ parses zero or more
+-- properly-indented occurrences of @p@ separated by @sc@.
 manyIndented :: Parser space -> Parser a -> Parser [a]
 manyIndented sc p = go id
  where
@@ -334,118 +314,19 @@ manyIndented sc p = go id
       Nothing -> pure $ f []
       Just a  -> sc >> go (f . (a :))
 
--- | Parse a sequence of zero or more properly-indented block
--- attributes.
-pBlockAttrs :: Parser space -> Parser [BlockAttr]
-pBlockAttrs = flip manyIndented $ pBlockElement pElemTy
-
--- Not sure if a separate version of this that forbids blank lines
--- _inside_ the inline element is worth it.
-pInlineAttrs :: Parser space -> Parser [InlineAttr]
-pInlineAttrs = flip manyIndented $ pInlineElement pElemTy
-
-pArgs :: Parser space -> Parser [InlineNode]
-pArgs sc = pElementArgsStart >> sc >> MP.many (pArgNode <* sc)
-  where pArgNode = pInlineNodeWith pArgText
-
--- TODO: a version of this for section attributes that forbids blank
--- lines?
-pInlineElement :: Parser ty -> Parser (Element ty InlineContent)
-pInlineElement pTy = pBraced "inline element" $ \src -> do
-  t   <- (cSpace >> guardIndented >> pTy) <* cSpace
-  at  <- guardIndented >> pInlineAttrs cSpace
-  ar  <- guardIndented >> MP.option [] (pArgs cSpace)
-  con <- guardIndented >> pInlineContent
-  pure $ Element src t (Attrs at []) ar con
-
--- TODO: should the block content markers start their own indentation context?
-pBlockContent :: Parser BlockContent
-pBlockContent =
-  pBlockParContent <|> pBlockUnparContent <|> pBlockVerbContent <|> pBlockNil
-
-pBlockParContent :: Parser BlockContent
-pBlockParContent = do
-  void pBlockBodyStart
-  cSpace >> guardIndented
-  BlockBlocks <$> pBlockNodes
-
--- TODO: can I just use the inline seq content parser from inline element?
-pBlockUnparContent :: Parser BlockContent
-pBlockUnparContent = BlockInlines <$> pSeq
- where
-  pSeq =
-    pInlineBodyStart >> MP.many (pInlineNodeWith (pInlineText <|> pInlineWhite))
-
-pBlockNil :: Parser BlockContent
-pBlockNil = MP.label "de-indented content" $ atDeIndent BlockNil empty
-
-pBlockVerbContent :: Parser BlockContent
-pBlockVerbContent = do
-  src <- MP.getSourcePos
-  void pVerbatimBlockBodyStart
-  cLineSpace
-  BlockVerbatim src . stripNewline <$> pBlockVerbText
-  where stripNewline t = maybe t snd $ T.uncons t
-
-pBlockVerbText :: Parser Text
-pBlockVerbText = T.concat <$> MP.many blankThenText
- where
-  blankThenText = MP.try $ do
-    ts   <- MP.many pBlankLine
-    t    <- indentText
-    rest <- MP.takeWhileP Nothing (/= '\n')
-    pure $ T.concat $ ts <> [t, rest]
-
-pBlockNodes :: Parser [BlockNode]
-pBlockNodes = manyIndented cSpace pBlockNode
-
-pBlockNode :: Parser BlockNode
-pBlockNode = BlockBlock <$> pBlockElement (MP.optional pElemTy) <|> pPar
- where
-  pPar = do
-    sp <- MP.getSourcePos
-    BlockPar sp <$> pParagraph
-
-pInlineContent :: Parser InlineContent
-pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
- where
-  pInlineSeqBody = fmap InlineSequence $ pInlineBodyStart >> MP.many
-    (pInlineNodeWith (pInlineText <|> pInlineWhite))
-  pInlineVerbBody = do
-    src <- MP.getSourcePos
-    -- TODO: better label?
-    InlineVerbatim src
-      <$> MP.between pVerbatimBodyStart pVerbatimBodyEnd pInlineVerbText
-
-pParagraph :: Parser [InlineNode]
-pParagraph = MP.some pParaNode where pParaNode = pInlineNodeWith pParaText
-
--- | Parse an inline node with the given text parser.
-pInlineNodeWith :: Parser InlineNode -> Parser InlineNode
-pInlineNodeWith pText = do
-  sp  <- MP.getSourcePos
-  eet <- MP.eitherP (pCommentStart >> pCommentBody)
-    $ MP.eitherP (pInlineElement (MP.optional pElemTy)) pText
-  pure $ case eet of
-    Left  c         -> InlineComment sp c
-    Right (Left  e) -> InlineBraced e
-    Right (Right e) -> e
-
--- ** Comments and whitespace
-
-pLineSpace1 :: Parser Text
-pLineSpace1 = MP.takeWhile1P (Just "line space") $ \c -> isSpace c && c /= '\n'
-
-pLineSpace :: Parser Text
-pLineSpace = MP.takeWhileP (Just "line space") $ \c -> isSpace c && c /= '\n'
+-- | An element type is a sequence of alphanumeric characters,
+-- underscores, and periods.
+pElemTy :: Parser Text
+pElemTy = MP.takeWhile1P Nothing isTyChar <?> "element type"
+  where isTyChar x = isAlphaNum x || x == '_' || x == '.'
 
 -- | Parses a literal @|@, the start of an inline body for block and
--- inline elements. Not lexemic.
+-- inline elements.
 pInlineBodyStart :: Parser Text
 pInlineBodyStart = "|" <?> "start of inline body"
 
 -- | Parses a literal @&@, the start of a paragraphed body for block
--- elements. Not lexemic.
+-- elements.
 pBlockBodyStart :: Parser Text
 pBlockBodyStart = "---" <?> "start of block body"
 
@@ -461,19 +342,29 @@ pVerbatimBlockBodyStart = "```" <?> "start of verbatim body"
 pVerbatimBodyEnd :: Parser Text
 pVerbatimBodyEnd = "`" <?> "end of verbatim body"
 
+-- | Parses a literal @{%@, the start of a comment.
 pCommentStart :: Parser Text
 pCommentStart = "{%" <?> "start of comment"
 
+-- | Parses a literal @%}@, the end of a comment.
 pCommentEnd :: Parser Text
 pCommentEnd = "%}" <?> "end of comment"
 
+-- | Parses a literal @&@, the start of a block element.
 pBlockMark :: Parser ()
 pBlockMark = void "&" <?> "block marker"
 
 -- | Parses a literal @\@@, the start of the arguments of an
--- element. Not lexemic.
+-- element.
 pElementArgsStart :: Parser Text
 pElementArgsStart = "@" <?> "start of arguments"
+
+-- | Parses something between opening and closing braces. Also takes a
+-- name of what the thing is, for labelling the braces.
+pBraced :: String -> (SourcePos -> Parser a) -> Parser a
+pBraced t p = do
+  src <- MP.getSourcePos
+  MP.between ("{" <?> "start of " <> t) ("}" <?> "end of " <> t) $ p src
 
 -- | Parses the body of a nested comment.
 
@@ -507,19 +398,16 @@ pCommentBody = T.concat <$> go 0
         cs <- go $ n + 1
         pure $ t : cb : cs
 
--- | An element type is a sequence of alphanumeric characters,
--- underscores, and periods. This may be changed in future.
-pElemTy :: Parser Text
-pElemTy = MP.takeWhile1P Nothing isTyChar <?> "element type"
-  where isTyChar x = isAlphaNum x || x == '_' || x == '.'
 
 -- | Parses the recognized backslash tokens in plain text. These are
--- @\\@ followed by one of @{}\\@ standing for that following
--- character, and @\\@ not before one of these, standing for @\\@.
+-- @\\@ followed by one of @{}\\@, standing for the second character,
+-- and @\\@ not before one of these, standing for @\\@.
 pBackslashToks :: Parser Text
 pBackslashToks = MP.single '\\' >> MP.option "\\" pEscChar
   where pEscChar = fmap T.singleton $ MP.satisfy $ \c -> T.any (== c) "{}\\"
 
+-- | Parse line text, a sequence of characters other than @{}\\@ or
+-- spaces.
 pInlineText :: Parser InlineNode
 pInlineText = MP.label "inline text" $ do
   sp <- MP.getSourcePos
@@ -528,6 +416,18 @@ pInlineText = MP.label "inline text" $ do
  where
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}" || isSpace c
+
+-- | Parse a newline character, as long as there is properly-indented
+-- text on the subsequent line. Returns the newline and any excess
+-- indent.
+indentText :: Parser Text
+indentText = do
+  void "\n"
+  t <- pLineSpace
+  guardIndented
+  lvl <- getIndent
+  t'  <- dropIndent lvl t
+  pure $ "\n" <> t'
 
 -- | Parse a newline, as long as the subsequent line is properly
 -- indented and not blank.
@@ -544,7 +444,8 @@ pParaIndent = MP.try $ do
 pParaText :: Parser InlineNode
 pParaText = MP.label "paragraph text" $ pInlineText <|> pParaWhite
 
--- TODO: label?
+-- | Parse paragraph white space.
+
 -- TODO: have a top-level pLineSpace1 that returns an InlineNode?
 -- Otherwise perhaps merge some of these parsers together.
 pParaWhite :: Parser InlineNode
@@ -555,16 +456,12 @@ pParaWhite = MP.label "white space" $ pParaIndent <|> pLS
     t  <- pLineSpace1
     pure $ InlineWhite sp t
 
--- TODO: try?
-indentText :: Parser Text
-indentText = MP.try $ do
-  void "\n"
-  t <- pLineSpace
-  guardIndented
-  lvl <- getIndent
-  t'  <- dropIndent lvl t
-  pure $ "\n" <> t'
+-- | Parse line space, then an optional sequence of blank lines
+-- followed by properly-indented content.
 
+-- TODO: the MP.some implementation is not great. Should instead parse
+-- one span of line space, then one span of blank lines, ensuring that
+-- the parser still fails on empty input.
 pInlineWhite :: Parser InlineNode
 pInlineWhite = MP.label "white space" $ do
   src <- MP.getSourcePos
@@ -574,7 +471,6 @@ pInlineWhite = MP.label "white space" $ do
   subsequentlyIndented = MP.try $ do
     void "\n"
     t <- MP.takeWhileP Nothing isSpace
-    MP.notFollowedBy "\n"
     guardIndented
     pure $ "\n" <> T.filter (== '\n') t
 
@@ -589,6 +485,9 @@ pArgText = MP.label "argument text" $ do
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c
 
+-- | Parse a sequence of inline verbatim text. The leading space on a
+-- line should be @' '@ only, otherwise indent stripping will lead to
+-- errors. See 'indentText' and 'dropIndent'.
 pInlineVerbText :: Parser Text
 pInlineVerbText =
   fmap T.concat
@@ -607,33 +506,241 @@ pInlineVerbText =
     MP.label "'`' not before '}'" $ MP.try $ MP.chunk "`" <* MP.notFollowedBy
       (MP.single '}')
 
--- | Parses something between the start and end inline element
--- braces. Also takes a description of what the thing is, for
--- labelling the braces.
-pBraced :: String -> (SourcePos -> Parser a) -> Parser a
-pBraced t p = do
+-- | Parse block verbatim text. Note that leading space on a line
+-- should be @' '@ only, otherwise indent stripping will lead to
+-- errors. See 'indentText' and 'dropIndent'.
+pBlockVerbText :: Parser Text
+pBlockVerbText = T.concat <$> MP.many blankThenText
+ where
+  blankThenText = MP.try $ do
+    ts   <- MP.many pBlankLine
+    t    <- indentText
+    rest <- MP.takeWhileP Nothing (/= '\n')
+    pure $ T.concat $ ts <> [t, rest]
+
+-- | Parse a scriba document
+pDoc :: Parser Doc
+pDoc = do
   src <- MP.getSourcePos
-  MP.between ("{" <?> "start of " <> t) ("}" <?> "end of " <> t) $ p src
+  cSpace
+  at <- MP.option (Attrs [] []) pDocAttrs
+  cSpace
+  c <- pSecContent
+  MP.eof
+  pure $ Doc src at c
 
--- * Parsing
+-- | Parse the attributes of a scriba document.
 
+-- TODO: duplication with BlockElement
+pDocAttrs :: Parser Attrs
+pDocAttrs = do
+  sp <- MP.getSourcePos
+  MP.try $ pBlockMark >> cLineSpace >> void "scriba"
+  cSpace
+  atIndent (posIndent sp) $ atDeIndent (Attrs [] []) $ do
+    ia <- pInlineAttrs cSpace
+    atDeIndent (Attrs ia []) $ do
+      ba <- pBlockAttrs cSpace
+      pure $ Attrs ia ba
+
+-- | Parse section content
+pSecContent :: Parser [SecNode]
+pSecContent = MP.many $ pSecNode <* cSpace
+
+-- | Parse a section node
+
+-- TODO: This assumes that section nodes occur at zero indent!
+pSecNode :: Parser SecNode
+pSecNode = SecHeaderNode <$> pSecHeader <|> SecBlock <$> pSecBlock
+
+-- | Parse a section header
+
+-- TODO: duplication with BlockElement
+-- TODO: not sure how I like the pNilAttributes handling.
+pSecHeader :: Parser SecHeader
+pSecHeader = do
+  sp <- MP.getSourcePos
+  n  <- pNumberRun
+  cLineSpace
+  mty <- MP.optional pElemTy
+  cLineSpace
+  at <- pSecAttributes
+  pure $ SecHeader n sp mty at []
+ where
+  pNumberRun         = T.length <$> MP.takeWhile1P Nothing (== '#')
+  pSecAttributes     = pNilAttributes <|> pPresentAttributes
+  pNilAttributes     = MP.try $ pBlankLine $> Attrs [] []
+  pPresentAttributes = atIndent 1 $ do
+    cSpace
+    atDeIndent (Attrs [] []) $ do
+      ia <- pInlineAttrs cSpace
+      atDeIndent (Attrs ia []) $ do
+        ba <- pBlockAttrs cSpace
+        pure $ Attrs ia ba
+
+-- | Parse a block occurring as a section node.
+
+-- TODO: observe that this assumes an ambient indent of 0.
+pSecBlock :: Parser BlockNode
+pSecBlock = do
+  sp <- MP.getSourcePos
+  BlockBlock
+    <$> pBlockElement (MP.optional pElemTy)
+    <|> BlockPar sp
+    <$> pParagraph
+
+-- | Parse a block element.
+pBlockElement :: Parser ty -> Parser (Element ty BlockContent)
+pBlockElement pTy = do
+  sp <- MP.getSourcePos
+  pBlockMark
+  cLineSpace
+  atIndent (posIndent sp) $ do
+    ty <- pTy
+    cSpace
+    ia <- pInlineAttrs cSpace
+    atDeIndent (Element sp ty (Attrs ia []) [] BlockNil) $ do
+      ba <- pBlockAttrs cSpace
+      atDeIndent (Element sp ty (Attrs ia ba) [] BlockNil) $ do
+        as <- MP.option [] $ pArgs cSpace
+        atDeIndent (Element sp ty (Attrs ia ba) as BlockNil)
+          $   Element sp ty (Attrs ia ba) as
+          <$> pBlockContent
+
+-- | Parse a sequence of zero or more properly-indented block
+-- attributes, separated by @space@.
+pBlockAttrs :: Parser space -> Parser [BlockAttr]
+pBlockAttrs = flip manyIndented $ pBlockElement pElemTy
+
+-- | Parse a sequence of zero or more properly-indented inline
+-- attributes.
+
+-- Not sure if a separate version of this that forbids blank lines
+-- _inside_ the inline element is worth it.
+pInlineAttrs :: Parser space -> Parser [InlineAttr]
+pInlineAttrs = flip manyIndented $ pInlineElement pElemTy
+
+-- | Parse the arguments of an element.
+pArgs :: Parser space -> Parser [InlineNode]
+pArgs sc = pElementArgsStart >> sc >> MP.many (pArgNode <* sc)
+  where pArgNode = pInlineNodeWith pArgText
+
+-- | Parse an inline element.
+
+-- TODO: a version of this for section attributes that forbids blank
+-- lines?
+pInlineElement :: Parser ty -> Parser (Element ty InlineContent)
+pInlineElement pTy = pBraced "inline element" $ \src -> do
+  t   <- (cSpace >> guardIndented >> pTy) <* cSpace
+  at  <- guardIndented >> pInlineAttrs cSpace
+  ar  <- guardIndented >> MP.option [] (pArgs cSpace)
+  con <- guardIndented >> pInlineContent
+  pure $ Element src t (Attrs at []) ar con
+
+-- | Parse one of the recognized forms of block content.
+pBlockContent :: Parser BlockContent
+pBlockContent =
+  pBlockParContent <|> pBlockUnparContent <|> pBlockVerbContent <|> pBlockNil
+
+-- | Parse paragraphed block content.
+pBlockParContent :: Parser BlockContent
+pBlockParContent = do
+  void pBlockBodyStart
+  cSpace >> guardIndented
+  BlockBlocks <$> pBlockNodes
+
+-- | Parse unparagraphed block content.
+
+-- TODO: can I just use the inline seq content parser from inline element?
+pBlockUnparContent :: Parser BlockContent
+pBlockUnparContent = BlockInlines <$> pSeq
+ where
+  pSeq =
+    pInlineBodyStart >> MP.many (pInlineNodeWith (pInlineText <|> pInlineWhite))
+
+-- | Parse block verbatim content.
+pBlockVerbContent :: Parser BlockContent
+pBlockVerbContent = do
+  src <- MP.getSourcePos
+  void pVerbatimBlockBodyStart
+  cLineSpace
+  BlockVerbatim src . stripNewline <$> pBlockVerbText
+  where stripNewline t = maybe t snd $ T.uncons t
+
+-- | Parse empty block content.
+pBlockNil :: Parser BlockContent
+pBlockNil = MP.label "de-indented content" $ atDeIndent BlockNil empty
+
+-- | Parse a single paragraphed block node.
+pBlockNode :: Parser BlockNode
+pBlockNode = BlockBlock <$> pBlockElement (MP.optional pElemTy) <|> pPar
+ where
+  pPar = do
+    sp <- MP.getSourcePos
+    BlockPar sp <$> pParagraph
+
+-- | Parse a sequence of paragraphed block nodes.
+pBlockNodes :: Parser [BlockNode]
+pBlockNodes = manyIndented cSpace pBlockNode
+
+-- | Parse the content of an inline element.
+pInlineContent :: Parser InlineContent
+pInlineContent = MP.option InlineNil $ pInlineSeqBody <|> pInlineVerbBody
+ where
+  pInlineSeqBody = fmap InlineSequence $ pInlineBodyStart >> MP.many
+    (pInlineNodeWith (pInlineText <|> pInlineWhite))
+  pInlineVerbBody = do
+    src <- MP.getSourcePos
+    -- TODO: better label?
+    InlineVerbatim src
+      <$> MP.between pVerbatimBodyStart pVerbatimBodyEnd pInlineVerbText
+
+-- | Parse a paragraph.
+pParagraph :: Parser [InlineNode]
+pParagraph = MP.some pParaNode where pParaNode = pInlineNodeWith pParaText
+
+-- | Parse an inline node with the given text parser.
+pInlineNodeWith :: Parser InlineNode -> Parser InlineNode
+pInlineNodeWith pText = do
+  sp  <- MP.getSourcePos
+  eet <- MP.eitherP (pCommentStart >> pCommentBody)
+    $ MP.eitherP (pInlineElement (MP.optional pElemTy)) pText
+  pure $ case eet of
+    Left  c         -> InlineComment sp c
+    Right (Left  e) -> InlineBraced e
+    Right (Right e) -> e
+
+-- | Run the given parser with the given input name and ambient
+-- indentation level.
 parseWithAt :: Parser a -> Text -> Int -> Text -> Either ParseError a
 parseWithAt p fn n = MP.parse (runParser p n) (T.unpack fn)
 
+-- | Run the given parser with the given input name and ambient
+-- indentation level, and also render any parse error that is thrown.
 parseWithAt' :: Parser a -> Text -> Int -> Text -> Either Text a
 parseWithAt' p fn n =
   either (Left . T.pack . MP.errorBundlePretty) Right . parseWithAt p fn n
 
+-- | Run the given parser with the given input name and text input at
+-- an ambient indentation level of @0@.
 parseWith :: Parser a -> Text -> Text -> Either ParseError a
 parseWith p fn = parseWithAt p fn 0
 
+-- | Run the given parser with the given input name and text input at
+-- an ambient indentation level of @0@, and also render any parse
+-- error that is thrown.
 parseWith' :: Parser a -> Text -> Text -> Either Text a
 parseWith' p fn =
   either (Left . T.pack . MP.errorBundlePretty) Right . parseWith p fn
 
+-- | Parse an entire scriba document, returning either a rendered
+-- parse error or the resulting document.
 parseDoc' :: Text -> Text -> Either Text Doc
 parseDoc' = parseWith' pDoc
 
+-- | Run a given parser at the given indentation level, returning
+-- either a rendered parse error, or the remaining input and the
+-- returned value.
 parseTesting :: Parser a -> Int -> Text -> Either Text (Text, a)
 parseTesting p = parseWithAt' go "<test>"
  where

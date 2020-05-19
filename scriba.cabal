@@ -1,9 +1,9 @@
 cabal-version:       2.2
 
 name:                scriba
-version:             0.1.0.0
-synopsis:            Defines the scriba markup language and related publishing tools
-license:             BSD-3-Clause
+version:             0.1.0
+synopsis:            The scriba markup language and related publishing tools
+license:             BSD-2-Clause
 license-file:        LICENSE
 author:              despresc
 maintainer:          christian.j.j.despres@gmail.com
