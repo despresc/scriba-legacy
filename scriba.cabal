@@ -36,36 +36,36 @@ library
     Text.Scriba.Decorate.Referencing
     Text.Scriba.Decorate.Titling
     Text.Scriba.Element
-    Text.Scriba.Element.Str
-    Text.Scriba.Element.Emph
-    Text.Scriba.Element.Quote
-    Text.Scriba.Element.InlineMath
-    Text.Scriba.Element.DisplayMath
-    Text.Scriba.Element.InlineCode
-    Text.Scriba.Element.PageMark
     Text.Scriba.Element.BlockCode
-    Text.Scriba.Element.Paragraph
-    Text.Scriba.Element.MixedBody
-    Text.Scriba.Element.List
-    Text.Scriba.Element.TitleComponent
-    Text.Scriba.Element.Formal
-    Text.Scriba.Element.Doc
-    Text.Scriba.Element.Section
-    Text.Scriba.Element.Identifier
-    Text.Scriba.Element.Ref
     Text.Scriba.Element.Cite
-    Text.Scriba.Element.Name
-    Text.Scriba.Element.WorkTitle
-    Text.Scriba.Element.Regularize
-    Text.Scriba.Element.Memoir
+    Text.Scriba.Element.DisplayMath
+    Text.Scriba.Element.Doc
     Text.Scriba.Element.DocAttrs
+    Text.Scriba.Element.Emph
+    Text.Scriba.Element.Formal
+    Text.Scriba.Element.Identifier
+    Text.Scriba.Element.InlineCode
+    Text.Scriba.Element.InlineMath
+    Text.Scriba.Element.List
+    Text.Scriba.Element.Memoir
+    Text.Scriba.Element.MixedBody
+    Text.Scriba.Element.Name
+    Text.Scriba.Element.PageMark
+    Text.Scriba.Element.Paragraph
+    Text.Scriba.Element.Quote
+    Text.Scriba.Element.Ref
+    Text.Scriba.Element.Regularize
+    Text.Scriba.Element.Section
+    Text.Scriba.Element.Str
+    Text.Scriba.Element.TitleComponent
+    Text.Scriba.Element.WorkTitle
     Text.Scriba.Intermediate
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
+    Text.Scriba.Render.Html
     Text.Scriba.Source.Common
     Text.Scriba.Source.Parse
-    Text.Scriba.Render.Html
 
 test-suite scriba-test
   import: base
