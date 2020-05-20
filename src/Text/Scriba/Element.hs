@@ -13,13 +13,15 @@ module Text.Scriba.Element
   , module Text.Scriba.Element.TitleComponent
   , module Text.Scriba.Element.Formal
   , module Text.Scriba.Element.Doc
-  , module Text.Scriba.Element.Section
+--   , module Text.Scriba.Element.Section -- TODO: deal with this module
   , module Text.Scriba.Element.Ref
   , module Text.Scriba.Element.Identifier
   , module Text.Scriba.Element.Name
   , module Text.Scriba.Element.WorkTitle
   , module Text.Scriba.Element.Regularize
   , module Text.Scriba.Element.Cite
+  , module Text.Scriba.Element.Memoir
+  , module Text.Scriba.Element.DocAttrs
   )
 where
 
@@ -37,10 +39,12 @@ import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Element.Formal
 import           Text.Scriba.Element.Doc
-import           Text.Scriba.Element.Section
+-- import           Text.Scriba.Element.Section
 import           Text.Scriba.Element.Ref
 import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Element.Name
 import           Text.Scriba.Element.WorkTitle
 import           Text.Scriba.Element.Regularize
 import           Text.Scriba.Element.Cite
+import           Text.Scriba.Element.Memoir
+import           Text.Scriba.Element.DocAttrs
