@@ -14,6 +14,7 @@ import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Element.DocAttrs
 import           Text.Scriba.Element.Identifier ( pIdent )
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
@@ -39,6 +40,24 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -}
 
+-- | A particular document type.
+data Article b i = Article
+  { articleControlAttrs :: DocAttrs i
+  , articleAttrs :: ArticleAttrs i
+  , articleFront :: [FrontMatter b i]
+  , articleMain :: [Section b i]
+  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+
+data ArticleAttrs i = ArticleAttrs
+  deriving (Eq, Ord, Show, Read, Functor, Generic)
+
+-- TODO: extend, of course.
+data FrontMatter b i
+  = Preamble [b i]
+  | Foreword [b i]
+  | Dedication [b i]
+  deriving (Eq, Ord, Show, Read, Functor, Generic)
+
 data SecAttrs i = SecAttrs
   { secId :: Maybe Identifier
   , secTitleBody :: Maybe (Title i)
@@ -59,25 +78,10 @@ data Subsection b i = Subsection
   , subsectionContent :: [b i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
--- TODO: Might want this to be in its own module? Or in with the title
--- parts. Same with Heading.
-newtype Title i = Title
-  { titleBody :: [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering a, Titling a)
-
 newtype Heading i = Heading
   { getHeading :: i
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
     deriving anyclass (Numbering a, Titling a)
-
-instance Referencing i a b => Referencing i (Title a) (Title b)
-
--- Add a sectionTitle class?
-instance RH.Render i => RH.Render (Title i) where
-  render (Title t) = do
-    t' <- RH.render t
-    pure $ Html.span Html.! HtmlA.class_ "title" $ t'
 
 instance RH.Render i => RH.Render (Heading i) where
   render (Heading t) = do

@@ -1,5 +1,7 @@
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -8,10 +10,12 @@ module Text.Scriba.Element.DocAttrs where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Numbering
+import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
-import           Text.Scriba.Element.Memoir
 import           Text.Scriba.Element.Str        ( HasStr(..) )
 import           Text.Scriba.Intermediate
+import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad                  ( join
                                                 , unless
@@ -28,6 +32,8 @@ import           Data.Set                       ( Set )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -36,6 +42,20 @@ import           GHC.Generics                   ( Generic )
 
 -}
 
+-- TODO: Might want this to be in its own module? Or in with the title
+-- parts. Same with Heading.
+newtype Title i = Title
+  { titleBody :: [i]
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
+    deriving anyclass (Numbering a, Titling a)
+
+instance Referencing i a b => Referencing i (Title a) (Title b)
+
+-- Add a sectionTitle class?
+instance RH.Render i => RH.Render (Title i) where
+  render (Title t) = do
+    t' <- RH.render t
+    pure $ Html.span Html.! HtmlA.class_ "title" $ t'
 
 -- TODO: should I mapKey the docNumberStyle here?
 
