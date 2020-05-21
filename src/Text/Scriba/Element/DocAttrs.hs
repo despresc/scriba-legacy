@@ -3,6 +3,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -85,7 +86,7 @@ instance Titling a (DocAttrs i) where
 instance Referencing a (DocAttrs i) (DocAttrs i) where
   referencing = pure
 
-class HasDocAttrs i a where
+class HasDocAttrs i a | a -> i where
   getDocAttrs :: a -> DocAttrs i
 
 instance HasDocAttrs i (DocAttrs i) where

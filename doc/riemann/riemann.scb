@@ -1,4 +1,5 @@
 & scriba
+  & type|article
   & lang|de-DE
   & title|Über die Anzahl der Primzahlen unter einer gegebenen Größe
   & mathMacros

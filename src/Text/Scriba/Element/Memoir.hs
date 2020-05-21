@@ -4,6 +4,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -26,8 +27,7 @@ import           Control.Monad                  ( join
                                                 )
 import           Control.Monad.Reader           ( asks )
 import           Control.Monad.State            ( gets )
-import           Data.Functor                   ( (<&>)
-                                                )
+import           Data.Functor                   ( (<&>) )
 import qualified Data.Map.Strict               as M
 import           Data.Maybe                     ( fromMaybe )
 import           Data.Text                      ( Text )
@@ -45,6 +45,8 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 -}
 
 -- | A particular document type.
+
+-- TODO: This should probably go in its own module.
 data Article b j i = Article
   { articleControlAttrs :: DocAttrs j
   , articleAttrs :: ArticleAttrs j
@@ -53,9 +55,25 @@ data Article b j i = Article
   } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
 
 instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (Article b j i)
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Article f j a) (Article g j b)
+
+instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Article b j i) where
+  render (Article ca _ f m) = do
+    t' <- RH.render $ Heading $ docTitle ca
+    RH.bumpHeaderDepth $ do
+      f' <- RH.render f
+      m' <- RH.render m
+      let mlang = HtmlA.lang . Html.toValue <$> docLang ca
+      pure $ Html.section Html.! HtmlA.class_ "scribaArticle" RH.?? mlang $ do
+        Html.header t'
+        Html.section Html.! HtmlA.class_ "frontMatter" $ f'
+        Html.section Html.! HtmlA.class_ "mainMatter" $ m'
+
+instance HasDocAttrs j (Article b j i) where
+  getDocAttrs = articleControlAttrs
 
 data ArticleAttrs i = ArticleAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a, Referencing a (ArticleAttrs b))
 
 -- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
@@ -65,6 +83,16 @@ data FrontMatter b i
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
 
 instance Titling i (b i) => Titling i (FrontMatter b i)
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (FrontMatter f a) (FrontMatter g b)
+instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
+  render = \case
+    Foreword blks -> rfront "forword" blks
+    Dedication blks -> rfront "dedication" blks
+    Introduction blks -> rfront "introduction" blks
+    where
+      rfront t x = do
+        x' <- RH.render x
+        pure $ Html.section Html.! HtmlA.class_ t $ x'
 
 data SecAttrs i = SecAttrs
   { secId :: Maybe Identifier

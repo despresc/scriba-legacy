@@ -14,11 +14,14 @@
 
 module Text.Scriba.Markup
   ( Doc(..)
+  , Article
   , Block(..)
   , Inline(..)
   , parseDoc
+  , parseArticle
   , prettyScribaError
   , decorateDoc
+  , decorateArticle
   , writeStandalone
   , MathJaxConfig(..)
   , StandaloneConfig(..)
@@ -212,6 +215,16 @@ parseDoc
 parseDoc = fmap snd . runScriba
   (asNode $ pDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline)
 
+-- TODO: need to have a more flexible top-level parser, recognizing
+-- multiple document types. Perhaps simply by making Doc a sum
+parseArticle
+  :: Node
+  -> Either ScribaError (Article Block (Inline a) (Inline InlineControl))
+parseArticle = fmap snd . runScriba
+  ( asNode
+  $ pArticle pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
+  )
+
 -- * Decorating the document
 
 getRefEnv :: NumberData i -> RefData i
@@ -262,7 +275,12 @@ traverseInline _ (IpageMark    s) = IpageMark s
 decorateDoc
   :: Doc Block (Inline Void) (Inline InlineControl)
   -> Either DecorateError (Doc Block (Inline Void) (Inline Void))
-decorateDoc = decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
+decorateDoc =
+  decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
+
+decorateArticle :: Article Block (Inline Void) (Inline InlineControl) -> Either DecorateError (Article Block (Inline Void) (Inline Void))
+decorateArticle =
+  decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
 decorating
   :: forall d d' j i
@@ -328,11 +346,10 @@ newtype StandaloneConfig = StandaloneConfig
 -- make it an HTML instance (with a content :: a and the rest of the
 -- config as other fields)? If we are keeping it, of course.
 renderStandalone
-  :: (RH.Render (b i), RH.Render i, RH.Render j)
-  => StandaloneConfig
-  -> Doc b j i
-  -> RH.RenderM Html.Html
-renderStandalone (StandaloneConfig csspath) d@(Doc dm _) = do
+  :: (RH.Render d, HasDocAttrs j d)
+  => StandaloneConfig -> d -> RH.RenderM Html.Html
+renderStandalone (StandaloneConfig csspath) d = do
+  let dm = getDocAttrs d
   d' <- RH.render d
   let tplain = docPlainTitle dm
   pure $ Html.docTypeHtml $ do
@@ -351,9 +368,9 @@ renderStandalone (StandaloneConfig csspath) d@(Doc dm _) = do
     Html.body d'
 
 writeStandalone
-  :: (RH.Render (b i), RH.Render i, RH.Render j)
+  :: (RH.Render d, HasDocAttrs j d)
   => StandaloneConfig
-  -> Doc b j i
+  -> d
   -> Html.Html
 writeStandalone sc d =
   fst $ RH.runRender (renderStandalone sc d) RH.initialRenderState

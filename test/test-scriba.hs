@@ -26,10 +26,10 @@ parseOrExplode name t = case SP.parseDoc' name t of
 
 -- with decoration
 -- TODO: nicer looking messages
-markupOrExplode :: SI.Node -> SM.Doc SM.Block (SM.Inline Void) (SM.Inline Void)
-markupOrExplode n = case SM.parseDoc n of
+markupOrExplode :: SI.Node -> SM.Article SM.Block (SM.Inline Void) (SM.Inline Void)
+markupOrExplode n = case SM.parseArticle n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
-  Right a -> case SM.decorateDoc a of
+  Right a -> case SM.decorateArticle a of
     Left  e  -> error $ show e
     Right a' -> a'
 
@@ -65,7 +65,7 @@ testMarkup name src gold = goldenWith go name src gold
     t
 
 testRenderingWith
-  :: (SM.Doc SM.Block (SM.Inline Void) (SM.Inline Void) -> TL.Text)
+  :: (SM.Article SM.Block (SM.Inline Void) (SM.Inline Void) -> TL.Text)
   -> String
   -> FilePath
   -> FilePath
