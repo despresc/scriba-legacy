@@ -29,7 +29,7 @@ parseOrExplode name t = case SP.parseDoc' name t of
 markupOrExplode :: SI.Node -> SM.Doc SM.Block (SM.Inline Void) (SM.Inline Void)
 markupOrExplode n = case SM.parseDoc n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
-  Right a -> case SM.decorate a of
+  Right a -> case SM.decorateDoc a of
     Left  e  -> error $ show e
     Right a' -> a'
 

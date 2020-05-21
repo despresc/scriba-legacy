@@ -20,10 +20,14 @@ import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
-import           Control.Monad                  ( join )
+import           Control.Monad                  ( join
+                                                , void
+                                                , guard
+                                                )
 import           Control.Monad.Reader           ( asks )
 import           Control.Monad.State            ( gets )
-import           Data.Functor                   ( (<&>) )
+import           Data.Functor                   ( (<&>)
+                                                )
 import qualified Data.Map.Strict               as M
 import           Data.Maybe                     ( fromMaybe )
 import           Data.Text                      ( Text )
@@ -41,22 +45,26 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 -}
 
 -- | A particular document type.
-data Article b i = Article
-  { articleControlAttrs :: DocAttrs i
-  , articleAttrs :: ArticleAttrs i
+data Article b j i = Article
+  { articleControlAttrs :: DocAttrs j
+  , articleAttrs :: ArticleAttrs j
   , articleFront :: [FrontMatter b i]
   , articleMain :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
+
+instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (Article b j i)
 
 data ArticleAttrs i = ArticleAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a)
 
--- TODO: extend, of course.
+-- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
-  = Preamble [b i]
-  | Foreword [b i]
+  = Foreword [b i]
   | Dedication [b i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic)
+  | Introduction [b i]
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
+
+instance Titling i (b i) => Titling i (FrontMatter b i)
 
 data SecAttrs i = SecAttrs
   { secId :: Maybe Identifier
@@ -186,6 +194,40 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
       pure $ Html.section RH.?? ident $ fromMaybe mempty t' <> cwrap
 
 -- * Parsing
+
+--  TODO: more robust parsing here, including digitized vs
+--  non-digitized types.
+pArticle pMetInl stripMarkup pBlk pInl = do
+  matchTy "scriba"
+  void $ meta $ attrs $ attr "type" $ content $ do
+    consumeWhiteSpace
+    t <- one simpleText
+    zero
+    guard $ t == "article"
+  whileParsingElem "scriba" $ do
+    dm <- meta $ attrs $ pDocAttrs pMetInl stripMarkup
+    content $ pExplicitMatter dm <|> pBare dm
+ where
+  pExplicitMatter dm = do
+    f <- one $ asNode $ pFrontMatter pBlk pInl
+    m <- one $ asNode $ pMainMatter pBlk pInl
+    pure $ Article dm ArticleAttrs f m
+  pBare dm = do
+    b <- manyOf pBlk
+    c <- remaining $ asNode $ pSection pBlk pInl
+    pure $ Article dm ArticleAttrs [Introduction b] c
+
+pFrontMatter pBlk pInl =
+  whileMatchTy "frontMatter" $ allContentOf $ asNode $ pFrontMatterSec pBlk pInl
+
+pFrontMatterSec pBlk pInl = pIntro <|> pDedication
+ where
+  pSectionlike t f = fmap f $ whileMatchTy t $ allContentOf pBlk
+  pIntro      = pSectionlike "introduction" Introduction
+  pDedication = pSectionlike "dedication" Dedication
+
+pMainMatter pBlk pInl =
+  whileMatchTy "mainMatter" $ allContentOf $ asNode $ pSection pBlk pInl
 
 pSecAttrs :: Scriba Node i -> Scriba Attrs (SecAttrs i)
 pSecAttrs pInl = do

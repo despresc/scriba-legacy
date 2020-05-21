@@ -22,6 +22,7 @@ import           Control.Monad                  ( join
                                                 )
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Char                      ( isAlpha )
+import           Data.Functor                   ( ($>) )
 import qualified Data.Map.Merge.Strict         as M
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
@@ -63,6 +64,8 @@ instance RH.Render i => RH.Render (Title i) where
 -- now. Otherwise I need to resolve control elements inside prefixes
 -- and things
 -- TODO: have languages be validated
+-- TODO: have this be a comonad? might make decoration more flexible.
+-- TODO: should parts of this go into Decorate/Common?
 data DocAttrs i = DocAttrs
   { docTitle :: Title i
   , docLang :: Maybe Text
@@ -72,6 +75,46 @@ data DocAttrs i = DocAttrs
   , docCounterRel :: Map CounterName (Set CounterName)
   , docMathMacros :: Map Text (Int, Text)
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
+
+instance Numbering a (DocAttrs i) where
+  numbering = pure
+
+instance Titling a (DocAttrs i) where
+  titling = pure
+
+instance Referencing a (DocAttrs i) (DocAttrs i) where
+  referencing = pure
+
+class HasDocAttrs i a where
+  getDocAttrs :: a -> DocAttrs i
+
+instance HasDocAttrs i (DocAttrs i) where
+  getDocAttrs = id
+
+-- TODO: might want to forbid, or have special configuration for, the
+-- "item" counter.
+defaultNumberState :: DocAttrs i -> NumberState i
+defaultNumberState da = NumberState initCounters
+                                    []
+                                    (docCounterRel da)
+                                    (docElemCounterRel da)
+                                    mempty
+  where initCounters = docCounterRel da $> 1
+
+runDocNumbering
+  :: (HasDocAttrs j d, Numbering j d)
+  => d
+  -> Either DecorateError (NumberData j, d)
+runDocNumbering d =
+  flip runNumberM (defaultNumberState $ getDocAttrs d) $ numbering d
+
+runDocTitling
+  :: (HasDocAttrs j d, Titling i d) => (j -> i) -> d -> Either DecorateError d
+runDocTitling f d =
+  pure $ flip runTitleM (f <$> docTitlingConfig (getDocAttrs d)) $ titling d
+
+runDocReferencing :: Referencing i a b => RefData i -> a -> Either DecorateError b
+runDocReferencing rd d = runRefM (referencing d) rd
 
 emptySurround :: Surround a
 emptySurround = Surround [] Nothing []

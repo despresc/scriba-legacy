@@ -25,6 +25,9 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data Doc b j i = Doc (DocAttrs j) [Section b i]
   deriving (Eq, Ord, Show, Read, Generic, Functor)
 
+instance HasDocAttrs j (Doc b j i) where
+  getDocAttrs (Doc d _) = d
+
 -- * Numbering
 
 -- TODO: Doesn't number anything in the config. Should it?

@@ -10,6 +10,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeFamilies #-}
 
 module Text.Scriba.Markup
   ( Doc(..)
@@ -17,7 +18,7 @@ module Text.Scriba.Markup
   , Inline(..)
   , parseDoc
   , prettyScribaError
-  , decorate
+  , decorateDoc
   , writeStandalone
   , MathJaxConfig(..)
   , StandaloneConfig(..)
@@ -34,7 +35,6 @@ import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Aeson                     ( ToJSON(..) )
 import qualified Data.Aeson                    as Aeson
-import           Data.Functor                   ( ($>) )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
@@ -214,17 +214,6 @@ parseDoc = fmap snd . runScriba
 
 -- * Decorating the document
 
--- TODO: might want to forbid, or have special configuration for, the
--- "item" counter.
-defaultNumberState :: DocAttrs (Inline i) -> NumberState (Inline i)
-defaultNumberState da = NumberState initCounters
-                                    []
-                                    (docCounterRel da)
-                                    (docElemCounterRel da)
-                                    mempty
-  where initCounters = docCounterRel da $> 1
-
-
 getRefEnv :: NumberData i -> RefData i
 getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
   where go (NumberDatum i cn nc num) = (i, (cn, nc, num))
@@ -235,26 +224,21 @@ runNumDoc
   -> Either
        DecorateError
        (NumberData (Inline j), Doc Block (Inline j) (Inline a))
-runNumDoc d@(Doc da _) = flip runNumberM (defaultNumberState da) $ numbering d
+runNumDoc = runDocNumbering
 
 runTitleDoc
   :: forall a
    . Titling (Inline a) a
   => Doc Block (Inline Void) (Inline a)
-  -> Doc Block (Inline Void) (Inline a)
-runTitleDoc d@(Doc da _) =
-  flip runTitleM (traverseInline absurd <$> docTitlingConfig da)
-    $ (titling :: Doc Block (Inline Void) (Inline a)
-        -> TitleM (Inline a) (Doc Block (Inline Void) (Inline a))
-      )
-        d
+  -> Either DecorateError (Doc Block (Inline Void) (Inline a))
+runTitleDoc = runDocTitling $ traverseInline (absurd :: Void -> Inline a)
 
 runRefDoc
   :: Referencing (Inline Void) (Inline a) (Inline b)
   => RefData (Inline Void)
   -> Doc Block j (Inline a)
   -> Either DecorateError (Doc Block j (Inline b))
-runRefDoc rd d = runRefM (referencing d) rd
+runRefDoc = runDocReferencing
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
@@ -275,13 +259,21 @@ traverseInline _ (IdisplayMath s) = IdisplayMath s
 traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
 
-decorate
+decorateDoc
   :: Doc Block (Inline Void) (Inline InlineControl)
   -> Either DecorateError (Doc Block (Inline Void) (Inline Void))
-decorate d = do
-  (numdat, nd) <- runNumDoc d
-  let td = runTitleDoc nd
-  runRefDoc (getRefEnv numdat) td
+decorateDoc = decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
+
+decorating
+  :: forall d d' j i
+   . (HasDocAttrs j d, Numbering j d, Titling i d, Referencing j d d')
+  => (j -> i)
+  -> d
+  -> Either DecorateError d'
+decorating f d = do
+  (numDat, nd) <- runDocNumbering d :: Either DecorateError (NumberData j, d)
+  td           <- runDocTitling f nd
+  runDocReferencing (getRefEnv numDat) td
 
 -- * Rendering
 
