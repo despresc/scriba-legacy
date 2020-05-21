@@ -231,28 +231,6 @@ getRefEnv :: NumberData i -> RefData i
 getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
   where go (NumberDatum i cn nc num) = (i, (cn, nc, num))
 
-runNumDoc
-  :: Numbering (Inline j) a
-  => Doc Block (Inline j) (Inline a)
-  -> Either
-       DecorateError
-       (NumberData (Inline j), Doc Block (Inline j) (Inline a))
-runNumDoc = runDocNumbering
-
-runTitleDoc
-  :: forall a
-   . Titling (Inline a) a
-  => Doc Block (Inline Void) (Inline a)
-  -> Either DecorateError (Doc Block (Inline Void) (Inline a))
-runTitleDoc = runDocTitling $ traverseInline (absurd :: Void -> Inline a)
-
-runRefDoc
-  :: Referencing (Inline Void) (Inline a) (Inline b)
-  => RefData (Inline Void)
-  -> Doc Block j (Inline a)
-  -> Either DecorateError (Doc Block j (Inline b))
-runRefDoc = runDocReferencing
-
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
 traverseInline :: (a -> Inline b) -> Inline a -> Inline b
@@ -278,7 +256,9 @@ decorateDoc
 decorateDoc =
   decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
-decorateArticle :: Article Block (Inline Void) (Inline InlineControl) -> Either DecorateError (Article Block (Inline Void) (Inline Void))
+decorateArticle
+  :: Article Block (Inline Void) (Inline InlineControl)
+  -> Either DecorateError (Article Block (Inline Void) (Inline Void))
 decorateArticle =
   decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
@@ -347,7 +327,9 @@ newtype StandaloneConfig = StandaloneConfig
 -- config as other fields)? If we are keeping it, of course.
 renderStandalone
   :: (RH.Render d, HasDocAttrs j d)
-  => StandaloneConfig -> d -> RH.RenderM Html.Html
+  => StandaloneConfig
+  -> d
+  -> RH.RenderM Html.Html
 renderStandalone (StandaloneConfig csspath) d = do
   let dm = getDocAttrs d
   d' <- RH.render d
@@ -368,9 +350,6 @@ renderStandalone (StandaloneConfig csspath) d = do
     Html.body d'
 
 writeStandalone
-  :: (RH.Render d, HasDocAttrs j d)
-  => StandaloneConfig
-  -> d
-  -> Html.Html
+  :: (RH.Render d, HasDocAttrs j d) => StandaloneConfig -> d -> Html.Html
 writeStandalone sc d =
   fst $ RH.runRender (renderStandalone sc d) RH.initialRenderState

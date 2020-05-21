@@ -17,6 +17,7 @@ import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
 import           Text.Scriba.Element.DocAttrs
 import           Text.Scriba.Element.Identifier ( pIdent )
+import           Text.Scriba.Element.Str        ( HasStr )
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
@@ -86,13 +87,13 @@ instance Titling i (b i) => Titling i (FrontMatter b i)
 instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (FrontMatter f a) (FrontMatter g b)
 instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
   render = \case
-    Foreword blks -> rfront "forword" blks
-    Dedication blks -> rfront "dedication" blks
+    Foreword     blks -> rfront "forword" blks
+    Dedication   blks -> rfront "dedication" blks
     Introduction blks -> rfront "introduction" blks
-    where
-      rfront t x = do
-        x' <- RH.render x
-        pure $ Html.section Html.! HtmlA.class_ t $ x'
+   where
+    rfront t x = do
+      x' <- RH.render x
+      pure $ Html.section Html.! HtmlA.class_ t $ x'
 
 data SecAttrs i = SecAttrs
   { secId :: Maybe Identifier
@@ -223,6 +224,14 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
 
 -- * Parsing
 
+pArticle
+  :: HasStr j
+  => Scriba Node j
+  -> ([j] -> Text)
+  -> Scriba Node (b i)
+  -> Scriba Node i
+  -> Scriba Element (Article b j i)
+
 --  TODO: more robust parsing here, including digitized vs
 --  non-digitized types.
 pArticle pMetInl stripMarkup pBlk pInl = do
@@ -237,7 +246,7 @@ pArticle pMetInl stripMarkup pBlk pInl = do
     content $ pExplicitMatter dm <|> pBare dm
  where
   pExplicitMatter dm = do
-    f <- one $ asNode $ pFrontMatter pBlk pInl
+    f <- one $ asNode $ pFrontMatter pBlk
     m <- one $ asNode $ pMainMatter pBlk pInl
     pure $ Article dm ArticleAttrs f m
   pBare dm = do
@@ -245,15 +254,19 @@ pArticle pMetInl stripMarkup pBlk pInl = do
     c <- remaining $ asNode $ pSection pBlk pInl
     pure $ Article dm ArticleAttrs [Introduction b] c
 
-pFrontMatter pBlk pInl =
-  whileMatchTy "frontMatter" $ allContentOf $ asNode $ pFrontMatterSec pBlk pInl
+pFrontMatter :: Scriba Node (b i) -> Scriba Element [FrontMatter b i]
+pFrontMatter pBlk =
+  whileMatchTy "frontMatter" $ allContentOf $ asNode $ pFrontMatterSec pBlk
 
-pFrontMatterSec pBlk pInl = pIntro <|> pDedication
+pFrontMatterSec :: Scriba Node (b i) -> Scriba Element (FrontMatter b i)
+pFrontMatterSec pBlk = pIntro <|> pDedication
  where
   pSectionlike t f = fmap f $ whileMatchTy t $ allContentOf pBlk
   pIntro      = pSectionlike "introduction" Introduction
   pDedication = pSectionlike "dedication" Dedication
 
+pMainMatter
+  :: Scriba Node (b i) -> Scriba Node i -> Scriba Element [Section b i]
 pMainMatter pBlk pInl =
   whileMatchTy "mainMatter" $ allContentOf $ asNode $ pSection pBlk pInl
 
