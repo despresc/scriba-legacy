@@ -111,6 +111,16 @@ This leaves some questions open:
   meta file location? Something like a single `filename.scb.meta` file
   in that directory?
 
+- what is the link/reference/citation syntax inside documents?
+  Everything is potentially partially qualified, so there may need to
+  be link resolution. Also a consideration is reference by number,
+  though that might require that numbered things have an identifier
+  based solely on their number and type.
+
+- the timing of (web) pagination should be defined. If we allow
+  references to the physical pages of things in the print output then
+  the timing of that pagination will need to be defined as well.
+
 ## The repository, application, and type structures
 
 (Write out the requirements of the `Doc` data type, the metadata type
