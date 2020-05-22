@@ -15,7 +15,6 @@
 - Selectively render empty elements
 - Fix element numbering configuration in light of the restricted
   sectioning
-- Document `Source/Common`
 - Document `Intermediate/`
 - Document `Decorate/`
 - Document `Element/`

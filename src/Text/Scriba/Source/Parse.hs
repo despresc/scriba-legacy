@@ -5,6 +5,7 @@
 {-# LANGUAGE TypeFamilies #-}
 
 {-|
+Module      : Text.Scriba.Source.Parse
 Description : Text stream parsers
 Copyright   : 2020 Christian Despres
 License     : BSD-2-Clause
