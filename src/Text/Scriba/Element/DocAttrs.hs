@@ -303,6 +303,7 @@ pMathMacros = allAttrsOf pMathMacro
     c <- T.concat <$> allContentOf simpleText
     pure (n, c)
 
+-- TODO: better math numbering support. The elemrel thing is particularly bad.
 pDocAttrs
   :: HasStr i => Scriba Node i -> ([i] -> Text) -> Scriba Attrs (DocAttrs i)
 pDocAttrs pMetInl stripMarkup = do

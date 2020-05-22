@@ -1,6 +1,9 @@
 # Actual TODO
 
-- Remove `Element/Doc`
+- Move `Element.Memoir.Heading` to its own module. Also consider
+  absolute header definitions, since there is going to be a set
+  pagination structure with our restricted sections.
+- Add `SecAttrs` to `Element.Memoir.FrontMatter`
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
@@ -9,6 +12,9 @@
 - Look into monomorphizing `Inline` and `Block`, and creating separate
   inline and block types for different compilation stages (will
   require changes to `Decorate`).
+- Selectively render empty elements
+- Fix element numbering configuration in light of the restricted
+  sectioning
 - Document `Source/Common`
 - Document `Intermediate/`
 - Document `Decorate/`
@@ -441,6 +447,9 @@ CSS has :lang selector, so we can have styles based on language
 
 # New elements, attributes, behaviours, fixes
 
+- consider adding `data-` attributes to things, to show what they
+  represent. Requires more research.
+
 - Global permissible attributes on everything (`id`, `lang`, whatever
   else we decide to have).
 
@@ -530,6 +539,9 @@ CSS has :lang selector, so we can have styles based on language
   suppressed number rendering (but still have things be numbered
   internally) and editorial numbering.
 
+- richer title components? subtitles and intermediate titles, title
+  break locations and title lines, internal title separators.
+
 - for `physPage`: identifiers for different sources of page images?
   especially relevant for combined editions.
 
@@ -540,3 +552,11 @@ CSS has :lang selector, so we can have styles based on language
   
 - some kind of preference for translated editions? or discovery
   feature ("this is available in such and such a translation").
+
+- look into automatically inserting anonymous section breaks before
+  sections that have no title. More specifically, they would be added
+  between sections if the first child of the current section that has
+  a non-empty `preamble` and none of the sections in between have a
+  title. This *may* be required for the `*Matter` sections, but for
+  the others we could instead have an attribute that turns it on (via
+  a class).

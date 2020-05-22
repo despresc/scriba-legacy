@@ -43,6 +43,14 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 - chapter precis, abstract
 
+- some sort of section-like parser? to cut down on duplication
+
+- section type inference? We know that in articles the children of
+  mainMatter must be sections, for instance. Would have to change once
+  we allow more types of documents and more types of mainMatter
+  sections, but we can still infer based on the resulting structure
+  (span of sections, then span of appendices, say).
+
 -}
 
 -- | A particular document type.
@@ -95,6 +103,11 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
       x' <- RH.render x
       pure $ Html.section Html.! HtmlA.class_ t $ x'
 
+-- TODO: document section title behaviour:
+-- 1. If titleFull is present, use that as the full title.
+-- 2. If title is present, put that into titleBody.
+-- 3. for title rendering, the precedence for TitleFull should be:
+-- title full, generated title, title body
 data SecAttrs i = SecAttrs
   { secId :: Maybe Identifier
   , secTitleBody :: Maybe (Title i)
@@ -224,6 +237,10 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
 
 -- * Parsing
 
+-- TODO: more robust parsing here, including digitized vs
+-- non-digitized types.
+-- TODO: allow only a subset of the *Matter to be present to be parsed
+-- with the explicit matter.
 pMemDoc
   :: HasStr j
   => Scriba Node j
@@ -231,9 +248,6 @@ pMemDoc
   -> Scriba Node (b i)
   -> Scriba Node i
   -> Scriba Element (MemDoc b j i)
-
---  TODO: more robust parsing here, including digitized vs
---  non-digitized types.
 pMemDoc pMetInl stripMarkup pBlk pInl = do
   matchTy "scriba"
   void $ meta $ attrs $ attr "type" $ content $ do

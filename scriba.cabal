@@ -39,7 +39,6 @@ library
     Text.Scriba.Element.BlockCode
     Text.Scriba.Element.Cite
     Text.Scriba.Element.DisplayMath
-    Text.Scriba.Element.Doc
     Text.Scriba.Element.DocAttrs
     Text.Scriba.Element.Emph
     Text.Scriba.Element.Formal
@@ -55,7 +54,6 @@ library
     Text.Scriba.Element.Quote
     Text.Scriba.Element.Ref
     Text.Scriba.Element.Regularize
-    Text.Scriba.Element.Section
     Text.Scriba.Element.Str
     Text.Scriba.Element.TitleComponent
     Text.Scriba.Element.WorkTitle

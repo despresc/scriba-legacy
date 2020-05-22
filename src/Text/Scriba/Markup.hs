@@ -13,14 +13,11 @@
 {-# LANGUAGE TypeFamilies #-}
 
 module Text.Scriba.Markup
-  ( Doc(..)
-  , MemDoc
+  ( MemDoc
   , Block(..)
   , Inline(..)
-  , parseDoc
   , parseMemDoc
   , prettyScribaError
-  , decorateDoc
   , decorateMemDoc
   , writeStandalone
   , MathJaxConfig(..)
@@ -210,11 +207,6 @@ pControl = IcRef <$> pSourceRef
 
 -- * Running parsers
 
-parseDoc
-  :: Node -> Either ScribaError (Doc Block (Inline a) (Inline InlineControl))
-parseDoc = fmap snd . runScriba
-  (asNode $ pDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline)
-
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
 parseMemDoc
@@ -248,12 +240,6 @@ traverseInline _ (IinlineMath  s) = IinlineMath s
 traverseInline _ (IdisplayMath s) = IdisplayMath s
 traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
-
-decorateDoc
-  :: Doc Block (Inline Void) (Inline InlineControl)
-  -> Either DecorateError (Doc Block (Inline Void) (Inline Void))
-decorateDoc =
-  decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
 decorateMemDoc
   :: MemDoc Block (Inline Void) (Inline InlineControl)
