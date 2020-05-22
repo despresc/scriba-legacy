@@ -14,14 +14,14 @@
 
 module Text.Scriba.Markup
   ( Doc(..)
-  , Article
+  , MemDoc
   , Block(..)
   , Inline(..)
   , parseDoc
-  , parseArticle
+  , parseMemDoc
   , prettyScribaError
   , decorateDoc
-  , decorateArticle
+  , decorateMemDoc
   , writeStandalone
   , MathJaxConfig(..)
   , StandaloneConfig(..)
@@ -217,12 +217,11 @@ parseDoc = fmap snd . runScriba
 
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
-parseArticle
-  :: Node
-  -> Either ScribaError (Article Block (Inline a) (Inline InlineControl))
-parseArticle = fmap snd . runScriba
+parseMemDoc
+  :: Node -> Either ScribaError (MemDoc Block (Inline a) (Inline InlineControl))
+parseMemDoc = fmap snd . runScriba
   ( asNode
-  $ pArticle pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
+  $ pMemDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
   )
 
 -- * Decorating the document
@@ -256,10 +255,10 @@ decorateDoc
 decorateDoc =
   decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
-decorateArticle
-  :: Article Block (Inline Void) (Inline InlineControl)
-  -> Either DecorateError (Article Block (Inline Void) (Inline Void))
-decorateArticle =
+decorateMemDoc
+  :: MemDoc Block (Inline Void) (Inline InlineControl)
+  -> Either DecorateError (MemDoc Block (Inline Void) (Inline Void))
+decorateMemDoc =
   decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
 decorating

@@ -1,3 +1,146 @@
+# Project structure
+
+The main task here is to find a permanent home for what follows in
+this section, and to then ensure that the project follows the
+structure.
+
+## General description
+
+At the highest level, we have the library concept itself, which is a
+collection of documents that all should compile together, and can
+reference each other. Libraries must, therefore, define their contents
+in some way, most simply via a config file with a list of document
+sources in them (maybe with globbing?). Libraries could, additionally,
+define various library-wide things like header files, tikz files, that
+sort of thing. Other things like image stores could be possible,
+though that might be handled via a special document type (a picture
+book). Other things, like inter-library linking, may also be possible.
+
+The next level is the document. A salient example is a scriba
+document, which both _requires_ that external references be defined,
+and _provides_ anchor points for external reference. The "opaque
+document", containing a meta page and optional identified attachments,
+is another document possibility, to provide for a form of bibliography
+store (bibliographic entry with no attachments), image store (image
+with metadata), among other things. Documents themselves can be
+referenced too (which might want to be a kind of citation), and so
+documents in libraries should have library-unique names for reference
+purposes.
+
+Libraries can be rendered, so to speak. This involves first going over
+each source document, determining its linkage capability (identifiers
+inside it and how they may be referenced) and its linkage requirements
+(references inside it to other identified things in the library), then
+using that collected linkage capability to resolve the references
+inside documents. There should be a strict and lax mode for library
+compilation, the latter collecting a list of broken references and
+inserting some fallback element in their stead. The whole process
+should cache the intermediate compilation results (recompilation of
+documents being triggered whenever its linkage data, in or out,
+changes).
+
+## Library and document compilation
+
+For a library:
+
+- The library determines all of the documents contained within it,
+  including externally-linked libraries (as a kind of phantom library
+  document, I suppose?), and their types.
+
+- Parse each document (if applicable), resolving its simple local
+  imports, numbering it, and collecting its linkage information. At
+  this point we might want to know the document pagination so that we
+  can pass along absolute paths in the linkage information, but this
+  isn't strictly necessary, since we can fill that information in
+  later.
+
+  An entry in the linkage capability information includes:
+
+  - the fully-qualified identifier of the element
+  - optional numbering data, if a numbered element
+  - optional bibliographic data, if a citable (?) element. Might apply
+    only to documents themselves, unless we have a bibliographic entry
+    element.
+
+  An entry in the linkage requirement information should include a
+  fully-qualified identifier and an indication of what the it requires
+  (mere presence in the case of a simple link, numbering data in the
+  case of a `ref`, bibliographic data in the case of a `cite`).
+
+  We might want to have some nice fallback for missing references, if
+  possible (location of the document cited and the claimed identifier?
+  though that only works if we do not allow entirely missing
+  documents).
+
+- Validate the linkage information, updating the notices of linkage
+  degradation, if applicable
+
+- Resolve the references inside documents with the collected linkage
+  information. This whole process might be easier with a more flexible
+  `Ref` element that can tolerate missing identifier targets.
+
+For scriba documents:
+
+- parse the document with `Source/Parse`
+
+- convert the source document into an intermediate `Node` one with
+  `Intermediate/Node`.
+
+- use the definitions and parsers in `Element/` to convert the `Node`
+  into a recognized document type
+
+- number and title the document
+
+- gather the linkage information from the document and pass it up to
+  the library
+
+- receive the combined linkage information from the library and fill
+  in the references in the document
+
+- render the document in the available output formats.
+
+This leaves some questions open:
+
+- how is the structure of a document defined? One way might be through
+  a document meta file, like a cabal file, listing the source files,
+  including special build instructions (in case images need to be
+  compiled, for instance), bibliographic data, and other document
+  properties. Of course, this could be done in a single file, but it
+  might be clearer to have the option to separate them when in a
+  library. Would that require a set (possibly per-library) document
+  meta file location? Something like a single `filename.scb.meta` file
+  in that directory?
+
+## The repository, application, and type structures
+
+(Write out the requirements of the `Doc` data type, the metadata type
+requirements, how different sources of metadata should be combined,
+how this repository should be organized in light of the previous
+sections, what should go in other repositories, how the scriba
+application ecosystem should be organized).
+
+# Hyperlink degradation
+
+Since we want to allow the printing of documents, we must also come up
+with somewhat robust ways for hyperlinks to degrade in LaTeX paper
+output. For within-document links we can simply use the page number of
+the element in question in some way, and for links external to the
+library we can print the url as-is. Links to things outside the
+document but inside the library might be able to use the page number
+of the element, if there were a primary physical output configuration
+defined for each document, since we could go through the `aux` files
+of each document and collect the labels that are defined in each.
+
+Hyperlink degradation really needs to be considered alongside the
+link/ref/cite design and linkage capabilities, of course. We might not
+want to allow references to external documents, only citations, though
+the reference data of external documents could still be used in the
+locator terms. So `{cite@libraryBook#anInterestingTheorem}` might be
+rendered as `Theorem 2.7 of [5]`, given the right configuration. Of
+course, for digitized books this might all be irrelevant, if we simply
+give the visible text of such citations, or at least the visible
+locator terms.
+
 # Pagination, linking
 
 We should be able to define the pagination of documents in HTML
@@ -58,6 +201,11 @@ Section preamble
 
 and the `Content` will not be present if there are no paginated child
 sections.
+
+Note that every node-like element (books, parts, chapters, potentially
+sections, in addition to the documents themselves) must have a plain
+text title, since we need something to use in the URL and title of the
+relevant web page.
 
 # Manual
 

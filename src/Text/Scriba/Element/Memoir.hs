@@ -48,33 +48,33 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 -- | A particular document type.
 
 -- TODO: This should probably go in its own module.
-data Article b j i = Article
-  { articleControlAttrs :: DocAttrs j
-  , articleAttrs :: ArticleAttrs j
-  , articleFront :: [FrontMatter b i]
-  , articleMain :: [Section b i]
+data MemDoc b j i = MemDoc
+  { memControlAttrs :: DocAttrs j
+  , memAttrs :: MemDocAttrs j
+  , memFront :: [FrontMatter b i]
+  , memMain :: [Section b i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
 
-instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (Article b j i)
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Article f j a) (Article g j b)
+instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (MemDoc b j i)
+instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (MemDoc f j a) (MemDoc g j b)
 
-instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Article b j i) where
-  render (Article ca _ f m) = do
+instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (MemDoc b j i) where
+  render (MemDoc ca _ f m) = do
     t' <- RH.render $ Heading $ docTitle ca
     RH.bumpHeaderDepth $ do
       f' <- RH.render f
       m' <- RH.render m
       let mlang = HtmlA.lang . Html.toValue <$> docLang ca
-      pure $ Html.section Html.! HtmlA.class_ "scribaArticle" RH.?? mlang $ do
+      pure $ Html.section Html.! HtmlA.class_ "scribaMemDoc" RH.?? mlang $ do
         Html.header t'
         Html.section Html.! HtmlA.class_ "frontMatter" $ f'
         Html.section Html.! HtmlA.class_ "mainMatter" $ m'
 
-instance HasDocAttrs j (Article b j i) where
-  getDocAttrs = articleControlAttrs
+instance HasDocAttrs j (MemDoc b j i) where
+  getDocAttrs = memControlAttrs
 
-data ArticleAttrs i = ArticleAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a, Referencing a (ArticleAttrs b))
+data MemDocAttrs i = MemDocAttrs
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a, Referencing a (MemDocAttrs b))
 
 -- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
@@ -224,17 +224,17 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
 
 -- * Parsing
 
-pArticle
+pMemDoc
   :: HasStr j
   => Scriba Node j
   -> ([j] -> Text)
   -> Scriba Node (b i)
   -> Scriba Node i
-  -> Scriba Element (Article b j i)
+  -> Scriba Element (MemDoc b j i)
 
 --  TODO: more robust parsing here, including digitized vs
 --  non-digitized types.
-pArticle pMetInl stripMarkup pBlk pInl = do
+pMemDoc pMetInl stripMarkup pBlk pInl = do
   matchTy "scriba"
   void $ meta $ attrs $ attr "type" $ content $ do
     consumeWhiteSpace
@@ -248,11 +248,11 @@ pArticle pMetInl stripMarkup pBlk pInl = do
   pExplicitMatter dm = do
     f <- one $ asNode $ pFrontMatter pBlk
     m <- one $ asNode $ pMainMatter pBlk pInl
-    pure $ Article dm ArticleAttrs f m
+    pure $ MemDoc dm MemDocAttrs f m
   pBare dm = do
     b <- manyOf pBlk
     c <- remaining $ asNode $ pSection pBlk pInl
-    pure $ Article dm ArticleAttrs [Introduction b] c
+    pure $ MemDoc dm MemDocAttrs [Introduction b] c
 
 pFrontMatter :: Scriba Node (b i) -> Scriba Element [FrontMatter b i]
 pFrontMatter pBlk =

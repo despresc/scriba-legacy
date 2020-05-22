@@ -1,5 +1,5 @@
-Article
-  { articleControlAttrs =
+MemDoc
+  { memControlAttrs =
       DocAttrs
         { docTitle =
             Title
@@ -284,9 +284,9 @@ Article
               ]
         , docMathMacros = fromList []
         }
-  , articleAttrs = ArticleAttrs
-  , articleFront = [ Introduction [] ]
-  , articleMain =
+  , memAttrs = MemDocAttrs
+  , memFront = [ Introduction [] ]
+  , memMain =
       [ Section
           { sectionAttrs =
               SecAttrs
