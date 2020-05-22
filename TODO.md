@@ -1,3 +1,21 @@
+# Actual TODO
+
+- Remove `Element/Doc`
+- Move the components of `Element/DocAttrs` related to decoration and
+  put them in `Decorate/Common`, along with the functions that run the
+  decorations.
+- Consider moving `MemDoc` into `Markup` (relates to monomorphizing
+  the other types).
+- Look into monomorphizing `Inline` and `Block`, and creating separate
+  inline and block types for different compilation stages (will
+  require changes to `Decorate`).
+- Document `Source/Common`
+- Document `Intermediate/`
+- Document `Decorate/`
+- Document `Element/`
+- Document `Markup/`
+
+
 # Project structure
 
 The main task here is to find a permanent home for what follows in
@@ -512,3 +530,14 @@ CSS has :lang selector, so we can have styles based on language
   behaviours are a little more unified), moveable title parts,
   suppressed number rendering (but still have things be numbered
   internally) and editorial numbering.
+
+- for `physPage`: identifiers for different sources of page images?
+  especially relevant for combined editions.
+
+- paragraph numbering? Very helpful for digitized editions that are
+  not expected to change much. Would insert a pilcrow link anchor, I
+  imagine. Actually, would be nice to have a switch to turn all the
+  suppelementary anchors on and off too.
+  
+- some kind of preference for translated editions? or discovery
+  feature ("this is available in such and such a translation").
