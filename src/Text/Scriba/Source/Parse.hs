@@ -17,7 +17,6 @@ This module defines text parsers for scriba documents, returning
 to "Text.Scriba.Intermediate.Node" for further processing.
 -}
 
-
 module Text.Scriba.Source.Parse
   ( -- * The Parser monad
 

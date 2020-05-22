@@ -4,6 +4,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
+{-|
+Module      : Text.Scriba.Counters
+Description : Containers, counters, and their relations
+Copyright   : 2020 Christian Despres
+License     : BSD-2-Clause
+Maintainer  : Christian Despres
+Stability   : experimental
+
+This module defines the types representing the relationships between
+containers (things that participate in numbering, having an associated
+counter and potentially containing other containers) and counters
+(things that have a numeric state that is updated on the appearance of
+particular containers).
+-}
+
 module Text.Scriba.Counters
   ( ContainerName(..)
   , ContainerRelation(..)
@@ -36,51 +51,54 @@ import           Data.Text                      ( Text )
 import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 
--- | A 'ContainerName' is the name of a type of thing that is being numbered,
--- such as a @section@, @theorem@, or @lemma@. Numbering relations are specified
--- as relations between container names.
+-- | A 'ContainerName' is the name of a type of thing that is being
+-- numbered, such as a @section@, @theorem@, or @lemma@. Numbering
+-- relations are specified as relations between container names.
 newtype ContainerName = ContainerName
   { getContainerName :: Text
   } deriving (Eq, Ord, Show, Read, IsString, Generic)
 
--- | A 'CounterName' is the name of a counter, which will have a numeric state
--- during numbering. For each container that doesn't 'Share' the numbering of
--- another container, we create a counter with the same name.
+-- | A 'CounterName' is the name of a counter, which will have a
+-- numeric state during numbering. For each container that doesn't
+-- 'Share' the numbering of another container, we create a counter
+-- with the same name.
 newtype CounterName = CounterName
   { getCounterName :: Text
   } deriving (Eq, Ord, Show, Read, IsString, Generic)
 
--- | We will need to make counter names out of the names of containers that
--- don't 'Share' a counter.
+-- | We will need to make counter names out of the names of containers
+-- that don't 'Share' a counter.
 toCounterName :: ContainerName -> CounterName
 toCounterName = CounterName . getContainerName
 
--- | A simple monad for throwing error messages while compiling the relations.
+-- | A simple monad for throwing error messages while compiling the
+-- relations.
 newtype CounterM a = CounterM
   { unCounterM :: Except Text a
   } deriving (Functor, Applicative, Monad, MonadError Text)
 
--- Unwrap our monad.
+-- | Unwrap our counter monad.
 runCounterM :: CounterM a -> Either Text a
 runCounterM = runExcept . unCounterM
 
 -- | Containers can be numbered in the following ways:
 --
--- * @'Relative' c@ if the container should have its counter reset whenever the
---   counter of one of the containers listed in @c@ is updated.
+-- * @'Relative' c@ if the container should have its counter reset
+--   whenever the counter of one of the containers listed in @c@ is
+--   updated.
 --
 -- * @'Share' c@ if the container should share @c@\'s counter.
 --
 -- A container that is numbered "absolutely" (should never be reset,
--- incrementing on each occurrence of the container) can be defined with the
--- @'Relative' []@ relation.
+-- incrementing on each occurrence of the container) can be defined
+-- with the @'Relative' []@ relation.
 data ContainerRelation
   = Relative [ContainerName]
   | Share ContainerName
   deriving (Eq, Ord, Show, Read, Generic)
 
--- | The raw counter dependency map associates container names to their
--- relations with other containers.
+-- | The raw counter dependency map associates container names to
+-- their relations with other containers.
 type RawCounterDependency = Map ContainerName ContainerRelation
 
 -- | Ensure that the container relations have no cycles in them.
@@ -104,9 +122,10 @@ guardWellFormed =
         . List.intersperse ","
         $ fmap getContainerName y
 
--- | Ensure that the union of all the @z@ in @'Relative' z@ in the relations is
--- a subset of the set of 'ContainerName' keys. We check elsewhere that the
--- 'Share' relations eventually refer to some non-share thing.
+-- | Ensure that the union of all the @z@ in @'Relative' z@ in the
+-- relations is a subset of the set of 'ContainerName' keys. We check
+-- elsewhere that the 'Share' relations eventually refer to some
+-- non-share thing.
 guardFullySpecified :: [(ContainerName, ContainerRelation)] -> CounterM ()
 guardFullySpecified l = traverse_ (uncurry guardIsIn)
                                   (List.concatMap getRels l)
@@ -125,25 +144,27 @@ guardFullySpecified l = traverse_ (uncurry guardIsIn)
       <> getContainerName x
       <> " but that container does not have an entry in the relations."
 
--- | Given a container name, look up what it is shared with (recursively, if
--- necessary) until we reach a container that is 'Relative'. The name of this
--- final container is the counter name of the initial container. We assume that
--- the raw non-inverted dependency graph we are given has no cycles in it.
+-- | Given a container name, look up what it is shared with
+-- (recursively, if necessary) until we reach a container that is
+-- 'Relative'. The name of this final container is the counter name of
+-- the initial container. We assume that the raw non-inverted
+-- dependency graph we are given has no cycles in it.
 lookupUltimate
   :: ContainerName
-  -> RawCounterDependency -- ^ The (non-)inverted dependency graph
+  -> RawCounterDependency -- ^ The non-inverted dependency graph
   -> CounterM CounterName
 lookupUltimate k rcd = case Map.lookup k rcd of
   Nothing         -> throwError $ "Unknown container " <> getContainerName k
   Just (Share k') -> lookupUltimate k' rcd
   Just _          -> pure $ toCounterName k
 
--- | From a list of containers and their numbering relations, get a map
--- associating a counter to each container and a list of counter names and their
--- possible relative counter.
+-- | From a list of containers and their numbering relations, get a
+-- map associating a counter to each container and a list of counter
+-- names and their possible relative counter.
 --
--- This function correctly handles the case where one declares that a container
--- A should be numbered relative to a container B, where B is 'Share'.
+-- This function correctly handles the case where one declares that a
+-- container A should be numbered relative to a container B, where B
+-- is 'Share'.
 getSemiCounterData
   :: [(ContainerName, ContainerRelation)]
   -> CounterM (Map ContainerName CounterName, [(CounterName, [CounterName])])
@@ -151,9 +172,9 @@ getSemiCounterData l = do
   sharedmap <-
     Map.fromList
       <$> traverse (\(x, y) -> (x, ) <$> lookupUltimate y mrcd) shareds
-  -- Make sure that if A is relative to B and B is shared then A is relative
-  -- to the ultimate container of B (which will be B's counter too), not B
-  -- itself.
+  -- Make sure that if A is relative to B and B is shared then A is
+  -- relative to the ultimate container of B (which will be B's
+  -- counter too), not B itself.
   let updateOneRel y = fromMaybe (toCounterName y) $ Map.lookup y sharedmap
       updateRel (x, y) = (x, updateOneRel <$> y)
       others' = updateRel <$> others
@@ -169,40 +190,43 @@ getSemiCounterData l = do
     Relative t -> Right (x, t)
     Share    t -> Left (x, t)
   (shareds, others) = partitionEithers $ eshared <$> l
-  -- If we have a non-shared container then the counter name is the same as
-  -- the container name.
+  -- If we have a non-shared container then the counter name is the
+  -- same as the container name.
   getNonSharedCounter x = (x, toCounterName x)
 
--- | From the raw container data, get a graph with edges a -> b if b is numbered
--- relative to a.
+-- | From the raw container data, get a graph with edges a -> b if b
+-- is numbered relative to a.
 getInverted
   :: Ord b => [(a, b, [b])] -> (Graph, Vertex -> (a, b, [b]), b -> Maybe Vertex)
 getInverted rcd = (Graph.transposeG g, n, mv)
   where (g, n, mv) = Graph.graphFromEdges rcd
 
--- | From a list of containers and their relations, return a map associating the
--- containers to their counters and a map associating each counter to the set of
--- their dependants (counters that should be reset whenever the counter is
--- updated).
+-- | From a list of containers and their relations, return a map
+-- associating the containers to their counters and a map associating
+-- each counter to the set of their dependants (counters that should
+-- be reset whenever the counter is updated).
 --
--- The passed container relations should have the following properties:
+-- The passed container relations should have the following
+-- properties:
 --
--- * Each 'ContainerName' should appear at most once as a key in the list.
+-- * Each 'ContainerName' should appear at most once as a key in the
+--   list.
 --
--- * If @'Relative' z@ occurs in the relations then every element of @z@ should
---   occur as a key in the list.
+-- * If @'Relative' z@ occurs in the relations then every element of
+--   @z@ should occur as a key in the list.
 --
--- * There should be no cycle (including self-dependency) in the relations. In
---   other words, if we consider a container @x@ related to a container @y@ if
---   @(x, 'Share' y)@ occurs in the relations or if @(x, 'Relative' z)@ occurs
---   in the relations and @y@ is in @z@, then we should not be able to create a
---   path starting and ending at one particular container where each container
---   in the path is related to the next.
+-- * There should be no cycle (including self-dependency) in the
+--   relations. In other words, if we consider a container @x@ related
+--   to a container @y@ if @(x, 'Share' y)@ occurs in the relations or
+--   if @(x, 'Relative' z)@ occurs in the relations and @y@ is in @z@,
+--   then we should not be able to create a path starting and ending
+--   at one particular container where each container in the path is
+--   related to the next.
 --
--- The first (uniqueness) condition is not checked; the first occurring relation
--- for a particular 'ContainerName' will be used and the rest will be discarded.
--- The other two conditions are checked and an error will be thrown if they are
--- not satisfied.
+-- The first (uniqueness) condition is not checked; the first
+-- occurring relation for a particular 'ContainerName' will be used
+-- and the rest will be discarded.  The other two conditions are
+-- checked and an error will be returned if they are not satisfied.
 compileContainerRelations
   :: [(ContainerName, ContainerRelation)]
   -> Either
