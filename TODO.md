@@ -121,6 +121,9 @@ This leaves some questions open:
   references to the physical pages of things in the print output then
   the timing of that pagination will need to be defined as well.
 
+Note that external books themselves should be cached (or there should
+be an option to do so), including any repo history (if applicable).
+
 ## The repository, application, and type structures
 
 (Write out the requirements of the `Doc` data type, the metadata type
