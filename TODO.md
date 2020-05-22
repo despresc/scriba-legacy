@@ -15,7 +15,6 @@
 - Document `Element/`
 - Document `Markup/`
 
-
 # Project structure
 
 The main task here is to find a permanent home for what follows in
