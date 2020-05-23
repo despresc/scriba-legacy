@@ -189,7 +189,7 @@ import qualified Text.Megaparsec               as MP
 -- successfully parsed if they are followed by a properly-indented
 -- line. The main element parsers assume that all whitespace before
 -- them has been dealt with and the indentation level has been
--- checked. Indentation itself _must_ be in the form of white space
+-- checked. Indentation itself /must/ be in the form of white space
 -- characters; comments are parsed as inline nodes and so can only
 -- appear where inline nodes can. It is also recommended that these
 -- characters be the @' '@ space character, since tabs are not yet
@@ -238,7 +238,7 @@ atIndent :: Int -> Parser a -> Parser a
 atIndent n = Parser . Reader.local (const n) . getParser
 
 -- | In @dropIndent n txt@, drop the first @n@ spaces from
--- @txt@ and return the remainder. This _ought_ to be aware of tab
+-- @txt@ and return the remainder. This /ought/ to be aware of tab
 -- indentation as well, but is not yet.
 dropIndent :: Int -> Text -> Parser Text
 dropIndent n = pure . T.drop n
