@@ -22,14 +22,6 @@ import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
-{- TODO:
-
-- inline list forms
-
-- list markers and numbering awareness
-
--}
-
 -- TODO: need to be able to configure unordered list items too.
 data List b i
   = Ulist [MixedBody b i]

@@ -515,6 +515,11 @@ CSS has :lang selector, so we can have styles based on language
 - generated content, like a table of contents, lists of content,
   bibliographies.
 
+- inline ordered lists
+
+- unordered list item configuration (marker styles), and unordered
+  list/list item/list attributes (identifiers and things).
+
 - paginated output (web-paginated, that is).
 
 - a TeX/LaTeX/ConTeXt writer.
