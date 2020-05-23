@@ -45,17 +45,27 @@ styleAtDepth n (x : xs) | n > 0     = styleAtDepth (n - 1) xs
                         | otherwise = Just x
 
 -- TODO: richer config for prefixing
-data NumberConfig i = NumberConfig
+data NumberConfig = NumberConfig
   { ncNumberStyle :: NumberStyle
-  , ncRefPrefix :: Maybe [i]
-  , ncRefSep :: Maybe [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
+  , ncRefPrefix :: Maybe Text
+  , ncRefSep :: Maybe Text
+  } deriving (Eq, Ord, Show, Read, Generic)
 
-data UsedNumberConfig i = UsedNumberConfig
+data UsedNumberConfig = UsedNumberConfig
   { uncStyle :: LocalNumberStyle
-  , uncRefPrefix :: Maybe [i]
-  , uncRefSep :: Maybe [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
+  , uncRefPrefix :: Maybe Text
+  , uncRefSep :: Maybe Text
+  } deriving (Eq, Ord, Show, Read, Generic)
+
+-- TODO: better name?
+data ElemNumber
+  = NumberAuto ContainerName UsedNumberConfig Text
+  | NumberSource Text
+  deriving (Eq, Ord, Show, Read, Generic)
+
+elemNumberNum :: ElemNumber -> Text
+elemNumberNum (NumberAuto _ _ t) = t
+elemNumberNum (NumberSource t)   = t
 
 -- TODO: add more
 data LocalNumberStyle
@@ -104,6 +114,19 @@ data Surround a = Surround
   , surroundAfter :: [a]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
+-- TODO: richer numbering reporting/configuration
+data LinkDatum
+  = LinkNumber (Maybe Identifier) ContainerName UsedNumberConfig Text
+  | LinkBare Identifier
+  deriving (Eq, Ord, Show, Read, Generic)
+
+-- | Numbering data to be gathered from the AST.
+data NumberDatum = NumberDatum
+  { ndIdentifier :: Identifier
+  , ndContainerName :: ContainerName
+  , ndNumberConfig :: UsedNumberConfig
+  , ndNumber :: Text
+  } deriving (Eq, Ord, Show)
 
 -- TODO: make this richer. Will need source positions for things in
 -- the markup to make these errors better.

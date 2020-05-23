@@ -21,9 +21,9 @@ import qualified Text.Blaze.Html5              as Html
 newtype Paragraph i = Paragraph
   { getParagraph :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering a, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
-instance Referencing i a b => Referencing i (Paragraph a) (Paragraph b)
+instance Referencing a b => Referencing (Paragraph a) (Paragraph b)
 
 paragraphToText :: (i -> [Text]) -> Paragraph i -> [Text]
 paragraphToText f (Paragraph t) = concatMap f t

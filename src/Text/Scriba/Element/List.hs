@@ -7,6 +7,7 @@
 
 module Text.Scriba.Element.List where
 
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -37,14 +38,14 @@ data List b i
 
 data OlistItem b i = OlistItem
   { olLabel :: Maybe Identifier
-  , olNum :: Maybe Text
+  , olNum :: Maybe ElemNumber
   , olContent :: MixedBody b i
-  } deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Numbering a)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Numbering)
 
 -- TODO: not the best. We could have a "type inference" pass that
 -- annotates the list items with the type of their parent
 -- TODO: I think only a resetCounter is necessary here.
-instance (Numbering a (b i), Numbering a i) => Numbering a (List b i) where
+instance (Numbering (b i), Numbering i) => Numbering (List b i) where
   numbering (Olist items) = do
     resetCounter "item:olist"
     Olist <$> traverse numberItem items
@@ -55,13 +56,13 @@ instance (Numbering a (b i), Numbering a i) => Numbering a (List b i) where
         pure $ OlistItem mId (mnum <|> mnumgen) cont'
   numbering (Ulist items) = Ulist <$> traverse numbering items
 
-instance ( Referencing i (f a) (g b)
-         , Referencing i a b
-         ) => Referencing i (List f a) (List g b)
+instance ( Referencing (f a) (g b)
+         , Referencing a b
+         ) => Referencing (List f a) (List g b)
 
-instance ( Referencing i (f a) (g b)
-         , Referencing i a b
-         ) => Referencing i (OlistItem f a) (OlistItem g b)
+instance ( Referencing (f a) (g b)
+         , Referencing a b
+         ) => Referencing (OlistItem f a) (OlistItem g b)
 
 pList :: Scriba [Node] (MixedBody b i) -> Scriba Element (List b i)
 pList p = pOlist p <|> pUlist p
@@ -79,8 +80,7 @@ pOlist p = do
       mnumber <- attrMaybe "n" $ allContentOf simpleText
       pure (mId, mnumber)
     cont <- content p
-    pure $ OlistItem mId (T.concat <$> mnumber) cont
-
+    pure $ OlistItem mId (NumberSource . T.concat <$> mnumber) cont
 
 pUlist :: Scriba [Node] (MixedBody b i) -> Scriba Element (List b i)
 pUlist p = do

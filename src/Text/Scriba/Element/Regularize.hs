@@ -27,9 +27,9 @@ data Regularize i = Regularize
   { regOld :: [i]
   , regNew :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering a, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
-instance Referencing i a b => Referencing i (Regularize a) (Regularize b)
+instance Referencing a b => Referencing (Regularize a) (Regularize b)
 
 regularizeToText :: (i -> [Text]) -> Regularize i -> [Text]
 regularizeToText f (Regularize o n) = concatMap f o <> concatMap f n

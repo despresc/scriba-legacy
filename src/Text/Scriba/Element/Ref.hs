@@ -24,7 +24,7 @@ newtype SourceRef = SourceRef
   { sourceRefTarget :: Identifier
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering i SourceRef
+instance Numbering SourceRef
 instance Titling i SourceRef
 
 -- TODO: may need more renditional information here, from Numbering and
@@ -33,19 +33,19 @@ instance Titling i SourceRef
 
 -- TODO: For multi-page standalone rendering, will I need to modify
 -- identifiers at all? Probably.
-data Ref i = Ref
+data Ref = Ref
   { refTarget :: Identifier
   , refContainer :: ContainerName
-  , refNumberConfig :: UsedNumberConfig i
+  , refNumberConfig :: UsedNumberConfig
   , refNumber :: Text
-  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering a i => Numbering a (Ref i)
-instance Titling a i => Titling a (Ref i)
-instance Referencing i a b => Referencing i (Ref a) (Ref b)
+instance Numbering Ref
+instance Titling a Ref
+instance Referencing Ref Ref
 
 -- TODO: Not sure what to do here.
-refToText :: (a -> [Text]) -> Ref a -> [Text]
+refToText :: (a -> [Text]) -> Ref -> [Text]
 refToText _ _ = []
 
 pSourceRef :: Scriba Element SourceRef
@@ -55,7 +55,7 @@ pSourceRef = whileMatchTy "ref" $ do
     [t] -> useState [t] $ SourceRef <$> pIdent
     _   -> throwError $ Msg "ref takes exactly one identifier as an argument"
 
-resolveRef :: SourceRef -> RefM i (Ref i)
+resolveRef :: SourceRef -> RefM Ref
 resolveRef (SourceRef i) = do
   (cn, nc, num) <- lookupRefData i
   pure $ Ref i cn nc num
@@ -63,21 +63,18 @@ resolveRef (SourceRef i) = do
 -- TODO: wrap separator?
 -- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
-instance RH.Render a => RH.Render (Ref a) where
+instance RH.Render Ref where
   render (Ref (Identifier lab) containername (UsedNumberConfig _ mpref msep) num)
-    = do
-      mpref' <- traverse RH.render mpref
-      msep'  <- traverse RH.render msep
-      pure
-        $      Html.a
-        Html.! HtmlA.class_ "ref"
-        Html.! HtmlA.href (Html.toValue refVal)
-        $      do
-                 RH.renderMaybe mpref' $ Html.span Html.! HtmlA.class_ "prefix"
-                 RH.renderMaybe msep' id
-                 Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
+    = pure
+      $      Html.a
+      Html.! HtmlA.class_ "ref"
+      Html.! HtmlA.href (Html.toValue refVal)
+      $      do
+               RH.renderMaybe (Html.toHtml <$> mpref) $ Html.span Html.! HtmlA.class_
+                 "prefix"
+               RH.renderMaybe (Html.toHtml <$> msep) id
+               Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
    where
     refVal = case getContainerName containername of
       "formula" -> "#mjx-eqn-" <> lab
       _         -> "#" <> lab
-

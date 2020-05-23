@@ -6,6 +6,7 @@
 module Text.Scriba.Element.DisplayMath where
 
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -23,16 +24,16 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 data MathItem = MathItem
   { miIdentifier :: Maybe Identifier
-  , miNum :: Maybe Text
+  , miNum :: Maybe ElemNumber
   , miIsNumbered :: Bool
   , miContent :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Referencing i MathItem MathItem
+instance Referencing MathItem MathItem
 instance Titling i MathItem
 
 -- TODO: may need more complex numbering behaviour here.
-instance Numbering i MathItem where
+instance Numbering MathItem where
   numbering x@(MathItem _ Nothing False _) = pure x
   numbering (MathItem mId mnum t cont) = bracketNumbering (Just "formula") mId
     $ \mnumgen -> pure $ MathItem mId (mnum <|> mnumgen) t cont
@@ -49,7 +50,7 @@ pMathItem = do
     mnumber <- attrMaybe "n" $ allContentOf simpleText
     mIsNum  <- attrMaybe "noNum" $ pure ()
     pure (mId, mnumber, isNothing mIsNum)
-  pure $ MathItem mId (T.concat <$> mnumber) isNum t
+  pure $ MathItem mId (NumberSource . T.concat <$> mnumber) isNum t
 
 -- Formulas have a possible identifier and a possible number
 -- The Bool in gathered indicates if its content should be numbered or
@@ -63,7 +64,7 @@ data DisplayMath
   | Gathered Bool [MathItem]
   deriving (Eq, Ord, Show, Read, Generic)
 
-instance Referencing i DisplayMath DisplayMath
+instance Referencing DisplayMath DisplayMath
 instance Titling i DisplayMath
 
 -- TODO: have these be classes somewhere
@@ -92,7 +93,7 @@ pGathered = whileMatchTy "gathered" $ do
   pLines = one (asNode pLine) <* consumeWhiteSpace
   pLine  = whileMatchTy "line" pMathItem
 
-instance Numbering i DisplayMath
+instance Numbering DisplayMath
 
 -- TODO: assumes mathjax or katex
 instance RH.Render DisplayMath where
@@ -114,7 +115,7 @@ instance RH.Render MathItem where
   render (MathItem mId mnum _ t) = pure $ Html.toHtml $ withLabNum t
    where
     withNum Nothing  = id
-    withNum (Just n) = (<> ("\\tag{" <> n <> "}"))
+    withNum (Just n) = (<> ("\\tag{" <> elemNumberNum n <> "}"))
     withLab Nothing  = id
     withLab (Just x) = (<> ("\\label{" <> getIdentifier x <> "}"))
     withLabNum = withLab mId . withNum mnum

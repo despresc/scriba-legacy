@@ -22,9 +22,9 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype Name i = Name
   { getName :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering a, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
-instance Referencing i a b => Referencing i (Name a) (Name b)
+instance Referencing a b => Referencing (Name a) (Name b)
 
 nameToText :: (i -> [Text]) -> Name i -> [Text]
 nameToText f (Name i) = concatMap f i

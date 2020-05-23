@@ -53,10 +53,10 @@ data Block a
   | Bcode !BlockCode
   | Bpar !(Paragraph a)
   | Blist !(List Block a)
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering i)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
 
 deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
-instance Referencing i (Inline a) (Inline b) => Referencing i (Block (Inline a)) (Block (Inline b))
+instance Referencing (Inline a) (Inline b) => Referencing (Block (Inline a)) (Block (Inline b))
 
 data Inline a
   = Istr !Str
@@ -70,16 +70,16 @@ data Inline a
   | IdisplayMath !DisplayMath
   | Icode !InlineCode
   | IpageMark !PageMark
-  | Iref !(Ref (Inline a))
+  | Iref !Ref
   | ItitleComponent !(TitleComponent (Inline a))
   | Icontrol !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering i, Titling i)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
 
 instance HasStr (Inline a) where
   embedStr = Istr
 
 -- TODO: add a class for better instance derivation?
-instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
+instance Referencing (Inline InlineControl) (Inline Void) where
   referencing (Istr            x) = Istr <$> referencing x
   referencing (Iemph           x) = Iemph <$> referencing x
   referencing (Iquote          x) = Iquote <$> referencing x
@@ -95,13 +95,13 @@ instance Referencing (Inline Void) (Inline InlineControl) (Inline Void) where
   referencing (ItitleComponent x) = ItitleComponent <$> referencing x
   referencing (Icontrol        x) = referencing x
 
-instance Referencing (Inline b) InlineControl (Inline b) where
+instance Referencing InlineControl (Inline b) where
   referencing (IcRef sr) = Iref <$> resolveRef sr
 
 newtype InlineControl
   = IcRef SourceRef
   deriving (Eq, Ord, Show, Read, Generic)
-  deriving anyclass (Numbering i, Titling i)
+  deriving anyclass (Numbering, Titling i)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -218,7 +218,7 @@ parseMemDoc = fmap snd . runScriba
 
 -- * Decorating the document
 
-getRefEnv :: NumberData i -> RefData i
+getRefEnv :: NumberData -> RefData
 getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
   where go (NumberDatum i cn nc num) = (i, (cn, nc, num))
 
@@ -232,9 +232,9 @@ traverseInline f (Iname       e) = Iname $ fmap (traverseInline f) e
 traverseInline f (IworkTitle  e) = IworkTitle $ fmap (traverseInline f) e
 traverseInline f (Iregularize e) = Iregularize $ fmap (traverseInline f) e
 traverseInline f (Icite       e) = Icite $ fmap (traverseInline f) e
-traverseInline f (Iref        e) = Iref $ fmap (traverseInline f) e
 traverseInline f (ItitleComponent e) =
   ItitleComponent $ fmap (traverseInline f) e
+traverseInline _ (Iref         e) = Iref e
 traverseInline _ (Istr         s) = Istr s
 traverseInline _ (IinlineMath  s) = IinlineMath s
 traverseInline _ (IdisplayMath s) = IdisplayMath s
@@ -249,12 +249,12 @@ decorateMemDoc =
 
 decorating
   :: forall d d' j i
-   . (HasDocAttrs j d, Numbering j d, Titling i d, Referencing j d d')
+   . (HasDocAttrs j d, Numbering d, Titling i d, Referencing d d')
   => (j -> i)
   -> d
   -> Either DecorateError d'
 decorating f d = do
-  (numDat, nd) <- runDocNumbering d :: Either DecorateError (NumberData j, d)
+  (numDat, nd) <- runDocNumbering d
   td           <- runDocTitling f nd
   runDocReferencing (getRefEnv numDat) td
 

@@ -21,9 +21,9 @@ import qualified Text.Blaze.Html5              as Html
 newtype Emph i = Emph
   { getEmph :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering a, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
-instance Referencing i a b => Referencing i (Emph a) (Emph b)
+instance Referencing a b => Referencing (Emph a) (Emph b)
 
 emphToText :: (i -> [Text]) -> Emph i -> [Text]
 emphToText f (Emph i) = concatMap f i

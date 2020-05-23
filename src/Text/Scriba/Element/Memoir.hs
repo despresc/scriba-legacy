@@ -61,10 +61,10 @@ data MemDoc b j i = MemDoc
   , memAttrs :: MemDocAttrs j
   , memFront :: [FrontMatter b i]
   , memMain :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
 instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (MemDoc b j i)
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (MemDoc f j a) (MemDoc g j b)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (MemDoc f j a) (MemDoc g j b)
 
 instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (MemDoc b j i) where
   render (MemDoc ca _ f m) = do
@@ -82,17 +82,17 @@ instance HasDocAttrs j (MemDoc b j i) where
   getDocAttrs = memControlAttrs
 
 data MemDocAttrs i = MemDocAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a, Titling a, Referencing a (MemDocAttrs b))
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (MemDocAttrs b))
 
 -- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
   = Foreword [b i]
   | Dedication [b i]
   | Introduction [b i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering a)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
 instance Titling i (b i) => Titling i (FrontMatter b i)
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (FrontMatter f a) (FrontMatter g b)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (FrontMatter f a) (FrontMatter g b)
 instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
   render = \case
     Foreword     blks -> rfront "forword" blks
@@ -112,7 +112,7 @@ data SecAttrs i = SecAttrs
   { secId :: Maybe Identifier
   , secTitleBody :: Maybe (Title i)
   , secTitleFull :: Maybe (Title i)
-  , secNum :: Maybe Text
+  , secNum :: Maybe ElemNumber
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
 -- | A 'Section' is a major document division in the main matter. It
@@ -131,7 +131,7 @@ data Subsection b i = Subsection
 newtype Heading i = Heading
   { getHeading :: i
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering a, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
 instance RH.Render i => RH.Render (Heading i) where
   render (Heading t) = do
@@ -160,7 +160,7 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
         template
         SectionTemplate
         Nothing
-        ((: []) . fromTitleNumber <$> mnum)
+        ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
         (titleBody <$> mtbody)
     pure $ Section
       (SecAttrs mId mtbody' (mtfull' <|> join mtigen <|> mtbody') mnum)
@@ -180,13 +180,13 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Subs
         template
         SectionTemplate
         Nothing
-        ((: []) . fromTitleNumber <$> mnum)
+        ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
         (titleBody <$> mtbody)
     pure $ Subsection
       (SecAttrs mId mtbody' (mtfull' <|> join mtigen <|> mtbody') mnum)
       c'
 
-instance (Numbering a (b i), Numbering a i) => Numbering a (Section b i) where
+instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
   numbering (Section (SecAttrs mId tbody tfull mnum) pre child) =
     bracketNumbering (Just "section") mId $ \mnumgen -> do
       tbody' <- numbering tbody
@@ -195,7 +195,7 @@ instance (Numbering a (b i), Numbering a i) => Numbering a (Section b i) where
       child' <- numbering child
       pure $ Section (SecAttrs mId tbody' tfull' (mnum <|> mnumgen)) pre' child'
 
-instance (Numbering a (b i), Numbering a i) => Numbering a (Subsection b i) where
+instance (Numbering (b i), Numbering i) => Numbering (Subsection b i) where
   numbering (Subsection (SecAttrs mId tbody tfull mnum) c) =
     bracketNumbering (Just "subsection") mId $ \mnumgen -> do
       tbody' <- numbering tbody
@@ -203,11 +203,11 @@ instance (Numbering a (b i), Numbering a i) => Numbering a (Subsection b i) wher
       c'     <- numbering c
       pure $ Subsection (SecAttrs mId tbody' tfull' (mnum <|> mnumgen)) c'
 
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Section f a) (Section g b)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (Section f a) (Section g b)
 
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Subsection f a) (Subsection g b)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (Subsection f a) (Subsection g b)
 
-instance Referencing i a b => Referencing i (SecAttrs a) (SecAttrs b)
+instance Referencing a b => Referencing (SecAttrs a) (SecAttrs b)
 
 -- TODO: add the section type as a class or data attribute
 
@@ -293,7 +293,7 @@ pSecAttrs pInl = do
   pure $ SecAttrs mId
                   (Title <$> mtitle)
                   (Title <$> mfullTitle)
-                  (T.concat <$> mnumber)
+                  (NumberSource . T.concat <$> mnumber)
 
 -- For now, all things presented as sections become sections.
 

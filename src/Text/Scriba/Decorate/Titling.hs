@@ -92,8 +92,8 @@ instance Titling i a => Titling i (Map k a) where
   titling = M.traverseWithKey $ const titling
 
 instance Titling a Identifier
-instance Titling a i => Titling a (NumberConfig i)
-instance Titling a i => Titling a (UsedNumberConfig i)
+instance Titling a NumberConfig
+instance Titling a UsedNumberConfig
 instance Titling a LocalNumberStyle
 instance Titling a LocalStyle
 instance Titling a NumberStyle
@@ -101,6 +101,7 @@ instance Titling a ContainerPathFilter
 instance Titling a Int where
   titling = pure
 instance Titling a ContainerName
+instance Titling a ElemNumber
 
 data TitleTemplateStyle
   = FormalTemplate

@@ -20,9 +20,9 @@ newtype Str = Str
   { getStr :: Text
   } deriving (Eq, Ord, Show, Read, Generic, IsString)
 
-instance Numbering i Str
+instance Numbering Str
 instance Titling i Str
-instance Referencing i Str Str
+instance Referencing Str Str
 
 strToText :: Str -> [Text]
 strToText (Str t) = [t]

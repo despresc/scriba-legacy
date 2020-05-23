@@ -21,8 +21,8 @@ newtype InlineCode = InlineCode
   { getInlineCode :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering i InlineCode
-instance Referencing i InlineCode InlineCode
+instance Numbering InlineCode
+instance Referencing InlineCode InlineCode
 instance Titling i InlineCode
 
 inlineCodeToText :: InlineCode -> [Text]

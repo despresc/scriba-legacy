@@ -20,11 +20,11 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data MixedBody b i
   = MixedInline [i]
   | MixedBlock [b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering a, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
 
-instance ( Referencing i (f a) (g b)
-         , Referencing i a b
-         ) => Referencing i (MixedBody f a) (MixedBody g b)
+instance ( Referencing (f a) (g b)
+         , Referencing a b
+         ) => Referencing (MixedBody f a) (MixedBody g b)
 
 -- TODO: This does conditional span/div rendering. Is that robust?
 

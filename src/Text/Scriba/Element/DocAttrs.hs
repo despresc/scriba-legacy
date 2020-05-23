@@ -49,9 +49,9 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype Title i = Title
   { titleBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering a, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
-instance Referencing i a b => Referencing i (Title a) (Title b)
+instance Referencing a b => Referencing (Title a) (Title b)
 
 -- Add a sectionTitle class?
 instance RH.Render i => RH.Render (Title i) where
@@ -72,18 +72,18 @@ data DocAttrs i = DocAttrs
   , docLang :: Maybe Text
   , docPlainTitle :: Text
   , docTitlingConfig :: TitlingConfig i
-  , docElemCounterRel :: Map ContainerName (CounterName, NumberConfig i)
+  , docElemCounterRel :: Map ContainerName (CounterName, NumberConfig)
   , docCounterRel :: Map CounterName (Set CounterName)
   , docMathMacros :: Map Text (Int, Text)
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
-instance Numbering a (DocAttrs i) where
+instance Numbering (DocAttrs i) where
   numbering = pure
 
 instance Titling a (DocAttrs i) where
   titling = pure
 
-instance Referencing a (DocAttrs i) (DocAttrs i) where
+instance Referencing (DocAttrs i) (DocAttrs i) where
   referencing = pure
 
 class HasDocAttrs i a | a -> i where
@@ -94,7 +94,7 @@ instance HasDocAttrs i (DocAttrs i) where
 
 -- TODO: might want to forbid, or have special configuration for, the
 -- "item" counter.
-defaultNumberState :: DocAttrs i -> NumberState i
+defaultNumberState :: DocAttrs i -> NumberState
 defaultNumberState da = NumberState initCounters
                                     []
                                     (docCounterRel da)
@@ -103,9 +103,7 @@ defaultNumberState da = NumberState initCounters
   where initCounters = docCounterRel da $> 1
 
 runDocNumbering
-  :: (HasDocAttrs j d, Numbering j d)
-  => d
-  -> Either DecorateError (NumberData j, d)
+  :: (HasDocAttrs j d, Numbering d) => d -> Either DecorateError (NumberData, d)
 runDocNumbering d =
   flip runNumberM (defaultNumberState $ getDocAttrs d) $ numbering d
 
@@ -114,7 +112,7 @@ runDocTitling
 runDocTitling f d =
   pure $ flip runTitleM (f <$> docTitlingConfig (getDocAttrs d)) $ titling d
 
-runDocReferencing :: Referencing i a b => RefData i -> a -> Either DecorateError b
+runDocReferencing :: Referencing a b => RefData -> a -> Either DecorateError b
 runDocReferencing rd d = runRefM (referencing d) rd
 
 emptySurround :: Surround a
@@ -127,10 +125,7 @@ pFormalConfig
        Element
        ( Map
            Text
-           ( FormalConfig a
-           , Maybe ContainerRelation
-           , Maybe (NumberConfig a)
-           )
+           (FormalConfig a, Maybe ContainerRelation, Maybe NumberConfig)
        )
 pFormalConfig pInl = meta $ attrs $ allAttrsOf pFormalSpec
  where
@@ -141,7 +136,7 @@ pFormalConfig pInl = meta $ attrs $ allAttrsOf pFormalSpec
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate pInl FormalTemplate)
       titleSep <- attrMaybe "titleSep" $ allContentOf pInl
-      (cr, nc) <- pNumberRef pInl
+      (cr, nc) <- pNumberRef
       concl    <- attrMaybe "conclusion" $ allContentOf pInl
       pure
         ( FormalConfig titleTemplate titleSep concl
@@ -149,16 +144,16 @@ pFormalConfig pInl = meta $ attrs $ allAttrsOf pFormalSpec
         , nc <*> pure FilterByCounterDep
         )
 
-defaultListConfig :: HasStr a => NumberConfig a
+defaultListConfig :: NumberConfig
 defaultListConfig = NumberConfig
   ( NumberStyle (FilterByContainer "item:olist") Nothing
   $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
   )
-  (Just [embedStr "item"])
-  (Just [embedStr " "])
+  (Just "item")
+  (Just " ")
 
-pListConfig :: HasStr a => Scriba Node a -> Scriba Element (NumberConfig a)
-pListConfig _ =
+pListConfig :: Scriba Element NumberConfig
+pListConfig =
   meta $ attrs $ attrDef "olist" defaultListConfig $ pure defaultListConfig
 
 pTitleTemplate
@@ -198,18 +193,15 @@ pSurround pInl = do
 -- we probably don't need to return a Maybe function here. Just have
 -- the filter be by relatedness.
 pNumberRef
-  :: Scriba Node a
-  -> Scriba
+  :: Scriba
        Attrs
-       ( Maybe ContainerRelation
-       , Maybe (ContainerPathFilter -> NumberConfig a)
-       )
-pNumberRef pInl = do
+       (Maybe ContainerRelation, Maybe (ContainerPathFilter -> NumberConfig))
+pNumberRef = do
   numberingConf     <- attrMaybe "numbering" pCounterDepends
   (refSep, refPref) <- fmap unzips $ attrMaybe "ref" $ meta $ attrs $ do
-    s <- attrMaybe "sep" $ allContentOf pInl
-    p <- attrMaybe "prefix" $ allContentOf pInl
-    pure (s, p)
+    s <- attrMaybe "sep" $ allContentOf simpleText
+    p <- attrMaybe "prefix" $ allContentOf simpleText
+    pure (T.concat <$> s, T.concat <$> p)
   let
     (counterDepends, nc) = unzips $ do
       (containerRel, ns) <- numberingConf
@@ -228,10 +220,7 @@ pSectionConfig
        Element
        ( Map
            Text
-           ( SectionConfig a
-           , Maybe ContainerRelation
-           , Maybe (NumberConfig a)
-           )
+           (SectionConfig a, Maybe ContainerRelation, Maybe NumberConfig)
        )
 pSectionConfig pInl = meta $ attrs $ allAttrsOf pSectionSpec
  where
@@ -243,7 +232,7 @@ pSectionConfig pInl = meta $ attrs $ allAttrsOf pSectionSpec
     whileParsingElem ("section " <> t <> " config") $ meta $ attrs $ do
       titleTemplate <- attrMaybe "title" $ meta $ attrs
         (pTitleTemplate pInl SectionTemplate)
-      (cr, nc) <- pNumberRef pInl
+      (cr, nc) <- pNumberRef
       pure (SectionConfig titleTemplate, cr, nc <*> pure FilterByCounterDep)
 
 -- TODO: need some pOneArg thing, clearly
@@ -313,10 +302,10 @@ pDocAttrs pMetInl stripMarkup = do
   tplain  <- attrMaybe "plainTitle" $ T.concat <$> allContentOf simpleText
   fconfig <- mattr "formalBlocks" (pFormalConfig pMetInl)
   sconfig <- mattr "sections" (pSectionConfig pMetInl)
-  lconfig <- attrDef "lists" defaultListConfig (pListConfig pMetInl)
+  lconfig <- attrDef "lists" defaultListConfig pListConfig
   let lCrel = ("item:olist", Just $ Relative [])
   (dmathCrel, dmathNumConf) <- fmap unzips $ attrMaybe "formula" $ meta $ attrs
-    (pNumberRef pMetInl)
+    pNumberRef
   let dmathrelRaw = [("formula", join dmathCrel)]
   -- TODO: clean up
   let (fconf, frelRaw, fnstyleRaw) = unzips3 fconfig

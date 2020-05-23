@@ -32,6 +32,7 @@ library
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate.Common
+    Text.Scriba.Decorate.Linking
     Text.Scriba.Decorate.Numbering
     Text.Scriba.Decorate.Referencing
     Text.Scriba.Decorate.Titling

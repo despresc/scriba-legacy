@@ -21,9 +21,9 @@ newtype InlineMath = InlineMath
   { getInlineMath :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering i InlineMath
+instance Numbering InlineMath
 instance Titling i InlineMath
-instance Referencing i InlineMath InlineMath
+instance Referencing InlineMath InlineMath
 
 inlineMathToText :: InlineMath -> [Text]
 inlineMathToText (InlineMath t) = [t]

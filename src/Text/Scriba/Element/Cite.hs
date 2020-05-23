@@ -6,6 +6,7 @@
 
 module Text.Scriba.Element.Cite where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -26,9 +27,10 @@ data Cite i = Cite
   , citeBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
-instance Numbering a i => Numbering a (Cite i)
+instance Numbering i => Numbering (Cite i)
 instance Titling a i => Titling a (Cite i)
-instance Referencing i a b => Referencing i (Cite a) (Cite b)
+instance Referencing a b => Referencing (Cite a) (Cite b)
+instance Linking i => Linking (Cite i)
 
 citeToText :: (i -> [Text]) -> Cite i -> [Text]
 citeToText f (Cite _ i) = concatMap f i

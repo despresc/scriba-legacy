@@ -45,7 +45,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data Formal b i = Formal
   { fType :: Maybe Text
   , fLabel :: Maybe Identifier
-  , fNum :: Maybe Text
+  , fNum :: Maybe ElemNumber
   , fTitle :: Maybe [i]
   , fNote :: Maybe [i]
   , fTitleSep :: Maybe [i]
@@ -88,7 +88,7 @@ pFormal pBody pInl = whileMatchTy "formalBlock" $ do
   body <- content pBody
   pure $ Formal (T.concat <$> mty)
                 mId
-                (T.concat <$> mnumber)
+                (NumberSource . T.concat <$> mnumber)
                 title
                 note
                 tsep
@@ -99,7 +99,7 @@ pFormal pBody pInl = whileMatchTy "formalBlock" $ do
 
 -- TODO: we don't skip numbering a formal block when it already has a
 -- number. Should have config for that sort of thing.
-instance (Numbering a (b i), Numbering a i) => Numbering a (Formal b i) where
+instance (Numbering (b i), Numbering i) => Numbering (Formal b i) where
   numbering (Formal mty mId mnum ti note tsep cont concl) =
     bracketNumbering mty mId $ \mnumgen -> do
       ti'    <- numbering ti
@@ -127,7 +127,7 @@ instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Form
               , runTemplate template
                             FormalTemplate
                             Nothing
-                            ((: []) . fromTitleNumber <$> mnum)
+                            ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
                             mnote
               , concl
               )
@@ -141,7 +141,7 @@ instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Form
                   cont'
                   (conc' <|> join concgen)
 
-instance (Referencing i (f a) (g b), Referencing i a b) => Referencing i (Formal f a) (Formal g b)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (Formal f a) (Formal g b)
 
 -- TODO: add the type as a data-scribaType? Though we might want that
 -- to equal formalBlock here. Might want to record the number as well.

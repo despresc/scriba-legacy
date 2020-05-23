@@ -21,8 +21,8 @@ newtype PageMark = PageMark
   { getPageMark :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
-instance Numbering a PageMark
-instance Referencing i PageMark PageMark
+instance Numbering PageMark
+instance Referencing PageMark PageMark
 instance Titling a PageMark
 
 pageMarkToText :: PageMark -> [Text]
