@@ -12,6 +12,7 @@
 module Text.Scriba.Element.Memoir where
 
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -61,7 +62,7 @@ data MemDoc b j i = MemDoc
   , memAttrs :: MemDocAttrs j
   , memFront :: [FrontMatter b i]
   , memMain :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Linking)
 
 instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (MemDoc b j i)
 instance (Referencing (f a) (g b), Referencing a b) => Referencing (MemDoc f j a) (MemDoc g j b)
@@ -82,14 +83,14 @@ instance HasDocAttrs j (MemDoc b j i) where
   getDocAttrs = memControlAttrs
 
 data MemDocAttrs i = MemDocAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (MemDocAttrs b))
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (MemDocAttrs b), Linking)
 
 -- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
   = Foreword [b i]
   | Dedication [b i]
   | Introduction [b i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Linking)
 
 instance Titling i (b i) => Titling i (FrontMatter b i)
 instance (Referencing (f a) (g b), Referencing a b) => Referencing (FrontMatter f a) (FrontMatter g b)
@@ -115,18 +116,23 @@ data SecAttrs i = SecAttrs
   , secNum :: Maybe ElemNumber
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
+instance Linking i => Linking (SecAttrs i) where
+  linking (SecAttrs mi _ tf mn) = do
+    tellLinkNumbered mi mn
+    linking tf
+
 -- | A 'Section' is a major document division in the main matter. It
 -- is the top-level section of articles.
 data Section b i = Section
   { sectionAttrs :: SecAttrs i
   , sectionPreamble :: [b i]
   , sectionChildren :: [Subsection b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Linking)
 
 data Subsection b i = Subsection
   { subsectionAttrs :: SecAttrs i
   , subsectionContent :: [b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Linking)
 
 newtype Heading i = Heading
   { getHeading :: i

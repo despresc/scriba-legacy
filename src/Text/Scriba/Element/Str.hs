@@ -5,6 +5,7 @@
 
 module Text.Scriba.Element.Str where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -23,6 +24,7 @@ newtype Str = Str
 instance Numbering Str
 instance Titling i Str
 instance Referencing Str Str
+instance Linking Str
 
 strToText :: Str -> [Text]
 strToText (Str t) = [t]

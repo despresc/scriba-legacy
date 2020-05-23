@@ -8,6 +8,7 @@
 module Text.Scriba.Element.List where
 
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -16,7 +17,6 @@ import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
-import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
@@ -34,13 +34,18 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data List b i
   = Ulist [MixedBody b i]
   | Olist [OlistItem b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Linking)
 
 data OlistItem b i = OlistItem
   { olLabel :: Maybe Identifier
   , olNum :: Maybe ElemNumber
   , olContent :: MixedBody b i
   } deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Numbering)
+
+instance (Linking i, Linking (b i)) => Linking (OlistItem b i) where
+  linking (OlistItem mi mnum c) = do
+    tellLinkNumbered mi mnum
+    linking c
 
 -- TODO: not the best. We could have a "type inference" pass that
 -- annotates the list items with the type of their parent

@@ -5,6 +5,7 @@
 
 module Text.Scriba.Element.InlineMath where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -24,6 +25,7 @@ newtype InlineMath = InlineMath
 instance Numbering InlineMath
 instance Titling i InlineMath
 instance Referencing InlineMath InlineMath
+instance Linking InlineMath
 
 inlineMathToText :: InlineMath -> [Text]
 inlineMathToText (InlineMath t) = [t]

@@ -7,6 +7,7 @@
 
 module Text.Scriba.Element.MixedBody where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -20,7 +21,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data MixedBody b i
   = MixedInline [i]
   | MixedBlock [b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a, Linking)
 
 instance ( Referencing (f a) (g b)
          , Referencing a b

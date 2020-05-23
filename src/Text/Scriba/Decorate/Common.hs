@@ -114,9 +114,8 @@ data Surround a = Surround
   , surroundAfter :: [a]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
--- TODO: richer numbering reporting/configuration
 data LinkDatum
-  = LinkNumber (Maybe Identifier) ContainerName UsedNumberConfig Text
+  = LinkNumber (Maybe Identifier) ElemNumber
   | LinkBare Identifier
   deriving (Eq, Ord, Show, Read, Generic)
 

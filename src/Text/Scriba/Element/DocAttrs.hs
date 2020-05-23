@@ -11,6 +11,7 @@ module Text.Scriba.Element.DocAttrs where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -49,7 +50,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype Title i = Title
   { titleBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Titling a)
+    deriving anyclass (Numbering, Linking, Titling a)
 
 instance Referencing a b => Referencing (Title a) (Title b)
 
@@ -79,6 +80,9 @@ data DocAttrs i = DocAttrs
 
 instance Numbering (DocAttrs i) where
   numbering = pure
+
+instance Linking (DocAttrs i) where
+  linking _ = pure ()
 
 instance Titling a (DocAttrs i) where
   titling = pure
@@ -114,6 +118,9 @@ runDocTitling f d =
 
 runDocReferencing :: Referencing a b => RefData -> a -> Either DecorateError b
 runDocReferencing rd d = runRefM (referencing d) rd
+
+runDocLinking :: Linking a => a -> LinkData
+runDocLinking = runLinkM . linking
 
 emptySurround :: Surround a
 emptySurround = Surround [] Nothing []

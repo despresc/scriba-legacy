@@ -8,6 +8,7 @@
 module Text.Scriba.Element.Formal where
 
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -52,6 +53,15 @@ data Formal b i = Formal
   , fContent :: MixedBody b i
   , fConclusion :: Maybe [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
+
+instance (Linking i, Linking (b i)) => Linking (Formal b i) where
+  linking (Formal _ mi mnum mt mn mts c mconc) = do
+    tellLinkNumbered mi mnum
+    linking mt
+    linking mn
+    linking mts
+    linking c
+    linking mconc
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap

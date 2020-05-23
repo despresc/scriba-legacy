@@ -8,6 +8,7 @@
 
 module Text.Scriba.Element.Regularize where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -27,7 +28,7 @@ data Regularize i = Regularize
   { regOld :: [i]
   , regNew :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a)
+    deriving anyclass (Numbering, Titling a, Linking)
 
 instance Referencing a b => Referencing (Regularize a) (Regularize b)
 

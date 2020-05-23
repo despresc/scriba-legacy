@@ -6,6 +6,7 @@
 module Text.Scriba.Element.InlineCode where
 
 import           Text.Scriba.Intermediate
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -24,6 +25,7 @@ newtype InlineCode = InlineCode
 instance Numbering InlineCode
 instance Referencing InlineCode InlineCode
 instance Titling i InlineCode
+instance Linking InlineCode
 
 inlineCodeToText :: InlineCode -> [Text]
 inlineCodeToText (InlineCode t) = [t]

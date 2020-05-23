@@ -26,6 +26,7 @@ module Text.Scriba.Markup
 where
 
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -53,7 +54,7 @@ data Block a
   | Bcode !BlockCode
   | Bpar !(Paragraph a)
   | Blist !(List Block a)
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Linking)
 
 deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
 instance Referencing (Inline a) (Inline b) => Referencing (Block (Inline a)) (Block (Inline b))
@@ -73,7 +74,7 @@ data Inline a
   | Iref !Ref
   | ItitleComponent !(TitleComponent (Inline a))
   | Icontrol !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i, Linking)
 
 instance HasStr (Inline a) where
   embedStr = Istr
@@ -101,7 +102,7 @@ instance Referencing InlineControl (Inline b) where
 newtype InlineControl
   = IcRef SourceRef
   deriving (Eq, Ord, Show, Read, Generic)
-  deriving anyclass (Numbering, Titling i)
+  deriving anyclass (Numbering, Titling i, Linking)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -249,13 +250,14 @@ decorateMemDoc =
 
 decorating
   :: forall d d' j i
-   . (HasDocAttrs j d, Numbering d, Titling i d, Referencing d d')
+   . (HasDocAttrs j d, Numbering d, Titling i d, Referencing d d', Linking d)
   => (j -> i)
   -> d
   -> Either DecorateError d'
 decorating f d = do
   (numDat, nd) <- runDocNumbering d
   td           <- runDocTitling f nd
+  let _ = runDocLinking td
   runDocReferencing (getRefEnv numDat) td
 
 -- * Rendering

@@ -5,6 +5,7 @@
 
 module Text.Scriba.Element.PageMark where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -24,6 +25,7 @@ newtype PageMark = PageMark
 instance Numbering PageMark
 instance Referencing PageMark PageMark
 instance Titling a PageMark
+instance Linking PageMark
 
 pageMarkToText :: PageMark -> [Text]
 pageMarkToText (PageMark t) = [t]

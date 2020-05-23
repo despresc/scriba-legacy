@@ -8,6 +8,7 @@
 
 module Text.Scriba.Element.Emph where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -21,7 +22,7 @@ import qualified Text.Blaze.Html5              as Html
 newtype Emph i = Emph
   { getEmph :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a)
+    deriving anyclass (Numbering, Titling a, Linking)
 
 instance Referencing a b => Referencing (Emph a) (Emph b)
 

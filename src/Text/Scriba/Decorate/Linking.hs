@@ -8,41 +8,20 @@
 
 module Text.Scriba.Decorate.Linking where
 
-import           Text.Scriba.Counters
+import Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 
 -- TODO: a common module for unzips and such?
 
-import           Control.Applicative            ( liftA2 )
-import           Control.Monad                  ( join )
-import           Control.Monad.Except           ( Except
-                                                , runExcept
-                                                , MonadError(..)
-                                                )
 import           Control.Monad.State.Strict     ( State
-                                                , MonadState(..)
-                                                , gets
                                                 , modify
                                                 )
 import qualified Control.Monad.State.Strict    as State
 import           Data.Foldable                  ( traverse_
-                                                , for_
                                                 )
-import           Data.Digits                    ( digits )
-import           Data.Map.Strict                ( Map )
-import qualified Data.Map.Strict               as M
-import           Data.Maybe                     ( fromMaybe
-                                                , mapMaybe
-                                                , catMaybes
-                                                )
-import           Data.Set                       ( Set )
-import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
-import qualified Data.Text                     as T
-import           Data.Traversable               ( for )
 import           Data.Void
 import           GHC.Generics
-import           Text.Numeral.Roman
 
 {- TODO:
 
@@ -61,6 +40,9 @@ addLinkDatum x (LinkData y) = LinkData $ x : y
 newtype LinkM a = LinkM
   { unNumberM :: State LinkData a
   } deriving (Functor, Applicative, Monad)
+
+runLinkM :: LinkM a -> LinkData
+runLinkM = ($ (LinkData [])) . State.execState . unNumberM
 
 class GLinking f where
   glinking :: f a -> LinkM ()
@@ -96,6 +78,20 @@ instance Linking a => Linking [a] where
 instance Linking Text where
   linking _ = pure ()
 instance Linking Identifier
+instance Linking ElemNumber
+instance Linking Bool
+instance Linking ContainerName
+instance Linking UsedNumberConfig where
+  linking _ = pure ()
+instance Linking Void where
+  linking = absurd
 
-tellDatum :: LinkDatum -> LinkM ()
-tellDatum = LinkM . modify . addLinkDatum
+tellLinkDatum :: LinkDatum -> LinkM ()
+tellLinkDatum = LinkM . modify . addLinkDatum
+
+tellLinkNumbered :: Maybe Identifier -> Maybe ElemNumber -> LinkM ()
+tellLinkNumbered mi (Just en) = tellLinkDatum $ LinkNumber mi en
+tellLinkNumbered mi _ = tellLinkGen mi
+
+tellLinkGen :: Maybe Identifier -> LinkM ()
+tellLinkGen = traverse_ $ tellLinkDatum . LinkBare

@@ -3,6 +3,13 @@
 - Move `Element.Memoir.Heading` to its own module. Also consider
   absolute header definitions, since there is going to be a set
   pagination structure with our restricted sections.
+- Re-export `Decorate/*` from a new `Decorate.hs`, then fix all the
+  element imports.
+- rewrite `Markup.getRefEnv` to take in linking data, then remove the
+  numbering reporting from `Numbering`.
+- Add an `Element/ElemNumber` module and put a common source number
+  parser in it (and take out the individual ones from the numbered
+  elements).
 - Add `SecAttrs` to `Element.Memoir.FrontMatter`
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
@@ -16,7 +23,7 @@
 - Fix element numbering configuration in light of the restricted
   sectioning
 - Document `Intermediate/`
-- Document `Decorate/`
+- Document `Decorate/`, observing that linking _must_ come after titling. 
 - Document `Element/`
 - Document `Markup/`
 
@@ -543,6 +550,8 @@ CSS has :lang selector, so we can have styles based on language
 
 - for `physPage`: identifiers for different sources of page images?
   especially relevant for combined editions.
+
+- add automatic physPage identifiers for linking purposes.
 
 - paragraph numbering? Very helpful for digitized editions that are
   not expected to change much. Would insert a pilcrow link anchor, I

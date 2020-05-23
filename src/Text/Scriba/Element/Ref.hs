@@ -7,6 +7,7 @@
 module Text.Scriba.Element.Ref where
 
 import           Text.Scriba.Counters
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -26,6 +27,7 @@ newtype SourceRef = SourceRef
 
 instance Numbering SourceRef
 instance Titling i SourceRef
+instance Linking SourceRef
 
 -- TODO: may need more renditional information here, from Numbering and
 -- Referencing, like relative position of the number and prefix.
@@ -43,6 +45,7 @@ data Ref = Ref
 instance Numbering Ref
 instance Titling a Ref
 instance Referencing Ref Ref
+instance Linking Ref
 
 -- TODO: Not sure what to do here.
 refToText :: (a -> [Text]) -> Ref -> [Text]

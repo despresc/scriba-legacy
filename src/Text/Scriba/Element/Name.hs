@@ -8,6 +8,7 @@
 
 module Text.Scriba.Element.Name where
 
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -22,7 +23,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype Name i = Name
   { getName :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a)
+    deriving anyclass (Numbering, Titling a, Linking)
 
 instance Referencing a b => Referencing (Name a) (Name b)
 

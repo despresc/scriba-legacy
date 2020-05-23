@@ -8,6 +8,7 @@
 module Text.Scriba.Element.TitleComponent where
 
 import           Text.Scriba.Decorate.Common
+import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
 import           Text.Scriba.Decorate.Titling
@@ -29,14 +30,14 @@ data TitlePart
   | TitleNumber
   | TitleSep
   | TitleBody
-  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a, Linking)
 
 instance Referencing TitlePart TitlePart
 
 -- A title component, with before and after components.
 data TitleComponent i
   = TitleComponent TitlePart [i] [i] [i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Linking)
 
 instance Referencing a b => Referencing (TitleComponent a) (TitleComponent b)
 
