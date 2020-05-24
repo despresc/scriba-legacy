@@ -5,21 +5,20 @@
   & mathMacros
     & Li|{`\mathit{Li}`}
 
-{% TODO: restore this once we have prefaces and frontmatter? Or just
-remove it and observe that it did exist in the editorial notes.
-
 # frontMatter
 
-## preface
+## foreword
 
 {physPage|671} Hierauf trug Hr. {name|Kummer} folgende von
 Hrn. {name|Riemann}, Correspondenten der Akademie, mittelst eines an
 den Sekretar Hrn. {name|Encke} gerichteten Schreibens vom 19. October
 d. J. eingesandte Mittheilung {title|über die Anzahl der Primzahlen
 unter einer gegebenen Größe} vor:
-%}
 
-# section
+
+# mainMatter
+
+## section
 
 Meinen Dank für die Auszeichnung, welche mir die Akademie durch die
 Aufnahme unter ihre Correspondenten hat zu Theil werden lassen, glaube

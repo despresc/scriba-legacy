@@ -10,7 +10,11 @@
   configuration of their container, so the rendering of `ref` may be
   surprising if one expects, e.g., the prefix of the container to be
   displayed. Also consider changing this so that that information _is_
-  saved.
+  saved. Also document that elements with source-defined numbers still
+  get numbered!
+- Fix the error message that is thrown on an unrecognized/unexpected
+  element, so that it preserves the presentation of the
+  element. Important for paragraphs and other sugar.
 - Add `SecAttrs` to `Element.Memoir.FrontMatter`
 - Add a `NodalAttrs` (or something like it) with plain text titles for
   sections, suitable for going in a url (for eventual

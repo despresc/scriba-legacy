@@ -275,11 +275,12 @@ pFrontMatter pBlk =
   whileMatchTy "frontMatter" $ allContentOf $ asNode $ pFrontMatterSec pBlk
 
 pFrontMatterSec :: Scriba Node (b i) -> Scriba Element (FrontMatter b i)
-pFrontMatterSec pBlk = pIntro <|> pDedication
+pFrontMatterSec pBlk = pIntro <|> pDedication <|> pForeword
  where
   pSectionlike t f = fmap f $ whileMatchTy t $ allContentOf pBlk
   pIntro      = pSectionlike "introduction" Introduction
   pDedication = pSectionlike "dedication" Dedication
+  pForeword   = pSectionlike "foreword" Foreword
 
 pMainMatter
   :: Scriba Node (b i) -> Scriba Node i -> Scriba Element [Section b i]
