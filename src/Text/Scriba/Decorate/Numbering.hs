@@ -25,8 +25,6 @@ where
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 
--- TODO: a common module for unzips and such?
-
 import           Control.Applicative            ( liftA2 )
 import           Control.Monad                  ( join )
 import           Control.Monad.Except           ( Except

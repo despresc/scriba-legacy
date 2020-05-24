@@ -3,15 +3,12 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Text.Scriba.Decorate.Linking where
 
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
-
--- TODO: a common module for unzips and such?
 
 import           Control.Monad.State.Strict     ( State
                                                 , modify
@@ -41,7 +38,7 @@ newtype LinkM a = LinkM
   } deriving (Functor, Applicative, Monad)
 
 runLinkM :: LinkM a -> LinkData
-runLinkM = ($ (LinkData [])) . State.execState . unNumberM
+runLinkM = ($ LinkData []) . State.execState . unNumberM
 
 class GLinking f where
   glinking :: f a -> LinkM ()

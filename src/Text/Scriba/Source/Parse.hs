@@ -253,7 +253,7 @@ cSpace = void $ MP.takeWhileP Nothing isSpace
 
 -- | Consumes any white space character other than a newline.
 cLineSpace :: Parser ()
-cLineSpace = void $ pLineSpace
+cLineSpace = void pLineSpace
 
 -- | Parse one or more line space characters.
 pLineSpace1 :: Parser Text
@@ -453,8 +453,7 @@ pParaWhite = MP.label "white space" $ pParaIndent <|> pLS
  where
   pLS = do
     sp <- MP.getSourcePos
-    t  <- pLineSpace1
-    pure $ InlineWhite sp t
+    InlineWhite sp <$> pLineSpace1
 
 -- | Parse line space, then an optional sequence of blank lines
 -- followed by properly-indented content.

@@ -36,7 +36,7 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (MixedBody b i) where
     Html.div Html.! HtmlA.class_ "body" <$> RH.render blks
 
 pBlockBody :: Scriba Node (b i) -> Scriba [Node] [b i]
-pBlockBody pBlk = remaining pBlk
+pBlockBody = remaining
 
 pInlineBody :: Scriba Node a -> Scriba [Node] [a]
 pInlineBody = remaining

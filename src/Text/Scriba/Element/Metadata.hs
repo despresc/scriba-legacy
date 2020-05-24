@@ -1,33 +1,4 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DerivingStrategies #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE StandaloneDeriving #-}
-
 module Text.Scriba.Element.Metadata where
-
-import           Text.Scriba.Decorate
-import           Text.Scriba.Element.DocAttrs
-import           Text.Scriba.Element.Identifier ( pIdent )
-import           Text.Scriba.Element.TitleComponent
-import           Text.Scriba.Intermediate
-import qualified Text.Scriba.Render.Html       as RH
-
-import           Control.Monad                  ( join )
-import           Control.Monad.Reader           ( asks )
-import           Control.Monad.State            ( gets )
-import           Data.Functor                   ( (<&>) )
-import qualified Data.Map.Strict               as M
-import           Data.Maybe                     ( fromMaybe )
-import           Data.Text                      ( Text )
-import qualified Data.Text                     as T
-import           GHC.Generics                   ( Generic )
-import qualified Text.Blaze.Html5              as Html
-import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {-
 
