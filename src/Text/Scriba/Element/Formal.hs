@@ -7,11 +7,7 @@
 
 module Text.Scriba.Element.Formal where
 
-import           Text.Scriba.Decorate.Common
-import           Text.Scriba.Decorate.Linking
-import           Text.Scriba.Decorate.Numbering
-import           Text.Scriba.Decorate.Referencing
-import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Decorate
 import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Element.Identifier

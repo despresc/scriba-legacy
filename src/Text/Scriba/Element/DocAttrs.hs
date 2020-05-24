@@ -10,11 +10,7 @@
 module Text.Scriba.Element.DocAttrs where
 
 import           Text.Scriba.Counters
-import           Text.Scriba.Decorate.Common
-import           Text.Scriba.Decorate.Linking
-import           Text.Scriba.Decorate.Numbering
-import           Text.Scriba.Decorate.Referencing
-import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Decorate
 import           Text.Scriba.Element.Str        ( HasStr(..) )
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH

@@ -11,11 +11,7 @@
 
 module Text.Scriba.Element.Memoir where
 
-import           Text.Scriba.Decorate.Common
-import           Text.Scriba.Decorate.Linking
-import           Text.Scriba.Decorate.Numbering
-import           Text.Scriba.Decorate.Referencing
-import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Decorate
 import           Text.Scriba.Element.DocAttrs
 import           Text.Scriba.Element.Identifier ( pIdent )
 import           Text.Scriba.Element.Str        ( HasStr )

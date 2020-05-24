@@ -15,7 +15,12 @@
   saved.
 - Add `SecAttrs` to `Element.Memoir.FrontMatter`
 - Add a `NodalAttrs` (or something like it) with plain text titles for
-  sections, suitable for going in a url (for eventual pagination).
+  sections, suitable for going in a url (for eventual
+  pagination). Remember, for pagination I need to: determine which
+  sections should be nodes; figure out the url names of the relevant
+  sections; report the page on which each element occurs in a document
+  in the linking step; fix all the links so that they point to the
+  right places.
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
