@@ -3,8 +3,6 @@
 - Move `Element.Memoir.Heading` to its own module. Also consider
   absolute header definitions, since there is going to be a set
   pagination structure with our restricted sections.
-- Re-export `Decorate/*` from a new `Decorate.hs`, then fix all the
-  element imports.
 - Add an `Element/ElemNumber` module and put a common source number
   parser in it (and take out the individual ones from the numbered
   elements).
