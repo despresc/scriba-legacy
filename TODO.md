@@ -5,7 +5,8 @@
   pagination structure with our restricted sections.
 - Add an `Element/ElemNumber` module and put a common source number
   parser in it (and take out the individual ones from the numbered
-  elements).
+  elements). Or, add a parser for it to `Decorate/Common`, and move
+  the `Element/Identifier` parser there too.
 - Document that source-defined numbers do not save the numbering
   configuration of their container, so the rendering of `ref` may be
   surprising if one expects, e.g., the prefix of the container to be

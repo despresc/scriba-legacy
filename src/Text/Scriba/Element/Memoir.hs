@@ -15,6 +15,7 @@ import           Text.Scriba.Decorate
 import           Text.Scriba.Element.DocAttrs
 import           Text.Scriba.Element.Identifier ( pIdent )
 import           Text.Scriba.Element.Str        ( HasStr )
+import           Text.Scriba.Element.Title      ( Title(..) )
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH

@@ -12,8 +12,8 @@ module Text.Scriba.Element.DocAttrs where
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate
 import           Text.Scriba.Element.Str        ( HasStr(..) )
+import           Text.Scriba.Element.Title      ( Title(..) )
 import           Text.Scriba.Intermediate
-import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad                  ( join
                                                 , unless
@@ -31,8 +31,6 @@ import           Data.Set                       ( Set )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
-import qualified Text.Blaze.Html5              as Html
-import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 {- TODO:
 
@@ -40,21 +38,6 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
   need to be bundled and put in a separate module.
 
 -}
-
--- TODO: Might want this to be in its own module? Or in with the title
--- parts. Same with Heading.
-newtype Title i = Title
-  { titleBody :: [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Linking, Titling a)
-
-instance Referencing a b => Referencing (Title a) (Title b)
-
--- Add a sectionTitle class?
-instance RH.Render i => RH.Render (Title i) where
-  render (Title t) = do
-    t' <- RH.render t
-    pure $ Html.span Html.! HtmlA.class_ "title" $ t'
 
 -- TODO: should I mapKey the docNumberStyle here?
 
