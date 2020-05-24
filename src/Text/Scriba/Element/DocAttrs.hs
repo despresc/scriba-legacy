@@ -103,11 +103,9 @@ defaultNumberState da = NumberState initCounters
                                     []
                                     (docCounterRel da)
                                     (docElemCounterRel da)
-                                    mempty
   where initCounters = docCounterRel da $> 1
 
-runDocNumbering
-  :: (HasDocAttrs j d, Numbering d) => d -> Either DecorateError (NumberData, d)
+runDocNumbering :: (HasDocAttrs j d, Numbering d) => d -> Either DecorateError d
 runDocNumbering d =
   flip runNumberM (defaultNumberState $ getDocAttrs d) $ numbering d
 

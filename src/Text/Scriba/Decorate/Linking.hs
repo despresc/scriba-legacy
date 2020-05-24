@@ -8,7 +8,7 @@
 
 module Text.Scriba.Decorate.Linking where
 
-import Text.Scriba.Counters
+import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 
 -- TODO: a common module for unzips and such?
@@ -17,8 +17,7 @@ import           Control.Monad.State.Strict     ( State
                                                 , modify
                                                 )
 import qualified Control.Monad.State.Strict    as State
-import           Data.Foldable                  ( traverse_
-                                                )
+import           Data.Foldable                  ( traverse_ )
 import           Data.Text                      ( Text )
 import           Data.Void
 import           GHC.Generics
@@ -89,9 +88,9 @@ instance Linking Void where
 tellLinkDatum :: LinkDatum -> LinkM ()
 tellLinkDatum = LinkM . modify . addLinkDatum
 
-tellLinkNumbered :: Maybe Identifier -> Maybe ElemNumber -> LinkM ()
-tellLinkNumbered mi (Just en) = tellLinkDatum $ LinkNumber mi en
-tellLinkNumbered mi _ = tellLinkGen mi
+tellLinkNumbered :: Text -> Maybe Identifier -> Maybe ElemNumber -> LinkM ()
+tellLinkNumbered t mi (Just en) = tellLinkDatum $ LinkNumber mi t en
+tellLinkNumbered t mi _         = tellLinkGen t mi
 
-tellLinkGen :: Maybe Identifier -> LinkM ()
-tellLinkGen = traverse_ $ tellLinkDatum . LinkBare
+tellLinkGen :: Text -> Maybe Identifier -> LinkM ()
+tellLinkGen t = traverse_ $ tellLinkDatum . flip LinkBare t

@@ -32,12 +32,12 @@ data MathItem = MathItem
 instance Referencing MathItem MathItem
 instance Titling i MathItem
 instance Linking MathItem where
-  linking (MathItem mi mn _ _) = tellLinkNumbered mi mn
+  linking (MathItem mi mn _ _) = tellLinkNumbered "mjx-eqn-" mi mn
 
 -- TODO: may need more complex numbering behaviour here.
 instance Numbering MathItem where
   numbering x@(MathItem _ Nothing False _) = pure x
-  numbering (MathItem mId mnum t cont) = bracketNumbering (Just "formula") mId
+  numbering (MathItem mId mnum t cont) = bracketNumbering (Just "formula")
     $ \mnumgen -> pure $ MathItem mId (mnum <|> mnumgen) t cont
 
 mathItemToText :: MathItem -> [Text]

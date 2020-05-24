@@ -36,7 +36,7 @@ data OlistItem b i = OlistItem
 
 instance (Linking i, Linking (b i)) => Linking (OlistItem b i) where
   linking (OlistItem mi mnum c) = do
-    tellLinkNumbered mi mnum
+    tellLinkNumbered "" mi mnum
     linking c
 
 -- TODO: not the best. We could have a "type inference" pass that
@@ -48,7 +48,7 @@ instance (Numbering (b i), Numbering i) => Numbering (List b i) where
     Olist <$> traverse numberItem items
    where
     numberItem (OlistItem mId mnum cont) =
-      bracketNumbering (Just "item:olist") mId $ \mnumgen -> do
+      bracketNumbering (Just "item:olist") $ \mnumgen -> do
         cont' <- numbering cont
         pure $ OlistItem mId (mnum <|> mnumgen) cont'
   numbering (Ulist items) = Ulist <$> traverse numbering items

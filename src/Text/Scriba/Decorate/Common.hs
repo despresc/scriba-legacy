@@ -65,7 +65,7 @@ data ElemNumber
 
 elemNumberNum :: ElemNumber -> Text
 elemNumberNum (NumberAuto _ _ t) = t
-elemNumberNum (NumberSource t)   = t
+elemNumberNum (NumberSource t  ) = t
 
 -- TODO: add more
 data LocalNumberStyle
@@ -114,10 +114,17 @@ data Surround a = Surround
   , surroundAfter :: [a]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
+-- The Text is the reference prefix that ought to be used for the
+-- identifier. Only useful for mathjax equations, and that might be
+-- changing anyway.
 data LinkDatum
-  = LinkNumber (Maybe Identifier) ElemNumber
-  | LinkBare Identifier
+  = LinkNumber (Maybe Identifier) Text ElemNumber
+  | LinkBare Identifier Text
   deriving (Eq, Ord, Show, Read, Generic)
+
+linkDatumPrefix :: LinkDatum -> Text
+linkDatumPrefix (LinkNumber _ t _) = t
+linkDatumPrefix (LinkBare _ t    ) = t
 
 -- | Numbering data to be gathered from the AST.
 data NumberDatum = NumberDatum

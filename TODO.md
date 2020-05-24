@@ -5,11 +5,14 @@
   pagination structure with our restricted sections.
 - Re-export `Decorate/*` from a new `Decorate.hs`, then fix all the
   element imports.
-- rewrite `Markup.getRefEnv` to take in linking data, then remove the
-  numbering reporting from `Numbering`.
 - Add an `Element/ElemNumber` module and put a common source number
   parser in it (and take out the individual ones from the numbered
   elements).
+- Document that source-defined numbers do not save the numbering
+  configuration of their container, so the rendering of `ref` may be
+  surprising if one expects, e.g., the prefix of the container to be
+  displayed. Also consider changing this so that that information _is_
+  saved.
 - Add `SecAttrs` to `Element.Memoir.FrontMatter`
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the

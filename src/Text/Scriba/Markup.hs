@@ -38,6 +38,7 @@ import           Data.Aeson                     ( ToJSON(..) )
 import qualified Data.Aeson                    as Aeson
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
+import           Data.Maybe                     ( mapMaybe )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import qualified Data.Text.Lazy                as TL
@@ -219,9 +220,13 @@ parseMemDoc = fmap snd . runScriba
 
 -- * Decorating the document
 
-getRefEnv :: NumberData -> RefData
-getRefEnv (NumberData d) = RefData $ M.fromList $ go <$> d
-  where go (NumberDatum i cn nc num) = (i, (cn, nc, num))
+getRefEnv :: LinkData -> RefData
+getRefEnv (LinkData d) = RefData $ M.fromList $ mapMaybe go d
+ where
+  go (LinkNumber mi t en) = do
+    i <- mi
+    pure (i, (t, en))
+  go LinkBare{} = Nothing
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
@@ -255,9 +260,9 @@ decorating
   -> d
   -> Either DecorateError d'
 decorating f d = do
-  (numDat, nd) <- runDocNumbering d
-  td           <- runDocTitling f nd
-  let _ = runDocLinking td
+  nd <- runDocNumbering d
+  td <- runDocTitling f nd
+  let numDat = runDocLinking td
   runDocReferencing (getRefEnv numDat) td
 
 -- * Rendering

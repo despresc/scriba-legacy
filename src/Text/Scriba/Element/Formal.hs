@@ -56,7 +56,7 @@ data Formal b i = Formal
 
 instance (Linking i, Linking (b i)) => Linking (Formal b i) where
   linking (Formal _ mi mnum mt mn mts c mconc) = do
-    tellLinkNumbered mi mnum
+    tellLinkNumbered "" mi mnum
     linking mt
     linking mn
     linking mts
@@ -111,7 +111,7 @@ pFormal pBody pInl = whileMatchTy "formalBlock" $ do
 -- number. Should have config for that sort of thing.
 instance (Numbering (b i), Numbering i) => Numbering (Formal b i) where
   numbering (Formal mty mId mnum ti note tsep cont concl) =
-    bracketNumbering mty mId $ \mnumgen -> do
+    bracketNumbering mty $ \mnumgen -> do
       ti'    <- numbering ti
       note'  <- numbering note
       tsep'  <- numbering tsep
@@ -134,11 +134,12 @@ instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Form
               tisep    = fconfTitleSep fconf
               template = fconfTitleTemplate fconf
           in  ( tisep
-              , runTemplate template
-                            FormalTemplate
-                            Nothing
-                            ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
-                            mnote
+              , runTemplate
+                template
+                FormalTemplate
+                Nothing
+                ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
+                mnote
               , concl
               )
         Nothing -> (Nothing, Nothing, Nothing)

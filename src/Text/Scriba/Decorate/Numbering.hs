@@ -18,7 +18,6 @@ module Text.Scriba.Decorate.Numbering
   , NumberState(..)
   , NumberM
   , runNumberM
-  , NumberData(..)
   , NumberDatum(..)
   )
 where
@@ -148,15 +147,7 @@ data NumberState = NumberState
   , nsParentPath  :: ContainerPath   -- ^ The full, unfiltered path of the parent container.
   , nsCounterRel :: Map CounterName (Set CounterName)
   , nsContainerData :: Map ContainerName (CounterName, NumberConfig)
-  , nsNumberData :: NumberData
   } deriving (Eq, Ord, Show)
-
-newtype NumberData = NumberData
-  { getNumberData :: [NumberDatum]
-  } deriving (Eq, Ord, Show, Semigroup, Monoid)
-
-addNumberDatum :: NumberDatum -> NumberData -> NumberData
-addNumberDatum x (NumberData y) = NumberData $ x : y
 
 newtype NumberM a = NumberM
   { unNumberM :: StateT NumberState (Except DecorateError) a
@@ -223,11 +214,8 @@ instance Numbering ContainerName
 instance Numbering UsedNumberConfig
 instance Numbering ElemNumber
 
-runNumberM :: NumberM a -> NumberState -> Either DecorateError (NumberData, a)
-runNumberM = go . State.runStateT . unNumberM
- where
-  go f = fmap retrieve . runExcept . f
-  retrieve (a, ns) = (nsNumberData ns, a)
+runNumberM :: NumberM a -> NumberState -> Either DecorateError a
+runNumberM = go . State.evalStateT . unNumberM where go f = runExcept . f
 
 -- the LowerAlpha implements the "alphabetic" CSS style, for reference
 renderCounter :: LocalNumberStyle -> Int -> Text
@@ -342,22 +330,14 @@ restoreDependants = traverse_ $ uncurry setCounter
 setParentPath :: ContainerPath -> NumberM ()
 setParentPath p = modify $ \s -> s { nsParentPath = p }
 
-tellNumberDatum :: NumberDatum -> NumberM ()
-tellNumberDatum x =
-  modify $ \s -> s { nsNumberData = addNumberDatum x $ nsNumberData s }
-
 -- TODO: this does not respect manual numbering. I'm not sure what
 -- should be done in that case. I suppose that we could still look up
 -- its numbering data and register it, if it exists. We'll need to
 
 -- come up with some kind of ref configuration/sensible defualt
 -- fallbacks for manually numbered containers.
-bracketNumbering
-  :: Maybe Text
-  -> Maybe Identifier
-  -> (Maybe ElemNumber -> NumberM a)
-  -> NumberM a
-bracketNumbering (Just typ) mId f = do
+bracketNumbering :: Maybe Text -> (Maybe ElemNumber -> NumberM a) -> NumberM a
+bracketNumbering (Just typ) f = do
   let containername = ContainerName typ
   mcontainerdata <- lookupContainerData containername
   mnumdata <- fmap join $ for mcontainerdata $ \(countername, numconf) -> do
@@ -372,11 +352,6 @@ bracketNumbering (Just typ) mId f = do
                                                countername
                                                n
       setParentPath newPath
-      for_ mId $ \ident -> tellNumberDatum $ NumberDatum
-        ident
-        containername
-        (UsedNumberConfig lsty (ncRefPrefix numconf) (ncRefSep numconf))
-        fullNum
       let ndat = NumberAuto
             containername
             (UsedNumberConfig lsty (ncRefPrefix numconf) (ncRefSep numconf))
@@ -388,7 +363,7 @@ bracketNumbering (Just typ) mId f = do
     setParentPath oldPath
     restoreDependants oldDependants
   pure a
-bracketNumbering Nothing _ f = f Nothing
+bracketNumbering Nothing f = f Nothing
 
 {- TODO:
 

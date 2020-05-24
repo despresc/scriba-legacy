@@ -6,7 +6,7 @@
 
 module Text.Scriba.Element.Ref where
 
-import           Text.Scriba.Counters
+import           Text.Scriba.Decorate.Common
 import           Text.Scriba.Decorate.Linking
 import           Text.Scriba.Decorate.Numbering
 import           Text.Scriba.Decorate.Referencing
@@ -37,9 +37,8 @@ instance Linking SourceRef
 -- identifiers at all? Probably.
 data Ref = Ref
   { refTarget :: Identifier
-  , refContainer :: ContainerName
-  , refNumberConfig :: UsedNumberConfig
-  , refNumber :: Text
+  , refTargetPrefix :: Text
+  , refNumber :: ElemNumber
   } deriving (Eq, Ord, Show, Read, Generic)
 
 instance Numbering Ref
@@ -60,24 +59,25 @@ pSourceRef = whileMatchTy "ref" $ do
 
 resolveRef :: SourceRef -> RefM Ref
 resolveRef (SourceRef i) = do
-  (cn, nc, num) <- lookupRefData i
-  pure $ Ref i cn nc num
+  (t, en) <- lookupRefData i
+  pure $ Ref i t en
 
 -- TODO: wrap separator?
 -- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
 instance RH.Render Ref where
-  render (Ref (Identifier lab) containername (UsedNumberConfig _ mpref msep) num)
-    = pure
+  render (Ref (Identifier lab) pref enum) =
+    pure
       $      Html.a
       Html.! HtmlA.class_ "ref"
-      Html.! HtmlA.href (Html.toValue refVal)
-      $      do
-               RH.renderMaybe (Html.toHtml <$> mpref) $ Html.span Html.! HtmlA.class_
-                 "prefix"
-               RH.renderMaybe (Html.toHtml <$> msep) id
-               Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
+      Html.! HtmlA.href (Html.toValue $ "#" <> pref <> lab)
+      $      body
    where
-    refVal = case getContainerName containername of
-      "formula" -> "#mjx-eqn-" <> lab
-      _         -> "#" <> lab
+    body = case enum of
+      NumberAuto _ (UsedNumberConfig _ mpref msep) num -> do
+        RH.renderMaybe (Html.toHtml <$> mpref) $ Html.span Html.! HtmlA.class_
+          "prefix"
+        RH.renderMaybe (Html.toHtml <$> msep) id
+        Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
+      NumberSource num ->
+        Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num

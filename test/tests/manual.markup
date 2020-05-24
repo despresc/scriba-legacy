@@ -1851,15 +1851,16 @@ MemDoc
                                     Ref
                                       { refTarget =
                                           Identifier { getIdentifier = "displayFormulaExample" }
-                                      , refContainer =
-                                          ContainerName { getContainerName = "formula" }
-                                      , refNumberConfig =
-                                          UsedNumberConfig
-                                            { uncStyle = Decimal
-                                            , uncRefPrefix = Just "eqn."
-                                            , uncRefSep = Just " "
-                                            }
-                                      , refNumber = "1.4.1"
+                                      , refTargetPrefix = "mjx-eqn-"
+                                      , refNumber =
+                                          NumberAuto
+                                            ContainerName { getContainerName = "formula" }
+                                            UsedNumberConfig
+                                              { uncStyle = Decimal
+                                              , uncRefPrefix = Just "eqn."
+                                              , uncRefSep = Just " "
+                                              }
+                                            "1.4.1"
                                       }
                                 , Istr Str { getStr = " " }
                                 , Istr Str { getStr = "with" }
@@ -2506,15 +2507,16 @@ MemDoc
                                 , Iref
                                     Ref
                                       { refTarget = Identifier { getIdentifier = "thirdGathered" }
-                                      , refContainer =
-                                          ContainerName { getContainerName = "formula" }
-                                      , refNumberConfig =
-                                          UsedNumberConfig
-                                            { uncStyle = Decimal
-                                            , uncRefPrefix = Just "eqn."
-                                            , uncRefSep = Just " "
-                                            }
-                                      , refNumber = "2.1.2"
+                                      , refTargetPrefix = "mjx-eqn-"
+                                      , refNumber =
+                                          NumberAuto
+                                            ContainerName { getContainerName = "formula" }
+                                            UsedNumberConfig
+                                              { uncStyle = Decimal
+                                              , uncRefPrefix = Just "eqn."
+                                              , uncRefSep = Just " "
+                                              }
+                                            "2.1.2"
                                       }
                                 , Istr Str { getStr = ")" }
                                 , Istr Str { getStr = " " }
@@ -3011,15 +3013,16 @@ MemDoc
                                 , Iref
                                     Ref
                                       { refTarget = Identifier { getIdentifier = "elem-ref-nest" }
-                                      , refContainer =
-                                          ContainerName { getContainerName = "item:olist" }
-                                      , refNumberConfig =
-                                          UsedNumberConfig
-                                            { uncStyle = LowerAlpha
-                                            , uncRefPrefix = Just "item"
-                                            , uncRefSep = Just " "
-                                            }
-                                      , refNumber = "1.a"
+                                      , refTargetPrefix = ""
+                                      , refNumber =
+                                          NumberAuto
+                                            ContainerName { getContainerName = "item:olist" }
+                                            UsedNumberConfig
+                                              { uncStyle = LowerAlpha
+                                              , uncRefPrefix = Just "item"
+                                              , uncRefSep = Just " "
+                                              }
+                                            "1.a"
                                       }
                                 , Istr Str { getStr = ")" }
                                 , Istr Str { getStr = " " }
@@ -3174,15 +3177,16 @@ MemDoc
                                 , Iref
                                     Ref
                                       { refTarget = Identifier { getIdentifier = "elem-ref" }
-                                      , refContainer =
-                                          ContainerName { getContainerName = "subsection" }
-                                      , refNumberConfig =
-                                          UsedNumberConfig
-                                            { uncStyle = Decimal
-                                            , uncRefPrefix = Just "\167"
-                                            , uncRefSep = Nothing
-                                            }
-                                      , refNumber = "2.4"
+                                      , refTargetPrefix = ""
+                                      , refNumber =
+                                          NumberAuto
+                                            ContainerName { getContainerName = "subsection" }
+                                            UsedNumberConfig
+                                              { uncStyle = Decimal
+                                              , uncRefPrefix = Just "\167"
+                                              , uncRefSep = Nothing
+                                              }
+                                            "2.4"
                                       }
                                 , Istr Str { getStr = "," }
                                 , Istr Str { getStr = " " }

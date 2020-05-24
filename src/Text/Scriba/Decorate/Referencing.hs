@@ -54,10 +54,10 @@ import           Data.Void                      ( Void
                                                 )
 import           GHC.Generics
 
--- Resolve references with accumulated numbering data
-
+-- Resolve references with accumulated numbering data. The Text is for
+-- the link prefix, if applicable.
 newtype RefData = RefData
-  { getRefData :: Map Identifier (ContainerName, UsedNumberConfig, Text)
+  { getRefData :: Map Identifier (Text, ElemNumber)
   } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: may want this to time travel, eventually
@@ -69,7 +69,7 @@ runRefM :: RefM a -> RefData -> Either DecorateError a
 runRefM = go . runReaderT . getRefM where go f = runExcept . f
 
 -- TODO: when errors get better, add positional information.
-lookupRefData :: Identifier -> RefM (ContainerName, UsedNumberConfig, Text)
+lookupRefData :: Identifier -> RefM (Text, ElemNumber)
 lookupRefData i = do
   mdat <- asks $ Map.lookup i . getRefData
   case mdat of
@@ -79,7 +79,7 @@ lookupRefData i = do
         $  DecorateError
         $  "identifier <"
         <> getIdentifier i
-        <> "> does not exist, but was referenced"
+        <> "> does not have defined numbering data, but was referenced"
 
 class GReferencing f g where
   greferencing :: f a -> RefM (g a)

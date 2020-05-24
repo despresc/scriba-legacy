@@ -118,7 +118,7 @@ data SecAttrs i = SecAttrs
 
 instance Linking i => Linking (SecAttrs i) where
   linking (SecAttrs mi _ tf mn) = do
-    tellLinkNumbered mi mn
+    tellLinkNumbered "" mi mn
     linking tf
 
 -- | A 'Section' is a major document division in the main matter. It
@@ -194,7 +194,7 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Subs
 
 instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
   numbering (Section (SecAttrs mId tbody tfull mnum) pre child) =
-    bracketNumbering (Just "section") mId $ \mnumgen -> do
+    bracketNumbering (Just "section") $ \mnumgen -> do
       tbody' <- numbering tbody
       tfull' <- numbering tfull
       pre'   <- numbering pre
@@ -203,7 +203,7 @@ instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
 
 instance (Numbering (b i), Numbering i) => Numbering (Subsection b i) where
   numbering (Subsection (SecAttrs mId tbody tfull mnum) c) =
-    bracketNumbering (Just "subsection") mId $ \mnumgen -> do
+    bracketNumbering (Just "subsection") $ \mnumgen -> do
       tbody' <- numbering tbody
       tfull' <- numbering tfull
       c'     <- numbering c
