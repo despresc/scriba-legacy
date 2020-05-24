@@ -14,6 +14,8 @@
   displayed. Also consider changing this so that that information _is_
   saved.
 - Add `SecAttrs` to `Element.Memoir.FrontMatter`
+- Add a `NodalAttrs` (or something like it) with plain text titles for
+  sections, suitable for going in a url (for eventual pagination).
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
