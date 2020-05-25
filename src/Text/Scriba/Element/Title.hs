@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -17,7 +18,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype Title i = Title
   { titleBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Linking, Titling a)
+    deriving anyclass (Numbering, Gathering note, Titling a)
 
 instance Referencing a b => Referencing (Title a) (Title b)
 

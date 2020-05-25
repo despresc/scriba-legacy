@@ -13,6 +13,9 @@
   displayed. Also consider changing this so that that information _is_
   saved. Also document that elements with source-defined numbers still
   get numbered!
+- Guarantee identifier uniqueness in a document by modifying
+  `Gathering` to check for the presence of identifiers before adding
+  them to the map.
 - Fix the error message that is thrown on an unrecognized/unexpected
   element, so that it preserves the presentation of the
   element. Important for paragraphs and other sugar.
@@ -382,8 +385,6 @@ various aspects of it should be improved:
   `SourcePos`? Or modify that error so that a description can be
   substituted for a source position.
 
-- Guarantee identifier uniqueness in the document.
-
 - Possibly unify element type configuration, so that you would
   configure a `theorem` according to its possible source presentations
   (as a formal block, list, section, if applicable). Not sure if this
@@ -570,6 +571,8 @@ CSS has :lang selector, so we can have styles based on language
   especially relevant for combined editions.
 
 - add automatic physPage identifiers for linking purposes.
+
+- footnote numbering configuration.
 
 - paragraph numbering? Very helpful for digitized editions that are
   not expected to change much. Would insert a pilcrow link anchor, I

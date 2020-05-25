@@ -18,7 +18,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data MixedBody b i
   = MixedInline [i]
   | MixedBlock [b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a, Linking)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a, Gathering note)
 
 instance ( Referencing (f a) (g b)
          , Referencing a b

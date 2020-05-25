@@ -19,7 +19,7 @@ import qualified Text.Blaze.Html5              as Html
 newtype Paragraph i = Paragraph
   { getParagraph :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Titling a, Linking)
+    deriving anyclass (Numbering, Titling a, Gathering note)
 
 instance Referencing a b => Referencing (Paragraph a) (Paragraph b)
 

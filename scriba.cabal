@@ -33,7 +33,7 @@ library
     Text.Scriba.Counters
     Text.Scriba.Decorate
     Text.Scriba.Decorate.Common
-    Text.Scriba.Decorate.Linking
+    Text.Scriba.Decorate.Gathering
     Text.Scriba.Decorate.Numbering
     Text.Scriba.Decorate.Referencing
     Text.Scriba.Decorate.Titling
@@ -51,6 +51,7 @@ library
     Text.Scriba.Element.Memoir
     Text.Scriba.Element.MixedBody
     Text.Scriba.Element.Name
+    Text.Scriba.Element.Note
     Text.Scriba.Element.PageMark
     Text.Scriba.Element.Paragraph
     Text.Scriba.Element.Quote

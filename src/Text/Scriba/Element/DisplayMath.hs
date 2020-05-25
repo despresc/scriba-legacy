@@ -27,8 +27,8 @@ data MathItem = MathItem
 
 instance Referencing MathItem MathItem
 instance Titling i MathItem
-instance Linking MathItem where
-  linking (MathItem mi mn _ _) = tellLinkNumbered "mjx-eqn-" mi mn
+instance Gathering note MathItem where
+  gathering (MathItem mi mn _ _) = tellLinkNumbered "mjx-eqn-" mi mn
 
 -- TODO: may need more complex numbering behaviour here.
 instance Numbering MathItem where
@@ -64,7 +64,7 @@ data DisplayMath
 
 instance Referencing DisplayMath DisplayMath
 instance Titling i DisplayMath
-instance Linking DisplayMath
+instance Gathering note DisplayMath
 
 -- TODO: have these be classes somewhere
 

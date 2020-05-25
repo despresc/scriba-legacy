@@ -25,11 +25,7 @@ module Text.Scriba.Markup
   )
 where
 
-import           Text.Scriba.Decorate.Common
-import           Text.Scriba.Decorate.Linking
-import           Text.Scriba.Decorate.Numbering
-import           Text.Scriba.Decorate.Referencing
-import           Text.Scriba.Decorate.Titling
+import           Text.Scriba.Decorate
 import           Text.Scriba.Element
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
@@ -55,7 +51,7 @@ data Block a
   | Bcode !BlockCode
   | Bpar !(Paragraph a)
   | Blist !(List Block a)
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Linking)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Gathering note)
 
 deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
 instance Referencing (Inline a) (Inline b) => Referencing (Block (Inline a)) (Block (Inline b))
@@ -75,7 +71,7 @@ data Inline a
   | Iref !Ref
   | ItitleComponent !(TitleComponent (Inline a))
   | Icontrol !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i, Linking)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i, Gathering note)
 
 instance HasStr (Inline a) where
   embedStr = Istr
@@ -103,7 +99,7 @@ instance Referencing InlineControl (Inline b) where
 newtype InlineControl
   = IcRef SourceRef
   deriving (Eq, Ord, Show, Read, Generic)
-  deriving anyclass (Numbering, Titling i, Linking)
+  deriving anyclass (Numbering, Titling i, Gathering note)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -220,8 +216,8 @@ parseMemDoc = fmap snd . runScriba
 
 -- * Decorating the document
 
-getRefEnv :: LinkData -> RefData
-getRefEnv (LinkData d) = RefData $ M.fromList $ mapMaybe go d
+getRefEnv :: GatherData note -> RefData
+getRefEnv (GatherData d _) = RefData $ M.fromList $ mapMaybe go d
  where
   go (LinkNumber mi t en) = do
     i <- mi
@@ -255,14 +251,19 @@ decorateMemDoc =
 
 decorating
   :: forall d d' j i
-   . (HasDocAttrs j d, Numbering d, Titling i d, Referencing d d', Linking d)
+   . ( HasDocAttrs j d
+     , Numbering d
+     , Titling i d
+     , Referencing d d'
+     , Gathering () d
+     )
   => (j -> i)
   -> d
   -> Either DecorateError d'
 decorating f d = do
   nd <- runDocNumbering d
   td <- runDocTitling f nd
-  let numDat = runDocLinking td
+  let numDat = runDocGathering td :: GatherData ()
   runDocReferencing (getRefEnv numDat) td
 
 -- * Rendering

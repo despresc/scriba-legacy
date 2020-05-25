@@ -22,7 +22,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 data List b i
   = Ulist [MixedBody b i]
   | Olist [OlistItem b i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Linking)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Gathering note)
 
 data OlistItem b i = OlistItem
   { olLabel :: Maybe Identifier
@@ -30,10 +30,10 @@ data OlistItem b i = OlistItem
   , olContent :: MixedBody b i
   } deriving (Eq, Ord, Show, Read, Generic, Functor, Titling a, Numbering)
 
-instance (Linking i, Linking (b i)) => Linking (OlistItem b i) where
-  linking (OlistItem mi mnum c) = do
+instance (Gathering note i, Gathering note (b i)) => Gathering note (OlistItem b i) where
+  gathering (OlistItem mi mnum c) = do
     tellLinkNumbered "" mi mnum
-    linking c
+    gathering c
 
 -- TODO: not the best. We could have a "type inference" pass that
 -- annotates the list items with the type of their parent

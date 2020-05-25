@@ -150,3 +150,4 @@ instance Referencing a b => Referencing (TitleTemplate a) (TitleTemplate b)
 instance Referencing a b => Referencing (Surround a) (Surround b)
 instance Referencing CounterName CounterName
 instance Referencing ElemNumber ElemNumber
+instance Referencing NumberAuto NumberAuto

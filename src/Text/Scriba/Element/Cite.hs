@@ -27,7 +27,7 @@ data Cite i = Cite
 instance Numbering i => Numbering (Cite i)
 instance Titling a i => Titling a (Cite i)
 instance Referencing a b => Referencing (Cite a) (Cite b)
-instance Linking i => Linking (Cite i)
+instance Gathering note i => Gathering note (Cite i)
 
 citeToText :: (i -> [Text]) -> Cite i -> [Text]
 citeToText f (Cite _ i) = concatMap f i

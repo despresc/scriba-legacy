@@ -11,6 +11,7 @@ module Text.Scriba.Decorate.Numbering
   , NumberConfig(..)
   , UsedNumberConfig(..)
   , bracketNumbering
+  , bracketNumbering'
   , getResetDependants
   , restoreDependants
   , resetCounter
@@ -211,6 +212,7 @@ instance Numbering LocalStyle
 instance Numbering ContainerName
 instance Numbering UsedNumberConfig
 instance Numbering ElemNumber
+instance Numbering NumberAuto
 
 runNumberM :: NumberM a -> NumberState -> Either DecorateError a
 runNumberM = go . State.evalStateT . unNumberM where go f = runExcept . f
@@ -334,8 +336,8 @@ setParentPath p = modify $ \s -> s { nsParentPath = p }
 
 -- come up with some kind of ref configuration/sensible defualt
 -- fallbacks for manually numbered containers.
-bracketNumbering :: Maybe Text -> (Maybe ElemNumber -> NumberM a) -> NumberM a
-bracketNumbering (Just typ) f = do
+bracketNumbering' :: Maybe Text -> (Maybe NumberAuto -> NumberM a) -> NumberM a
+bracketNumbering' (Just typ) f = do
   let containername = ContainerName typ
   mcontainerdata <- lookupContainerData containername
   mnumdata <- fmap join $ for mcontainerdata $ \(countername, numconf) -> do
@@ -353,6 +355,7 @@ bracketNumbering (Just typ) f = do
       let ndat = NumberAuto
             containername
             (UsedNumberConfig lsty (ncRefPrefix numconf) (ncRefSep numconf))
+            n
             fullNum
       pure (ndat, (oldPath, oldDependants))
   let (mnumgen, mpath) = unzips mnumdata
@@ -361,7 +364,12 @@ bracketNumbering (Just typ) f = do
     setParentPath oldPath
     restoreDependants oldDependants
   pure a
-bracketNumbering Nothing f = f Nothing
+bracketNumbering' Nothing f = f Nothing
+
+bracketNumbering :: Maybe Text -> (Maybe ElemNumber -> NumberM a) -> NumberM a
+bracketNumbering mt = bracketNumbering' mt . go
+  where
+    go f = f . fmap ElemNumberAuto
 
 {- TODO:
 

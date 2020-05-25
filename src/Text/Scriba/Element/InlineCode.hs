@@ -22,7 +22,7 @@ newtype InlineCode = InlineCode
 instance Numbering InlineCode
 instance Referencing InlineCode InlineCode
 instance Titling i InlineCode
-instance Linking InlineCode
+instance Gathering note InlineCode
 
 inlineCodeToText :: InlineCode -> [Text]
 inlineCodeToText (InlineCode t) = [t]

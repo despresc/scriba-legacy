@@ -50,14 +50,14 @@ data Formal b i = Formal
   , fConclusion :: Maybe [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
-instance (Linking i, Linking (b i)) => Linking (Formal b i) where
-  linking (Formal _ mi mnum mt mn mts c mconc) = do
+instance (Gathering note i, Gathering note (b i)) => Gathering note (Formal b i) where
+  gathering (Formal _ mi mnum mt mn mts c mconc) = do
     tellLinkNumbered "" mi mnum
-    linking mt
-    linking mn
-    linking mts
-    linking c
-    linking mconc
+    gathering mt
+    gathering mn
+    gathering mts
+    gathering c
+    gathering mconc
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap

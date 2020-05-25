@@ -22,7 +22,7 @@ newtype SourceRef = SourceRef
 
 instance Numbering SourceRef
 instance Titling i SourceRef
-instance Linking SourceRef
+instance Gathering note SourceRef
 
 -- TODO: may need more renditional information here, from Numbering and
 -- Referencing, like relative position of the number and prefix.
@@ -39,7 +39,7 @@ data Ref = Ref
 instance Numbering Ref
 instance Titling a Ref
 instance Referencing Ref Ref
-instance Linking Ref
+instance Gathering note Ref
 
 -- TODO: Not sure what to do here.
 refToText :: (a -> [Text]) -> Ref -> [Text]
@@ -69,7 +69,7 @@ instance RH.Render Ref where
       $      body
    where
     body = case enum of
-      NumberAuto _ (UsedNumberConfig _ mpref msep) num -> do
+      ElemNumberAuto (NumberAuto _ (UsedNumberConfig _ mpref msep) _ num) -> do
         RH.renderMaybe (Html.toHtml <$> mpref) $ Html.span Html.! HtmlA.class_
           "prefix"
         RH.renderMaybe (Html.toHtml <$> msep) id

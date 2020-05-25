@@ -270,6 +270,7 @@ MemDoc
             fromList
               [ ( CounterName { getCounterName = "formula" } , fromList [] )
               , ( CounterName { getCounterName = "item:olist" } , fromList [] )
+              , ( CounterName { getCounterName = "noteText" } , fromList [] )
               , ( CounterName { getCounterName = "section" }
                 , fromList
                     [ CounterName { getCounterName = "formula" }
@@ -461,14 +462,16 @@ MemDoc
                         }
                 , secNum =
                     Just
-                      (NumberAuto
-                         ContainerName { getContainerName = "section" }
-                         UsedNumberConfig
-                           { uncStyle = Decimal
-                           , uncRefPrefix = Nothing
-                           , uncRefSep = Nothing
-                           }
-                         "1")
+                      (ElemNumberAuto
+                         (NumberAuto
+                            ContainerName { getContainerName = "section" }
+                            UsedNumberConfig
+                              { uncStyle = Decimal
+                              , uncRefPrefix = Nothing
+                              , uncRefSep = Nothing
+                              }
+                            1
+                            "1"))
                 }
           , sectionPreamble = []
           , sectionChildren =
@@ -496,14 +499,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "1.1")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    1
+                                    "1.1"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -913,14 +918,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "1.2")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    2
+                                    "1.2"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -1376,14 +1383,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "1.3")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    3
+                                    "1.3"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -1746,14 +1755,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "1.4")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    4
+                                    "1.4"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -1811,14 +1822,16 @@ MemDoc
                                                  { getIdentifier = "displayFormulaExample" }
                                          , miNum =
                                              Just
-                                               (NumberAuto
-                                                  ContainerName { getContainerName = "formula" }
-                                                  UsedNumberConfig
-                                                    { uncStyle = Decimal
-                                                    , uncRefPrefix = Just "eqn."
-                                                    , uncRefSep = Just " "
-                                                    }
-                                                  "1.4.1")
+                                               (ElemNumberAuto
+                                                  (NumberAuto
+                                                     ContainerName { getContainerName = "formula" }
+                                                     UsedNumberConfig
+                                                       { uncStyle = Decimal
+                                                       , uncRefPrefix = Just "eqn."
+                                                       , uncRefSep = Just " "
+                                                       }
+                                                     1
+                                                     "1.4.1"))
                                          , miIsNumbered = True
                                          , miContent =
                                              "\n  \\mathbf{B}(P) = \\frac{\\mu_0}{4\\pi}\n  \\int\\frac{\\mathbf{I}\\times\\hat{r}'}{r'^2}dl = \\frac{\\mu_0}{4\\pi}\\,I\\!\n  \\int\\frac{d\\boldsymbol{l}\\times\\hat{r}'}{r'^2}\n"
@@ -1974,14 +1987,16 @@ MemDoc
                                           Identifier { getIdentifier = "displayFormulaExample" }
                                       , refTargetPrefix = "mjx-eqn-"
                                       , refNumber =
-                                          NumberAuto
-                                            ContainerName { getContainerName = "formula" }
-                                            UsedNumberConfig
-                                              { uncStyle = Decimal
-                                              , uncRefPrefix = Just "eqn."
-                                              , uncRefSep = Just " "
-                                              }
-                                            "1.4.1"
+                                          ElemNumberAuto
+                                            (NumberAuto
+                                               ContainerName { getContainerName = "formula" }
+                                               UsedNumberConfig
+                                                 { uncStyle = Decimal
+                                                 , uncRefPrefix = Just "eqn."
+                                                 , uncRefSep = Just " "
+                                                 }
+                                               1
+                                               "1.4.1")
                                       }
                                 , Istr Str { getStr = " " }
                                 , Istr Str { getStr = "with" }
@@ -2361,14 +2376,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "1.5")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    5
+                                    "1.5"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -2438,14 +2455,16 @@ MemDoc
                         }
                 , secNum =
                     Just
-                      (NumberAuto
-                         ContainerName { getContainerName = "section" }
-                         UsedNumberConfig
-                           { uncStyle = Decimal
-                           , uncRefPrefix = Nothing
-                           , uncRefSep = Nothing
-                           }
-                         "2")
+                      (ElemNumberAuto
+                         (NumberAuto
+                            ContainerName { getContainerName = "section" }
+                            UsedNumberConfig
+                              { uncStyle = Decimal
+                              , uncRefPrefix = Nothing
+                              , uncRefSep = Nothing
+                              }
+                            2
+                            "2"))
                 }
           , sectionPreamble = []
           , sectionChildren =
@@ -2473,14 +2492,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "2.1")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    1
+                                    "2.1"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -2577,14 +2598,17 @@ MemDoc
                                            { miIdentifier = Nothing
                                            , miNum =
                                                Just
-                                                 (NumberAuto
-                                                    ContainerName { getContainerName = "formula" }
-                                                    UsedNumberConfig
-                                                      { uncStyle = Decimal
-                                                      , uncRefPrefix = Just "eqn."
-                                                      , uncRefSep = Just " "
-                                                      }
-                                                    "2.1.1")
+                                                 (ElemNumberAuto
+                                                    (NumberAuto
+                                                       ContainerName
+                                                         { getContainerName = "formula" }
+                                                       UsedNumberConfig
+                                                         { uncStyle = Decimal
+                                                         , uncRefPrefix = Just "eqn."
+                                                         , uncRefSep = Just " "
+                                                         }
+                                                       1
+                                                       "2.1.1"))
                                            , miIsNumbered = True
                                            , miContent = "2+2=4"
                                            }
@@ -2599,14 +2623,17 @@ MemDoc
                                                Just Identifier { getIdentifier = "thirdGathered" }
                                            , miNum =
                                                Just
-                                                 (NumberAuto
-                                                    ContainerName { getContainerName = "formula" }
-                                                    UsedNumberConfig
-                                                      { uncStyle = Decimal
-                                                      , uncRefPrefix = Just "eqn."
-                                                      , uncRefSep = Just " "
-                                                      }
-                                                    "2.1.2")
+                                                 (ElemNumberAuto
+                                                    (NumberAuto
+                                                       ContainerName
+                                                         { getContainerName = "formula" }
+                                                       UsedNumberConfig
+                                                         { uncStyle = Decimal
+                                                         , uncRefPrefix = Just "eqn."
+                                                         , uncRefSep = Just " "
+                                                         }
+                                                       2
+                                                       "2.1.2"))
                                            , miIsNumbered = True
                                            , miContent = "8+8=16"
                                            }
@@ -2630,14 +2657,16 @@ MemDoc
                                       { refTarget = Identifier { getIdentifier = "thirdGathered" }
                                       , refTargetPrefix = "mjx-eqn-"
                                       , refNumber =
-                                          NumberAuto
-                                            ContainerName { getContainerName = "formula" }
-                                            UsedNumberConfig
-                                              { uncStyle = Decimal
-                                              , uncRefPrefix = Just "eqn."
-                                              , uncRefSep = Just " "
-                                              }
-                                            "2.1.2"
+                                          ElemNumberAuto
+                                            (NumberAuto
+                                               ContainerName { getContainerName = "formula" }
+                                               UsedNumberConfig
+                                                 { uncStyle = Decimal
+                                                 , uncRefPrefix = Just "eqn."
+                                                 , uncRefSep = Just " "
+                                                 }
+                                               2
+                                               "2.1.2")
                                       }
                                 , Istr Str { getStr = ")" }
                                 , Istr Str { getStr = " " }
@@ -2676,14 +2705,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "2.2")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    2
+                                    "2.2"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -2782,14 +2813,16 @@ MemDoc
                             , fLabel = Nothing
                             , fNum =
                                 Just
-                                  (NumberAuto
-                                     ContainerName { getContainerName = "lemma" }
-                                     UsedNumberConfig
-                                       { uncStyle = Decimal
-                                       , uncRefPrefix = Nothing
-                                       , uncRefSep = Nothing
-                                       }
-                                     "2.1")
+                                  (ElemNumberAuto
+                                     (NumberAuto
+                                        ContainerName { getContainerName = "lemma" }
+                                        UsedNumberConfig
+                                          { uncStyle = Decimal
+                                          , uncRefPrefix = Nothing
+                                          , uncRefSep = Nothing
+                                          }
+                                        1
+                                        "2.1"))
                             , fTitle =
                                 Just
                                   [ ItitleComponent
@@ -2821,14 +2854,16 @@ MemDoc
                             , fLabel = Nothing
                             , fNum =
                                 Just
-                                  (NumberAuto
-                                     ContainerName { getContainerName = "theorem" }
-                                     UsedNumberConfig
-                                       { uncStyle = Decimal
-                                       , uncRefPrefix = Nothing
-                                       , uncRefSep = Nothing
-                                       }
-                                     "2.2")
+                                  (ElemNumberAuto
+                                     (NumberAuto
+                                        ContainerName { getContainerName = "theorem" }
+                                        UsedNumberConfig
+                                          { uncStyle = Decimal
+                                          , uncRefPrefix = Nothing
+                                          , uncRefSep = Nothing
+                                          }
+                                        2
+                                        "2.2"))
                             , fTitle =
                                 Just
                                   [ ItitleComponent
@@ -2956,14 +2991,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "2.3")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    3
+                                    "2.3"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -3016,14 +3053,16 @@ MemDoc
                                  { olLabel = Nothing
                                  , olNum =
                                      Just
-                                       (NumberAuto
-                                          ContainerName { getContainerName = "item:olist" }
-                                          UsedNumberConfig
-                                            { uncStyle = Decimal
-                                            , uncRefPrefix = Just "item"
-                                            , uncRefSep = Just " "
-                                            }
-                                          "1")
+                                       (ElemNumberAuto
+                                          (NumberAuto
+                                             ContainerName { getContainerName = "item:olist" }
+                                             UsedNumberConfig
+                                               { uncStyle = Decimal
+                                               , uncRefPrefix = Just "item"
+                                               , uncRefSep = Just " "
+                                               }
+                                             1
+                                             "1"))
                                  , olContent =
                                      MixedBlock
                                        [ Bpar
@@ -3043,15 +3082,17 @@ MemDoc
                                                           { getIdentifier = "elem-ref-nest" }
                                                   , olNum =
                                                       Just
-                                                        (NumberAuto
-                                                           ContainerName
-                                                             { getContainerName = "item:olist" }
-                                                           UsedNumberConfig
-                                                             { uncStyle = LowerAlpha
-                                                             , uncRefPrefix = Just "item"
-                                                             , uncRefSep = Just " "
-                                                             }
-                                                           "1.a")
+                                                        (ElemNumberAuto
+                                                           (NumberAuto
+                                                              ContainerName
+                                                                { getContainerName = "item:olist" }
+                                                              UsedNumberConfig
+                                                                { uncStyle = LowerAlpha
+                                                                , uncRefPrefix = Just "item"
+                                                                , uncRefSep = Just " "
+                                                                }
+                                                              1
+                                                              "1.a"))
                                                   , olContent =
                                                       MixedInline
                                                         [ Istr Str { getStr = "First" }
@@ -3072,14 +3113,16 @@ MemDoc
                                  { olLabel = Nothing
                                  , olNum =
                                      Just
-                                       (NumberAuto
-                                          ContainerName { getContainerName = "item:olist" }
-                                          UsedNumberConfig
-                                            { uncStyle = Decimal
-                                            , uncRefPrefix = Just "item"
-                                            , uncRefSep = Just " "
-                                            }
-                                          "2")
+                                       (ElemNumberAuto
+                                          (NumberAuto
+                                             ContainerName { getContainerName = "item:olist" }
+                                             UsedNumberConfig
+                                               { uncStyle = Decimal
+                                               , uncRefPrefix = Just "item"
+                                               , uncRefSep = Just " "
+                                               }
+                                             2
+                                             "2"))
                                  , olContent =
                                      MixedInline
                                        [ Istr Str { getStr = "Second" }
@@ -3091,14 +3134,16 @@ MemDoc
                                  { olLabel = Nothing
                                  , olNum =
                                      Just
-                                       (NumberAuto
-                                          ContainerName { getContainerName = "item:olist" }
-                                          UsedNumberConfig
-                                            { uncStyle = Decimal
-                                            , uncRefPrefix = Just "item"
-                                            , uncRefSep = Just " "
-                                            }
-                                          "3")
+                                       (ElemNumberAuto
+                                          (NumberAuto
+                                             ContainerName { getContainerName = "item:olist" }
+                                             UsedNumberConfig
+                                               { uncStyle = Decimal
+                                               , uncRefPrefix = Just "item"
+                                               , uncRefSep = Just " "
+                                               }
+                                             3
+                                             "3"))
                                  , olContent =
                                      MixedInline
                                        [ Istr Str { getStr = "Third" }
@@ -3136,14 +3181,16 @@ MemDoc
                                       { refTarget = Identifier { getIdentifier = "elem-ref-nest" }
                                       , refTargetPrefix = ""
                                       , refNumber =
-                                          NumberAuto
-                                            ContainerName { getContainerName = "item:olist" }
-                                            UsedNumberConfig
-                                              { uncStyle = LowerAlpha
-                                              , uncRefPrefix = Just "item"
-                                              , uncRefSep = Just " "
-                                              }
-                                            "1.a"
+                                          ElemNumberAuto
+                                            (NumberAuto
+                                               ContainerName { getContainerName = "item:olist" }
+                                               UsedNumberConfig
+                                                 { uncStyle = LowerAlpha
+                                                 , uncRefPrefix = Just "item"
+                                                 , uncRefSep = Just " "
+                                                 }
+                                               1
+                                               "1.a")
                                       }
                                 , Istr Str { getStr = ")" }
                                 , Istr Str { getStr = " " }
@@ -3188,14 +3235,16 @@ MemDoc
                                 }
                         , secNum =
                             Just
-                              (NumberAuto
-                                 ContainerName { getContainerName = "subsection" }
-                                 UsedNumberConfig
-                                   { uncStyle = Decimal
-                                   , uncRefPrefix = Just "\167"
-                                   , uncRefSep = Nothing
-                                   }
-                                 "2.4")
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    4
+                                    "2.4"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -3300,14 +3349,16 @@ MemDoc
                                       { refTarget = Identifier { getIdentifier = "elem-ref" }
                                       , refTargetPrefix = ""
                                       , refNumber =
-                                          NumberAuto
-                                            ContainerName { getContainerName = "subsection" }
-                                            UsedNumberConfig
-                                              { uncStyle = Decimal
-                                              , uncRefPrefix = Just "\167"
-                                              , uncRefSep = Nothing
-                                              }
-                                            "2.4"
+                                          ElemNumberAuto
+                                            (NumberAuto
+                                               ContainerName { getContainerName = "subsection" }
+                                               UsedNumberConfig
+                                                 { uncStyle = Decimal
+                                                 , uncRefPrefix = Just "\167"
+                                                 , uncRefSep = Nothing
+                                                 }
+                                               4
+                                               "2.4")
                                       }
                                 , Istr Str { getStr = "," }
                                 , Istr Str { getStr = " " }

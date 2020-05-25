@@ -28,7 +28,7 @@ newtype BlockCode = BlockCode
 instance Numbering BlockCode
 instance Titling i BlockCode
 instance Referencing BlockCode BlockCode
-instance Linking BlockCode
+instance Gathering note BlockCode
 
 blockCodeToText :: BlockCode -> [Text]
 blockCodeToText (BlockCode t) = [t]

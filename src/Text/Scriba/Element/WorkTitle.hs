@@ -20,7 +20,7 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype WorkTitle i = WorkTitle
   { getWorkTitle :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a, Linking)
+    deriving anyclass (Numbering, Titling a, Gathering note)
 
 instance Referencing a b => Referencing (WorkTitle a) (WorkTitle b)
 

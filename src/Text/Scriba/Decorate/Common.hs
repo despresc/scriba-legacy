@@ -59,13 +59,16 @@ data UsedNumberConfig = UsedNumberConfig
 
 -- TODO: better name?
 data ElemNumber
-  = NumberAuto ContainerName UsedNumberConfig Text
+  = ElemNumberAuto NumberAuto
   | NumberSource Text
   deriving (Eq, Ord, Show, Read, Generic)
 
+data NumberAuto = NumberAuto ContainerName UsedNumberConfig Int Text
+  deriving (Eq, Ord, Show, Read, Generic)
+
 elemNumberNum :: ElemNumber -> Text
-elemNumberNum (NumberAuto _ _ t) = t
-elemNumberNum (NumberSource t  ) = t
+elemNumberNum (ElemNumberAuto (NumberAuto _ _ _ t)) = t
+elemNumberNum (NumberSource t    ) = t
 
 -- TODO: add more
 data LocalNumberStyle

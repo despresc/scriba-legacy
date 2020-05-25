@@ -19,7 +19,7 @@ import qualified Text.Blaze.Html5              as Html
 newtype Quote i = Quote
   { getQuote :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a, Linking)
+    deriving anyclass (Numbering, Titling a, Gathering note)
 
 instance Referencing a b => Referencing (Quote a) (Quote b)
 

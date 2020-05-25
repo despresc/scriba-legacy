@@ -25,7 +25,7 @@ data Regularize i = Regularize
   { regOld :: [i]
   , regNew :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a, Linking)
+    deriving anyclass (Numbering, Titling a, Gathering note)
 
 instance Referencing a b => Referencing (Regularize a) (Regularize b)
 

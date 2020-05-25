@@ -58,8 +58,8 @@ data DocAttrs i = DocAttrs
 instance Numbering (DocAttrs i) where
   numbering = pure
 
-instance Linking (DocAttrs i) where
-  linking _ = pure ()
+instance Gathering note (DocAttrs i) where
+  gathering _ = pure ()
 
 instance Titling a (DocAttrs i) where
   titling = pure
@@ -94,8 +94,8 @@ runDocTitling f d =
 runDocReferencing :: Referencing a b => RefData -> a -> Either DecorateError b
 runDocReferencing rd d = runRefM (referencing d) rd
 
-runDocLinking :: Linking a => a -> LinkData
-runDocLinking = runLinkM . linking
+runDocGathering :: Gathering note a => a -> GatherData note
+runDocGathering = runGatherM . gathering
 
 emptySurround :: Surround a
 emptySurround = Surround [] Nothing []
@@ -286,6 +286,7 @@ pDocAttrs pMetInl stripMarkup = do
   sconfig <- mattr "sections" (pSectionConfig pMetInl)
   lconfig <- attrDef "lists" defaultListConfig pListConfig
   let lCrel = ("item:olist", Just $ Relative [])
+      noterel = ("noteText", Just $ Relative [])
   (dmathCrel, dmathNumConf) <- fmap unzips $ attrMaybe "formula" $ meta $ attrs
     pNumberRef
   let dmathrelRaw = [("formula", join dmathCrel)]
@@ -298,7 +299,7 @@ pDocAttrs pMetInl stripMarkup = do
       compileContainerRelations
         (  mapMaybe mkName
         $  dmathrelRaw
-        <> [lCrel]
+        <> [lCrel, noterel]
         <> M.toList srelRaw
         <> M.toList frelRaw
         )

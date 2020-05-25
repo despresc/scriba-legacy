@@ -102,6 +102,7 @@ instance Titling a Int where
   titling = pure
 instance Titling a ContainerName
 instance Titling a ElemNumber
+instance Titling a NumberAuto
 
 data TitleTemplateStyle
   = FormalTemplate
