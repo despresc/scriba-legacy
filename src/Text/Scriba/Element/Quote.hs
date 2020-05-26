@@ -19,9 +19,10 @@ import qualified Text.Blaze.Html5              as Html
 newtype Quote i = Quote
   { getQuote :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a, Gathering note)
+    deriving anyclass (Numbering, Titling a)
 
 instance Referencing a b => Referencing (Quote a) (Quote b)
+instance Gathering note a b => Gathering note (Quote a) (Quote b)
 
 quoteToText :: (i -> [Text]) -> Quote i -> [Text]
 quoteToText f (Quote i) = concatMap f i

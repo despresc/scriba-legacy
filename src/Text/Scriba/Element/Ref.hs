@@ -22,7 +22,7 @@ newtype SourceRef = SourceRef
 
 instance Numbering SourceRef
 instance Titling i SourceRef
-instance Gathering note SourceRef
+instance Gathering note SourceRef SourceRef
 
 -- TODO: may need more renditional information here, from Numbering and
 -- Referencing, like relative position of the number and prefix.
@@ -39,7 +39,7 @@ data Ref = Ref
 instance Numbering Ref
 instance Titling a Ref
 instance Referencing Ref Ref
-instance Gathering note Ref
+instance Gathering note Ref Ref
 
 -- TODO: Not sure what to do here.
 refToText :: (a -> [Text]) -> Ref -> [Text]

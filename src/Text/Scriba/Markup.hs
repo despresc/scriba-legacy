@@ -1,3 +1,4 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
@@ -10,6 +11,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 
 module Text.Scriba.Markup
@@ -54,12 +56,17 @@ data Block b i
   | Bpar !(Paragraph i)
   | Blist !(List (Block b) i)
   | Bcontrol !(b i)
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Gathering note)
+  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
 
 deriving instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Block b i)
+
 instance ( Referencing i i'
          , Referencing (b i) (b' i')
          ) => Referencing (Block b i) (Block b' i') where
+
+instance ( Gathering note i i'
+         , Gathering note (b i) (b' i')
+         ) => Gathering note (Block b i) (Block b' i') where
 
 data Inline a
   = Istr !Str
@@ -76,10 +83,12 @@ data Inline a
   | Iref !Ref
   | ItitleComponent !(TitleComponent (Inline a))
   | Icontrol !a
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i, Gathering note)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
 
 instance HasStr (Inline a) where
   embedStr = Istr
+
+instance Gathering note a b => Gathering note (Inline a) (Inline b)
 
 -- TODO: add a class for better instance derivation?
 instance Referencing (Inline InlineControl) (Inline Void) where
@@ -104,7 +113,7 @@ instance Referencing InlineControl (Inline b) where
 newtype InlineControl
   = IcRef SourceRef
   deriving (Eq, Ord, Show, Read, Generic)
-  deriving anyclass (Numbering, Titling i, Gathering note)
+  deriving anyclass (Numbering, Titling i, Gathering note InlineControl)
 
 instance FromTitleComponent (Inline a) where
   fromTitleComponent = ItitleComponent
@@ -253,24 +262,27 @@ decorateMemDoc
   :: MemDoc (Block Void1) (Inline Void) (Inline InlineControl)
   -> Either DecorateError (MemDoc (Block Void1) (Inline Void) (Inline Void))
 decorateMemDoc =
-  decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
+  decorating @((MemDoc (Block Void1) (Inline Void) (Inline InlineControl)))
+    $ traverseInline (absurd :: Void -> Inline InlineControl)
 
 decorating
-  :: forall d d' j i
+  :: forall d' d d'' j i
    . ( HasDocAttrs j d
      , Numbering d
      , Titling i d
-     , Referencing d d'
-     , Gathering () d
+     , Gathering () d d'
+     , Referencing d' d''
      )
   => (j -> i)
   -> d
-  -> Either DecorateError d'
+  -> Either DecorateError d''
 decorating f d = do
   nd <- runDocNumbering d
   td <- runDocTitling f nd
-  let numDat = runDocGathering td :: GatherData ()
-  runDocReferencing (getRefEnv numDat) td
+  let (d', numDat) = (runDocGathering :: d -> (d', GatherData ())) td
+  (runDocReferencing :: RefData -> d' -> Either DecorateError d'')
+    (getRefEnv numDat)
+    d'
 
 -- * Rendering
 

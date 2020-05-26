@@ -18,9 +18,10 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype Title i = Title
   { titleBody :: [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
-    deriving anyclass (Numbering, Gathering note, Titling a)
+    deriving anyclass (Numbering, Titling a)
 
 instance Referencing a b => Referencing (Title a) (Title b)
+instance Gathering note a b => Gathering note (Title a) (Title b)
 
 -- Add a sectionTitle class?
 instance RH.Render i => RH.Render (Title i) where

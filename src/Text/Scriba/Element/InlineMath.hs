@@ -22,7 +22,7 @@ newtype InlineMath = InlineMath
 instance Numbering InlineMath
 instance Titling i InlineMath
 instance Referencing InlineMath InlineMath
-instance Gathering note InlineMath
+instance Gathering note InlineMath InlineMath
 
 inlineMathToText :: InlineMath -> [Text]
 inlineMathToText (InlineMath t) = [t]

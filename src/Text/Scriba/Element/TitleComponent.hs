@@ -26,16 +26,17 @@ data TitlePart
   | TitleNumber
   | TitleSep
   | TitleBody
-  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a, Gathering note)
+  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a, Gathering note TitlePart)
 
 instance Referencing TitlePart TitlePart
 
 -- A title component, with before and after components.
 data TitleComponent i
   = TitleComponent TitlePart [i] [i] [i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Gathering note)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a)
 
 instance Referencing a b => Referencing (TitleComponent a) (TitleComponent b)
+instance Gathering note a b => Gathering note (TitleComponent a) (TitleComponent b)
 
 titleComponentToText :: (i -> [Text]) -> TitleComponent i -> [Text]
 titleComponentToText f (TitleComponent _ i j k) =

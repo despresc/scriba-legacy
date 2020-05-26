@@ -58,8 +58,8 @@ data DocAttrs i = DocAttrs
 instance Numbering (DocAttrs i) where
   numbering = pure
 
-instance Gathering note (DocAttrs i) where
-  gathering _ = pure ()
+instance Gathering note (DocAttrs i) (DocAttrs i) where
+  gathering = pure
 
 instance Titling a (DocAttrs i) where
   titling = pure
@@ -94,7 +94,7 @@ runDocTitling f d =
 runDocReferencing :: Referencing a b => RefData -> a -> Either DecorateError b
 runDocReferencing rd d = runRefM (referencing d) rd
 
-runDocGathering :: Gathering note a => a -> GatherData note
+runDocGathering :: Gathering note a b => a -> (b, GatherData note)
 runDocGathering = runGatherM . gathering
 
 emptySurround :: Surround a

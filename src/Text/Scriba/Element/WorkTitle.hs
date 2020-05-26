@@ -20,9 +20,10 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 newtype WorkTitle i = WorkTitle
   { getWorkTitle :: [i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
-    deriving anyclass (Numbering, Titling a, Gathering note)
+    deriving anyclass (Numbering, Titling a)
 
 instance Referencing a b => Referencing (WorkTitle a) (WorkTitle b)
+instance Gathering note a b => Gathering note (WorkTitle a) (WorkTitle b)
 
 workTitleToText :: (i -> [Text]) -> WorkTitle i -> [Text]
 workTitleToText f (WorkTitle i) = concatMap f i

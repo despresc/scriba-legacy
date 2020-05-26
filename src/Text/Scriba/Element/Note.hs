@@ -33,9 +33,10 @@ data NoteMark = NoteMark
              , Titling i
              , Referencing NoteMark )
 
-instance Gathering note NoteMark where
-  gathering (NoteMark (Identifier i)) =
+instance Gathering note NoteMark NoteMark where
+  gathering n@(NoteMark (Identifier i)) = do
     tellLinkGen "" (Just $ Identifier $ "noteMark-" <> i)
+    pure n
 
 data NoteText b i = NoteText
   { noteSource :: Identifier

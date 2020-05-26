@@ -10,6 +10,7 @@ module Text.Scriba.Decorate.Gathering where
 import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 
+import           Control.Applicative            ( liftA2 )
 import           Control.Monad.State.Strict     ( State
                                                 , modify
                                                 )
@@ -49,54 +50,55 @@ newtype GatherM note a = GatherM
   { unNumberM :: State (GatherData note) a
   } deriving (Functor, Applicative, Monad)
 
-runGatherM :: GatherM note a -> GatherData note
-runGatherM = ($ mempty) . State.execState . unNumberM
+runGatherM :: GatherM note a -> (a, GatherData note)
+runGatherM = ($ mempty) . State.runState . unNumberM
 
-class GGathering note f where
-  ggathering :: f a -> GatherM note ()
+class GGathering note f g where
+  ggathering :: f a -> GatherM note (g a)
 
-instance GGathering note U1 where
-  ggathering _ = pure ()
+instance GGathering note U1 U1 where
+  ggathering = pure
 
-instance (GGathering note a, GGathering note b) => GGathering note (a :*: b) where
-  ggathering (x :*: y) = ggathering x >> ggathering y
+instance (GGathering note a b, GGathering note c d) => GGathering note (a :*: c) (b :*: d) where
+  ggathering (x :*: y) = liftA2 (:*:) (ggathering x) (ggathering y)
 
-instance (GGathering note a, GGathering note b) => GGathering note (a :+: b) where
-  ggathering (L1 x) = ggathering x
-  ggathering (R1 y) = ggathering y
+instance (GGathering note a b, GGathering note c d) => GGathering note (a :+: c) (b :+: d) where
+  ggathering (L1 x) = L1 <$> ggathering x
+  ggathering (R1 y) = R1 <$> ggathering y
 
-instance GGathering note a => GGathering note (M1 j c a) where
-  ggathering (M1 x) = ggathering x
+instance GGathering note a b => GGathering note (M1 j c a) (M1 j c b) where
+  ggathering (M1 x) = M1 <$> ggathering x
 
-instance Gathering note a => GGathering note (K1 j a) where
-  ggathering (K1 x) = gathering x
+instance Gathering note a b => GGathering note (K1 j a) (K1 j b) where
+  ggathering (K1 x) = K1 <$> gathering x
 
-class Gathering note a where
-  gathering :: a -> GatherM note ()
+class Gathering note a b where
+  gathering :: a -> GatherM note b
 
-  default gathering :: (Generic a, GGathering note (Rep a)) => a -> GatherM note ()
-  gathering = ggathering . from
+  default gathering :: (Generic a, Generic b, GGathering note (Rep a) (Rep b))
+                      => a -> GatherM note b
+  gathering = fmap to . ggathering . from
 
-instance Gathering note a => Gathering note (Maybe a) where
-  gathering = traverse_ gathering
+instance Gathering note a b => Gathering note (Maybe a) (Maybe b) where
+  gathering = traverse gathering
 
-instance Gathering note a => Gathering note [a] where
-  gathering = traverse_ gathering
+instance Gathering note a b => Gathering note [a] [b] where
+  gathering = traverse gathering
 
-instance Gathering note Text where
-  gathering _ = pure ()
-instance Gathering note Identifier
-instance Gathering note ElemNumber
-instance Gathering note Bool
-instance Gathering note Int where
-  gathering _ = pure ()
-instance Gathering note NumberAuto
-instance Gathering note ContainerName
-instance Gathering note UsedNumberConfig where
-  gathering _ = pure ()
-instance Gathering note Void where
+instance Gathering note Text Text where
+  gathering = pure
+instance Gathering note Identifier Identifier
+instance Gathering note ElemNumber ElemNumber
+instance Gathering note Bool Bool
+instance Gathering note Int Int where
+  gathering = pure
+instance Gathering note NumberAuto NumberAuto
+instance Gathering note ContainerName ContainerName
+instance Gathering note UsedNumberConfig UsedNumberConfig where
+  gathering = pure
+instance Gathering note Void a where
   gathering = absurd
-instance Gathering note (Void1 a) where
+instance Gathering note (Void1 a) b where
   gathering = absurd1
 
 tellLinkDatum :: LinkDatum -> GatherM note ()

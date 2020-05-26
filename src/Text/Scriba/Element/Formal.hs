@@ -34,7 +34,6 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 -- anyway.
 -- TODO: the fTitle _might_ be better as Title, but I'm not sure if a
 -- formalBlock title should be the same thing as a section title.
--- TODO: Maybe title should be a maybe...
 -- TODO: Might want the note to be exclusive with title? We could have
 -- Formal be polymorphic in its meta, then have the title be Either
 -- FullTitle Note, then decorate can turn that into a FullTitle
@@ -50,14 +49,17 @@ data Formal b i = Formal
   , fConclusion :: Maybe [i]
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
-instance (Gathering note i, Gathering note (b i)) => Gathering note (Formal b i) where
-  gathering (Formal _ mi mnum mt mn mts c mconc) = do
+-- TODO: We set the Note component of Formal to Nothing here instead
+-- of 'gathering' them, because we would otherwise double-count
+-- identifiers inside elements.
+instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Formal b i) (Formal b' i') where
+  gathering (Formal mty mi mnum mt _ mts c mconc) = do
     tellLinkNumbered "" mi mnum
-    gathering mt
-    gathering mn
-    gathering mts
-    gathering c
-    gathering mconc
+    mt'    <- gathering mt
+    mts'    <- gathering mts
+    c'     <- gathering c
+    mconc' <- gathering mconc
+    pure $ Formal mty mi mnum mt' Nothing mts' c' mconc'
 
 -- TODO: no formal block type validation
 -- TODO: sort of a hack allowing simple inline content: we just wrap

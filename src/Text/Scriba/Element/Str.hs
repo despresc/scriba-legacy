@@ -21,7 +21,7 @@ newtype Str = Str
 instance Numbering Str
 instance Titling i Str
 instance Referencing Str Str
-instance Gathering note Str
+instance Gathering note Str Str
 
 strToText :: Str -> [Text]
 strToText (Str t) = [t]

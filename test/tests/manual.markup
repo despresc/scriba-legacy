@@ -413,21 +413,7 @@ MemDoc
           { sectionAttrs =
               SecAttrs
                 { secId = Nothing
-                , secTitleBody =
-                    Just
-                      Title
-                        { titleBody =
-                            [ Istr Str { getStr = "An" }
-                            , Istr Str { getStr = " " }
-                            , Istr Str { getStr = "introduction" }
-                            , Istr Str { getStr = " " }
-                            , Istr Str { getStr = "to" }
-                            , Istr Str { getStr = " " }
-                            , Istr Str { getStr = "the" }
-                            , Istr Str { getStr = " " }
-                            , Istr Str { getStr = "language" }
-                            ]
-                        }
+                , secTitleBody = Nothing
                 , secTitleFull =
                     Just
                       Title
@@ -479,8 +465,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "Paragraphs" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -898,8 +883,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "Sections" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -1363,8 +1347,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "Blocks" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -1735,8 +1718,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "Mathematics" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -2335,19 +2317,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just
-                              Title
-                                { titleBody =
-                                    [ Istr Str { getStr = "The" }
-                                    , Istr Str { getStr = " " }
-                                    , Istr Str { getStr = "overall" }
-                                    , Istr Str { getStr = " " }
-                                    , Istr Str { getStr = "document" }
-                                    , Istr Str { getStr = " " }
-                                    , Istr Str { getStr = "structure" }
-                                    ]
-                                }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -2418,15 +2388,7 @@ MemDoc
           { sectionAttrs =
               SecAttrs
                 { secId = Nothing
-                , secTitleBody =
-                    Just
-                      Title
-                        { titleBody =
-                            [ Istr Str { getStr = "Element" }
-                            , Istr Str { getStr = " " }
-                            , Istr Str { getStr = "reference" }
-                            ]
-                        }
+                , secTitleBody = Nothing
                 , secTitleFull =
                     Just
                       Title
@@ -2472,8 +2434,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "gathered" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -2685,8 +2646,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Nothing
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "formalBlock" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -2889,14 +2849,7 @@ MemDoc
                                          ]
                                          [ Istr Str { getStr = ")" } ])
                                   ]
-                            , fNote =
-                                Just
-                                  [ Istr Str { getStr = "an" }
-                                  , Istr Str { getStr = " " }
-                                  , Istr Str { getStr = "interesting" }
-                                  , Istr Str { getStr = " " }
-                                  , Istr Str { getStr = "one" }
-                                  ]
+                            , fNote = Nothing
                             , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                             , fContent =
                                 MixedInline
@@ -2941,16 +2894,7 @@ MemDoc
                                          ]
                                          [])
                                   ]
-                            , fNote =
-                                Just
-                                  [ Istr Str { getStr = "of" }
-                                  , Istr Str { getStr = " " }
-                                  , Istr Str { getStr = "the" }
-                                  , Istr Str { getStr = " " }
-                                  , Istr Str { getStr = "interesting" }
-                                  , Istr Str { getStr = " " }
-                                  , Istr Str { getStr = "theorem" }
-                                  ]
+                            , fNote = Nothing
                             , fTitleSep = Just [ Istr Str { getStr = ". " } ]
                             , fContent =
                                 MixedInline
@@ -2971,8 +2915,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Just Identifier { getIdentifier = "elem-olist" }
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "olist" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title
@@ -3215,8 +3158,7 @@ MemDoc
                   { subsectionAttrs =
                       SecAttrs
                         { secId = Just Identifier { getIdentifier = "elem-ref" }
-                        , secTitleBody =
-                            Just Title { titleBody = [ Istr Str { getStr = "ref" } ] }
+                        , secTitleBody = Nothing
                         , secTitleFull =
                             Just
                               Title

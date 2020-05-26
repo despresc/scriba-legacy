@@ -22,7 +22,7 @@ newtype PageMark = PageMark
 instance Numbering PageMark
 instance Referencing PageMark PageMark
 instance Titling a PageMark
-instance Gathering note PageMark
+instance Gathering note PageMark PageMark
 
 pageMarkToText :: PageMark -> [Text]
 pageMarkToText (PageMark t) = [t]

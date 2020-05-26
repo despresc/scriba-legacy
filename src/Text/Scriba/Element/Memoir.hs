@@ -58,10 +58,12 @@ data MemDoc b j i = MemDoc
   , memAttrs :: MemDocAttrs j
   , memFront :: [FrontMatter b i]
   , memMain :: [Section b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Gathering note)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
 instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (MemDoc b j i)
 instance (Referencing (f a) (g b), Referencing a b) => Referencing (MemDoc f j a) (MemDoc g j b)
+
+instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (MemDoc f j a) (MemDoc g j b)
 
 instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (MemDoc b j i) where
   render (MemDoc ca _ f m) = do
@@ -79,17 +81,18 @@ instance HasDocAttrs j (MemDoc b j i) where
   getDocAttrs = memControlAttrs
 
 data MemDocAttrs i = MemDocAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (MemDocAttrs b), Gathering note)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (MemDocAttrs b), Gathering note (MemDocAttrs b))
 
 -- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
   = Foreword [b i]
   | Dedication [b i]
   | Introduction [b i]
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Gathering note)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
 instance Titling i (b i) => Titling i (FrontMatter b i)
 instance (Referencing (f a) (g b), Referencing a b) => Referencing (FrontMatter f a) (FrontMatter g b)
+instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (FrontMatter f a) (FrontMatter g b)
 instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
   render = \case
     Foreword     blks -> rfront "forword" blks
@@ -112,10 +115,13 @@ data SecAttrs i = SecAttrs
   , secNum :: Maybe ElemNumber
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
-instance Gathering note i => Gathering note (SecAttrs i) where
+-- TODO: quite the hack here. We _need_ to set the title body to
+-- Nothing. Otherwise identifiers in both would get double-counted.
+instance Gathering note i i' => Gathering note (SecAttrs i) (SecAttrs i') where
   gathering (SecAttrs mi _ tf mn) = do
     tellLinkNumbered "" mi mn
-    gathering tf
+    tf' <- gathering tf
+    pure $ SecAttrs mi Nothing tf' mn
 
 -- | A 'Section' is a major document division in the main matter. It
 -- is the top-level section of articles.
@@ -123,12 +129,16 @@ data Section b i = Section
   { sectionAttrs :: SecAttrs i
   , sectionPreamble :: [b i]
   , sectionChildren :: [Subsection b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic, Gathering note)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+
+instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Section b i) (Section b' i')
 
 data Subsection b i = Subsection
   { subsectionAttrs :: SecAttrs i
   , subsectionContent :: [b i]
-  } deriving (Eq, Ord, Show, Read, Functor, Generic, Gathering note)
+  } deriving (Eq, Ord, Show, Read, Functor, Generic)
+
+instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Subsection b i) (Subsection b' i')
 
 newtype Heading i = Heading
   { getHeading :: i
@@ -148,7 +158,9 @@ instance RH.Render i => RH.Render (Heading i) where
       5 -> Html.h5
       _ -> Html.h6
 
--- Some kind of deriving via here?
+-- TODO: deriving via?
+-- TODO: necessary hack here, setting the titlebody to nothing. better to remove
+-- the component entirely.
 instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Section b i) where
   titling (Section (SecAttrs mId mtbody mtfull mnum) pre children) = do
     mtbody'   <- titling mtbody
@@ -163,13 +175,15 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
         SectionTemplate
         Nothing
         ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
-        (titleBody <$> mtbody)
+        (titleBody <$> mtbody')
     pure $ Section
-      (SecAttrs mId mtbody' (mtfull' <|> join mtigen <|> mtbody') mnum)
+      (SecAttrs mId Nothing (mtfull' <|> join mtigen <|> mtbody') mnum)
       pre'
       children'
 
 -- TODO: duplication
+-- TODO: necessary hack here, setting the titlebody to nothing. better to remove
+-- the component entirely.
 instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Subsection b i) where
   titling (Subsection (SecAttrs mId mtbody mtfull mnum) c) = do
     mtbody' <- titling mtbody
@@ -183,9 +197,9 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Subs
         SectionTemplate
         Nothing
         ((: []) . fromTitleNumber . elemNumberNum <$> mnum)
-        (titleBody <$> mtbody)
+        (titleBody <$> mtbody')
     pure $ Subsection
-      (SecAttrs mId mtbody' (mtfull' <|> join mtigen <|> mtbody') mnum)
+      (SecAttrs mId Nothing (mtfull' <|> join mtigen <|> mtbody') mnum)
       c'
 
 instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
