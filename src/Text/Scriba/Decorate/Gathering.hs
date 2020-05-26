@@ -101,6 +101,10 @@ instance Gathering note Void a where
 instance Gathering note (Void1 a) b where
   gathering = absurd1
 
+-- TODO: should this be moved elsewhere?
+class HasNil a where
+  embedNil :: a
+
 tellLinkDatum :: LinkDatum -> GatherM note ()
 tellLinkDatum = GatherM . modify . addLinkDatum
 

@@ -20,6 +20,7 @@ module Text.Scriba.Element
   , module Text.Scriba.Element.Cite
   , module Text.Scriba.Element.Memoir
   , module Text.Scriba.Element.DocAttrs
+  , module Text.Scriba.Element.Note
   )
 where
 
@@ -44,3 +45,4 @@ import           Text.Scriba.Element.Regularize
 import           Text.Scriba.Element.Cite
 import           Text.Scriba.Element.Memoir
 import           Text.Scriba.Element.DocAttrs
+import           Text.Scriba.Element.Note

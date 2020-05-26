@@ -50,13 +50,19 @@ import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
+-- TODO: have nil in there for note text gathering. Does that mean
+-- that gathering no longer has to be type changing?
 data Block b i
   = Bformal !(Formal (Block b) i)
   | Bcode !BlockCode
   | Bpar !(Paragraph i)
   | Blist !(List (Block b) i)
   | Bcontrol !(b i)
+  | Bnil
   deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
+
+instance HasNil (Block b i) where
+  embedNil = Bnil
 
 deriving instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Block b i)
 
@@ -64,9 +70,24 @@ instance ( Referencing i i'
          , Referencing (b i) (b' i')
          ) => Referencing (Block b i) (Block b' i') where
 
-instance ( Gathering note i i'
-         , Gathering note (b i) (b' i')
-         ) => Gathering note (Block b i) (Block b' i') where
+-- Monomorphic-ish for now
+newtype BlockControl i
+  = BlockNoteText (NoteText (Block BlockControl) i)
+  deriving (Eq, Ord, Show, Read, Generic, Functor)
+  deriving anyclass (Numbering)
+
+instance (FromTitleComponent i, Titling i i) => Titling i (BlockControl i)
+
+instance Gathering (NoteText (Block Void1) i') i i' => Gathering (NoteText (Block Void1) i') (Block BlockControl i) (Block Void1 i') where
+  gathering (Bformal  a) = Bformal <$> gathering a
+  gathering (Bcode    a) = Bcode <$> gathering a
+  gathering (Bpar     a) = Bpar <$> gathering a
+  gathering (Blist    a) = Blist <$> gathering a
+  gathering (Bcontrol a) = gathering a
+  gathering Bnil         = pure Bnil
+
+instance Gathering (NoteText (Block Void1) i') i i' => Gathering (NoteText (Block Void1) i') (BlockControl i) (Block Void1 i') where
+  gathering (BlockNoteText b) = resolveBlockNoteText b
 
 data Inline a
   = Istr !Str
@@ -259,7 +280,7 @@ traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
 
 decorateMemDoc
-  :: MemDoc (Block Void1) (Inline Void) (Inline InlineControl)
+  :: MemDoc (Block BlockControl) (Inline Void) (Inline InlineControl)
   -> Either DecorateError (MemDoc (Block Void1) (Inline Void) (Inline Void))
 decorateMemDoc =
   decorating @((MemDoc (Block Void1) (Inline Void) (Inline InlineControl)))
@@ -270,7 +291,7 @@ decorating
    . ( HasDocAttrs j d
      , Numbering d
      , Titling i d
-     , Gathering () d d'
+     , Gathering (NoteText (Block Void1) (Inline InlineControl)) d d'
      , Referencing d' d''
      )
   => (j -> i)
@@ -279,7 +300,11 @@ decorating
 decorating f d = do
   nd <- runDocNumbering d
   td <- runDocTitling f nd
-  let (d', numDat) = (runDocGathering :: d -> (d', GatherData ())) td
+  let (d', numDat) =
+        (runDocGathering :: d
+            -> (d', GatherData (NoteText (Block Void1) (Inline InlineControl)))
+          )
+          td
   (runDocReferencing :: RefData -> d' -> Either DecorateError d'')
     (getRefEnv numDat)
     d'
@@ -295,6 +320,7 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Block b i) where
   render (Bpar     p ) = RH.render p
   render (Blist    b ) = RH.render b
   render (Bcontrol b ) = RH.render b
+  render Bnil          = mempty
 
 instance RH.Render a => RH.Render (Inline a) where
   render (Istr            s) = RH.render s

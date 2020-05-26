@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -42,7 +43,7 @@ data NoteText b i = NoteText
   { noteSource :: Identifier
   , noteNum :: Maybe Int
   , noteText :: MixedBody b i
-  } deriving (Eq, Ord, Show, Read, Generic)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
 instance (Titling a (b i), Titling a i) => Titling a (NoteText b i)
 instance ( Referencing (f a) (g b)
@@ -54,6 +55,8 @@ instance (Numbering (b i), Numbering i) => Numbering (NoteText b i) where
     pure $ NoteText i (getNum <$> mna) c'
     where getNum (NumberAuto _ _ n _) = n
 
+resolveBlockNoteText :: (HasNil (b' i'), Gathering (NoteText b' i') (b i) (b' i'), Gathering (NoteText b' i') i i') => NoteText b i -> GatherM (NoteText b' i') (b' i')
+resolveBlockNoteText = undefined
 {- TODO: restore
 instance ( Gathering (NoteText b i) (b i)
          , Gathering (NoteText b i) i
