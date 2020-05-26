@@ -87,4 +87,13 @@ A {%comment that shouldn't be visible%} test of comments
   ---
   And {% a test of comments
 
-  in indented text %} more. 
+  in indented text %} more.
+
+& argText
+  @ blocksCanHaveArguments
+  ---
+  With content
+
+& argText2@tightArgument
+
+Buffer

@@ -479,7 +479,7 @@ pArgText :: Parser InlineNode
 pArgText = MP.label "argument text" $ do
   sp <- MP.getSourcePos
   ts <- MP.some $ insigChar <|> pBackslashToks
-  pure $ InlineWhite sp (T.concat ts)
+  pure $ InlineText sp (T.concat ts)
  where
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c
@@ -601,7 +601,7 @@ pBlockElement pTy = do
     atDeIndent (Element sp ty (Attrs ia []) [] BlockNil) $ do
       ba <- pBlockAttrs cSpace
       atDeIndent (Element sp ty (Attrs ia ba) [] BlockNil) $ do
-        as <- MP.option [] $ pArgs cSpace
+        as <- MP.option [] $ pBlockArgs cSpace
         atDeIndent (Element sp ty (Attrs ia ba) as BlockNil)
           $   Element sp ty (Attrs ia ba) as
           <$> pBlockContent
@@ -619,9 +619,19 @@ pBlockAttrs = flip manyIndented $ pBlockElement pElemTy
 pInlineAttrs :: Parser space -> Parser [InlineAttr]
 pInlineAttrs = flip manyIndented $ pInlineElement pElemTy
 
--- | Parse the arguments of an element.
+-- | Parse the arguments of a block element. Note that the
+-- start-of-argument token defines a new indentation context.
+pBlockArgs :: Parser space -> Parser [InlineNode]
+pBlockArgs sc = do
+  sp <- MP.getSourcePos
+  void pElementArgsStart
+  void sc
+  atIndent (posIndent sp) $ manyIndented sc pArgNode
+  where pArgNode = pInlineNodeWith pArgText
+
+-- | Parse the arguments of an inline element.
 pArgs :: Parser space -> Parser [InlineNode]
-pArgs sc = pElementArgsStart >> sc >> MP.many (pArgNode <* sc)
+pArgs sc = pElementArgsStart >> sc >> manyIndented sc pArgNode
   where pArgNode = pInlineNodeWith pArgText
 
 -- | Parse an inline element.

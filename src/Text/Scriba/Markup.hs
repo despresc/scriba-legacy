@@ -103,6 +103,7 @@ data Inline a
   | IpageMark !PageMark
   | Iref !Ref
   | ItitleComponent !(TitleComponent (Inline a))
+  | InoteMark !NoteMark
   | Icontrol !a
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
 
@@ -126,6 +127,7 @@ instance Referencing (Inline InlineControl) (Inline Void) where
   referencing (IpageMark       x) = IpageMark <$> referencing x
   referencing (Iref            x) = Iref <$> referencing x
   referencing (ItitleComponent x) = ItitleComponent <$> referencing x
+  referencing (InoteMark x)       = InoteMark <$> referencing x
   referencing (Icontrol        x) = referencing x
 
 instance Referencing InlineControl (Inline b) where
@@ -160,9 +162,10 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (IpageMark       t ) = pageMarkToText t
   inlineToText (Iref            t ) = refToText inlineToText t
   inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
+  inlineToText (InoteMark t)        = noteMarkToText t
   inlineToText (Icontrol        a ) = f a
 
-pBlock :: Scriba Node (Inline a) -> Scriba Node (Block b (Inline a))
+pBlock :: Scriba Node (Inline a) -> Scriba Node (Block BlockControl (Inline a))
 pBlock pInl =
   asNode
     $   Bformal
@@ -173,6 +176,12 @@ pBlock pInl =
     <$> pBlockCode
     <|> Blist
     <$> pList (pMixedBody (pBlock pInl) pInl)
+    <|> Bcontrol
+    <$> pBlockControl pInl
+
+pBlockControl
+  :: Scriba Node (Inline a) -> Scriba Element (BlockControl (Inline a))
+pBlockControl pInl = BlockNoteText <$> pNoteText (pBlock pInl) pInl
 
 pInline :: Scriba Node (Inline InlineControl)
 pInline =
@@ -199,8 +208,10 @@ pInline =
       <$> pGathered
       <|> Icode
       <$> pCode
+      <|> InoteMark
+      <$> pNoteMark
       <|> Icontrol
-      <$> pControl
+      <$> pInlineControl
       )
     <|> Istr
     <$> pText
@@ -231,12 +242,14 @@ pInlineCore =
       <$> pGathered
       <|> Icode
       <$> pCode
+      <|> InoteMark
+      <$> pNoteMark
       )
     <|> Istr
     <$> pText
 
-pControl :: Scriba Element InlineControl
-pControl = IcRef <$> pSourceRef
+pInlineControl :: Scriba Element InlineControl
+pInlineControl = IcRef <$> pSourceRef
 
 -- * Running parsers
 
@@ -244,7 +257,9 @@ pControl = IcRef <$> pSourceRef
 -- multiple document types. Perhaps simply by making Doc a sum
 parseMemDoc
   :: Node
-  -> Either ScribaError (MemDoc (Block b) (Inline a) (Inline InlineControl))
+  -> Either
+       ScribaError
+       (MemDoc (Block BlockControl) (Inline a) (Inline InlineControl))
 parseMemDoc = fmap snd . runScriba
   ( asNode
   $ pMemDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
@@ -278,6 +293,7 @@ traverseInline _ (IinlineMath  s) = IinlineMath s
 traverseInline _ (IdisplayMath s) = IdisplayMath s
 traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
+traverseInline _ (InoteMark    s) = InoteMark s
 
 decorateMemDoc
   :: MemDoc (Block BlockControl) (Inline Void) (Inline InlineControl)
@@ -336,6 +352,7 @@ instance RH.Render a => RH.Render (Inline a) where
   render (IpageMark       s) = RH.render s
   render (ItitleComponent s) = RH.render s
   render (Iref            s) = RH.render s
+  render (InoteMark       s) = RH.render s
   render (Icontrol        s) = RH.render s
 
 -- TODO: move this elsewhere?

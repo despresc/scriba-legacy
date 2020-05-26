@@ -307,6 +307,22 @@ The items of a list can be referenced, like this
 ({ref@elem-ref-nest}) reference to one of the items above.
 
 ## subsection
+  & id|elem-noteText
+  & title|noteText
+
+The {code|noteText} block element represents the text of a note. It
+takes a single argument, the label of the note whose text this block
+provides. Its content becomes the content of the note, and it will be
+placed at the bottom of whatever page the corresponding
+{code|noteMark} ends up on. An example is given in the
+following footnote.{noteMark@noteExample}
+
+& noteText
+  @ noteExample
+  ---
+  The content of a {code|noteText} block is unrestricted.
+
+## subsection
   & id|elem-ref
   & title|ref
 

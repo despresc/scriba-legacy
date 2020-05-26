@@ -475,7 +475,7 @@ Doc
                      , blockAttrs = []
                      }
                , args =
-                   [ InlineWhite
+                   [ InlineText
                        SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 18
@@ -1679,7 +1679,7 @@ Doc
                , etype = Just "elem"
                , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
                , args =
-                   [ InlineWhite
+                   [ InlineText
                        SourcePos
                          { sourceName = "simple.scb"
                          , sourceLine = Pos 82
@@ -1825,14 +1825,96 @@ Doc
                            , sourceColumn = Pos 23
                            }
                          "more."
-                     , InlineWhite
-                         SourcePos
-                           { sourceName = "simple.scb"
-                           , sourceLine = Pos 90
-                           , sourceColumn = Pos 28
-                           }
-                         " "
                      ]
                  ]
            })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 92
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "argText"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args =
+               [ InlineText
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 93
+                     , sourceColumn = Pos 5
+                     }
+                   "blocksCanHaveArguments"
+               ]
+           , content =
+               BlockBlocks
+                 [ BlockPar
+                     SourcePos
+                       { sourceName = "simple.scb"
+                       , sourceLine = Pos 95
+                       , sourceColumn = Pos 3
+                       }
+                     [ InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 95
+                           , sourceColumn = Pos 3
+                           }
+                         "With"
+                     , InlineWhite
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 95
+                           , sourceColumn = Pos 7
+                           }
+                         " "
+                     , InlineText
+                         SourcePos
+                           { sourceName = "simple.scb"
+                           , sourceLine = Pos 95
+                           , sourceColumn = Pos 8
+                           }
+                         "content"
+                     ]
+                 ]
+           })
+  , SecBlock
+      (BlockBlock
+         Element
+           { srcPos =
+               SourcePos
+                 { sourceName = "simple.scb"
+                 , sourceLine = Pos 97
+                 , sourceColumn = Pos 1
+                 }
+           , etype = Just "argText2"
+           , attrs = Attrs { inlineAttrs = [] , blockAttrs = [] }
+           , args =
+               [ InlineText
+                   SourcePos
+                     { sourceName = "simple.scb"
+                     , sourceLine = Pos 97
+                     , sourceColumn = Pos 12
+                     }
+                   "tightArgument"
+               ]
+           , content = BlockNil
+           })
+  , SecBlock
+      (BlockPar
+         SourcePos
+           { sourceName = "simple.scb"
+           , sourceLine = Pos 99
+           , sourceColumn = Pos 1
+           }
+         [ InlineText
+             SourcePos
+               { sourceName = "simple.scb"
+               , sourceLine = Pos 99
+               , sourceColumn = Pos 1
+               }
+             "Buffer"
+         ])
   ]

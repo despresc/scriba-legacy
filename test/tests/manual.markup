@@ -3157,7 +3157,7 @@ MemDoc
               , Subsection
                   { subsectionAttrs =
                       SecAttrs
-                        { secId = Just Identifier { getIdentifier = "elem-ref" }
+                        { secId = Just Identifier { getIdentifier = "elem-noteText" }
                         , secTitleBody = Nothing
                         , secTitleFull =
                             Just
@@ -3168,6 +3168,167 @@ MemDoc
                                            TitleNumber
                                            []
                                            [ Istr Str { getStr = "2.4" } ]
+                                           [ Istr Str { getStr = "." } ])
+                                    , Istr Str { getStr = " " }
+                                    , ItitleComponent
+                                        (TitleComponent
+                                           TitleBody [] [ Istr Str { getStr = "noteText" } ] [])
+                                    ]
+                                }
+                        , secNum =
+                            Just
+                              (ElemNumberAuto
+                                 (NumberAuto
+                                    ContainerName { getContainerName = "subsection" }
+                                    UsedNumberConfig
+                                      { uncStyle = Decimal
+                                      , uncRefPrefix = Just "\167"
+                                      , uncRefSep = Nothing
+                                      }
+                                    4
+                                    "2.4"))
+                        }
+                  , subsectionContent =
+                      [ Bpar
+                          Paragraph
+                            { getParagraph =
+                                [ Istr Str { getStr = "The" }
+                                , Istr Str { getStr = " " }
+                                , Icode InlineCode { getInlineCode = "noteText" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "block" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "element" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "represents" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "text" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "of" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "a" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "note." }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "It" }
+                                , Istr Str { getStr = "\n" }
+                                , Istr Str { getStr = "takes" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "a" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "single" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "argument," }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "label" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "of" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "note" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "whose" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "text" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "this" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "block" }
+                                , Istr Str { getStr = "\n" }
+                                , Istr Str { getStr = "provides." }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "Its" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "content" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "becomes" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "content" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "of" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "note," }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "and" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "it" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "will" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "be" }
+                                , Istr Str { getStr = "\n" }
+                                , Istr Str { getStr = "placed" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "at" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "bottom" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "of" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "whatever" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "page" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "corresponding" }
+                                , Istr Str { getStr = "\n" }
+                                , Icode InlineCode { getInlineCode = "noteMark" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "ends" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "up" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "on." }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "An" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "example" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "is" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "given" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "in" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "the" }
+                                , Istr Str { getStr = "\n" }
+                                , Istr Str { getStr = "following" }
+                                , Istr Str { getStr = " " }
+                                , Istr Str { getStr = "footnote." }
+                                , InoteMark
+                                    NoteMark
+                                      { noteTarget = Identifier { getIdentifier = "noteExample" } }
+                                ]
+                            }
+                      , Bnil
+                      ]
+                  }
+              , Subsection
+                  { subsectionAttrs =
+                      SecAttrs
+                        { secId = Just Identifier { getIdentifier = "elem-ref" }
+                        , secTitleBody = Nothing
+                        , secTitleFull =
+                            Just
+                              Title
+                                { titleBody =
+                                    [ ItitleComponent
+                                        (TitleComponent
+                                           TitleNumber
+                                           []
+                                           [ Istr Str { getStr = "2.5" } ]
                                            [ Istr Str { getStr = "." } ])
                                     , Istr Str { getStr = " " }
                                     , ItitleComponent
@@ -3185,8 +3346,8 @@ MemDoc
                                       , uncRefPrefix = Just "\167"
                                       , uncRefSep = Nothing
                                       }
-                                    4
-                                    "2.4"))
+                                    5
+                                    "2.5"))
                         }
                   , subsectionContent =
                       [ Bpar
@@ -3299,8 +3460,8 @@ MemDoc
                                                  , uncRefPrefix = Just "\167"
                                                  , uncRefSep = Nothing
                                                  }
-                                               4
-                                               "2.4")
+                                               5
+                                               "2.5")
                                       }
                                 , Istr Str { getStr = "," }
                                 , Istr Str { getStr = " " }
