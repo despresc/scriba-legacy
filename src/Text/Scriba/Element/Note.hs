@@ -56,16 +56,11 @@ instance (Numbering (b i), Numbering i) => Numbering (NoteText b i) where
     where getNum (NumberAuto _ _ n _) = n
 
 resolveBlockNoteText :: (HasNil (b' i'), Gathering (NoteText b' i') (b i) (b' i'), Gathering (NoteText b' i') i i') => NoteText b i -> GatherM (NoteText b' i') (b' i')
-resolveBlockNoteText = undefined
-{- TODO: restore
-instance ( Gathering (NoteText b i) (b i)
-         , Gathering (NoteText b i) i
-         ) => Gathering (NoteText b i) (NoteText b i) where
-  gathering nt@(NoteText (Identifier i) _ c) = do
-    tellLinkGen "" (Just $ Identifier $ "noteText-" <> i)
-    tellNoteText (Identifier i) nt
-    gathering c
--}
+resolveBlockNoteText (NoteText (Identifier i) mn c) = do
+  tellLinkGen "" (Just $ Identifier $ "noteText-" <> i)
+  c' <- gathering c
+  tellNoteText (Identifier i) $ NoteText (Identifier i) mn c'
+  pure embedNil
 
 -- duplication with Ref.pSourceRef and pNoteText
 pNoteMark :: Scriba Element NoteMark
