@@ -58,13 +58,6 @@ testIntermediate name src gold = goldenWith go name src gold
  where
   go t = byteShow $ SI.fromDoc $ parseOrExplode (T.pack $ takeFileName src) t
 
-testMarkup :: String -> FilePath -> FilePath -> TestTree
-testMarkup name src gold = goldenWith go name src gold
- where
-  go t = byteShow $ markupOrExplode $ SI.fromDoc $ parseOrExplode
-    (T.pack $ takeFileName src)
-    t
-
 testRenderingWith
   :: (SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void) -> TL.Text)
   -> String
@@ -88,9 +81,6 @@ tests = testGroup
             "simple markup parses into the node format"
             "simple.scb"
             "simple.intermediate"
-  , testMarkup "manual parses into internal markup"
-               "./doc/manual/manual.scb"
-               "./test/tests/manual.markup"
   , testRenderingWith
     (HT.renderHtml . SM.writeStandalone (SM.StandaloneConfig "./manual.css"))
     "manual renders to html"
