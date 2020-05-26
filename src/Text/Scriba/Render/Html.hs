@@ -15,6 +15,8 @@ module Text.Scriba.Render.Html
   )
 where
 
+import Text.Scriba.Decorate.Common (Void1, absurd1)
+
 import           Control.Applicative            ( liftA2 )
 import           Control.Monad.State            ( MonadState(..)
                                                 , State
@@ -56,6 +58,9 @@ instance Render a => Render [a] where
 
 instance Render Void where
   render = absurd
+
+instance Render (Void1 a) where
+  render = absurd1
 
 -- Section titles run from h1 to h6, then top out there.
 newtype RenderState = RenderState

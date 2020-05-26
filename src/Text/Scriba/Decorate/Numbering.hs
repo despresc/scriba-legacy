@@ -213,6 +213,8 @@ instance Numbering ContainerName
 instance Numbering UsedNumberConfig
 instance Numbering ElemNumber
 instance Numbering NumberAuto
+instance Numbering (Void1 a) where
+  numbering = absurd1
 
 runNumberM :: NumberM a -> NumberState -> Either DecorateError a
 runNumberM = go . State.evalStateT . unNumberM where go f = runExcept . f

@@ -151,3 +151,5 @@ instance Referencing a b => Referencing (Surround a) (Surround b)
 instance Referencing CounterName CounterName
 instance Referencing ElemNumber ElemNumber
 instance Referencing NumberAuto NumberAuto
+instance Referencing (Void1 a) b where
+  referencing = absurd1

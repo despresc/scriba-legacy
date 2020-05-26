@@ -22,6 +22,8 @@ module Text.Scriba.Markup
   , writeStandalone
   , MathJaxConfig(..)
   , StandaloneConfig(..)
+  , Void1
+  , absurd1
   )
 where
 
@@ -46,15 +48,18 @@ import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
-data Block a
-  = Bformal !(Formal Block a)
+data Block b i
+  = Bformal !(Formal (Block b) i)
   | Bcode !BlockCode
-  | Bpar !(Paragraph a)
-  | Blist !(List Block a)
+  | Bpar !(Paragraph i)
+  | Blist !(List (Block b) i)
+  | Bcontrol !(b i)
   deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Gathering note)
 
-deriving instance (FromTitleComponent i, Titling i i) => Titling i (Block i)
-instance Referencing (Inline a) (Inline b) => Referencing (Block (Inline a)) (Block (Inline b))
+deriving instance (FromTitleComponent i, Titling i (b i), Titling i i) => Titling i (Block b i)
+instance ( Referencing i i'
+         , Referencing (b i) (b' i')
+         ) => Referencing (Block b i) (Block b' i') where
 
 data Inline a
   = Istr !Str
@@ -127,7 +132,7 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
   inlineToText (Icontrol        a ) = f a
 
-pBlock :: Scriba Node (Inline a) -> Scriba Node (Block (Inline a))
+pBlock :: Scriba Node (Inline a) -> Scriba Node (Block b (Inline a))
 pBlock pInl =
   asNode
     $   Bformal
@@ -208,7 +213,8 @@ pControl = IcRef <$> pSourceRef
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
 parseMemDoc
-  :: Node -> Either ScribaError (MemDoc Block (Inline a) (Inline InlineControl))
+  :: Node
+  -> Either ScribaError (MemDoc (Block b) (Inline a) (Inline InlineControl))
 parseMemDoc = fmap snd . runScriba
   ( asNode
   $ pMemDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
@@ -244,8 +250,8 @@ traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
 
 decorateMemDoc
-  :: MemDoc Block (Inline Void) (Inline InlineControl)
-  -> Either DecorateError (MemDoc Block (Inline Void) (Inline Void))
+  :: MemDoc (Block Void1) (Inline Void) (Inline InlineControl)
+  -> Either DecorateError (MemDoc (Block Void1) (Inline Void) (Inline Void))
 decorateMemDoc =
   decorating $ traverseInline (absurd :: Void -> Inline InlineControl)
 
@@ -271,11 +277,12 @@ decorating f d = do
 -- TODO: could have a generic deriving thing here, I suppose. Would
 -- want it to be output-agnostic, if possible.
 
-instance RH.Render i => RH.Render (Block i) where
-  render (Bformal fb) = RH.render fb
-  render (Bcode   t ) = RH.render t
-  render (Bpar    p ) = RH.render p
-  render (Blist   b ) = RH.render b
+instance (RH.Render (b i), RH.Render i) => RH.Render (Block b i) where
+  render (Bformal  fb) = RH.render fb
+  render (Bcode    t ) = RH.render t
+  render (Bpar     p ) = RH.render p
+  render (Blist    b ) = RH.render b
+  render (Bcontrol b ) = RH.render b
 
 instance RH.Render a => RH.Render (Inline a) where
   render (Istr            s) = RH.render s

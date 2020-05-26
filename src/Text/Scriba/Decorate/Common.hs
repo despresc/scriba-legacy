@@ -1,5 +1,8 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE EmptyCase #-}
+{-# LANGUAGE EmptyDataDeriving #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Text.Scriba.Decorate.Common where
 
@@ -8,6 +11,12 @@ import           Text.Scriba.Counters
 import           Data.Map.Strict                ( Map )
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
+
+data Void1 a
+  deriving (Eq, Ord, Show)
+
+absurd1 :: Void1 a -> b
+absurd1 = \case {}
 
 newtype Identifier = Identifier
   { getIdentifier :: Text
@@ -68,7 +77,7 @@ data NumberAuto = NumberAuto ContainerName UsedNumberConfig Int Text
 
 elemNumberNum :: ElemNumber -> Text
 elemNumberNum (ElemNumberAuto (NumberAuto _ _ _ t)) = t
-elemNumberNum (NumberSource t    ) = t
+elemNumberNum (NumberSource   t                   ) = t
 
 -- TODO: add more
 data LocalNumberStyle

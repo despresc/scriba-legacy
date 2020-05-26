@@ -11,12 +11,9 @@ import           Text.Scriba.Decorate
 import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Element.MixedBody
 import           Text.Scriba.Intermediate
-import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           GHC.Generics                   ( Generic )
-import qualified Text.Blaze.Html5              as Html
-import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -- TODO: HERE
 -- Add:
@@ -55,6 +52,8 @@ instance (Numbering (b i), Numbering i) => Numbering (NoteText b i) where
     c' <- numbering c
     pure $ NoteText i (getNum <$> mna) c'
     where getNum (NumberAuto _ _ n _) = n
+
+{- TODO: restore
 instance ( Gathering (NoteText b i) (b i)
          , Gathering (NoteText b i) i
          ) => Gathering (NoteText b i) (NoteText b i) where
@@ -62,6 +61,7 @@ instance ( Gathering (NoteText b i) (b i)
     tellLinkGen "" (Just $ Identifier $ "noteText-" <> i)
     tellNoteText (Identifier i) nt
     gathering c
+-}
 
 -- duplication with Ref.pSourceRef and pNoteText
 pNoteMark :: Scriba Element NoteMark

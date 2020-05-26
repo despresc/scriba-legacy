@@ -103,6 +103,8 @@ instance Titling a Int where
 instance Titling a ContainerName
 instance Titling a ElemNumber
 instance Titling a NumberAuto
+instance Titling b (Void1 a) where
+  titling = absurd1
 
 data TitleTemplateStyle
   = FormalTemplate

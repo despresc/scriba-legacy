@@ -96,6 +96,8 @@ instance Gathering note UsedNumberConfig where
   gathering _ = pure ()
 instance Gathering note Void where
   gathering = absurd
+instance Gathering note (Void1 a) where
+  gathering = absurd1
 
 tellLinkDatum :: LinkDatum -> GatherM note ()
 tellLinkDatum = GatherM . modify . addLinkDatum
