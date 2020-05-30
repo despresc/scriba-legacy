@@ -16,6 +16,8 @@
 - Guarantee identifier uniqueness in a document by modifying
   `Gathering` to check for the presence of identifiers before adding
   them to the map.
+- Add an `Options` module (or sequence of modules) somewhere and put
+  the attribute/opting parsing and definitions there.
 - Fix the error message that is thrown on an unrecognized/unexpected
   element, so that it preserves the presentation of the
   element. Important for paragraphs and other sugar.
