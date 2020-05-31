@@ -134,6 +134,14 @@ defaultListConfig = NumberConfig
   (Just "item")
   (Just " ")
 
+defaultNoteConfig :: NumberConfig
+defaultNoteConfig = NumberConfig
+  ( NumberStyle (FilterByContainer "item:olist") Nothing
+  $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
+  )
+  (Just "note")
+  (Just " ")
+
 pListConfig :: Scriba Element NumberConfig
 pListConfig =
   meta $ attrs $ attrDef "olist" defaultListConfig $ pure defaultListConfig
@@ -312,10 +320,12 @@ pDocAttrs pMetInl stripMarkup = do
       formulaStyle =
         M.singleton "formula" $ join dmathNumConf <*> pure FilterByCounterDep
       listStyle = M.singleton "item:olist" (Just lconfig)
+      noteStyle = M.singleton "noteText" $ Just defaultNoteConfig
       mergedStyles =
         M.mapMaybe id
           $  listStyle
           <> formulaStyle
+          <> noteStyle
           <> toCNKey snstyleRaw
           <> toCNKey fnstyleRaw
       elemrel' = mergeRel elemrel mergedStyles

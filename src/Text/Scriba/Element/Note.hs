@@ -16,17 +16,19 @@ import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Text                      ( Text )
+import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
+import qualified Text.Blaze.Html5              as Html
+import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -- TODO: HERE
 -- Add:
--- 2. the types and parsers to Inline
 -- 3. note mark numbering
 -- 4. note text gathering in Linking? That might require polymorphic LinkData though
 -- 5. footnote placement in a rendered MemDoc
 
-data NoteMark = NoteMark
-  { noteTarget :: Identifier
+newtype SourceNoteMark = SourceNoteMark
+  { sourceNoteTarget :: Identifier
   } deriving ( Eq
              , Ord
              , Show
@@ -34,21 +36,45 @@ data NoteMark = NoteMark
              , Generic
              , Numbering
              , Titling i
-             , Referencing NoteMark )
+             , Referencing SourceNoteMark )
 
-instance Gathering note NoteMark NoteMark where
-  gathering n@(NoteMark (Identifier i)) = do
-    tellLinkGen "" (Just $ Identifier $ "noteMark-" <> i)
+data NoteMark = NoteMark
+  { noteMarkTarget :: Identifier
+  , noteMarkNum :: Int -- Ignoring style and other information right now.
+  } deriving (Eq, Ord, Show, Read, Generic)
+
+-- Dummy instances because note marks should never occur in the tree
+-- naturally
+instance Numbering NoteMark
+instance Referencing NoteMark NoteMark
+instance Titling i NoteMark
+instance Gathering note NoteMark NoteMark
+
+instance Gathering note SourceNoteMark SourceNoteMark where
+  gathering n@(SourceNoteMark (Identifier i)) = do
+    let i' = Identifier $ "noteMark-" <> i
+    tellLinkGen "" (Just i')
     pure n
 
--- TODO: extraordinarily bad. Need to instead have note mark be a
--- control element, I think.
+-- TODO: instead just have the n inside? probably for the best,
+-- esp. with changing footnote reference styles. Otherwise there
+-- should be configuration.
 instance RH.Render NoteMark where
-  render = mempty
+  render (NoteMark (Identifier i) n) = pure $ do
+    let i' = Html.toValue $ "#noteText-" <> i
+    Html.a
+      Html.! HtmlA.class_ "noteMark"
+      Html.! HtmlA.href i'
+      $      Html.toHtml
+      $      T.pack
+      $      "["
+      <>     show n
+      <>     "]"
+
 
 data NoteText b i = NoteText
-  { noteSource :: Identifier
-  , noteNum :: Maybe Int
+  { noteIdentifier :: Identifier
+  , noteNum :: Maybe NumberAuto
   , noteText :: MixedBody b i
   } deriving (Eq, Ord, Show, Read, Generic, Functor)
 
@@ -59,39 +85,51 @@ instance ( Referencing (f a) (g b)
 instance (Numbering (b i), Numbering i) => Numbering (NoteText b i) where
   numbering (NoteText i _ c) = bracketNumbering' (Just "noteText") $ \mna -> do
     c' <- numbering c
-    pure $ NoteText i (getNum <$> mna) c'
-    where getNum (NumberAuto _ _ n _) = n
+    pure $ NoteText i mna c'
 
-resolveBlockNoteText
+-- TODO: warn here about a Nothing number?
+gatheringBlockNoteText
   :: ( HasNil (b' i')
      , Gathering (NoteText b' i') (b i) (b' i')
      , Gathering (NoteText b' i') i i'
      )
   => NoteText b i
   -> GatherM (NoteText b' i') (b' i')
-resolveBlockNoteText (NoteText (Identifier i) mn c) = do
-  tellLinkGen "" (Just $ Identifier $ "noteText-" <> i)
+gatheringBlockNoteText (NoteText (Identifier i) mn c) = do
+  let itext = Identifier $ "noteText-" <> i
+  tellLinkNumbered "" (Just itext) (ElemNumberAuto <$> mn)
   c' <- gathering c
   tellNoteText (Identifier i) $ NoteText (Identifier i) mn c'
   pure embedNil
 
+resolveNoteMark :: SourceNoteMark -> RefM NoteMark
+resolveNoteMark (SourceNoteMark (Identifier i)) = do
+  (_, en) <- lookupRefData $ Identifier $ "noteText-" <> i
+  case en of
+    ElemNumberAuto (NumberAuto _ _ n _) -> pure $ NoteMark (Identifier i) n
+    _ -> throwError
+      $ DecorateError "internal logic error - note not automatically numbered"
+
 -- duplication with Ref.pSourceRef and pNoteText
-pNoteMark :: Scriba Element NoteMark
-pNoteMark = whileMatchTy "noteMark" $ do
+pSourceNoteMark :: Scriba Element SourceNoteMark
+pSourceNoteMark = whileMatchTy "noteMark" $ do
   as <- meta $ args inspect
   case as of
-    [t] -> useState [t] $ NoteMark <$> pIdent
-    _   -> throwError $ Msg "noteMark takes exactly one identifier as an argument"
+    [t] -> useState [t] $ SourceNoteMark <$> pIdent
+    _ ->
+      throwError $ Msg "noteMark takes exactly one identifier as an argument"
 
 pNoteText :: Scriba Node (b i) -> Scriba Node i -> Scriba Element (NoteText b i)
 pNoteText pBlk pInl = whileMatchTy "noteText" $ do
   as <- meta $ args inspect
   i  <- case as of
     [t] -> useState [t] pIdent
-    _   -> throwError $ Msg "noteText takes exactly one identifier as an argument"
+    _ ->
+      throwError $ Msg "noteText takes exactly one identifier as an argument"
   c <- allContent $ pMixedBody pBlk pInl
   pure $ NoteText i Nothing c
 
 -- TODO: not sure about this
 noteMarkToText :: NoteMark -> [Text]
-noteMarkToText (NoteMark (Identifier i)) = ["[#" <> i <> "]"]
+noteMarkToText (NoteMark (Identifier i) n) =
+  ["[" <> T.pack (show n) <> "; #" <> i <> "]"]

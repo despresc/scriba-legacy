@@ -87,7 +87,7 @@ instance Gathering (NoteText (Block Void1) i') i i' => Gathering (NoteText (Bloc
   gathering Bnil         = pure Bnil
 
 instance Gathering (NoteText (Block Void1) i') i i' => Gathering (NoteText (Block Void1) i') (BlockControl i) (Block Void1 i') where
-  gathering (BlockNoteText b) = resolveBlockNoteText b
+  gathering (BlockNoteText b) = gatheringBlockNoteText b
 
 data Inline a
   = Istr !Str
@@ -127,14 +127,16 @@ instance Referencing (Inline InlineControl) (Inline Void) where
   referencing (IpageMark       x) = IpageMark <$> referencing x
   referencing (Iref            x) = Iref <$> referencing x
   referencing (ItitleComponent x) = ItitleComponent <$> referencing x
-  referencing (InoteMark x)       = InoteMark <$> referencing x
+  referencing (InoteMark       x) = InoteMark <$> referencing x
   referencing (Icontrol        x) = referencing x
 
 instance Referencing InlineControl (Inline b) where
   referencing (IcRef sr) = Iref <$> resolveRef sr
+  referencing (IcNoteMark sr) = InoteMark <$> resolveNoteMark sr
 
-newtype InlineControl
-  = IcRef SourceRef
+data InlineControl
+  = IcRef !SourceRef
+  | IcNoteMark !SourceNoteMark
   deriving (Eq, Ord, Show, Read, Generic)
   deriving anyclass (Numbering, Titling i, Gathering note InlineControl)
 
@@ -162,7 +164,7 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (IpageMark       t ) = pageMarkToText t
   inlineToText (Iref            t ) = refToText inlineToText t
   inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
-  inlineToText (InoteMark t)        = noteMarkToText t
+  inlineToText (InoteMark       t ) = noteMarkToText t
   inlineToText (Icontrol        a ) = f a
 
 pBlock :: Scriba Node (Inline a) -> Scriba Node (Block BlockControl (Inline a))
@@ -208,8 +210,6 @@ pInline =
       <$> pGathered
       <|> Icode
       <$> pCode
-      <|> InoteMark
-      <$> pNoteMark
       <|> Icontrol
       <$> pInlineControl
       )
@@ -242,14 +242,14 @@ pInlineCore =
       <$> pGathered
       <|> Icode
       <$> pCode
-      <|> InoteMark
-      <$> pNoteMark
       )
     <|> Istr
     <$> pText
 
 pInlineControl :: Scriba Element InlineControl
 pInlineControl = IcRef <$> pSourceRef
+      <|> IcNoteMark
+      <$> pSourceNoteMark
 
 -- * Running parsers
 

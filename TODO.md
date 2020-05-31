@@ -37,6 +37,9 @@
 - Look into monomorphizing `Inline` and `Block`, and creating separate
   inline and block types for different compilation stages (will
   require changes to `Decorate`).
+- Add custom block and inline support back to `Inline` and
+  `Block`. Potentially related to monomorphizing those types, but can
+  be applied separately.
 - Selectively render empty elements
 - Fix element numbering configuration in light of the restricted
   sectioning
@@ -468,6 +471,11 @@ CSS has :lang selector, so we can have styles based on language
 (e.g. differing {title} styles and whatnot).
 
 # New elements, attributes, behaviours, fixes
+
+- name authority files (see <http://id.loc.gov/authorities/names.html>
+  and, e.g., <http://id.loc.gov/authorities/names/n85044155.html>) for
+  linking names and locations. Would be entries in a special book of
+  names for me, I suppose.
 
 - consider adding `data-` attributes to things, to show what they
   represent. Requires more research.
