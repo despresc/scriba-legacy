@@ -21,12 +21,6 @@ import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
--- TODO: HERE
--- Add:
--- 3. note mark numbering
--- 4. note text gathering in Linking? That might require polymorphic LinkData though
--- 5. footnote placement in a rendered MemDoc
-
 newtype SourceNoteMark = SourceNoteMark
   { sourceNoteTarget :: Identifier
   } deriving ( Eq
@@ -61,16 +55,17 @@ instance Gathering note SourceNoteMark SourceNoteMark where
 -- should be configuration.
 instance RH.Render NoteMark where
   render (NoteMark (Identifier i) n) = pure $ do
-    let i' = Html.toValue $ "#noteText-" <> i
+    let i'    = Html.toValue $ "#noteText-" <> i
+        ident = Html.toValue $ "noteMark-" <> i
     Html.a
       Html.! HtmlA.class_ "noteMark"
+      Html.! HtmlA.id ident
       Html.! HtmlA.href i'
       $      Html.toHtml
       $      T.pack
       $      "["
       <>     show n
       <>     "]"
-
 
 data NoteText b i = NoteText
   { noteIdentifier :: Identifier

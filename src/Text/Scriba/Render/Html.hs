@@ -9,6 +9,7 @@ module Text.Scriba.Render.Html
   , initialRenderState
   , runRender
   , bumpHeaderDepth
+  , atHeaderDepth
   , renderMaybe
   , (??)
   , foldBy
@@ -97,11 +98,22 @@ instance Semigroup a => Semigroup (RenderM a) where
 instance Monoid a => Monoid (RenderM a) where
   mempty = pure mempty
 
+setHeaderDepth :: Int -> RenderM ()
+setHeaderDepth n = modify $ \s -> s { rsHeaderDepth = n }
+
 bumpHeaderDepth :: RenderM a -> RenderM a
 bumpHeaderDepth act = do
   n <- gets rsHeaderDepth
-  setDepth $ n + 1
+  setHeaderDepth $ n + 1
   a <- act
-  setDepth n
+  setHeaderDepth n
   pure a
-  where setDepth n = modify $ \s -> s { rsHeaderDepth = n }
+  where 
+
+atHeaderDepth :: Int -> RenderM a -> RenderM a
+atHeaderDepth n act = do
+  lvl <- gets rsHeaderDepth
+  setHeaderDepth n
+  a <- act
+  setHeaderDepth lvl
+  pure a

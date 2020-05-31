@@ -96,3 +96,10 @@ li > .body > p:first-child {
 ul > .body > p:first-child {
     text-indent: 0;
 }
+
+section.notes {
+    margin-top: 1em;
+    border-top: 1px solid grey;
+    margin-left: 58px;
+    width: 70%;
+}

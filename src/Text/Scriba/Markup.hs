@@ -18,6 +18,8 @@ module Text.Scriba.Markup
   ( MemDoc
   , Block(..)
   , Inline(..)
+  , NoteText(..)
+  , Identifier(..)
   , parseMemDoc
   , prettyScribaError
   , decorateMemDoc
@@ -36,6 +38,8 @@ import qualified Text.Scriba.Render.Html       as RH
 
 import           Data.Aeson                     ( ToJSON(..) )
 import qualified Data.Aeson                    as Aeson
+import           Data.Function                  ( on )
+import qualified Data.List                     as List
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
 import           Data.Maybe                     ( mapMaybe )
@@ -131,7 +135,7 @@ instance Referencing (Inline InlineControl) (Inline Void) where
   referencing (Icontrol        x) = referencing x
 
 instance Referencing InlineControl (Inline b) where
-  referencing (IcRef sr) = Iref <$> resolveRef sr
+  referencing (IcRef      sr) = Iref <$> resolveRef sr
   referencing (IcNoteMark sr) = InoteMark <$> resolveNoteMark sr
 
 data InlineControl
@@ -247,9 +251,7 @@ pInlineCore =
     <$> pText
 
 pInlineControl :: Scriba Element InlineControl
-pInlineControl = IcRef <$> pSourceRef
-      <|> IcNoteMark
-      <$> pSourceNoteMark
+pInlineControl = IcRef <$> pSourceRef <|> IcNoteMark <$> pSourceNoteMark
 
 -- * Running parsers
 
@@ -297,7 +299,11 @@ traverseInline _ (InoteMark    s) = InoteMark s
 
 decorateMemDoc
   :: MemDoc (Block BlockControl) (Inline Void) (Inline InlineControl)
-  -> Either DecorateError (MemDoc (Block Void1) (Inline Void) (Inline Void))
+  -> Either
+       DecorateError
+       ( Map Identifier (NoteText (Block Void1) (Inline Void))
+       , MemDoc (Block Void1) (Inline Void) (Inline Void)
+       )
 decorateMemDoc =
   decorating @((MemDoc (Block Void1) (Inline Void) (Inline InlineControl)))
     $ traverseInline (absurd :: Void -> Inline InlineControl)
@@ -312,18 +318,21 @@ decorating
      )
   => (j -> i)
   -> d
-  -> Either DecorateError d''
+  -> Either
+       DecorateError
+       (Map Identifier (NoteText (Block Void1) (Inline Void)), d'')
 decorating f d = do
   nd <- runDocNumbering d
   td <- runDocTitling f nd
-  let (d', numDat) =
+  let (d', gatherData) =
         (runDocGathering :: d
             -> (d', GatherData (NoteText (Block Void1) (Inline InlineControl)))
           )
           td
-  (runDocReferencing :: RefData -> d' -> Either DecorateError d'')
-    (getRefEnv numDat)
-    d'
+  let refEnv = getRefEnv gatherData
+  notes <- runDocReferencing refEnv $ gatherNoteText gatherData
+  d''   <- runDocReferencing refEnv d'
+  pure (notes, d'')
 
 -- * Rendering
 
@@ -377,17 +386,56 @@ newtype StandaloneConfig = StandaloneConfig
   { standaloneCSS :: FilePath
   }
 
+-- TODO: real error handling here (will be obsolete if NoteText
+-- changes shape in different compilation stages)
+-- TODO: Doesn't respect pagination (needs a start from)
+-- Add an identifier for the note section?
+-- Maybe this should go in Element/Note? Unsure.
+
+-- TODO: document that this assumes that the notes will be placed
+-- under an h1 section. We might consider having an end note page by
+-- default, instead, though that won't work very well with certain
+-- documents. Maybe just for books.
+renderNotes
+  :: (RH.Render (b i), RH.Render i)
+  => Map Identifier (NoteText b i)
+  -> RH.RenderM Html.Html
+renderNotes = go . List.sortBy (compare `on` fst) . map getNums . M.elems
+ where
+  go ts = RH.atHeaderDepth 2 $ do
+    ts' <- traverse renderNote ts
+    pure $ Html.ol $ mconcat ts'
+  renderNote (_, NoteText (Identifier i) _ t) = do
+    t' <- RH.render t
+    let ident = HtmlA.id $ Html.toValue $ "noteText-" <> i
+    pure $ Html.li Html.! ident $ do
+      "["
+      Html.a Html.! HtmlA.href (Html.toValue $ "#noteMark-" <> i) $ "↑\xfe0e"
+      "] "
+      t'
+  getNums t = case noteNum t of
+    Just (NumberAuto _ _ n _) -> (n, t)
+    _ ->
+      error
+        $  T.unpack
+        $  "internal logic error - note with identifier <"
+        <> getIdentifier (noteIdentifier t)
+        <> "> was not given a number"
+
 -- TODO: Have StandaloneConfig instead be (StandaloneConfig a) and
 -- make it an HTML instance (with a content :: a and the rest of the
 -- config as other fields)? If we are keeping it, of course.
+-- TODO: we put the notes outside the `scribaDoc` section. Might not
+-- be good.
 renderStandalone
   :: (RH.Render d, HasDocAttrs j d)
   => StandaloneConfig
-  -> d
+  -> (Map Identifier (NoteText (Block Void1) (Inline Void)), d)
   -> RH.RenderM Html.Html
-renderStandalone (StandaloneConfig csspath) d = do
+renderStandalone (StandaloneConfig csspath) (notes, d) = do
   let dm = getDocAttrs d
-  d' <- RH.render d
+  d'     <- RH.render d
+  notes' <- renderNotes notes
   let tplain = docPlainTitle dm
   pure $ Html.docTypeHtml $ do
     Html.head $ do
@@ -402,9 +450,14 @@ renderStandalone (StandaloneConfig csspath) d = do
         $      ""
       Html.link Html.! HtmlA.href (Html.toValue csspath) Html.! HtmlA.rel
         "stylesheet"
-    Html.body d'
+    Html.body $ do
+      d'
+      Html.section Html.! HtmlA.class_ "notes" $ notes'
 
 writeStandalone
-  :: (RH.Render d, HasDocAttrs j d) => StandaloneConfig -> d -> Html.Html
+  :: (RH.Render d, HasDocAttrs j d)
+  => StandaloneConfig
+  -> (Map Identifier (NoteText (Block Void1) (Inline Void)), d)
+  -> Html.Html
 writeStandalone sc d =
   fst $ RH.runRender (renderStandalone sc d) RH.initialRenderState

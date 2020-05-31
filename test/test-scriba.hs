@@ -7,6 +7,7 @@ import qualified Text.Scriba.Source.Common     as SC
 import qualified Text.Scriba.Source.Parse      as SP
 
 import           Data.ByteString.Lazy          as BL
+import           Data.Map.Strict                ( Map )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
@@ -27,7 +28,10 @@ parseOrExplode name t = case SP.parseDoc' name t of
 -- with decoration
 -- TODO: nicer looking messages
 markupOrExplode
-  :: SI.Node -> SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
+  :: SI.Node
+  -> ( Map SM.Identifier (SM.NoteText (SM.Block SM.Void1) (SM.Inline Void))
+     , SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
+     )
 markupOrExplode n = case SM.parseMemDoc n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
   Right a -> case SM.decorateMemDoc a of
@@ -59,7 +63,11 @@ testIntermediate name src gold = goldenWith go name src gold
   go t = byteShow $ SI.fromDoc $ parseOrExplode (T.pack $ takeFileName src) t
 
 testRenderingWith
-  :: (SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void) -> TL.Text)
+  :: (  ( Map SM.Identifier (SM.NoteText (SM.Block SM.Void1) (SM.Inline Void))
+       , SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
+       )
+     -> TL.Text
+     )
   -> String
   -> FilePath
   -> FilePath

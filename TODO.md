@@ -29,6 +29,11 @@
   sections; report the page on which each element occurs in a document
   in the linking step; fix all the links so that they point to the
   right places.
+- Create an HTML identifier rendering function in, say,
+  `Element/Identifier`, then use it to annotate HTML elements, instead
+  of whatever ad-hoc things we do now. Example in the rendering of
+  `Element/List` and the `NoteText` rendering in `Markup`, but applies
+  to everything with an `Identifier` in it.
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
@@ -36,7 +41,8 @@
   the other types).
 - Look into monomorphizing `Inline` and `Block`, and creating separate
   inline and block types for different compilation stages (will
-  require changes to `Decorate`).
+  require changes to `Decorate`). Example: the `NoteText` should have
+  a `NumberAuto` after numbering, and should have no number before.
 - Add custom block and inline support back to `Inline` and
   `Block`. Potentially related to monomorphizing those types, but can
   be applied separately.

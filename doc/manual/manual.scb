@@ -319,8 +319,7 @@ following footnote.{noteMark@noteExample}
 
 & noteText
   @ noteExample
-  ---
-  The content of a {code|noteText} block is unrestricted.
+  |A {code|noteText} block can contain any inline or block content.
 
 ## subsection
   & id|elem-ref

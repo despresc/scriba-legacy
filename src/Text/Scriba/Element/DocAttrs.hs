@@ -319,7 +319,7 @@ pDocAttrs pMetInl stripMarkup = do
       toCNKey = M.mapKeysMonotonic ContainerName
       formulaStyle =
         M.singleton "formula" $ join dmathNumConf <*> pure FilterByCounterDep
-      listStyle = M.singleton "item:olist" (Just lconfig)
+      listStyle = M.singleton "item:olist" $ Just lconfig
       noteStyle = M.singleton "noteText" $ Just defaultNoteConfig
       mergedStyles =
         M.mapMaybe id

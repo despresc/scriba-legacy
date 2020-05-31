@@ -81,3 +81,4 @@ test-suite scriba-test
                , pretty-show
                , bytestring
                , blaze-html
+               , containers
