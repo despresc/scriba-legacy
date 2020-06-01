@@ -165,7 +165,7 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Formal b i) where
     body'     <- RH.render body
     concl'    <- traverse RH.render concl
     let cls   = "formalBlock" <> maybe "" (" " <>) mty
-        ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> ml
+        ident = identAttr <$> ml
     pure $ Html.div Html.! HtmlA.class_ (Html.toValue cls) RH.?? ident $ do
       RH.renderMaybe title' $ Html.span Html.! HtmlA.class_ "title"
       RH.renderMaybe titlesep' $ Html.span Html.! HtmlA.class_ "titleSep"

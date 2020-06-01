@@ -407,12 +407,14 @@ renderNotes = go . List.sortBy (compare `on` fst) . map getNums . M.elems
     pure $ if null ts'
       then mempty
       else Html.section Html.! HtmlA.class_ "notes" $ Html.ol $ mconcat ts'
-  renderNote (_, NoteText (Identifier i) _ t) = do
+  renderNote (_, NoteText i _ t) = do
     t' <- RH.render t
-    let ident = HtmlA.id $ Html.toValue $ "noteText-" <> i
+    let ident = identAttr $ prefixIdent "noteText-" i
     pure $ Html.li Html.! ident $ do
       "["
-      Html.a Html.! HtmlA.href (Html.toValue $ "#noteMark-" <> i) $ "↑\xfe0e"
+      Html.a
+        Html.! HtmlA.href (identAttrVal $ prefixIdent "#noteMark-" i)
+        $      "↑\xfe0e"
       "] "
       t'
   getNums t = case noteNum t of

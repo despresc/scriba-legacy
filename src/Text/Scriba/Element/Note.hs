@@ -54,13 +54,13 @@ instance Gathering note SourceNoteMark SourceNoteMark where
 -- esp. with changing footnote reference styles. Otherwise there
 -- should be configuration.
 instance RH.Render NoteMark where
-  render (NoteMark (Identifier i) n) = pure $ do
-    let i'    = Html.toValue $ "#noteText-" <> i
-        ident = Html.toValue $ "noteMark-" <> i
+  render (NoteMark i n) = pure $ do
+    let i'    = HtmlA.href $ identAttrVal $ prefixIdent "#noteText-" i
+        ident = identAttr $ prefixIdent "noteMark-" i
     Html.a
       Html.! HtmlA.class_ "noteMark"
-      Html.! HtmlA.id ident
-      Html.! HtmlA.href i'
+      Html.! ident
+      Html.! i'
       $      Html.toHtml
       $      T.pack
       $      "["
@@ -90,18 +90,18 @@ gatheringBlockNoteText
      )
   => NoteText b i
   -> GatherM (NoteText b' i') (b' i')
-gatheringBlockNoteText (NoteText (Identifier i) mn c) = do
-  let itext = Identifier $ "noteText-" <> i
+gatheringBlockNoteText (NoteText i mn c) = do
+  let itext = prefixIdent "noteText-" i
   tellLinkNumbered "" (Just itext) (ElemNumberAuto <$> mn)
   c' <- gathering c
-  tellNoteText (Identifier i) $ NoteText (Identifier i) mn c'
+  tellNoteText i $ NoteText i mn c'
   pure embedNil
 
 resolveNoteMark :: SourceNoteMark -> RefM NoteMark
-resolveNoteMark (SourceNoteMark (Identifier i)) = do
-  (_, en) <- lookupRefData $ Identifier $ "noteText-" <> i
+resolveNoteMark (SourceNoteMark i) = do
+  (_, en) <- lookupRefData $ prefixIdent "noteText-" i
   case en of
-    ElemNumberAuto (NumberAuto _ _ n _) -> pure $ NoteMark (Identifier i) n
+    ElemNumberAuto (NumberAuto _ _ n _) -> pure $ NoteMark i n
     _ -> throwError
       $ DecorateError "internal logic error - note not automatically numbered"
 

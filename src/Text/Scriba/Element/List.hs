@@ -16,7 +16,6 @@ import qualified Text.Scriba.Render.Html       as RH
 import qualified Data.Text                     as T
 import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
-import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -- TODO: need to be able to configure unordered list items too.
 data List b i
@@ -103,5 +102,5 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (List b i) where
 instance (RH.Render (b i), RH.Render i) => RH.Render (OlistItem b i) where
   render (OlistItem mId _ c) = do
     c' <- RH.render c
+    let ident = identAttr <$> mId
     pure $ Html.li RH.?? ident $ c'
-    where ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> mId

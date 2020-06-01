@@ -12,7 +12,7 @@ module Text.Scriba.Element.Memoir where
 
 import           Text.Scriba.Decorate
 import           Text.Scriba.Element.DocAttrs
-import           Text.Scriba.Element.Identifier ( pIdent )
+import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Element.Str        ( HasStr )
 import           Text.Scriba.Element.Title      ( Title(..) )
 import           Text.Scriba.Element.TitleComponent
@@ -91,8 +91,12 @@ data FrontMatter b i
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
 instance Titling i (b i) => Titling i (FrontMatter b i)
-instance (Referencing (f a) (g b), Referencing a b) => Referencing (FrontMatter f a) (FrontMatter g b)
-instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (FrontMatter f a) (FrontMatter g b)
+instance ( Referencing (f a) (g b)
+         , Referencing a b
+         ) => Referencing (FrontMatter f a) (FrontMatter g b)
+instance ( Gathering note (f a) (g b)
+         , Gathering note a b
+         ) => Gathering note (FrontMatter f a) (FrontMatter g b)
 instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
   render = \case
     Foreword     blks -> rfront "foreword" blks
@@ -233,7 +237,7 @@ instance Referencing a b => Referencing (SecAttrs a) (SecAttrs b)
 instance (RH.Render (b i), RH.Render i) => RH.Render (Section b i) where
   render (Section (SecAttrs ml _ t _) pre c) = do
     t' <- traverse (RH.render . Heading) t
-    let ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> ml
+    let ident = identAttr <$> ml
     RH.bumpHeaderDepth $ do
       pre' <- RH.render pre
       c'   <- RH.render c
@@ -245,7 +249,7 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Section b i) where
 instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
   render (Subsection (SecAttrs ml _ t _) c) = do
     t' <- traverse (RH.render . Heading) t
-    let ident = (\(Identifier i) -> HtmlA.id (Html.toValue i)) <$> ml
+    let ident = identAttr <$> ml
     RH.bumpHeaderDepth $ do
       c' <- RH.render c
       let cwrap = Html.div Html.! HtmlA.class_ "sectionPreamble" $ c'

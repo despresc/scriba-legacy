@@ -61,11 +61,11 @@ resolveRef (SourceRef i) = do
 -- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
 instance RH.Render Ref where
-  render (Ref (Identifier lab) pref enum) =
+  render (Ref lab pref enum) =
     pure
       $      Html.a
       Html.! HtmlA.class_ "ref"
-      Html.! HtmlA.href (Html.toValue $ "#" <> pref <> lab)
+      Html.! HtmlA.href (identAttrVal $ prefixIdent ("#" <> pref) lab)
       $      body
    where
     body = case enum of

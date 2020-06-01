@@ -29,11 +29,6 @@
   sections; report the page on which each element occurs in a document
   in the linking step; fix all the links so that they point to the
   right places.
-- Create an HTML identifier rendering function in, say,
-  `Element/Identifier`, then use it to annotate HTML elements, instead
-  of whatever ad-hoc things we do now. Example in the rendering of
-  `Element/List` and the `NoteText` rendering in `Markup`, but applies
-  to everything with an `Identifier` in it.
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
