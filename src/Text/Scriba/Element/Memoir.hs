@@ -95,7 +95,7 @@ instance (Referencing (f a) (g b), Referencing a b) => Referencing (FrontMatter 
 instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (FrontMatter f a) (FrontMatter g b)
 instance (RH.Render (b i), RH.Render i) => RH.Render (FrontMatter b i) where
   render = \case
-    Foreword     blks -> rfront "forword" blks
+    Foreword     blks -> rfront "foreword" blks
     Dedication   blks -> rfront "dedication" blks
     Introduction blks -> rfront "introduction" blks
    where
