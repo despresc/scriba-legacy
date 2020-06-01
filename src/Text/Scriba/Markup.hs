@@ -404,7 +404,9 @@ renderNotes = go . List.sortBy (compare `on` fst) . map getNums . M.elems
  where
   go ts = RH.atHeaderDepth 2 $ do
     ts' <- traverse renderNote ts
-    pure $ Html.ol $ mconcat ts'
+    pure $ if null ts'
+      then mempty
+      else Html.section Html.! HtmlA.class_ "notes" $ Html.ol $ mconcat ts'
   renderNote (_, NoteText (Identifier i) _ t) = do
     t' <- RH.render t
     let ident = HtmlA.id $ Html.toValue $ "noteText-" <> i
@@ -452,7 +454,7 @@ renderStandalone (StandaloneConfig csspath) (notes, d) = do
         "stylesheet"
     Html.body $ do
       d'
-      Html.section Html.! HtmlA.class_ "notes" $ notes'
+      notes'
 
 writeStandalone
   :: (RH.Render d, HasDocAttrs j d)
