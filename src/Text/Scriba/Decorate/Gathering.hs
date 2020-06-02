@@ -3,6 +3,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Text.Scriba.Decorate.Gathering where
@@ -11,11 +12,15 @@ import           Text.Scriba.Counters
 import           Text.Scriba.Decorate.Common
 
 import           Control.Applicative            ( liftA2 )
-import           Control.Monad.State.Strict     ( State
+import           Control.Monad.Except           ( Except
+                                                , runExcept
+                                                , liftEither
+                                                )
+import           Control.Monad.State.Strict     ( StateT
+                                                , MonadState(..)
                                                 , modify
                                                 )
 import qualified Control.Monad.State.Strict    as State
-import           Data.Foldable                  ( traverse_ )
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as Map
 import           Data.Text                      ( Text )
@@ -30,7 +35,7 @@ import           GHC.Generics
 -}
 
 data GatherData note = GatherData
-  { gatherLinkData :: [LinkDatum]
+  { gatherLinkData :: Map Identifier LinkDatum
   , gatherNoteText :: Map Identifier note
   } deriving (Eq, Ord, Show)
 
@@ -40,18 +45,23 @@ instance Semigroup (GatherData note) where
 instance Monoid (GatherData note) where
   mempty = GatherData mempty mempty
 
-addLinkDatum :: LinkDatum -> GatherData note -> GatherData note
-addLinkDatum x (GatherData ld nt) = GatherData (x : ld) nt
+addLinkDatum
+  :: Identifier
+  -> LinkDatum
+  -> Map Identifier LinkDatum
+  -> Either DecorateError (Map Identifier LinkDatum)
+addLinkDatum = insertUnique $ \(Identifier i) _ ->
+  DecorateError $ "identifier <" <> i <> "> was defined twice in the document"
 
 addNoteText :: Identifier -> note -> GatherData note -> GatherData note
 addNoteText i n (GatherData l m) = GatherData l $ Map.insert i n m
 
 newtype GatherM note a = GatherM
-  { unNumberM :: State (GatherData note) a
+  { unNumberM :: StateT (GatherData note) (Except DecorateError) a
   } deriving (Functor, Applicative, Monad)
 
-runGatherM :: GatherM note a -> (a, GatherData note)
-runGatherM = ($ mempty) . State.runState . unNumberM
+runGatherM :: GatherM note a -> Either DecorateError (a, GatherData note)
+runGatherM = runExcept . ($ mempty) . State.runStateT . unNumberM
 
 class GGathering note f g where
   ggathering :: f a -> GatherM note (g a)
@@ -105,16 +115,23 @@ instance Gathering note (Void1 a) b where
 class HasNil a where
   embedNil :: a
 
-tellLinkDatum :: LinkDatum -> GatherM note ()
-tellLinkDatum = GatherM . modify . addLinkDatum
+tellLinkDatum :: Maybe Identifier -> LinkDatum -> GatherM note ()
+tellLinkDatum (Just i) ld = GatherM $ do
+  GatherData lds nt <- get
+  lds'              <- liftEither $ addLinkDatum i ld lds
+  put $ GatherData lds' nt
+tellLinkDatum Nothing _ = pure ()
 
 tellLinkNumbered
   :: Text -> Maybe Identifier -> Maybe ElemNumber -> GatherM note ()
-tellLinkNumbered t mi (Just en) = tellLinkDatum $ LinkNumber mi t en
+tellLinkNumbered t mi (Just en) = tellLinkDatum mi $ LinkNumber t en
 tellLinkNumbered t mi _         = tellLinkGen t mi
 
 tellLinkGen :: Text -> Maybe Identifier -> GatherM note ()
-tellLinkGen t = traverse_ $ tellLinkDatum . flip LinkBare t
+tellLinkGen t = flip tellLinkDatum $ LinkBare t
 
+-- TODO: Note that we don't perform double-checking of note text
+-- identifiers here, since that is presently handled by
+-- tellLinkDatum. Perhaps that should change.
 tellNoteText :: Identifier -> note -> GatherM note ()
 tellNoteText i = GatherM . modify . addNoteText i

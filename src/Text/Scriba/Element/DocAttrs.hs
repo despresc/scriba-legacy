@@ -94,7 +94,7 @@ runDocTitling f d =
 runDocReferencing :: Referencing a b => RefData -> a -> Either DecorateError b
 runDocReferencing rd d = runRefM (referencing d) rd
 
-runDocGathering :: Gathering note a b => a -> (b, GatherData note)
+runDocGathering :: Gathering note a b => a -> Either DecorateError (b, GatherData note)
 runDocGathering = runGatherM . gathering
 
 emptySurround :: Surround a

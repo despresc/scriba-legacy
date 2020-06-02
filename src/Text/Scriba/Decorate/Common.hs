@@ -9,6 +9,7 @@ module Text.Scriba.Decorate.Common where
 import           Text.Scriba.Counters
 
 import           Data.Map.Strict                ( Map )
+import qualified Data.Map.Strict               as Map
 import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
 
@@ -17,6 +18,13 @@ data Void1 a
 
 absurd1 :: Void1 a -> b
 absurd1 = \case {}
+
+insertUnique
+  :: Ord k => (k -> v -> e) -> k -> v -> Map k v -> Either e (Map k v)
+insertUnique f k v = Map.alterF go k
+ where
+  go Nothing = Right $ Just v
+  go Just{}  = Left $ f k v
 
 newtype Identifier = Identifier
   { getIdentifier :: Text
@@ -130,13 +138,13 @@ data Surround a = Surround
 -- identifier. Only useful for mathjax equations, and that might be
 -- changing anyway.
 data LinkDatum
-  = LinkNumber (Maybe Identifier) Text ElemNumber
-  | LinkBare Identifier Text
+  = LinkNumber Text ElemNumber
+  | LinkBare Text
   deriving (Eq, Ord, Show, Read, Generic)
 
 linkDatumPrefix :: LinkDatum -> Text
-linkDatumPrefix (LinkNumber _ t _) = t
-linkDatumPrefix (LinkBare _ t    ) = t
+linkDatumPrefix (LinkNumber t _) = t
+linkDatumPrefix (LinkBare t    ) = t
 
 -- | Numbering data to be gathered from the AST.
 data NumberDatum = NumberDatum

@@ -478,6 +478,9 @@ CSS has :lang selector, so we can have styles based on language
   linking names and locations. Would be entries in a special book of
   names for me, I suppose.
 
+- linking/referencing numbered elements by their standard number, like
+  `thm-7.4.1`. Requires changes to `LinkDatum` and `Gathering`.
+
 - consider adding `data-` attributes to things, to show what they
   represent. Requires more research.
 

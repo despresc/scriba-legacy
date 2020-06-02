@@ -42,7 +42,6 @@ import           Data.Function                  ( on )
 import qualified Data.List                     as List
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as M
-import           Data.Maybe                     ( mapMaybe )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
 import qualified Data.Text.Lazy                as TL
@@ -270,12 +269,10 @@ parseMemDoc = fmap snd . runScriba
 -- * Decorating the document
 
 getRefEnv :: GatherData note -> RefData
-getRefEnv (GatherData d _) = RefData $ M.fromList $ mapMaybe go d
+getRefEnv (GatherData d _) = RefData $ M.mapMaybe go d
  where
-  go (LinkNumber mi t en) = do
-    i <- mi
-    pure (i, (t, en))
-  go LinkBare{} = Nothing
+  go (LinkNumber t en) = Just (t, en)
+  go LinkBare{}        = Nothing
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
@@ -322,13 +319,15 @@ decorating
        DecorateError
        (Map Identifier (NoteText (Block Void1) (Inline Void)), d'')
 decorating f d = do
-  nd <- runDocNumbering d
-  td <- runDocTitling f nd
-  let (d', gatherData) =
-        (runDocGathering :: d
-            -> (d', GatherData (NoteText (Block Void1) (Inline InlineControl)))
-          )
-          td
+  nd               <- runDocNumbering d
+  td               <- runDocTitling f nd
+  (d', gatherData) <-
+    (runDocGathering :: d
+        -> Either
+             DecorateError
+             (d', GatherData (NoteText (Block Void1) (Inline InlineControl)))
+      )
+      td
   let refEnv = getRefEnv gatherData
   notes <- runDocReferencing refEnv $ gatherNoteText gatherData
   d''   <- runDocReferencing refEnv d'
