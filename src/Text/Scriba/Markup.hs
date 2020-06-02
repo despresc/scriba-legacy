@@ -15,14 +15,14 @@
 {-# LANGUAGE TypeFamilies #-}
 
 module Text.Scriba.Markup
-  ( MemDoc
+  ( Doc
   , Block(..)
   , Inline(..)
   , NoteText(..)
   , Identifier(..)
-  , parseMemDoc
+  , parseArticle
   , prettyScribaError
-  , decorateMemDoc
+  , decorateDoc
   , writeStandalone
   , MathJaxConfig(..)
   , StandaloneConfig(..)
@@ -256,15 +256,13 @@ pInlineControl = IcRef <$> pSourceRef <|> IcNoteMark <$> pSourceNoteMark
 
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
-parseMemDoc
+parseArticle
   :: Node
   -> Either
        ScribaError
-       (MemDoc (Block BlockControl) (Inline a) (Inline InlineControl))
-parseMemDoc = fmap snd . runScriba
-  ( asNode
-  $ pMemDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
-  )
+       (Doc (Block BlockControl) (Inline a) (Inline InlineControl))
+parseArticle = fmap snd . runScriba
+  (asNode $ pDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline)
 
 -- * Decorating the document
 
@@ -294,15 +292,15 @@ traverseInline _ (Icode        s) = Icode s
 traverseInline _ (IpageMark    s) = IpageMark s
 traverseInline _ (InoteMark    s) = InoteMark s
 
-decorateMemDoc
-  :: MemDoc (Block BlockControl) (Inline Void) (Inline InlineControl)
+decorateDoc
+  :: Doc (Block BlockControl) (Inline Void) (Inline InlineControl)
   -> Either
        DecorateError
        ( Map Identifier (NoteText (Block Void1) (Inline Void))
-       , MemDoc (Block Void1) (Inline Void) (Inline Void)
+       , Doc (Block Void1) (Inline Void) (Inline Void)
        )
-decorateMemDoc =
-  decorating @((MemDoc (Block Void1) (Inline Void) (Inline InlineControl)))
+decorateDoc =
+  decorating @((Doc (Block Void1) (Inline Void) (Inline InlineControl)))
     $ traverseInline (absurd :: Void -> Inline InlineControl)
 
 decorating

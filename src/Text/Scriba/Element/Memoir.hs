@@ -19,10 +19,8 @@ import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
-import           Control.Monad                  ( join
-                                                , void
-                                                , guard
-                                                )
+import           Control.Monad                  ( join )
+import           Control.Monad.Except           ( throwError )
 import           Control.Monad.Reader           ( asks )
 import           Control.Monad.State            ( gets )
 import           Data.Functor                   ( (<&>) )
@@ -50,38 +48,63 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -}
 
+data Doc b j i = Doc
+  { docLibAttrs :: ()
+  , docContent :: DocContent b j i
+  } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
+
+instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (Doc b j i)
+instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (Doc f j a) (Doc g j b)
+instance HasDocAttrs j (Doc b j i) where
+  getDocAttrs (Doc _ (DocArticle a)) = getDocAttrs a
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (Doc f j a) (Doc g j b)
+instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Doc b j i) where
+  render (Doc _ (DocArticle a)) = RH.render a
+
+data DocContent b j i
+  = DocArticle (Article b j i)
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
+
+instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (DocContent f j a) (DocContent g j b)
+instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (DocContent b j i)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (DocContent f j a) (DocContent g j b)
+
 -- | A particular document type.
 
 -- TODO: This should probably go in its own module.
-data MemDoc b j i = MemDoc
-  { memControlAttrs :: DocAttrs j
-  , memAttrs :: MemDocAttrs j
-  , memFront :: [FrontMatter b i]
-  , memMain :: [Section b i]
+data Article b j i = Article
+  { articleControlAttrs :: DocAttrs j
+  , articleAttrs :: ArticleAttrs j
+  , articleFront :: [FrontMatter b i]
+  , articleMain :: [Section b i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
 
-instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (MemDoc b j i)
-instance (Referencing (f a) (g b), Referencing a b) => Referencing (MemDoc f j a) (MemDoc g j b)
+instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (Article b j i)
+instance (Referencing (f a) (g b), Referencing a b) => Referencing (Article f j a) (Article g j b)
 
-instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (MemDoc f j a) (MemDoc g j b)
+instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (Article f j a) (Article g j b)
 
-instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (MemDoc b j i) where
-  render (MemDoc ca _ f m) = do
+instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Article b j i) where
+  render (Article ca _ f m) = do
     t' <- RH.render $ Heading $ docTitle ca
     RH.bumpHeaderDepth $ do
       f' <- RH.render f
       m' <- RH.render m
       let mlang = HtmlA.lang . Html.toValue <$> docLang ca
-      pure $ Html.section Html.! HtmlA.class_ "scribaMemDoc" RH.?? mlang $ do
-        Html.header t'
-        Html.section Html.! HtmlA.class_ "frontMatter" $ f'
-        Html.section Html.! HtmlA.class_ "mainMatter" $ m'
+      pure
+        $      Html.section
+        Html.! HtmlA.class_ "scribaDoc article"
+        RH.??  mlang
+        $      do
+                 Html.header t'
+                 Html.section Html.! HtmlA.class_ "frontMatter" $ f'
+                 Html.section Html.! HtmlA.class_ "mainMatter" $ m'
 
-instance HasDocAttrs j (MemDoc b j i) where
-  getDocAttrs = memControlAttrs
+instance HasDocAttrs j (Article b j i) where
+  getDocAttrs = articleControlAttrs
 
-data MemDocAttrs i = MemDocAttrs
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (MemDocAttrs b), Gathering note (MemDocAttrs b))
+data ArticleAttrs i = ArticleAttrs
+  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling a, Referencing (ArticleAttrs b), Gathering note (ArticleAttrs b))
 
 -- TODO: extend, of course. Might want to modularize?
 data FrontMatter b i
@@ -257,36 +280,50 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
 
 -- * Parsing
 
--- TODO: more robust parsing here, including digitized vs
--- non-digitized types.
--- TODO: allow only a subset of the *Matter to be present to be parsed
--- with the explicit matter.
-pMemDoc
+-- TODO: the one invocation gives the error "insufficient nodes",
+-- which is unhelpful here. Should be fixed ("expecting exactly
+-- one..."), perhaps with a "symbol" parser.
+pDoc
   :: HasStr j
   => Scriba Node j
   -> ([j] -> Text)
   -> Scriba Node (b i)
   -> Scriba Node i
-  -> Scriba Element (MemDoc b j i)
-pMemDoc pMetInl stripMarkup pBlk pInl = do
-  matchTy "scriba"
-  void $ meta $ attrs $ attr "type" $ content $ do
+  -> Scriba Element (Doc b j i)
+pDoc pMetInl stripMarkup pBlk pInl = whileMatchTy "scriba" $ do
+  t <- meta $ attrs $ attr "type" $ content $ do
     consumeWhiteSpace
     t <- one simpleText
+    consumeWhiteSpace
     zero
-    guard $ t == "article"
-  whileParsingElem "scriba" $ do
-    dm <- meta $ attrs $ pDocAttrs pMetInl stripMarkup
-    content $ pExplicitMatter dm <|> pBare dm
+    pure t
+  case t of
+    "article" -> Doc () . DocArticle <$> pArticle pMetInl stripMarkup pBlk pInl
+    _         -> throwError $ Msg $ "unknown document type: " <> t
+
+-- TODO: more robust parsing here, including digitized vs
+-- non-digitized types.
+-- TODO: allow only a subset of the *Matter to be present to be parsed
+-- with the explicit matter.
+pArticle
+  :: HasStr j
+  => Scriba Node j
+  -> ([j] -> Text)
+  -> Scriba Node (b i)
+  -> Scriba Node i
+  -> Scriba Element (Article b j i)
+pArticle pMetInl stripMarkup pBlk pInl = do
+  dm <- meta $ attrs $ pDocAttrs pMetInl stripMarkup
+  content $ pExplicitMatter dm <|> pBare dm
  where
   pExplicitMatter dm = do
     f <- one $ asNode $ pFrontMatter pBlk
     m <- one $ asNode $ pMainMatter pBlk pInl
-    pure $ MemDoc dm MemDocAttrs f m
+    pure $ Article dm ArticleAttrs f m
   pBare dm = do
     b <- manyOf pBlk
     c <- remaining $ asNode $ pSection pBlk pInl
-    pure $ MemDoc dm MemDocAttrs [Introduction b] c
+    pure $ Article dm ArticleAttrs [Introduction b] c
 
 pFrontMatter :: Scriba Node (b i) -> Scriba Element [FrontMatter b i]
 pFrontMatter pBlk =

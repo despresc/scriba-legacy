@@ -110,6 +110,7 @@ instance Gathering note Void a where
   gathering = absurd
 instance Gathering note (Void1 a) b where
   gathering = absurd1
+instance Gathering note () ()
 
 -- TODO: should this be moved elsewhere?
 class HasNil a where

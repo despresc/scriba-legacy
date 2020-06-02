@@ -30,11 +30,11 @@ parseOrExplode name t = case SP.parseDoc' name t of
 markupOrExplode
   :: SI.Node
   -> ( Map SM.Identifier (SM.NoteText (SM.Block SM.Void1) (SM.Inline Void))
-     , SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
+     , SM.Doc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
      )
-markupOrExplode n = case SM.parseMemDoc n of
+markupOrExplode n = case SM.parseArticle n of
   Left  e -> error $ T.unpack $ SM.prettyScribaError e
-  Right a -> case SM.decorateMemDoc a of
+  Right a -> case SM.decorateDoc a of
     Left  e  -> error $ show e
     Right a' -> a'
 
@@ -64,7 +64,7 @@ testIntermediate name src gold = goldenWith go name src gold
 
 testRenderingWith
   :: (  ( Map SM.Identifier (SM.NoteText (SM.Block SM.Void1) (SM.Inline Void))
-       , SM.MemDoc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
+       , SM.Doc (SM.Block SM.Void1) (SM.Inline Void) (SM.Inline Void)
        )
      -> TL.Text
      )
@@ -78,7 +78,6 @@ testRenderingWith f name src gold = goldenWith go name src gold
     (T.pack $ takeFileName src)
     t
 
--- TODO: one single test block for the manual?
 -- TODO: make sure the README example parses _correctly_.
 tests :: TestTree
 tests = testGroup
