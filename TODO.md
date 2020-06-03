@@ -13,9 +13,6 @@
   displayed. Also consider changing this so that that information _is_
   saved. Also document that elements with source-defined numbers still
   get numbered!
-- Guarantee identifier uniqueness in a document by modifying
-  `Gathering` to check for the presence of identifiers before adding
-  them to the map.
 - Add an `Options` module (or sequence of modules) somewhere and put
   the attribute/opting parsing and definitions there.
 - Fix the error message that is thrown on an unrecognized/unexpected
@@ -29,6 +26,11 @@
   sections; report the page on which each element occurs in a document
   in the linking step; fix all the links so that they point to the
   right places.
+- In `Gathering`, have a component of the state that indicates the
+  *identifier* of the current page. Note this in `LinkDatum`. Also
+  gather the identifiers of all sections that are to become their own
+  pages (this may be only the document itself), along with their page
+  names.
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
