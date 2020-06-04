@@ -35,15 +35,13 @@ import           GHC.Generics
 -}
 
 data GatherData note = GatherData
-  { gatherLinkData :: Map Identifier LinkDatum
+  { gatherCurrPage :: PageName
+  , gatherLinkData :: Map Identifier LinkDatum
   , gatherNoteText :: Map Identifier note
   } deriving (Eq, Ord, Show)
 
-instance Semigroup (GatherData note) where
-  (GatherData l n) <> (GatherData l' n') = GatherData (l <> l') (n <> n')
-
-instance Monoid (GatherData note) where
-  mempty = GatherData mempty mempty
+initGatherData :: PageName -> GatherData note
+initGatherData pn = GatherData pn mempty mempty
 
 addLinkDatum
   :: Identifier
@@ -54,14 +52,16 @@ addLinkDatum = insertUnique $ \(Identifier i) _ ->
   DecorateError $ "identifier <" <> i <> "> was defined twice in the document"
 
 addNoteText :: Identifier -> note -> GatherData note -> GatherData note
-addNoteText i n (GatherData l m) = GatherData l $ Map.insert i n m
+addNoteText i n (GatherData p l m) = GatherData p l $ Map.insert i n m
 
 newtype GatherM note a = GatherM
   { unNumberM :: StateT (GatherData note) (Except DecorateError) a
   } deriving (Functor, Applicative, Monad)
 
-runGatherM :: GatherM note a -> Either DecorateError (a, GatherData note)
-runGatherM = runExcept . ($ mempty) . State.runStateT . unNumberM
+runGatherM
+  :: GatherM note a -> PageName -> Either DecorateError (a, GatherData note)
+runGatherM act pn =
+  runExcept $ State.runStateT (unNumberM act) (initGatherData pn)
 
 class GGathering note f g where
   ggathering :: f a -> GatherM note (g a)
@@ -118,9 +118,9 @@ class HasNil a where
 
 tellLinkDatum :: Maybe Identifier -> LinkDatum -> GatherM note ()
 tellLinkDatum (Just i) ld = GatherM $ do
-  GatherData lds nt <- get
-  lds'              <- liftEither $ addLinkDatum i ld lds
-  put $ GatherData lds' nt
+  GatherData p lds nt <- get
+  lds'                <- liftEither $ addLinkDatum i ld lds
+  put $ GatherData p lds' nt
 tellLinkDatum Nothing _ = pure ()
 
 tellLinkNumbered

@@ -273,6 +273,22 @@ sections, in addition to the documents themselves) must have a plain
 text title, since we need something to use in the URL and title of the
 relevant web page.
 
+Something like this web structure:
+
+```
+2020-1/ -- meta, tables of contents, links, brief readme
+  index -- as above, of course
+  cover -- (not present for now) book cover
+  title-page
+  <individual sections>
+  end-notes -- the notes in the book itself, as end notes
+  editorial-notes -- notes on the editorial process
+```
+
+would be good. The entire document can be addressed by `name/doc`,
+which will be the default way of addressing one-page documents like
+short articles.
+
 # Manual
 
 - generally rework the introductory section, so that it is gentler,

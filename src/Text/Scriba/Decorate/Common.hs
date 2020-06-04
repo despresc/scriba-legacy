@@ -177,3 +177,6 @@ unzips3 x = (fmap fst' x, fmap snd' x, fmap thd' x)
   fst' (a, _, _) = a
   snd' (_, b, _) = b
   thd' (_, _, c) = c
+
+newtype PageName = PageName Text
+  deriving (Eq, Ord, Show, Read, Generic)

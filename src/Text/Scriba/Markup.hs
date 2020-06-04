@@ -267,7 +267,7 @@ parseArticle = fmap snd . runScriba
 -- * Decorating the document
 
 getRefEnv :: GatherData note -> RefData
-getRefEnv (GatherData d _) = RefData $ M.mapMaybe go d
+getRefEnv (GatherData _ d _) = RefData $ M.mapMaybe go d
  where
   go (LinkNumber t en) = Just (t, en)
   go LinkBare{}        = Nothing

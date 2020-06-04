@@ -49,6 +49,7 @@ data DocAttrs i = DocAttrs
   { docTitle :: Title i
   , docLang :: Maybe Text
   , docPlainTitle :: Text
+  , docPageName :: PageName
   , docTitlingConfig :: TitlingConfig i
   , docElemCounterRel :: Map ContainerName (CounterName, NumberConfig)
   , docCounterRel :: Map CounterName (Set CounterName)
@@ -94,8 +95,11 @@ runDocTitling f d =
 runDocReferencing :: Referencing a b => RefData -> a -> Either DecorateError b
 runDocReferencing rd d = runRefM (referencing d) rd
 
-runDocGathering :: Gathering note a b => a -> Either DecorateError (b, GatherData note)
-runDocGathering = runGatherM . gathering
+runDocGathering
+  :: (HasDocAttrs j a, Gathering note a b)
+  => a
+  -> Either DecorateError (b, GatherData note)
+runDocGathering a = runGatherM (gathering a) (docPageName $ getDocAttrs a)
 
 emptySurround :: Surround a
 emptySurround = Surround [] Nothing []
@@ -282,7 +286,11 @@ pMathMacros = allAttrsOf pMathMacro
     c <- T.concat <$> allContentOf simpleText
     pure (n, c)
 
+simplePageName :: Text -> PageName
+simplePageName = PageName . T.intercalate "_" . T.words
+
 -- TODO: better math numbering support. The elemrel thing is particularly bad.
+-- TODO: url page name configuration
 pDocAttrs
   :: HasStr i => Scriba Node i -> ([i] -> Text) -> Scriba Attrs (DocAttrs i)
 pDocAttrs pMetInl stripMarkup = do
@@ -293,7 +301,7 @@ pDocAttrs pMetInl stripMarkup = do
   fconfig <- mattr "formalBlocks" (pFormalConfig pMetInl)
   sconfig <- mattr "sections" (pSectionConfig pMetInl)
   lconfig <- attrDef "lists" defaultListConfig pListConfig
-  let lCrel = ("item:olist", Just $ Relative [])
+  let lCrel   = ("item:olist", Just $ Relative [])
       noterel = ("noteText", Just $ Relative [])
   (dmathCrel, dmathNumConf) <- fmap unzips $ attrMaybe "formula" $ meta $ attrs
     pNumberRef
@@ -328,10 +336,12 @@ pDocAttrs pMetInl stripMarkup = do
           <> noteStyle
           <> toCNKey snstyleRaw
           <> toCNKey fnstyleRaw
-      elemrel' = mergeRel elemrel mergedStyles
+      elemrel'   = mergeRel elemrel mergedStyles
+      plainTitle = fromMaybe (stripMarkup t) tplain
   pure $ DocAttrs (Title t)
                   mlang
-                  (fromMaybe (stripMarkup t) tplain)
+                  plainTitle
+                  (simplePageName plainTitle)
                   (TitlingConfig fconf sconf)
                   elemrel'
                   crel
