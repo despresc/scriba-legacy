@@ -50,6 +50,7 @@ data DocAttrs i = DocAttrs
   , docLang :: Maybe Text
   , docPlainTitle :: Text
   , docPageName :: PageName
+  , docArePageNodes :: Set Text
   , docTitlingConfig :: TitlingConfig i
   , docElemCounterRel :: Map ContainerName (CounterName, NumberConfig)
   , docCounterRel :: Map CounterName (Set CounterName)
@@ -99,7 +100,10 @@ runDocGathering
   :: (HasDocAttrs j a, Gathering note a b)
   => a
   -> Either DecorateError (b, GatherData note)
-runDocGathering a = runGatherM (gathering a) (docPageName $ getDocAttrs a)
+runDocGathering a = runGatherM (gathering a)
+                               (docArePageNodes d)
+                               (docPageName d)
+  where d = getDocAttrs a
 
 emptySurround :: Surround a
 emptySurround = Surround [] Nothing []
@@ -342,6 +346,7 @@ pDocAttrs pMetInl stripMarkup = do
                   mlang
                   plainTitle
                   (simplePageName plainTitle)
+                  mempty
                   (TitlingConfig fconf sconf)
                   elemrel'
                   crel

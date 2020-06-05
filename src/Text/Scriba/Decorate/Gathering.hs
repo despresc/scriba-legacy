@@ -15,6 +15,7 @@ import           Control.Applicative            ( liftA2 )
 import           Control.Monad.Except           ( Except
                                                 , runExcept
                                                 , liftEither
+                                                , throwError
                                                 )
 import           Control.Monad.State.Strict     ( StateT
                                                 , MonadState(..)
@@ -23,6 +24,8 @@ import           Control.Monad.State.Strict     ( StateT
 import qualified Control.Monad.State.Strict    as State
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as Map
+import           Data.Set                       ( Set )
+import qualified Data.Set                      as Set
 import           Data.Text                      ( Text )
 import           Data.Void
 import           GHC.Generics
@@ -36,12 +39,13 @@ import           GHC.Generics
 
 data GatherData note = GatherData
   { gatherCurrPage :: PageName
+  , gatherAreNodes :: Set Text
   , gatherLinkData :: Map Identifier LinkDatum
   , gatherNoteText :: Map Identifier note
   } deriving (Eq, Ord, Show)
 
-initGatherData :: PageName -> GatherData note
-initGatherData pn = GatherData pn mempty mempty
+initGatherData :: Set Text -> PageName -> GatherData note
+initGatherData an pn = GatherData pn an mempty mempty
 
 addLinkDatum
   :: Identifier
@@ -52,16 +56,19 @@ addLinkDatum = insertUnique $ \(Identifier i) _ ->
   DecorateError $ "identifier <" <> i <> "> was defined twice in the document"
 
 addNoteText :: Identifier -> note -> GatherData note -> GatherData note
-addNoteText i n (GatherData p l m) = GatherData p l $ Map.insert i n m
+addNoteText i n (GatherData p an l m) = GatherData p an l $ Map.insert i n m
 
 newtype GatherM note a = GatherM
   { unNumberM :: StateT (GatherData note) (Except DecorateError) a
   } deriving (Functor, Applicative, Monad)
 
 runGatherM
-  :: GatherM note a -> PageName -> Either DecorateError (a, GatherData note)
-runGatherM act pn =
-  runExcept $ State.runStateT (unNumberM act) (initGatherData pn)
+  :: GatherM note a
+  -> Set Text
+  -> PageName
+  -> Either DecorateError (a, GatherData note)
+runGatherM act an pn =
+  runExcept $ State.runStateT (unNumberM act) (initGatherData an pn)
 
 class GGathering note f g where
   ggathering :: f a -> GatherM note (g a)
@@ -116,16 +123,16 @@ instance Gathering note () ()
 class HasNil a where
   embedNil :: a
 
-tellLinkDatum :: Maybe Identifier -> LinkDatum -> GatherM note ()
-tellLinkDatum (Just i) ld = GatherM $ do
-  GatherData p lds nt <- get
-  lds'                <- liftEither $ addLinkDatum i ld lds
-  put $ GatherData p lds' nt
+tellLinkDatum :: Maybe Identifier -> (PageName -> LinkDatum) -> GatherM note ()
+tellLinkDatum (Just i) f = GatherM $ do
+  GatherData p an lds nt <- get
+  lds'                   <- liftEither $ addLinkDatum i (f p) lds
+  put $ GatherData p an lds' nt
 tellLinkDatum Nothing _ = pure ()
 
 tellLinkNumbered
   :: Text -> Maybe Identifier -> Maybe ElemNumber -> GatherM note ()
-tellLinkNumbered t mi (Just en) = tellLinkDatum mi $ LinkNumber t en
+tellLinkNumbered t mi (Just en) = tellLinkDatum mi $ \p -> LinkNumber t p en
 tellLinkNumbered t mi _         = tellLinkGen t mi
 
 tellLinkGen :: Text -> Maybe Identifier -> GatherM note ()
@@ -136,3 +143,24 @@ tellLinkGen t = flip tellLinkDatum $ LinkBare t
 -- tellLinkDatum. Perhaps that should change.
 tellNoteText :: Identifier -> note -> GatherM note ()
 tellNoteText i = GatherM . modify . addNoteText i
+
+-- TODO: This suffices for now, but it might be nicer instead to go
+-- through the syntax tree and designate particular sections as nodal,
+-- avoiding this sort of "runtime" failure.
+tellPageNode :: Text -> Maybe PageName -> GatherM note ()
+tellPageNode t mp = GatherM $ do
+  GatherData _ an lds nt <- get
+  if t `Set.member` an
+    then maybe
+      (  throwError
+      $  DecorateError
+      $  "section type "
+      <> t
+      <> " is to be its own page, but was not given a plain page name"
+      )
+      (\p' -> put (GatherData p' an lds nt))
+      mp
+    else pure ()
+
+setCurrPage :: PageName -> GatherM note ()
+setCurrPage pn = GatherM $ modify $ \s -> s { gatherCurrPage = pn }

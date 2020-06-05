@@ -267,10 +267,10 @@ parseArticle = fmap snd . runScriba
 -- * Decorating the document
 
 getRefEnv :: GatherData note -> RefData
-getRefEnv (GatherData _ d _) = RefData $ M.mapMaybe go d
+getRefEnv (GatherData _ _ d _) = RefData $ M.mapMaybe go d
  where
-  go (LinkNumber t en) = Just (t, en)
-  go LinkBare{}        = Nothing
+  go (LinkNumber t _ en) = Just (t, en)
+  go LinkBare{}          = Nothing
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.

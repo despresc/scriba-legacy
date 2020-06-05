@@ -149,6 +149,7 @@ instance Referencing a b => Referencing (SectionConfig a) (SectionConfig b)
 instance Referencing a b => Referencing (TitleTemplate a) (TitleTemplate b)
 instance Referencing a b => Referencing (Surround a) (Surround b)
 instance Referencing CounterName CounterName
+instance Referencing PageName PageName
 instance Referencing ElemNumber ElemNumber
 instance Referencing NumberAuto NumberAuto
 instance Referencing (Void1 a) b where

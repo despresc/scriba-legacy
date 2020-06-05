@@ -154,18 +154,31 @@ instance Gathering note i i' => Gathering note (SecAttrs i) (SecAttrs i') where
 -- is the top-level section of articles.
 data Section b i = Section
   { sectionAttrs :: SecAttrs i
+  , sectionPageName :: Maybe PageName
   , sectionPreamble :: [b i]
   , sectionChildren :: [Subsection b i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
-instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Section b i) (Section b' i')
+instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Section b i) (Section b' i') where
+  gathering (Section sa mpn sp sc) = do
+    tellPageNode "section" mpn
+    sa' <- gathering sa
+    sp' <- gathering sp
+    sc' <- gathering sc
+    pure $ Section sa' mpn sp' sc'
 
 data Subsection b i = Subsection
   { subsectionAttrs :: SecAttrs i
+  , subsectionPageName :: Maybe PageName
   , subsectionContent :: [b i]
   } deriving (Eq, Ord, Show, Read, Functor, Generic)
 
-instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Subsection b i) (Subsection b' i')
+instance (Gathering note i i', Gathering note (b i) (b' i')) => Gathering note (Subsection b i) (Subsection b' i') where
+  gathering (Subsection sa mpn sc) = do
+    tellPageNode "section" mpn
+    sa' <- gathering sa
+    sc' <- gathering sc
+    pure $ Subsection sa' mpn sc'
 
 newtype Heading i = Heading
   { getHeading :: i
@@ -189,7 +202,7 @@ instance RH.Render i => RH.Render (Heading i) where
 -- TODO: necessary hack here, setting the titlebody to nothing. better to remove
 -- the component entirely.
 instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Section b i) where
-  titling (Section (SecAttrs mId mtbody mtfull mnum) pre children) = do
+  titling (Section (SecAttrs mId mtbody mtfull mnum) mpage pre children) = do
     mtbody'   <- titling mtbody
     mtfull'   <- titling mtfull
     pre'      <- titling pre
@@ -205,6 +218,7 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
         (titleBody <$> mtbody')
     pure $ Section
       (SecAttrs mId Nothing (mtfull' <|> join mtigen <|> mtbody') mnum)
+      mpage
       pre'
       children'
 
@@ -212,7 +226,7 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Sect
 -- TODO: necessary hack here, setting the titlebody to nothing. better to remove
 -- the component entirely.
 instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Subsection b i) where
-  titling (Subsection (SecAttrs mId mtbody mtfull mnum) c) = do
+  titling (Subsection (SecAttrs mId mtbody mtfull mnum) mpage c) = do
     mtbody' <- titling mtbody
     mtfull' <- titling mtfull
     c'      <- titling c
@@ -227,24 +241,28 @@ instance (Titling i (b i), Titling i i, FromTitleComponent i) => Titling i (Subs
         (titleBody <$> mtbody')
     pure $ Subsection
       (SecAttrs mId Nothing (mtfull' <|> join mtigen <|> mtbody') mnum)
+      mpage
       c'
 
 instance (Numbering (b i), Numbering i) => Numbering (Section b i) where
-  numbering (Section (SecAttrs mId tbody tfull mnum) pre child) =
+  numbering (Section (SecAttrs mId tbody tfull mnum) mpage pre child) =
     bracketNumbering (Just "section") $ \mnumgen -> do
       tbody' <- numbering tbody
       tfull' <- numbering tfull
       pre'   <- numbering pre
       child' <- numbering child
-      pure $ Section (SecAttrs mId tbody' tfull' (mnum <|> mnumgen)) pre' child'
+      pure $ Section (SecAttrs mId tbody' tfull' (mnum <|> mnumgen))
+                     mpage
+                     pre'
+                     child'
 
 instance (Numbering (b i), Numbering i) => Numbering (Subsection b i) where
-  numbering (Subsection (SecAttrs mId tbody tfull mnum) c) =
+  numbering (Subsection (SecAttrs mId tbody tfull mnum) mpage c) =
     bracketNumbering (Just "subsection") $ \mnumgen -> do
       tbody' <- numbering tbody
       tfull' <- numbering tfull
       c'     <- numbering c
-      pure $ Subsection (SecAttrs mId tbody' tfull' (mnum <|> mnumgen)) c'
+      pure $ Subsection (SecAttrs mId tbody' tfull' (mnum <|> mnumgen)) mpage c'
 
 instance (Referencing (f a) (g b), Referencing a b) => Referencing (Section f a) (Section g b)
 
@@ -258,7 +276,7 @@ instance Referencing a b => Referencing (SecAttrs a) (SecAttrs b)
 -- break? They would be necessary when we first render a sibling
 -- untitled section. Some kind of state variable, I think.
 instance (RH.Render (b i), RH.Render i) => RH.Render (Section b i) where
-  render (Section (SecAttrs ml _ t _) pre c) = do
+  render (Section (SecAttrs ml _ t _) _ pre c) = do
     t' <- traverse (RH.render . Heading) t
     let ident = identAttr <$> ml
     RH.bumpHeaderDepth $ do
@@ -270,7 +288,7 @@ instance (RH.Render (b i), RH.Render i) => RH.Render (Section b i) where
 
 -- TODO: duplication
 instance (RH.Render (b i), RH.Render i) => RH.Render (Subsection b i) where
-  render (Subsection (SecAttrs ml _ t _) c) = do
+  render (Subsection (SecAttrs ml _ t _) _ c) = do
     t' <- traverse (RH.render . Heading) t
     let ident = identAttr <$> ml
     RH.bumpHeaderDepth $ do
@@ -364,7 +382,7 @@ pSection pBlk pInl = whileMatchTy "section" $ do
   sattr    <- meta $ attrs $ pSecAttrs pInl
   pre      <- content $ manyOf pBlk
   children <- content $ remaining $ asNode $ pSubsection pBlk pInl
-  pure $ Section sattr pre children
+  pure $ Section sattr Nothing pre children
 
 -- TODO: duplication?
 pSubsection
@@ -372,4 +390,4 @@ pSubsection
 pSubsection pBlk pInl = whileMatchTy "subsection" $ do
   sattr <- meta $ attrs $ pSecAttrs pInl
   c     <- content $ manyOf pBlk
-  pure $ Subsection sattr c
+  pure $ Subsection sattr Nothing c

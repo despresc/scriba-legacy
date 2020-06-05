@@ -138,13 +138,13 @@ data Surround a = Surround
 -- identifier. Only useful for mathjax equations, and that might be
 -- changing anyway.
 data LinkDatum
-  = LinkNumber Text ElemNumber
-  | LinkBare Text
+  = LinkNumber Text PageName ElemNumber
+  | LinkBare Text PageName
   deriving (Eq, Ord, Show, Read, Generic)
 
 linkDatumPrefix :: LinkDatum -> Text
-linkDatumPrefix (LinkNumber t _) = t
-linkDatumPrefix (LinkBare t    ) = t
+linkDatumPrefix (LinkNumber t _ _) = t
+linkDatumPrefix (LinkBare t _    ) = t
 
 -- | Numbering data to be gathered from the AST.
 data NumberDatum = NumberDatum

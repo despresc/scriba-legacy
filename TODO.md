@@ -20,17 +20,8 @@
   element. Important for paragraphs and other sugar.
 - Add `SecAttrs` to `Element.Memoir.FrontMatter`
 - Add a `NodalAttrs` (or something like it) with plain text titles for
-  sections, suitable for going in a url (for eventual
-  pagination). Remember, for pagination I need to: determine which
-  sections should be nodes; figure out the url names of the relevant
-  sections; report the page on which each element occurs in a document
-  in the linking step; fix all the links so that they point to the
-  right places.
-- In `Gathering`, have a component of the state that indicates the
-  *identifier* of the current page. Note this in `LinkDatum`. Also
-  gather the identifiers of all sections that are to become their own
-  pages (this may be only the document itself), along with their page
-  names.
+  sections, suitable for going in a url.
+- Check page name uniqueness within documents, for nodal sections.
 - Move the components of `Element/DocAttrs` related to decoration and
   put them in `Decorate/Common`, along with the functions that run the
   decorations.
