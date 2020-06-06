@@ -1,0 +1,451 @@
+& scriba
+  & type|article
+  & lang|en-GB
+  & title|The Integral {math`\displaystyle{\int_0^\infty \frac{\sin x}x dx}`}
+  & plainTitle|The Integral sine x over x
+  & mathMacros
+    & cosec|{`\operatorname{cosec}`}
+  & formula
+    & numbering
+      & absolute
+      & style@decimal
+
+{%
+%{alml|0.1.0}
+%{meta
+  {% TODO: clean up this physical source %}
+  {physicalSource
+    {title|The Integral {math {type|LaTeX}`\int_0^\infty \frac{\sin x}x dx`}}
+    {author|G. H. Hardy}
+    {date|1909}
+    {volume|5}
+    {issue|7}
+    {pages|98-103}
+    {type|journal}
+    {publisher|The Mathematical Gazette}}}
+  {defaultMathNotation|LaTeX}
+}
+%}
+
+{%
+
+The Corrections from the reprint I'm reading have not been
+applied. The apparent addendum after the final footnote and the
+Comment have also not been digitized.
+
+Go over this and look for more link opportunities. One example is the
+final noteText@thisIKnow, referring to the various proofs, but this
+happens elsewhere.
+
+The omitted table might easily be a list, but if so, we need to come
+up with a good way of moving the tallies to the right, or we should
+live with the numbers not being aligned.
+
+%}
+
+# frontMatter
+
+{%TODO: Remove this section when it becomes optional%}
+
+# mainMatter
+
+## section
+
+No one can possibly welcome more cordially than I do the widening of
+the school curriculum in mathematics that has taken place during the
+last twenty years. Even I can remember the days when {q|Conics} and
+{q|Mechanics} were the privilege of a select few, and only a prodigy
+was initiated into the mysteries of the Differential (much less the
+Integral) Calculus. All this is changed now, and it is fairly safe (at
+least that is my experience) to assume that a boy who has won a
+scholarship has learnt something about the Integral Calculus at
+school.
+
+I do not believe for a moment that the curriculum has been made
+{emph|harder}. These happy results are not due to any striking
+development in the schoolboy himself, either in intelligence, or in
+capacity or willingness for work. They are merely the result of
+improvement in the methods of teaching and a wider range of knowledge
+in the teacher, which enables him to discriminate, in a way his
+predecessor could not, between what is really difficult and what is
+not. No one now supposes that it is easy to resolve {math`sin x`} into
+factor and hard to differentiate it!—and even in my time it was the
+former of these two problems to which one was set first.
+
+Still there are difficulties, even in the Integral Calculus; it is not
+every schoolboy who can do right everything that Todhunter and
+Williamson did wrong; and when I find my pupils handling definite
+integrals with the assurance of Dr. Hobson or Mr. Bromwich, I must
+confess I sometimes wonder whether even the school curriculum cannot
+be made too wide. Seriously, I do not think that schoolboys ought to
+be taught anything about definite integrals. They really are
+difficult, almost as difficult as the factors of {math`\sin x`}: and
+it is to illustrate this point that I have written this note.
+
+I have taken the particular integral
+{dmath {id|subject}`
+  \int_0^\infty \frac{\sin x} x dx
+`}
+as my text for two reasons. One is that it is about as simple an
+example as one can find of the definite integral {emph|proper}—that is
+to say the integral whose value can be expressed in finite terms,
+although the indefinite integral of the subject of integration cannot
+be so determined. The other is that two interesting notes by Mr. Berry
+and Prof. Nanson have been published recently,{noteMark@berryNanson}
+in which they discuss a considerable number of different ways of
+evaluating this particular integral. I propose now to apply a system
+of {emph|marking} to the different proofs of the equation
+({ref@subject}) to which they allude, with a view to rendering our
+estimate of their relative difficulty more precise.
+
+Practically all methods of evaluating any definite integral depend
+ultimately upon the inversion of two or more operations of procedure
+to a limit{noteMark@whetherThis}—{foreign|e.g.} upon the integration
+of an infinite series or a differentiation under the integral sign:
+that is to say they involve {q|double-limit
+problems.}{noteMark@forAnExplanation} The only exceptions to this
+statement of which I am aware (apart, of course, from cases in which
+the indefinite integral can be found) are certain cases in which the
+integral can be calculated directly from its definition as a sum, as
+can the integrals
+{dmath {noNum}`
+  \int_0^{-\frac 12 \pi} \log\sin\theta d\theta,\:
+  \int_0^\pi \log{1 - 2p\cos\theta + p^2}d\theta
+`}
+
+Such inversions, then, constitute what we may call the standard
+difficulty of the problem, and I shall base my system of marking
+primarily upon them. {emph|For every such inversion involved in the
+proof I shall assign {math|10} marks}. Besides these marks I shall
+add, in a more capricious way, marks for artificiality, complexity,
+etc. The proof obtaining least marks is to be regarded as the simples
+and best.
+
+{%TODO: Fix these citations - fully mark them up, fix the ibid, and so on%}
+
+& noteText @ berryNanson
+  |{citation|{name|A. Berry},
+   {title|Messenger of Mathematics},
+   vol. 37,
+   p. 61};
+   {citation|{name|E. J. Nanson},
+   {foreign|ibid}.
+   p. 113}.
+
+& noteText @ whetherThis
+  |Whether this is true of a proof by {q|contour integration} depends
+   logically on what proof of Cauchy's Theorem has been used (see my
+   remarks under 3 {% TODO: insert reference %} below).
+
+& noteText @ forAnExplanation
+  |For an explanation of the general nature of a {q|double-limit
+   problem} see my {title|Course of Pure Mathematics} (App. 2,
+   p. 420); {% TODO: locator/reference? %} for examples of the working
+   out of such problems see Mr. Bromwich's {title|Infinite Series}
+   ({foreign|passim}, but especially App. 3, p. 414 {foreign|et
+   seq.}).
+
+& olist
+  ---
+  & li {id|proof1}
+    ---
+    {emph|Mr. Berry's first proof}.{noteMark@iMeanOf} This is that
+    expressed by the series of equations
+    {dmath {noNum}`
+      \begin{alignedat}{2}
+      \int_0^\infty \frac{\sin x}x ddx
+          &= \int_0^\infty \lim_{a\to 0} \bigl(e^{-ax} \frac{\sin x}x\bigr) dx
+           = \lim_{a\to 0}\int_0^\infty e^{-ax} \frac{\sin x}x dx \\
+          &= \lim_{a\to 0}\int_0^\infty e^{-ax}dx\int_0^1\cos tx dt
+           = \lim_{a\to 0}\int_0^1 dt \int_0^\infty e^{-ax}\cos txdx \\
+          &= \lim_{a\to 0}\int_0^1 \frac{a dt}{a^2 + t^2}
+           = \lim_{a\to 0} \arctan{\frac 1a}
+           = \frac 12 \pi.
+      \end{alignedat}
+    `}
+    {% TODO: The \frac 12 \pi is a _small_ fraction! should probably express that somehow %}
+    {% TODO: awareness of aligned? %}
+    This is a difficult proof, theoretically, Each of the first two
+    lines involves, on the face of it, an inversion of limits. In
+    reality each involves more: for integration, with an infinite
+    limit, is in itself an operation of {emph|repeated} procedure to a
+    limit; and we ought really to write
+    {dmath {noNum}`
+      \int_0^\infty \lim_{a\to 0}
+        = \lim_{X\to\infty}\int_0^X\lim_{a\to 0}
+        = \lim_{X\to\infty}\lim_{a\to 0}\int_0^X
+        = \lim_{a\to 0}\lim{X\to\infty}\int_0^X
+        = \lim_{a\to 0}\int_0^\infty .
+    `}
+
+    Thus {emph|two} inversions are involved in the first line; and so
+    also in the second. This involves 40 marks. One the other hand
+    this proof is, apart from theoretical difficulties, simple and
+    natural: I do not think it is necessary to add more marks. Thus
+    our total is {math`\mathbf{40}`}.
+
+  & li {id|proof2}
+    ---
+    {emph|Mr. Berry's second proof}. This is expressed by the equations
+    {dmath {noNum}`
+      \begin{alignedat}{2}
+      \int_0^\infty \frac{\sin x}x dx
+        &= \frac 12 \int_{-\infty}^\infty \frac{\sin x}x dx
+         = \frac 12 \sum_{i=-\infty}^\infty \int_{i\pi}^{(i+1)\pi} \frac{\sin x}x dx \\
+        &= \frac 12 \sum_{-\infty}^\infty (-1)^i \int_0^\pi \frac{\sin x}{x - i\pi} dx
+         = \frac 12 \int_0^\pi \sin x \sum_{-\infty}^\infty \frac{(-1)^i}{x + i\pi} dx \\
+        &= \frac 12 \int_0^\pi \sin x\, \cosec x \,dx
+         = \frac 12 \pi.
+      \end{alignedat}
+    `}
+
+    It is obvious that this has a great advantage over the first proof
+    in that only one inversion is involved. On the other hand the
+    uniform convergence of the series to be integrated is, as Mr. Berry
+    remarks, {q|not quite obvious.} Moreover the fact that the cosecant
+    series contains the terms
+    {dmath {noNum}`
+      \frac 1x - \frac 1{x - \pi},
+    `}
+    which become infinite at the limits, although it does not really add
+    to the difficulty of the proof, does involve a light amount of
+    additional care in its statement. I am inclined to assign 15 marks,
+    therefore, instead of 10 only, for this inversion. For the first
+    three steps in the proof I assign 3 marks each; for the use of the
+    cosecant series 4. Thus the total mark may be estimated at
+    {math`9+15+4=\mathbf{28}`}.
+
+  & li {id|proof3}
+    ---
+    {emph|Mr. Berry's third proof (by contour integration)}. It is
+    naturally a little harder to estimate the difficulties of a proof
+    which depends upon the theory of analytic functions. It seems to me
+    not unreasonable to assign 10 marks for the use of Cauchy's theorem
+    in its simplest form, when we remember that the proof of the
+    theorem which depends upon the formula{noteMark@forsyth}
+    {dmath {noNum}`
+      \int\int\Bigl(\frac{\partial q}{\partial x} - \frac{\partial p}{\partial y}\Bigr)
+        = \int(p dx + q dy)
+    `}
+    involves the reduction of a double integral partly by integration
+    with respect to {math|x} and partly by integration with respect to
+    {math|y}. The actual theoretical difficulty of this proof of
+    Cauchy's theorem I should be disposed to estimate at about 20; but
+    half that amount seems sufficient for the mere use of a well known
+    standard theorem{noteMark@goursatsProof}.
+
+    & noteText @ iMeanOf
+      |I mean, of course, the first proof mentioned by Mr. Berry—the
+       proof itself is classical.
+
+    & noteText @ forsyth
+      |{citation|{name|Forsyth}, {title|Theory of Functions}, p. 23}.
+
+    & noteText @ goursatsProof
+      |Goursat's proof is better and more general, and does not
+       involve my inversion of limit-operations, but its difficulties
+       are far too delicate for beginners.
+
+    The particular problem of contour integration with which we are
+    concerned is, however, by no means a really simple one. The range of
+    integration is infinite, the pole occurs {emph|on} the contour; we
+    have to use the fact that
+    {dmath {noNum}`
+      \lim_{R=\infty}\lim_{\varepsilon=0}\Bigl(\int_{-R}^{-\varepsilon} + \int_\varepsilon^R\Bigr)
+                                         \frac{e^{ix}}x dx
+        = \int_{-\infty}^\infty \frac{\sin x}x dx.
+    `}
+
+    For this I assign 8 marks; for the valuation of the limit of the
+    integral round the {q|small semicircle} another 8. There remains the
+    proof that the integral round the {q|large semicircle} tends to
+    zero. As Mr. Berry points out, the ordinary proof is really rather
+    difficult; I estimate its difficulty at 16. Mr. Berry has suggested a
+    simplification of this part of the argument; the difficulty of his
+    proof I estimate at 8. Thus we have {math`10+8+8+16=\mathbf{42}`}
+    marks for the ordinary proof, and {math`10+8+8+8=\mathbf{34}`} for
+    Mr. Berry's modification of it.
+
+  & li {id|proof4}
+    ---
+    {emph|Prof. Nanson's proof}. This proof, I must confess, does not
+    appeal to me. Starting from the integral
+    {dmath {noNum}`
+      u = \int_0^\infty \frac{a\cos cx}{a^2 + x^2} dx,
+    `}
+    where {math|a} and {math|c} are positive, we show, by a repeated
+    integration by parts, and a repeated differentiation under the
+    integral sign, that {math`u`} satisfies the equation
+    {dmath {noNum}`
+      \frac{d^2 u}{da^2} = c^2u.
+    `}
+
+    As the upper limit is infinite we ought to assign 40 marks for
+    this, following the principles we adopted in marking the first
+    proof; but as the two operations of differentiation involve
+    inversions of the same character I reduce this to 30, adding 6,
+    however, for the repeated integration by parts.
+
+    The transformation {math`x=ay`} shows that {math|u} is a
+    function of {math|ac}, so that {math`u=Ae^{ac} + Be^{-ac}`},
+    where {math|A} and {math|B} are independent of both {math|a} or
+    {math|c}. This step in the proof I assess at 4.
+
+    That {math|A=0} is proved by making {math|c} tend to
+    {math|\infty} and observing that
+    {dmath {noNum}`
+      \lvert u\rvert < \int_0^\infty \frac{adx}{a^2+x^2} = \frac 12\pi.
+    `}
+    For this I assign 6 marks.
+
+    That {math|c = \frac 12\pi} is proved by making {math|c=0}. Here
+    we assume the continuity of the integral, and this should
+    involve 20 marks. But as the proof is simple I reduce this to
+    12. Thus by the time that we have proved that
+    {dmath {noNum}`
+      u = \frac 12\pi c^{-ca},
+    `}
+    we have incurred {math|30+6+4+6+12=58} marks.
+
+    We have then
+    {dmath {noNum}`
+      \begin{alignedat}{2}
+        \int_0^\infty \frac{a\sin mxdx}{x(a^2+x^2)}
+        &= \int_0^\infty \frac{adx}{a^2 + x^2}
+           \int_0^m \cos cxdc \\
+        &= \int_0^m udc
+         = \frac \pi{2a}(1 - e^{-am}).
+      \end{alignedat}
+    `}
+
+    This involves 20 marks. We then obtain
+    {dmath {noNum}`
+      \int_0^\infty \frac{x\sin mx}{a^2+x^2} dx = \frac 12\pi e^{-am}
+    `}
+    by two differentiations with respect to {math|m}. This should
+    strictly involve 40, and I cannot reduce the number to less than
+    30, as the second differentiation is none too easy to
+    justify. The result then follows by multiplying the last formula
+    but one by {math|a} and adding it to the second.
+
+    I do not think that {math`58+20+30=\mathbf{108}`} marks which we
+    have assigned are more than the difficulties of the proof we
+    deserve. But of course it is hardly fair to contrast this heavy
+    mark with the 40, 28, 42, 36 which we have obtained for the
+    others; for Prof. Nanson has evaluated the integrals
+    {dmath {noNum}`
+      \int_0^\infty \frac{\sin mx}{x(a^2+x^2)}dx,\:
+      \int_0^\infty \frac{\cos mx}{a^2+x^2}dx,\:
+      \int_0^\infty \frac{x\sin mx}{a^2+x^2}dx,\:
+    `}
+    as well as the integral ({ref@subject}).
+
+  & li {id|proof5}
+    ---
+    {emph|Mr. Michell's proof}.{noteMark@thisProofIs} This depends on
+    the equations
+    {dmath {noNum}`
+      \begin{alignedat}{2}
+        \int_0^\infty \frac{\sin x} x dx
+        &= \lim_{h\to 0,H\to\infty} \int_h^H \frac{\sin x} x dx
+        \\
+        &= - \lim_{h\to 0,H\to\infty}
+             \int_h^H dx
+             \int_0^{\frac 12\pi} \frac d{dx}\Bigl\{
+                 e^{-x\sin \theta} \cos(x\cos\theta)
+               \Bigr\} d\theta
+        \\
+        &= - \lim_{h\to 0,H\to\infty}
+             \int_0^{\frac 12\pi} d\theta
+             \int_h^H dx \frac d{dx}\Bigl\{ e^{-x\sin \theta} \cos(x\cos\theta) \Bigr\} dx
+        \\
+        &= - \lim_{h\to 0,H\to\infty}
+             \int_0^{\frac 12\pi}\Bigl\{
+                 e^{-H\sin\theta}\cos(H\cos\theta)-e^{-h\sin\theta}\cos(h\cos\theta)
+               \Bigr\} d\theta
+        \\
+        &= -(0-\frac 12\pi) = \frac 12\pi.
+      \end{alignedat}
+    `}
+
+    & noteText @ thisProofIs
+
+      |This proof is also referred to by Prof. Nanson. The only proofs
+       which are {q|classical} are {ref@proof1}, {ref@proof2},
+       {ref@proof3}, viz. the three discussed by Mr. Berry.
+
+    I have myself for several years used a proof, in teaching, which
+    is in principle substantially the same as the above, though
+    slightly more simple in details and arrangement, viz.:
+    {dmath {noNum}`
+      \begin{alignedat}{2}
+        \int_0^\infty \frac{\sin x}x dx
+        &= \frac 1{2i} \int_0^\infty dx \int_0^\pi e^{i(t+xe^{it})} dt
+        \\
+        &= \frac 1{2i} \int_0^\pi e^{it}dt \int_0^\infty  e^{ixe^{it}} dx
+        \\
+        &= \frac 12 \int_0^\pi dt = \frac 12 \pi.
+      \end{alignedat}
+    `}
+
+    The successive steps of the proof can of course be stated in a
+    form free from {math|i} by merely taking the real part of the
+    integrand. To justify the inversion we have to observe that
+    {dmath {noNum}`
+      \int_0^\pi e^{it} dt \int_0^X e^{ixe^{it}} dx
+      = \int_0^X dx \int_0^\pi e^{it + ixe^{it}} dt
+    `}
+    for any positive value of {math|X}, in virtue of the continuity of
+    the subject of integration, and that
+    {%TODO: remove the noNum from the lines once gathered respects an initial noNum %}
+    {%TODO: improve alignment? see the original%}
+    {gathered {noNum}|
+    {line {noNum}`
+      \left\lvert \int_0^\pi e^{it} dt \int_X^\infty e^{ixe^{it}} dx \right\rvert
+      = \left\lvert \int_0^\pi e^{iXe^{it}} dt \right\rvert
+      < \int_0^\pi e^{-X\sin t}dt
+    `}
+    {line {noNum}`
+      < 2 \int_0^{\frac 12 \pi} e^{-X\sin t} dt < 2\int_0^{\frac 12\pi} e^{-2Xt/\pi} dt
+    `}
+    {line {noNum}`
+      < \pi(1 - e^{-X})/X,
+    `}
+    }
+    the closing piece of argument being essentially the same as that
+    at the end of Prof. Nanson's paper. Hence
+    {dmath {noNum}`
+      \int_0^\pi \int_0^\infty
+      = \lim_{X \to \infty} \int_0^\pi \int_0^X
+      = \lim_{X \to \infty} \int_0^X \int_0^\pi
+      = \int_0^\infty \int_0^\pi.
+    `}
+
+    This proof involves an inversion of a repeated integral, one limit
+    being infinite. This involves {math|20} marks. To this I add
+    {math|15} on account of the artificiality of the initial
+    transformation, deducting {math|3} on account of the extreme
+    shortness and elegance of the subsequent work. Thus we obtain
+    {math`20+15-3=\mathbf{32}`} marks. To Mr. Michell's proof, as
+    stated by Prof. Nanson, I should assign a slightly higher mark,
+    say {math`\mathbf{40}`}.
+
+We may therefore arrange the proofs according to marks, thus:
+
+[TODO: OMITTED TABLE]
+
+And this fairly represents my opinion of their respective merits:
+possibly,{noteMark@thisIKnow} however, I have penalized Nos. 2 and 5
+too little on the score of artificiality and 5 too much on the score
+of theoretical difficulty. I conclude, however, with some confidence
+that Mr. Berry's second proof is distinctly the best. But whether this
+be so or not, one thing at any rate should be clear from this
+discussion: whatever method be chosen, the evaluation of the integral
+({ref@subject}) is a problem of very considerable difficulty. This
+integral (and all other standard definite integrals) lie quite outside
+the legitimate range of school mathematics.
+
+& noteText @ thisIKnow
+  |This I know to be Mr. Berry's opinion. He would put 2 below 3 and
+   4, and 5 below 6. To compare 3 and 4 is very difficult, and they
+   might fairly be bracketed.

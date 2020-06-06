@@ -43,6 +43,7 @@ library
     Text.Scriba.Element.DisplayMath
     Text.Scriba.Element.DocAttrs
     Text.Scriba.Element.Emph
+    Text.Scriba.Element.Foreign
     Text.Scriba.Element.Formal
     Text.Scriba.Element.Identifier
     Text.Scriba.Element.InlineCode

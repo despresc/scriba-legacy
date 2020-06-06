@@ -139,8 +139,8 @@ defaultListConfig = NumberConfig
   ( NumberStyle (FilterByContainer "item:olist") Nothing
   $ DepthStyle [Decimal, LowerAlpha, LowerRoman, Decimal]
   )
-  (Just "item")
-  (Just " ")
+  (Just "")
+  (Just "")
 
 defaultNoteConfig :: NumberConfig
 defaultNoteConfig = NumberConfig

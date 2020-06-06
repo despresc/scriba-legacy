@@ -98,6 +98,11 @@ tests = testGroup
     "riemann renders to html"
     "./doc/riemann/riemann.scb"
     "./doc/riemann/riemann.html"
+  , testRenderingWith
+    (HT.renderHtml . SM.writeStandalone (SM.StandaloneConfig "./hardy-sinx.css"))
+    "hardy renders to html"
+    "./doc/hardy/hardy-sinx.scb"
+    "./doc/hardy/hardy-sinx.html"
   ]
 
 main :: IO ()

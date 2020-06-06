@@ -112,7 +112,7 @@ setzt,
   \Pi(\frac s2 - 1)\pi^{-\frac s2}\zeta(s) = ∫_0^∞ \psi(x)x^{\frac s2 - 1} dx\text{,}
 `}
 oder da {math`2\psi(x) + 1 = x^{-\frac 12}(2\psi(\frac 1x) + 1)`},
-({cite@jacobi|Jacobi. Fund. S. 184})
+({citation@jacobi|Jacobi. Fund. S. 184})
 {gathered {id|funcAppSwitched}|
 {line` \Pi(\frac s2 - 1) \pi^{-\frac s2} \zeta(s)
        = ∫_1^∞ \psi(x)x^{\frac s2 - 1} dx

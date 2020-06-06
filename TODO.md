@@ -2,6 +2,8 @@
 
 - Develop a small test library to guide the development of
   `Text.Scriba.Library`.
+- Make `frontMatter` an optional section in the explicit matter
+  configuration.
 - Move `Element.Memoir.Heading` to its own module. Also consider
   absolute header definitions, since there is going to be a set
   pagination structure with our restricted sections.
@@ -39,6 +41,10 @@
 - Selectively render empty elements
 - Fix element numbering configuration in light of the restricted
   sectioning
+- For `Element.DisplayMath.Gathered`, make the `Bool` actually
+  functional (and probably create some kind of common `data
+  IsNumbered`). Could pass in a `Bool` to the item parsers to act as a
+  default.
 - Document `Intermediate/`
 - Document `Decorate/`, observing that linking _must_ come after titling. 
 - Document `Element/`

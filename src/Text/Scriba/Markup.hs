@@ -107,6 +107,7 @@ data Inline a
   | Iref !Ref
   | ItitleComponent !(TitleComponent (Inline a))
   | InoteMark !NoteMark
+  | Iforeign !(Foreign (Inline a))
   | Icontrol !a
   deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering, Titling i)
 
@@ -130,6 +131,7 @@ instance Referencing (Inline InlineControl) (Inline Void) where
   referencing (IpageMark       x) = IpageMark <$> referencing x
   referencing (Iref            x) = Iref <$> referencing x
   referencing (ItitleComponent x) = ItitleComponent <$> referencing x
+  referencing (Iforeign        x) = Iforeign <$> referencing x
   referencing (InoteMark       x) = InoteMark <$> referencing x
   referencing (Icontrol        x) = referencing x
 
@@ -167,6 +169,7 @@ stripMarkup f = T.intercalate " " . T.words . T.concat . concatMap inlineToText
   inlineToText (IpageMark       t ) = pageMarkToText t
   inlineToText (Iref            t ) = refToText inlineToText t
   inlineToText (ItitleComponent t ) = titleComponentToText inlineToText t
+  inlineToText (Iforeign        t ) = foreignToText inlineToText t
   inlineToText (InoteMark       t ) = noteMarkToText t
   inlineToText (Icontrol        a ) = f a
 
@@ -203,6 +206,8 @@ pInline =
       <$> pRegularize pInline
       <|> Icite
       <$> pCite pInline
+      <|> Iforeign
+      <$> pForeign pInline
       <|> IpageMark
       <$> pPageMark
       <|> IinlineMath
@@ -235,6 +240,8 @@ pInlineCore =
       <$> pRegularize pInlineCore
       <|> Icite
       <$> pCite pInlineCore
+      <|> Iforeign
+      <$> pForeign pInlineCore
       <|> IpageMark
       <$> pPageMark
       <|> IinlineMath
@@ -284,6 +291,7 @@ traverseInline f (Iregularize e) = Iregularize $ fmap (traverseInline f) e
 traverseInline f (Icite       e) = Icite $ fmap (traverseInline f) e
 traverseInline f (ItitleComponent e) =
   ItitleComponent $ fmap (traverseInline f) e
+traverseInline f (Iforeign     e) = Iforeign $ fmap (traverseInline f) e
 traverseInline _ (Iref         e) = Iref e
 traverseInline _ (Istr         s) = Istr s
 traverseInline _ (IinlineMath  s) = IinlineMath s
@@ -357,6 +365,7 @@ instance RH.Render a => RH.Render (Inline a) where
   render (Icode           s) = RH.render s
   render (IpageMark       s) = RH.render s
   render (ItitleComponent s) = RH.render s
+  render (Iforeign        s) = RH.render s
   render (Iref            s) = RH.render s
   render (InoteMark       s) = RH.render s
   render (Icontrol        s) = RH.render s

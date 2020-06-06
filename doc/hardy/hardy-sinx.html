@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="UTF-8"><title>The Integral sine x over x</title><script>MathJax={"tex":{"macros":{"cosec":"\\operatorname{cosec}"}}};</script><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script><link href="./hardy-sinx.css" rel="stylesheet"></head><body><section class="scribaDoc article" lang="en-GB"><header><h1><span class="title">The Integral <span class="math inline">\(\displaystyle{\int_0^\infty \frac{\sin x}x dx}\)</span></span></h1></header><section class="frontMatter"></section><section class="mainMatter"><section><div class="sectionPreamble"><p>No one can possibly welcome more cordially than I do the widening of
+the school curriculum in mathematics that has taken place during the
+last twenty years. Even I can remember the days when <q>Conics</q> and
+<q>Mechanics</q> were the privilege of a select few, and only a prodigy
+was initiated into the mysteries of the Differential (much less the
+Integral) Calculus. All this is changed now, and it is fairly safe (at
+least that is my experience) to assume that a boy who has won a
+scholarship has learnt something about the Integral Calculus at
+school.</p><p>I do not believe for a moment that the curriculum has been made
+<em>harder</em>. These happy results are not due to any striking
+development in the schoolboy himself, either in intelligence, or in
+capacity or willingness for work. They are merely the result of
+improvement in the methods of teaching and a wider range of knowledge
+in the teacher, which enables him to discriminate, in a way his
+predecessor could not, between what is really difficult and what is
+not. No one now supposes that it is easy to resolve <span class="math inline">\(sin x\)</span> into
+factor and hard to differentiate it!—and even in my time it was the
+former of these two problems to which one was set first.</p><p>Still there are difficulties, even in the Integral Calculus; it is not
+every schoolboy who can do right everything that Todhunter and
+Williamson did wrong; and when I find my pupils handling definite
+integrals with the assurance of Dr. Hobson or Mr. Bromwich, I must
+confess I sometimes wonder whether even the school curriculum cannot
+be made too wide. Seriously, I do not think that schoolboys ought to
+be taught anything about definite integrals. They really are
+difficult, almost as difficult as the factors of <span class="math inline">\(\sin x\)</span>: and
+it is to illustrate this point that I have written this note.</p><p>I have taken the particular integral
+<span class="math display">\[
+  \int_0^\infty \frac{\sin x} x dx
+\tag{1}\label{subject}\]</span>
+as my text for two reasons. One is that it is about as simple an
+example as one can find of the definite integral <em>proper</em>—that is
+to say the integral whose value can be expressed in finite terms,
+although the indefinite integral of the subject of integration cannot
+be so determined. The other is that two interesting notes by Mr. Berry
+and Prof. Nanson have been published recently,<a class="noteMark" id="noteMark-berryNanson" href="#noteText-berryNanson">[1]</a>
+in which they discuss a considerable number of different ways of
+evaluating this particular integral. I propose now to apply a system
+of <em>marking</em> to the different proofs of the equation
+(<a class="ref" href="#mjx-eqn-subject"><span class="number">1</span></a>) to which they allude, with a view to rendering our
+estimate of their relative difficulty more precise.</p><p>Practically all methods of evaluating any definite integral depend
+ultimately upon the inversion of two or more operations of procedure
+to a limit<a class="noteMark" id="noteMark-whetherThis" href="#noteText-whetherThis">[2]</a>—<span class="foreign">e.g.</span> upon the integration
+of an infinite series or a differentiation under the integral sign:
+that is to say they involve <q>double-limit
+problems.</q><a class="noteMark" id="noteMark-forAnExplanation" href="#noteText-forAnExplanation">[3]</a> The only exceptions to this
+statement of which I am aware (apart, of course, from cases in which
+the indefinite integral can be found) are certain cases in which the
+integral can be calculated directly from its definition as a sum, as
+can the integrals
+<span class="math display">\[
+  \int_0^{-\frac 12 \pi} \log\sin\theta d\theta,\:
+  \int_0^\pi \log{1 - 2p\cos\theta + p^2}d\theta
+\]</span></p><p>Such inversions, then, constitute what we may call the standard
+difficulty of the problem, and I shall base my system of marking
+primarily upon them. <em>For every such inversion involved in the
+proof I shall assign <span class="math inline">\(10\)</span> marks</em>. Besides these marks I shall
+add, in a more capricious way, marks for artificiality, complexity,
+etc. The proof obtaining least marks is to be regarded as the simples
+and best.</p><ol><li id="proof1"><div class="body"><p><em>Mr. Berry&#39;s first proof</em>.<a class="noteMark" id="noteMark-iMeanOf" href="#noteText-iMeanOf">[4]</a> This is that
+expressed by the series of equations
+<span class="math display">\[
+   \begin{alignedat}{2}
+   \int_0^\infty \frac{\sin x}x ddx
+       &amp;= \int_0^\infty \lim_{a\to 0} \bigl(e^{-ax} \frac{\sin x}x\bigr) dx
+        = \lim_{a\to 0}\int_0^\infty e^{-ax} \frac{\sin x}x dx \\
+       &amp;= \lim_{a\to 0}\int_0^\infty e^{-ax}dx\int_0^1\cos tx dt
+        = \lim_{a\to 0}\int_0^1 dt \int_0^\infty e^{-ax}\cos txdx \\
+       &amp;= \lim_{a\to 0}\int_0^1 \frac{a dt}{a^2 + t^2}
+        = \lim_{a\to 0} \arctan{\frac 1a}
+        = \frac 12 \pi.
+   \end{alignedat}
+ \]</span>
+
+
+This is a difficult proof, theoretically, Each of the first two
+lines involves, on the face of it, an inversion of limits. In
+reality each involves more: for integration, with an infinite
+limit, is in itself an operation of <em>repeated</em> procedure to a
+limit; and we ought really to write
+<span class="math display">\[
+   \int_0^\infty \lim_{a\to 0}
+     = \lim_{X\to\infty}\int_0^X\lim_{a\to 0}
+     = \lim_{X\to\infty}\lim_{a\to 0}\int_0^X
+     = \lim_{a\to 0}\lim{X\to\infty}\int_0^X
+     = \lim_{a\to 0}\int_0^\infty .
+ \]</span></p><p>Thus <em>two</em> inversions are involved in the first line; and so
+also in the second. This involves 40 marks. One the other hand
+this proof is, apart from theoretical difficulties, simple and
+natural: I do not think it is necessary to add more marks. Thus
+our total is <span class="math inline">\(\mathbf{40}\)</span>.</p></div></li><li id="proof2"><div class="body"><p><em>Mr. Berry&#39;s second proof</em>. This is expressed by the equations
+<span class="math display">\[
+   \begin{alignedat}{2}
+   \int_0^\infty \frac{\sin x}x dx
+     &amp;= \frac 12 \int_{-\infty}^\infty \frac{\sin x}x dx
+      = \frac 12 \sum_{i=-\infty}^\infty \int_{i\pi}^{(i+1)\pi} \frac{\sin x}x dx \\
+     &amp;= \frac 12 \sum_{-\infty}^\infty (-1)^i \int_0^\pi \frac{\sin x}{x - i\pi} dx
+      = \frac 12 \int_0^\pi \sin x \sum_{-\infty}^\infty \frac{(-1)^i}{x + i\pi} dx \\
+     &amp;= \frac 12 \int_0^\pi \sin x\, \cosec x \,dx
+      = \frac 12 \pi.
+   \end{alignedat}
+ \]</span></p><p>It is obvious that this has a great advantage over the first proof
+in that only one inversion is involved. On the other hand the
+uniform convergence of the series to be integrated is, as Mr. Berry
+remarks, <q>not quite obvious.</q> Moreover the fact that the cosecant
+series contains the terms
+<span class="math display">\[
+   \frac 1x - \frac 1{x - \pi},
+ \]</span>
+which become infinite at the limits, although it does not really add
+to the difficulty of the proof, does involve a light amount of
+additional care in its statement. I am inclined to assign 15 marks,
+therefore, instead of 10 only, for this inversion. For the first
+three steps in the proof I assign 3 marks each; for the use of the
+cosecant series 4. Thus the total mark may be estimated at
+<span class="math inline">\(9+15+4=\mathbf{28}\)</span>.</p></div></li><li id="proof3"><div class="body"><p><em>Mr. Berry&#39;s third proof (by contour integration)</em>. It is
+naturally a little harder to estimate the difficulties of a proof
+which depends upon the theory of analytic functions. It seems to me
+not unreasonable to assign 10 marks for the use of Cauchy&#39;s theorem
+in its simplest form, when we remember that the proof of the
+theorem which depends upon the formula<a class="noteMark" id="noteMark-forsyth" href="#noteText-forsyth">[5]</a>
+<span class="math display">\[
+   \int\int\Bigl(\frac{\partial q}{\partial x} - \frac{\partial p}{\partial y}\Bigr)
+     = \int(p dx + q dy)
+ \]</span>
+involves the reduction of a double integral partly by integration
+with respect to <span class="math inline">\(x\)</span> and partly by integration with respect to
+<span class="math inline">\(y\)</span>. The actual theoretical difficulty of this proof of
+Cauchy&#39;s theorem I should be disposed to estimate at about 20; but
+half that amount seems sufficient for the mere use of a well known
+standard theorem<a class="noteMark" id="noteMark-goursatsProof" href="#noteText-goursatsProof">[6]</a>.</p><p>The particular problem of contour integration with which we are
+concerned is, however, by no means a really simple one. The range of
+integration is infinite, the pole occurs <em>on</em> the contour; we
+have to use the fact that
+<span class="math display">\[
+   \lim_{R=\infty}\lim_{\varepsilon=0}\Bigl(\int_{-R}^{-\varepsilon} + \int_\varepsilon^R\Bigr)
+                                      \frac{e^{ix}}x dx
+     = \int_{-\infty}^\infty \frac{\sin x}x dx.
+ \]</span></p><p>For this I assign 8 marks; for the valuation of the limit of the
+integral round the <q>small semicircle</q> another 8. There remains the
+proof that the integral round the <q>large semicircle</q> tends to
+zero. As Mr. Berry points out, the ordinary proof is really rather
+difficult; I estimate its difficulty at 16. Mr. Berry has suggested a
+simplification of this part of the argument; the difficulty of his
+proof I estimate at 8. Thus we have <span class="math inline">\(10+8+8+16=\mathbf{42}\)</span>
+marks for the ordinary proof, and <span class="math inline">\(10+8+8+8=\mathbf{34}\)</span> for
+Mr. Berry&#39;s modification of it.</p></div></li><li id="proof4"><div class="body"><p><em>Prof. Nanson&#39;s proof</em>. This proof, I must confess, does not
+appeal to me. Starting from the integral
+<span class="math display">\[
+   u = \int_0^\infty \frac{a\cos cx}{a^2 + x^2} dx,
+ \]</span>
+where <span class="math inline">\(a\)</span> and <span class="math inline">\(c\)</span> are positive, we show, by a repeated
+integration by parts, and a repeated differentiation under the
+integral sign, that <span class="math inline">\(u\)</span> satisfies the equation
+<span class="math display">\[
+   \frac{d^2 u}{da^2} = c^2u.
+ \]</span></p><p>As the upper limit is infinite we ought to assign 40 marks for
+this, following the principles we adopted in marking the first
+proof; but as the two operations of differentiation involve
+inversions of the same character I reduce this to 30, adding 6,
+however, for the repeated integration by parts.</p><p>The transformation <span class="math inline">\(x=ay\)</span> shows that <span class="math inline">\(u\)</span> is a
+function of <span class="math inline">\(ac\)</span>, so that <span class="math inline">\(u=Ae^{ac} + Be^{-ac}\)</span>,
+where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent of both <span class="math inline">\(a\)</span> or
+<span class="math inline">\(c\)</span>. This step in the proof I assess at 4.</p><p>That <span class="math inline">\(A=0\)</span> is proved by making <span class="math inline">\(c\)</span> tend to
+<span class="math inline">\(\infty\)</span> and observing that
+<span class="math display">\[
+   \lvert u\rvert &lt; \int_0^\infty \frac{adx}{a^2+x^2} = \frac 12\pi.
+ \]</span>
+For this I assign 6 marks.</p><p>That <span class="math inline">\(c = \frac 12\pi\)</span> is proved by making <span class="math inline">\(c=0\)</span>. Here
+we assume the continuity of the integral, and this should
+involve 20 marks. But as the proof is simple I reduce this to
+12. Thus by the time that we have proved that
+<span class="math display">\[
+   u = \frac 12\pi c^{-ca},
+ \]</span>
+we have incurred <span class="math inline">\(30+6+4+6+12=58\)</span> marks.</p><p>We have then
+<span class="math display">\[
+   \begin{alignedat}{2}
+     \int_0^\infty \frac{a\sin mxdx}{x(a^2+x^2)}
+     &amp;= \int_0^\infty \frac{adx}{a^2 + x^2}
+        \int_0^m \cos cxdc \\
+     &amp;= \int_0^m udc
+      = \frac \pi{2a}(1 - e^{-am}).
+   \end{alignedat}
+ \]</span></p><p>This involves 20 marks. We then obtain
+<span class="math display">\[
+   \int_0^\infty \frac{x\sin mx}{a^2+x^2} dx = \frac 12\pi e^{-am}
+ \]</span>
+by two differentiations with respect to <span class="math inline">\(m\)</span>. This should
+strictly involve 40, and I cannot reduce the number to less than
+30, as the second differentiation is none too easy to
+justify. The result then follows by multiplying the last formula
+but one by <span class="math inline">\(a\)</span> and adding it to the second.</p><p>I do not think that <span class="math inline">\(58+20+30=\mathbf{108}\)</span> marks which we
+have assigned are more than the difficulties of the proof we
+deserve. But of course it is hardly fair to contrast this heavy
+mark with the 40, 28, 42, 36 which we have obtained for the
+others; for Prof. Nanson has evaluated the integrals
+<span class="math display">\[
+   \int_0^\infty \frac{\sin mx}{x(a^2+x^2)}dx,\:
+   \int_0^\infty \frac{\cos mx}{a^2+x^2}dx,\:
+   \int_0^\infty \frac{x\sin mx}{a^2+x^2}dx,\:
+ \]</span>
+as well as the integral (<a class="ref" href="#mjx-eqn-subject"><span class="number">1</span></a>).</p></div></li><li id="proof5"><div class="body"><p><em>Mr. Michell&#39;s proof</em>.<a class="noteMark" id="noteMark-thisProofIs" href="#noteText-thisProofIs">[7]</a> This depends on
+the equations
+<span class="math display">\[
+   \begin{alignedat}{2}
+     \int_0^\infty \frac{\sin x} x dx
+     &amp;= \lim_{h\to 0,H\to\infty} \int_h^H \frac{\sin x} x dx
+     \\
+     &amp;= - \lim_{h\to 0,H\to\infty}
+          \int_h^H dx
+          \int_0^{\frac 12\pi} \frac d{dx}\Bigl\{
+              e^{-x\sin \theta} \cos(x\cos\theta)
+            \Bigr\} d\theta
+     \\
+     &amp;= - \lim_{h\to 0,H\to\infty}
+          \int_0^{\frac 12\pi} d\theta
+          \int_h^H dx \frac d{dx}\Bigl\{ e^{-x\sin \theta} \cos(x\cos\theta) \Bigr\} dx
+     \\
+     &amp;= - \lim_{h\to 0,H\to\infty}
+          \int_0^{\frac 12\pi}\Bigl\{
+              e^{-H\sin\theta}\cos(H\cos\theta)-e^{-h\sin\theta}\cos(h\cos\theta)
+            \Bigr\} d\theta
+     \\
+     &amp;= -(0-\frac 12\pi) = \frac 12\pi.
+   \end{alignedat}
+ \]</span></p><p>I have myself for several years used a proof, in teaching, which
+is in principle substantially the same as the above, though
+slightly more simple in details and arrangement, viz.:
+<span class="math display">\[
+   \begin{alignedat}{2}
+     \int_0^\infty \frac{\sin x}x dx
+     &amp;= \frac 1{2i} \int_0^\infty dx \int_0^\pi e^{i(t+xe^{it})} dt
+     \\
+     &amp;= \frac 1{2i} \int_0^\pi e^{it}dt \int_0^\infty  e^{ixe^{it}} dx
+     \\
+     &amp;= \frac 12 \int_0^\pi dt = \frac 12 \pi.
+   \end{alignedat}
+ \]</span></p><p>The successive steps of the proof can of course be stated in a
+form free from <span class="math inline">\(i\)</span> by merely taking the real part of the
+integrand. To justify the inversion we have to observe that
+<span class="math display">\[
+   \int_0^\pi e^{it} dt \int_0^X e^{ixe^{it}} dx
+   = \int_0^X dx \int_0^\pi e^{it + ixe^{it}} dt
+ \]</span>
+for any positive value of <span class="math inline">\(X\)</span>, in virtue of the continuity of
+the subject of integration, and that
+
+
+<span class="math display">\[\begin{gather*}
+   \left\lvert \int_0^\pi e^{it} dt \int_X^\infty e^{ixe^{it}} dx \right\rvert
+   = \left\lvert \int_0^\pi e^{iXe^{it}} dt \right\rvert
+   &lt; \int_0^\pi e^{-X\sin t}dt
+ \\
+
+   &lt; 2 \int_0^{\frac 12 \pi} e^{-X\sin t} dt &lt; 2\int_0^{\frac 12\pi} e^{-2Xt/\pi} dt
+ \\
+
+   &lt; \pi(1 - e^{-X})/X,
+ \end{gather*}\]</span>
+the closing piece of argument being essentially the same as that
+at the end of Prof. Nanson&#39;s paper. Hence
+<span class="math display">\[
+   \int_0^\pi \int_0^\infty
+   = \lim_{X \to \infty} \int_0^\pi \int_0^X
+   = \lim_{X \to \infty} \int_0^X \int_0^\pi
+   = \int_0^\infty \int_0^\pi.
+ \]</span></p><p>This proof involves an inversion of a repeated integral, one limit
+being infinite. This involves <span class="math inline">\(20\)</span> marks. To this I add
+<span class="math inline">\(15\)</span> on account of the artificiality of the initial
+transformation, deducting <span class="math inline">\(3\)</span> on account of the extreme
+shortness and elegance of the subsequent work. Thus we obtain
+<span class="math inline">\(20+15-3=\mathbf{32}\)</span> marks. To Mr. Michell&#39;s proof, as
+stated by Prof. Nanson, I should assign a slightly higher mark,
+say <span class="math inline">\(\mathbf{40}\)</span>.</p></div></li></ol><p>We may therefore arrange the proofs according to marks, thus:</p><p>[TODO: OMITTED TABLE]</p><p>And this fairly represents my opinion of their respective merits:
+possibly,<a class="noteMark" id="noteMark-thisIKnow" href="#noteText-thisIKnow">[8]</a> however, I have penalized Nos. 2 and 5
+too little on the score of artificiality and 5 too much on the score
+of theoretical difficulty. I conclude, however, with some confidence
+that Mr. Berry&#39;s second proof is distinctly the best. But whether this
+be so or not, one thing at any rate should be clear from this
+discussion: whatever method be chosen, the evaluation of the integral
+(<a class="ref" href="#mjx-eqn-subject"><span class="number">1</span></a>) is a problem of very considerable difficulty. This
+integral (and all other standard definite integrals) lie quite outside
+the legitimate range of school mathematics.</p></div><div class="sectionContent"></div></section></section></section><section class="notes"><ol><li id="noteText-berryNanson">[<a href="#noteMark-berryNanson">↑︎</a>] <span class="body"><span class="cite"><span class="personalName">A. Berry</span>,
+<span class="workTitle">Messenger of Mathematics</span>,
+vol. 37,
+p. 61</span>;
+<span class="cite"><span class="personalName">E. J. Nanson</span>,
+<span class="foreign">ibid</span>.
+p. 113</span>.</span></li><li id="noteText-whetherThis">[<a href="#noteMark-whetherThis">↑︎</a>] <span class="body">Whether this is true of a proof by <q>contour integration</q> depends
+logically on what proof of Cauchy&#39;s Theorem has been used (see my
+remarks under 3  below).</span></li><li id="noteText-forAnExplanation">[<a href="#noteMark-forAnExplanation">↑︎</a>] <span class="body">For an explanation of the general nature of a <q>double-limit
+problem</q> see my <span class="workTitle">Course of Pure Mathematics</span> (App. 2,
+p. 420);  for examples of the working
+out of such problems see Mr. Bromwich&#39;s <span class="workTitle">Infinite Series</span>
+(<span class="foreign">passim</span>, but especially App. 3, p. 414 <span class="foreign">et
+seq.</span>).</span></li><li id="noteText-iMeanOf">[<a href="#noteMark-iMeanOf">↑︎</a>] <span class="body">I mean, of course, the first proof mentioned by Mr. Berry—the
+proof itself is classical.</span></li><li id="noteText-forsyth">[<a href="#noteMark-forsyth">↑︎</a>] <span class="body"><span class="cite"><span class="personalName">Forsyth</span>, <span class="workTitle">Theory of Functions</span>, p. 23</span>.</span></li><li id="noteText-goursatsProof">[<a href="#noteMark-goursatsProof">↑︎</a>] <span class="body">Goursat&#39;s proof is better and more general, and does not
+involve my inversion of limit-operations, but its difficulties
+are far too delicate for beginners.</span></li><li id="noteText-thisProofIs">[<a href="#noteMark-thisProofIs">↑︎</a>] <span class="body">This proof is also referred to by Prof. Nanson. The only proofs
+which are <q>classical</q> are <a class="ref" href="#proof1"><span class="prefix"></span><span class="number">1</span></a>, <a class="ref" href="#proof2"><span class="prefix"></span><span class="number">2</span></a>,
+<a class="ref" href="#proof3"><span class="prefix"></span><span class="number">3</span></a>, viz. the three discussed by Mr. Berry.</span></li><li id="noteText-thisIKnow">[<a href="#noteMark-thisIKnow">↑︎</a>] <span class="body">This I know to be Mr. Berry&#39;s opinion. He would put 2 below 3 and
+4, and 5 below 6. To compare 3 and 4 is very difficult, and they
+might fairly be bracketed.</span></li></ol></section></body></html>

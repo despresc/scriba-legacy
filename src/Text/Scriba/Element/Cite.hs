@@ -33,7 +33,7 @@ citeToText :: (i -> [Text]) -> Cite i -> [Text]
 citeToText f (Cite _ i) = concatMap f i
 
 pCite :: Scriba Node a -> Scriba Element (Cite a)
-pCite pInl = whileMatchTy "cite" $ do
+pCite pInl = whileMatchTy "citation" $ do
   mi <- meta $ attrs $ attrMaybe "id" $ content pIdent
   c  <- allContentOf pInl
   pure $ Cite mi c
