@@ -118,6 +118,10 @@ section.notes {
     font-variant: small-caps;
 }
 
+.workTitle {
+    font-style: italic;
+}
+
 .reg > .old {
     display: none;
 }
