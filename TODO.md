@@ -1,5 +1,7 @@
 # Actual TODO
 
+- Develop a small test library to guide the development of
+  `Text.Scriba.Library`.
 - Move `Element.Memoir.Heading` to its own module. Also consider
   absolute header definitions, since there is going to be a set
   pagination structure with our restricted sections.

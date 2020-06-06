@@ -61,6 +61,7 @@ library
     Text.Scriba.Element.Title
     Text.Scriba.Element.TitleComponent
     Text.Scriba.Element.WorkTitle
+    Text.Scriba.Library
     Text.Scriba.Intermediate
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
