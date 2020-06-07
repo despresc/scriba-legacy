@@ -29,9 +29,11 @@
 
 {%
 
-The Corrections from the reprint I'm reading have not been
+The Corrections from the reprint I’m reading have not been
 applied. The apparent addendum after the final footnote and the
 Comment have also not been digitized.
+
+Still needs proof-reading.
 
 Go over this and look for more link opportunities. One example is the
 final noteText@thisIKnow, referring to the various proofs, but this
@@ -68,9 +70,9 @@ capacity or willingness for work. They are merely the result of
 improvement in the methods of teaching and a wider range of knowledge
 in the teacher, which enables him to discriminate, in a way his
 predecessor could not, between what is really difficult and what is
-not. No one now supposes that it is easy to resolve {math`sin x`} into
-factor and hard to differentiate it!—and even in my time it was the
-former of these two problems to which one was set first.
+not. No one now supposes that it is easy to resolve {math`\sin x`}
+into factors and hard to differentiate it!—and even in my time it was
+the former of these two problems to which one was set first.
 
 Still there are difficulties, even in the Integral Calculus; it is not
 every schoolboy who can do right everything that Todhunter and
@@ -134,14 +136,14 @@ and best.
 
 & noteText @ whetherThis
   |Whether this is true of a proof by {q|contour integration} depends
-   logically on what proof of Cauchy's Theorem has been used (see my
+   logically on what proof of Cauchy’s Theorem has been used (see my
    remarks under 3 {% TODO: insert reference %} below).
 
 & noteText @ forAnExplanation
   |For an explanation of the general nature of a {q|double-limit
    problem} see my {title|Course of Pure Mathematics} (App. 2,
    p. 420); {% TODO: locator/reference? %} for examples of the working
-   out of such problems see Mr. Bromwich's {title|Infinite Series}
+   out of such problems see Mr. Bromwich’s {title|Infinite Series}
    ({foreign|passim}, but especially App. 3, p. 414 {foreign|et
    seq.}).
 
@@ -149,7 +151,7 @@ and best.
   ---
   & li {id|proof1}
     ---
-    {emph|Mr. Berry's first proof}.{noteMark@iMeanOf} This is that
+    {emph|Mr. Berry’s first proof}.{noteMark@iMeanOf} This is that
     expressed by the series of equations
     {dmath {noNum}`
       \begin{alignedat}{2}
@@ -174,7 +176,7 @@ and best.
       \int_0^\infty \lim_{a\to 0}
         = \lim_{X\to\infty}\int_0^X\lim_{a\to 0}
         = \lim_{X\to\infty}\lim_{a\to 0}\int_0^X
-        = \lim_{a\to 0}\lim{X\to\infty}\int_0^X
+        = \lim_{a\to 0}\lim_{X\to\infty}\int_0^X
         = \lim_{a\to 0}\int_0^\infty .
     `}
 
@@ -186,7 +188,7 @@ and best.
 
   & li {id|proof2}
     ---
-    {emph|Mr. Berry's second proof}. This is expressed by the equations
+    {emph|Mr. Berry’s second proof}. This is expressed by the equations
     {dmath {noNum}`
       \begin{alignedat}{2}
       \int_0^\infty \frac{\sin x}x dx
@@ -217,10 +219,10 @@ and best.
 
   & li {id|proof3}
     ---
-    {emph|Mr. Berry's third proof (by contour integration)}. It is
+    {emph|Mr. Berry’s third proof (by contour integration)}. It is
     naturally a little harder to estimate the difficulties of a proof
     which depends upon the theory of analytic functions. It seems to me
-    not unreasonable to assign 10 marks for the use of Cauchy's theorem
+    not unreasonable to assign 10 marks for the use of Cauchy’s theorem
     in its simplest form, when we remember that the proof of the
     theorem which depends upon the formula{noteMark@forsyth}
     {dmath {noNum}`
@@ -230,7 +232,7 @@ and best.
     involves the reduction of a double integral partly by integration
     with respect to {math|x} and partly by integration with respect to
     {math|y}. The actual theoretical difficulty of this proof of
-    Cauchy's theorem I should be disposed to estimate at about 20; but
+    Cauchy’s theorem I should be disposed to estimate at about 20; but
     half that amount seems sufficient for the mere use of a well known
     standard theorem{noteMark@goursatsProof}.
 
@@ -242,7 +244,7 @@ and best.
       |{citation|{name|Forsyth}, {title|Theory of Functions}, p. 23}.
 
     & noteText @ goursatsProof
-      |Goursat's proof is better and more general, and does not
+      |Goursat’s proof is better and more general, and does not
        involve my inversion of limit-operations, but its difficulties
        are far too delicate for beginners.
 
@@ -264,11 +266,11 @@ and best.
     simplification of this part of the argument; the difficulty of his
     proof I estimate at 8. Thus we have {math`10+8+8+16=\mathbf{42}`}
     marks for the ordinary proof, and {math`10+8+8+8=\mathbf{34}`} for
-    Mr. Berry's modification of it.
+    Mr. Berry’s modification of it.
 
   & li {id|proof4}
     ---
-    {emph|Prof. Nanson's proof}. This proof, I must confess, does not
+    {emph|Prof. Nanson’s proof}. This proof, I must confess, does not
     appeal to me. Starting from the integral
     {dmath {noNum}`
       u = \int_0^\infty \frac{a\cos cx}{a^2 + x^2} dx,
@@ -342,7 +344,7 @@ and best.
 
   & li {id|proof5}
     ---
-    {emph|Mr. Michell's proof}.{noteMark@thisProofIs} This depends on
+    {emph|Mr. Michell’s proof}.{noteMark@thisProofIs} This depends on
     the equations
     {dmath {noNum}`
       \begin{alignedat}{2}
@@ -413,7 +415,7 @@ and best.
     `}
     }
     the closing piece of argument being essentially the same as that
-    at the end of Prof. Nanson's paper. Hence
+    at the end of Prof. Nanson’s paper. Hence
     {dmath {noNum}`
       \int_0^\pi \int_0^\infty
       = \lim_{X \to \infty} \int_0^\pi \int_0^X
@@ -426,7 +428,7 @@ and best.
     {math|15} on account of the artificiality of the initial
     transformation, deducting {math|3} on account of the extreme
     shortness and elegance of the subsequent work. Thus we obtain
-    {math`20+15-3=\mathbf{32}`} marks. To Mr. Michell's proof, as
+    {math`20+15-3=\mathbf{32}`} marks. To Mr. Michell’s proof, as
     stated by Prof. Nanson, I should assign a slightly higher mark,
     say {math`\mathbf{40}`}.
 
@@ -438,7 +440,7 @@ And this fairly represents my opinion of their respective merits:
 possibly,{noteMark@thisIKnow} however, I have penalized Nos. 2 and 5
 too little on the score of artificiality and 5 too much on the score
 of theoretical difficulty. I conclude, however, with some confidence
-that Mr. Berry's second proof is distinctly the best. But whether this
+that Mr. Berry’s second proof is distinctly the best. But whether this
 be so or not, one thing at any rate should be clear from this
 discussion: whatever method be chosen, the evaluation of the integral
 ({ref@subject}) is a problem of very considerable difficulty. This
@@ -446,6 +448,6 @@ integral (and all other standard definite integrals) lie quite outside
 the legitimate range of school mathematics.
 
 & noteText @ thisIKnow
-  |This I know to be Mr. Berry's opinion. He would put 2 below 3 and
+  |This I know to be Mr. Berry’s opinion. He would put 2 below 3 and
    4, and 5 below 6. To compare 3 and 4 is very difficult, and they
    might fairly be bracketed.

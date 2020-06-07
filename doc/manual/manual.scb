@@ -105,7 +105,7 @@ can be represented in paragraph text using the sequences {code`\\`},
 {code`\{`}, and {code`\}`}, should you need them in text.
 
 The other feature of paragraph markup is {emph|inline elements}, which
-are used to give further meaning to your text and to control scriba's
+are used to give further meaning to your text and to control scriba’s
 many features. Simple elements start with {code`{tag|`} and end with
 {code`}`}. The paragraphs above have a {code`q`} element, representing
 quoted text and likely to be rendered between quotation marks, and an

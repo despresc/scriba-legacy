@@ -417,11 +417,10 @@ renderNotes = go . List.sortBy (compare `on` fst) . map getNums . M.elems
     t' <- RH.render t
     let ident = identAttr $ prefixIdent "noteText-" i
     pure $ Html.li Html.! ident $ do
-      "["
       Html.a
         Html.! HtmlA.href (identAttrVal $ prefixIdent "#noteMark-" i)
+        Html.! HtmlA.class_ "noteMarkBack"
         $      "↑\xfe0e"
-      "] "
       t'
   getNums t = case noteNum t of
     Just (NumberAuto _ _ n _) -> (n, t)

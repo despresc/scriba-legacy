@@ -28,7 +28,7 @@ that paragraph text cannot contain blank lines; like in the example
 above, these signal the end of the paragraph. Those three characters
 can be represented in paragraph text using the sequences <span class="inlineCode"><code>\\</code></span>,
 <span class="inlineCode"><code>\{</code></span>, and <span class="inlineCode"><code>\}</code></span>, should you need them in text.</p><p>The other feature of paragraph markup is <em>inline elements</em>, which
-are used to give further meaning to your text and to control scriba&#39;s
+are used to give further meaning to your text and to control scriba’s
 many features. Simple elements start with <span class="inlineCode"><code>{tag|</code></span> and end with
 <span class="inlineCode"><code>}</code></span>. The paragraphs above have a <span class="inlineCode"><code>q</code></span> element, representing
 quoted text and likely to be rendered between quotation marks, and an
@@ -129,8 +129,8 @@ takes a single argument, the label of the note whose text this block
 provides. Its content becomes the content of the note, and it will be
 placed at the bottom of whatever page the corresponding
 <span class="inlineCode"><code>noteMark</code></span> ends up on. An example is given in the
-following footnote.<a class="noteMark" id="noteMark-noteExample" href="#noteText-noteExample">[1]</a></p></div></section><section id="elem-ref"><h3><span class="title"><span class="number"><span class="before"></span>2.5<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>ref<span class="after"></span></span></span></h3><div class="sectionPreamble"><p>The <span class="inlineCode"><code>ref</code></span> inline element represents a reference to another
+following footnote.<a class="noteMark" id="noteMark-noteExample" href="#noteText-noteExample">1</a></p></div></section><section id="elem-ref"><h3><span class="title"><span class="number"><span class="before"></span>2.5<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>ref<span class="after"></span></span></span></h3><div class="sectionPreamble"><p>The <span class="inlineCode"><code>ref</code></span> inline element represents a reference to another
 element. It takes a single argument, the identifier of another element
 in the document. In future, it may be able to reference elements
 across documents, and to take multiple identifier arguments.</p><p>For example, we can reference <a class="ref" href="#elem-ref"><span class="prefix">§</span><span class="number">2.5</span></a>, this section, using
-<span class="inlineCode"><code>{ref@elem-ref}</code></span>.</p></div></section></div></section></section></section><section class="notes"><ol><li id="noteText-noteExample">[<a href="#noteMark-noteExample">↑︎</a>] <span class="body">A <span class="inlineCode"><code>noteText</code></span> block can contain any inline or block content.</span></li></ol></section></body></html>
+<span class="inlineCode"><code>{ref@elem-ref}</code></span>.</p></div></section></div></section></section></section><section class="notes"><ol><li id="noteText-noteExample"><a href="#noteMark-noteExample" class="noteMarkBack">↑︎</a><span class="body">A <span class="inlineCode"><code>noteText</code></span> block can contain any inline or block content.</span></li></ol></section></body></html>

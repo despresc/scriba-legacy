@@ -62,10 +62,7 @@ instance RH.Render NoteMark where
       Html.! ident
       Html.! i'
       $      Html.toHtml
-      $      T.pack
-      $      "["
-      <>     show n
-      <>     "]"
+      $      n
 
 data NoteText b i = NoteText
   { noteIdentifier :: Identifier
