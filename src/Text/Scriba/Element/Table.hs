@@ -1,8 +1,10 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -10,21 +12,13 @@
 module Text.Scriba.Element.Table where
 
 import           Text.Scriba.Decorate
-import           Text.Scriba.Element.MixedBody
-import           Text.Scriba.Element.TitleComponent
-import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Applicative            ( optional )
-import           Control.Monad                  ( join )
 import           Control.Monad.Except           ( throwError )
-import           Control.Monad.Reader           ( asks )
 import           Data.Maybe                     ( fromMaybe )
-import qualified Data.Map.Strict               as M
 import           Data.Text                      ( Text )
-import qualified Data.Text                     as T
-import           Data.Traversable               ( for )
 import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
@@ -49,7 +43,8 @@ instance RH.Render i => RH.Render (SimpleTable b i) where
       <>     Html.tbody (mconcat b')
 
 newtype HeadRow i = HeadRow [HeadCell i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor)
+  deriving anyclass (Numbering, Titling a)
 
 instance Referencing i i' => Referencing (HeadRow i) (HeadRow i')
 instance Gathering note i i' => Gathering note (HeadRow i) (HeadRow i')
@@ -60,7 +55,8 @@ renderHeadRow (ColSpec cs) (HeadRow hs) =
 
 newtype HeadCell i = HeadCell
   { headCellBody :: [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
+    deriving anyclass (Numbering, Titling a)
 
 instance Referencing i i' => Referencing (HeadCell i) (HeadCell i')
 instance Gathering note i i' => Gathering note (HeadCell i) (HeadCell i')
@@ -80,7 +76,8 @@ renderHeadCell cs (HeadCell b) = do
   pure $ Html.th Html.! HtmlA.class_ (Html.toValue $ colDataClass cs) $ b'
 
 newtype BodyRow i = BodyRow [BodyCell i]
-  deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
+  deriving (Eq, Ord, Show, Read, Generic, Functor)
+  deriving anyclass (Numbering, Titling a)
 
 instance Referencing i i' => Referencing (BodyRow i) (BodyRow i')
 instance Gathering note i i' => Gathering note (BodyRow i) (BodyRow i')
@@ -91,7 +88,8 @@ renderBodyRow (ColSpec cs) (BodyRow hs) =
 
 newtype BodyCell i = BodyCell
   { bodyCellBody :: [i]
-  } deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering, Titling a)
+  } deriving (Eq, Ord, Show, Read, Generic, Functor)
+    deriving anyclass (Numbering, Titling a)
 
 instance Referencing i i' => Referencing (BodyCell i) (BodyCell i')
 instance Gathering note i i' => Gathering note (BodyCell i) (BodyCell i')
@@ -102,10 +100,13 @@ renderBodyCell cs (BodyCell b) = do
   pure $ Html.td Html.! HtmlA.class_ (Html.toValue $ colDataClass cs) $ b'
 
 newtype ColSpec = ColSpec [ColData]
-  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a, Gathering note ColSpec, Referencing ColSpec, Semigroup, Monoid)
+  deriving (Eq, Ord, Show, Read, Generic)
+  deriving newtype (Semigroup, Monoid)
+  deriving anyclass (Numbering, Titling a, Gathering note ColSpec, Referencing ColSpec)
 
 newtype ColData = ColData Alignment
-  deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a, Gathering note ColData)
+  deriving (Eq, Ord, Show, Read, Generic)
+  deriving anyclass (Numbering, Titling a, Gathering note ColData)
 
 instance Referencing ColData ColData
 
@@ -152,7 +153,7 @@ pSimpleTable pInl = whileMatchTy "simpleTable" $ do
 
 -- TODO: actually validate
 guardValidTable :: SimpleTable b i -> Scriba s ()
-guardValidTable (SimpleTable spec hd bd) = pure ()
+guardValidTable _ = pure ()
 
 pColSpec :: Scriba Element ColSpec
 pColSpec = meta $ args $ ColSpec <$> remaining pColData
