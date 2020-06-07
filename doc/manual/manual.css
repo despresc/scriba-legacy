@@ -116,6 +116,10 @@ section.notes {
     font-size: 0.75em;
 }
 
+section.notes > ol > li:target > a.noteMarkBack {
+    background-color: lightgrey;
+}
+
 .math {
     font-size: 0.97em;
 }

@@ -115,6 +115,10 @@ a.noteMarkBack {
     text-decoration: none;
 }
 
+section.notes > ol > li:target > a.noteMarkBack {
+    background-color: lightgrey;
+}
+
 /* Riemann-specific css */
 
 .physPage {
