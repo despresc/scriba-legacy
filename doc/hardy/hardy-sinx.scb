@@ -111,8 +111,8 @@ the indefinite integral can be found) are certain cases in which the
 integral can be calculated directly from its definition as a sum, as
 can the integrals
 {dmath {noNum}`
-  \int_0^{-\frac 12 \pi} \log\sin\theta d\theta,\:
-  \int_0^\pi \log{1 - 2p\cos\theta + p^2}d\theta
+  \int_0^{\frac 12 \pi} \log\sin\theta d\theta,\:
+  \int_0^\pi \log(1 - 2p\cos\theta + p^2)d\theta
 `}
 
 Such inversions, then, constitute what we may call the standard
@@ -209,22 +209,23 @@ and best.
     {dmath {noNum}`
       \frac 1x - \frac 1{x - \pi},
     `}
-    which become infinite at the limits, although it does not really add
-    to the difficulty of the proof, does involve a light amount of
-    additional care in its statement. I am inclined to assign 15 marks,
-    therefore, instead of 10 only, for this inversion. For the first
-    three steps in the proof I assign 3 marks each; for the use of the
-    cosecant series 4. Thus the total mark may be estimated at
-    {math`9+15+4=\mathbf{28}`}.
+    which become infinite at the limits, although it does not really
+    add to the difficulty of the proof, does involve a light amount of
+    additional care in its statement. I am inclined to assign
+    {math|15} marks, therefore, instead of {math|10} only, for this
+    inversion. For the first three steps in the proof I assign 3 marks
+    each; for the use of the cosecant series 4. Thus the total mark
+    may be estimated at {math`9+15+4=\mathbf{28}`}.
 
   & li {id|proof3}
     ---
     {emph|Mr. Berry’s third proof (by contour integration)}. It is
     naturally a little harder to estimate the difficulties of a proof
-    which depends upon the theory of analytic functions. It seems to me
-    not unreasonable to assign 10 marks for the use of Cauchy’s theorem
-    in its simplest form, when we remember that the proof of the
-    theorem which depends upon the formula{noteMark@forsyth}
+    which depends upon the theory of analytic functions. It seems to
+    me not unreasonable to assign {math|10} marks for the use of
+    Cauchy’s theorem in its simplest form, when we remember that the
+    proof of the theorem which depends upon the
+    formula{noteMark@forsyth}
     {dmath {noNum}`
       \int\int\Bigl(\frac{\partial q}{\partial x} - \frac{\partial p}{\partial y}\Bigr)
         = \int(p dx + q dy)
@@ -258,13 +259,14 @@ and best.
         = \int_{-\infty}^\infty \frac{\sin x}x dx.
     `}
 
-    For this I assign 8 marks; for the valuation of the limit of the
-    integral round the {q|small semicircle} another 8. There remains the
-    proof that the integral round the {q|large semicircle} tends to
-    zero. As Mr. Berry points out, the ordinary proof is really rather
-    difficult; I estimate its difficulty at 16. Mr. Berry has suggested a
-    simplification of this part of the argument; the difficulty of his
-    proof I estimate at 8. Thus we have {math`10+8+8+16=\mathbf{42}`}
+    For this I assign {math|8} marks; for the valuation of the limit
+    of the integral round the {q|small semicircle} another
+    {math|8}. There remains the proof that the integral round the
+    {q|large semicircle} tends to zero. As Mr. Berry points out, the
+    ordinary proof is really rather difficult; I estimate its
+    difficulty at {math|16}. Mr. Berry has suggested a simplification
+    of this part of the argument; the difficulty of his proof I
+    estimate at {math|8}. Thus we have {math`10+8+8+16=\mathbf{42}`}
     marks for the ordinary proof, and {math`10+8+8+8=\mathbf{34}`} for
     Mr. Berry’s modification of it.
 
@@ -301,9 +303,9 @@ and best.
     For this I assign 6 marks.
 
     That {math|c = \frac 12\pi} is proved by making {math|c=0}. Here
-    we assume the continuity of the integral, and this should
-    involve 20 marks. But as the proof is simple I reduce this to
-    12. Thus by the time that we have proved that
+    we assume the continuity of the integral, and this should involve
+    {math|20} marks. But as the proof is simple I reduce this to
+    {math|12}. Thus by the time that we have proved that
     {dmath {noNum}`
       u = \frac 12\pi c^{-ca},
     `}
@@ -333,8 +335,9 @@ and best.
     I do not think that {math`58+20+30=\mathbf{108}`} marks which we
     have assigned are more than the difficulties of the proof we
     deserve. But of course it is hardly fair to contrast this heavy
-    mark with the 40, 28, 42, 36 which we have obtained for the
-    others; for Prof. Nanson has evaluated the integrals
+    mark with the {math|40}, {math|28}, {math|42}, {math|36} which we
+    have obtained for the others; for Prof. Nanson has evaluated the
+    integrals
     {dmath {noNum}`
       \int_0^\infty \frac{\sin mx}{x(a^2+x^2)}dx,\:
       \int_0^\infty \frac{\cos mx}{a^2+x^2}dx,\:
