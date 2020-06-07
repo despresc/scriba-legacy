@@ -20,6 +20,7 @@ module Text.Scriba.Element
   , module Text.Scriba.Element.Ref
   , module Text.Scriba.Element.Regularize
   , module Text.Scriba.Element.Str
+  , module Text.Scriba.Element.Table
   , module Text.Scriba.Element.TitleComponent
   , module Text.Scriba.Element.WorkTitle
   )
@@ -46,5 +47,6 @@ import           Text.Scriba.Element.Quote
 import           Text.Scriba.Element.Ref
 import           Text.Scriba.Element.Regularize
 import           Text.Scriba.Element.Str
+import           Text.Scriba.Element.Table
 import           Text.Scriba.Element.TitleComponent
 import           Text.Scriba.Element.WorkTitle

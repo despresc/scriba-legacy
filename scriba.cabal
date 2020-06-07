@@ -59,6 +59,7 @@ library
     Text.Scriba.Element.Ref
     Text.Scriba.Element.Regularize
     Text.Scriba.Element.Str
+    Text.Scriba.Element.Table
     Text.Scriba.Element.Title
     Text.Scriba.Element.TitleComponent
     Text.Scriba.Element.WorkTitle

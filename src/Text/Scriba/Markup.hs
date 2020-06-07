@@ -60,6 +60,7 @@ data Block b i
   | Bcode !BlockCode
   | Bpar !(Paragraph i)
   | Blist !(List (Block b) i)
+  | BsimpleTable !(SimpleTable (Block b) i)
   | Bcontrol !(b i)
   | Bnil
   deriving (Eq, Ord, Show, Read, Generic, Functor, Numbering)
@@ -82,14 +83,16 @@ newtype BlockControl i
 instance (FromTitleComponent i, Titling i i) => Titling i (BlockControl i)
 
 instance Gathering (NoteText (Block Void1) i') i i' => Gathering (NoteText (Block Void1) i') (Block BlockControl i) (Block Void1 i') where
-  gathering (Bformal  a) = Bformal <$> gathering a
-  gathering (Bcode    a) = Bcode <$> gathering a
-  gathering (Bpar     a) = Bpar <$> gathering a
-  gathering (Blist    a) = Blist <$> gathering a
-  gathering (Bcontrol a) = gathering a
-  gathering Bnil         = pure Bnil
+  gathering (Bformal      a) = Bformal <$> gathering a
+  gathering (Bcode        a) = Bcode <$> gathering a
+  gathering (Bpar         a) = Bpar <$> gathering a
+  gathering (Blist        a) = Blist <$> gathering a
+  gathering (BsimpleTable a) = BsimpleTable <$> gathering a
+  gathering (Bcontrol     a) = gathering a
+  gathering Bnil             = pure Bnil
 
-instance Gathering (NoteText (Block Void1) i') i i' => Gathering (NoteText (Block Void1) i') (BlockControl i) (Block Void1 i') where
+instance Gathering (NoteText (Block Void1) i') i i'
+  => Gathering (NoteText (Block Void1) i') (BlockControl i) (Block Void1 i') where
   gathering (BlockNoteText b) = gatheringBlockNoteText b
 
 data Inline a
@@ -184,6 +187,8 @@ pBlock pInl =
     <$> pBlockCode
     <|> Blist
     <$> pList (pMixedBody (pBlock pInl) pInl)
+    <|> BsimpleTable
+    <$> pSimpleTable pInl
     <|> Bcontrol
     <$> pBlockControl pInl
 
@@ -345,12 +350,13 @@ decorating f d = do
 -- want it to be output-agnostic, if possible.
 
 instance (RH.Render (b i), RH.Render i) => RH.Render (Block b i) where
-  render (Bformal  fb) = RH.render fb
-  render (Bcode    t ) = RH.render t
-  render (Bpar     p ) = RH.render p
-  render (Blist    b ) = RH.render b
-  render (Bcontrol b ) = RH.render b
-  render Bnil          = mempty
+  render (Bformal      fb) = RH.render fb
+  render (Bcode        t ) = RH.render t
+  render (Bpar         p ) = RH.render p
+  render (Blist        b ) = RH.render b
+  render (BsimpleTable b ) = RH.render b
+  render (Bcontrol     b ) = RH.render b
+  render Bnil              = mempty
 
 instance RH.Render a => RH.Render (Inline a) where
   render (Istr            s) = RH.render s

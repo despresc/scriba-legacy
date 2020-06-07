@@ -119,12 +119,33 @@ section.notes > ol > li:target > a.noteMarkBack {
     background-color: lightgrey;
 }
 
+table .alignLeft {
+    text-align: left;
+}
+
+table .alignRight {
+    text-align: right;
+}
+
+table .alignCenter {
+    text-align: center;
+}
+
+.simpleTable > table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.simpleTable td {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
 /* Riemann-specific css */
 
 .physPage {
     display: none;
 }
-
 
 /* Should instead have a secBreak class and an option to specify that
    particular untitled sections should have such a break. Or simply

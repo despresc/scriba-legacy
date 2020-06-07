@@ -39,10 +39,6 @@ Go over this and look for more link opportunities. One example is the
 final noteText@thisIKnow, referring to the various proofs, but this
 happens elsewhere.
 
-The omitted table might easily be a list, but if so, we need to come
-up with a good way of moving the tallies to the right, or we should
-live with the numbers not being aligned.
-
 %}
 
 # frontMatter
@@ -437,7 +433,46 @@ and best.
 
 We may therefore arrange the proofs according to marks, thus:
 
-[TODO: OMITTED TABLE]
+& simpleTable
+  & columns @ {right} {left} {right}
+  ---
+  & body
+    ---
+    & row
+      ---
+      & cell|1.
+      & cell|Mr. Berry’s second proof,
+      & cell|{math|28}
+    & row
+      ---
+      & cell|2.
+      & cell|Mr. Michell’s proof (my form),
+      & cell|{math|32}
+    & row
+      ---
+      & cell|3.
+      & cell|Mr. Berry’s third proof (his form),
+      & cell|{math|34}
+    & row
+      ---
+      & cell|4.
+      & cell|Mr. Berry’s first proof,
+      & cell|{math|40}
+    & row
+      ---
+      & cell|5.
+      & cell|Mr. Michell’s proof (his form),
+      & cell|{math|40}
+    & row
+      ---
+      & cell|6.
+      & cell|Mr. Berry’s third proof (ordinary form),
+      & cell|{math|42}
+    & row
+      ---
+      & cell|7.
+      & cell|Prof. Nanson’s proof,
+      & cell|{math|108}
 
 And this fairly represents my opinion of their respective merits:
 possibly,{noteMark@thisIKnow} however, I have penalized Nos. 2 and 5

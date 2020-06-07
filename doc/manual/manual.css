@@ -123,3 +123,26 @@ section.notes > ol > li:target > a.noteMarkBack {
 .math {
     font-size: 0.97em;
 }
+
+
+table .alignLeft {
+    text-align: left;
+}
+
+table .alignRight {
+    text-align: right;
+}
+
+table .alignCenter {
+    text-align: center;
+}
+
+.simpleTable > table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.simpleTable td {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}

@@ -553,6 +553,8 @@ CSS has :lang selector, so we can have styles based on language
 - Tables. There should be a top-level `table`, in addition to whatever
   mathematical tableau functionality we provide.
 
+- Improved simple tables. Perhaps captions, table head spans
+
 - citation components (authors, editors, publishers, events, and so
   on), and automatic citation generation. Related to [meta
   handling](#meta-handling) and [libraries](#libraries).
