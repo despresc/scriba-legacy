@@ -406,13 +406,17 @@ pBackslashToks :: Parser Text
 pBackslashToks = MP.single '\\' >> MP.option "\\" pEscChar
   where pEscChar = fmap T.singleton $ MP.satisfy $ \c -> T.any (== c) "{}\\"
 
+-- | Parses text using the supplied insignificant character parser.
+pTextWithInsig :: Parser Text -> Parser InlineNode
+pTextWithInsig insigChar = do
+  sp <- MP.getSourcePos
+  ts <- MP.some $ insigChar <|> pBackslashToks
+  pure $ InlineText sp $ T.concat ts
+
 -- | Parse line text, a sequence of characters other than @{}\\@ or
 -- spaces.
 pInlineText :: Parser InlineNode
-pInlineText = MP.label "inline text" $ do
-  sp <- MP.getSourcePos
-  ts <- MP.some $ insigChar <|> pBackslashToks
-  pure $ InlineText sp (T.concat ts)
+pInlineText = MP.label "inline text" $ pTextWithInsig insigChar
  where
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}" || isSpace c
@@ -476,10 +480,7 @@ pInlineWhite = MP.label "white space" $ do
 -- | Argument text is inline text except that it cannot contain spaces
 -- or a character from @|&`@.
 pArgText :: Parser InlineNode
-pArgText = MP.label "argument text" $ do
-  sp <- MP.getSourcePos
-  ts <- MP.some $ insigChar <|> pBackslashToks
-  pure $ InlineText sp (T.concat ts)
+pArgText = MP.label "argument text" $ pTextWithInsig insigChar
  where
   insigChar =
     MP.takeWhile1P Nothing $ \c -> not $ T.any (== c) "\\{}|`&" || isSpace c

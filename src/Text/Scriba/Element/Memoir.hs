@@ -61,9 +61,10 @@ instance (Referencing (f a) (g b), Referencing a b) => Referencing (Doc f j a) (
 instance (RH.Render (b i), RH.Render i, RH.Render j) => RH.Render (Doc b j i) where
   render (Doc _ (DocArticle a)) = RH.render a
 
-data DocContent b j i
+newtype DocContent b j i
   = DocArticle (Article b j i)
-  deriving (Eq, Ord, Show, Read, Functor, Generic, Numbering)
+  deriving (Eq, Ord, Show, Read, Functor, Generic)
+  deriving anyclass Numbering
 
 instance (Gathering note (f a) (g b), Gathering note a b) => Gathering note (DocContent f j a) (DocContent g j b)
 instance (Titling i (b i), FromTitleComponent i, Titling i i) => Titling i (DocContent b j i)

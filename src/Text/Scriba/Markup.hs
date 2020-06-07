@@ -313,7 +313,7 @@ decorateDoc
        , Doc (Block Void1) (Inline Void) (Inline Void)
        )
 decorateDoc =
-  decorating @((Doc (Block Void1) (Inline Void) (Inline InlineControl)))
+  decorating @(Doc (Block Void1) (Inline Void) (Inline InlineControl))
     $ traverseInline (absurd :: Void -> Inline InlineControl)
 
 decorating

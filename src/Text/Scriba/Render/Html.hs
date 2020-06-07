@@ -108,7 +108,6 @@ bumpHeaderDepth act = do
   a <- act
   setHeaderDepth n
   pure a
-  where 
 
 atHeaderDepth :: Int -> RenderM a -> RenderM a
 atHeaderDepth n act = do

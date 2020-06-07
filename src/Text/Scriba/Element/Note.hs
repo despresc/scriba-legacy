@@ -57,12 +57,7 @@ instance RH.Render NoteMark where
   render (NoteMark i n) = pure $ do
     let i'    = HtmlA.href $ identAttrVal $ prefixIdent "#noteText-" i
         ident = identAttr $ prefixIdent "noteMark-" i
-    Html.a
-      Html.! HtmlA.class_ "noteMark"
-      Html.! ident
-      Html.! i'
-      $      Html.toHtml
-      $      n
+    Html.a Html.! HtmlA.class_ "noteMark" Html.! ident Html.! i' $ Html.toHtml n
 
 data NoteText b i = NoteText
   { noteIdentifier :: Identifier

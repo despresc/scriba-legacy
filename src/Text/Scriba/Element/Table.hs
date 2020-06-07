@@ -16,6 +16,7 @@ import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Applicative            ( optional )
+import           Control.Monad                  ( zipWithM )
 import           Control.Monad.Except           ( throwError )
 import           Data.Maybe                     ( fromMaybe )
 import           Data.Text                      ( Text )
@@ -51,7 +52,7 @@ instance Gathering note i i' => Gathering note (HeadRow i) (HeadRow i')
 
 renderHeadRow :: RH.Render i => ColSpec -> HeadRow i -> RH.RenderM Html.Html
 renderHeadRow (ColSpec cs) (HeadRow hs) =
-  Html.tr . mconcat <$> sequence (zipWith renderHeadCell cs hs)
+  Html.tr . mconcat <$> zipWithM renderHeadCell cs hs
 
 newtype HeadCell i = HeadCell
   { headCellBody :: [i]
@@ -75,7 +76,7 @@ instance Gathering note i i' => Gathering note (BodyRow i) (BodyRow i')
 
 renderBodyRow :: RH.Render i => ColSpec -> BodyRow i -> RH.RenderM Html.Html
 renderBodyRow (ColSpec cs) (BodyRow hs) =
-  Html.tr . mconcat <$> sequence (zipWith renderBodyCell cs hs)
+  Html.tr . mconcat <$> zipWithM renderBodyCell cs hs
 
 newtype BodyCell i = BodyCell
   { bodyCellBody :: [i]
@@ -142,7 +143,7 @@ pColSpec = meta $ args $ ColSpec <$> remaining pColData
       Just "default" -> pure AlignDefault
       Just x ->
         throwError $ Msg $ "column alignment: " <> x <> " not recognized"
-      Nothing -> throwError $ Msg $ "column alignment must be present"
+      Nothing -> throwError $ Msg "column alignment must be present"
   pColData = ColData <$> asNode pAlign
 
 -- TODO: allow whitespace
