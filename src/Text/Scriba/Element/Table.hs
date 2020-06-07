@@ -61,15 +61,6 @@ newtype HeadCell i = HeadCell
 instance Referencing i i' => Referencing (HeadCell i) (HeadCell i')
 instance Gathering note i i' => Gathering note (HeadCell i) (HeadCell i')
 
-{-
-instance RH.Render i => RH.Render (HeadCell i) where
-  render (HeadCell w _ b) = do
-    b' <- RH.render b
-    pure $ do
-      let w' = HtmlA.colspan $ Html.toValue w
-      Html.th Html.! w' $ b'
--}
-
 renderHeadCell :: RH.Render i => ColData -> HeadCell i -> RH.RenderM Html.Html
 renderHeadCell cs (HeadCell b) = do
   b' <- RH.render b
@@ -117,26 +108,10 @@ colDataClass (ColData d) = case d of
   AlignCenter  -> "alignCenter"
   AlignDefault -> "alignDefault"
 
-
 data Alignment = AlignLeft | AlignRight | AlignCenter | AlignDefault
   deriving (Eq, Ord, Show, Read, Generic, Numbering, Titling a, Gathering note Alignment)
 
 instance Referencing Alignment Alignment
-
-{-
-
-& simpleTable
-  & columns @ {left} {right} {center} {default}
-  ---
-  & head
-    ---
-    & row
-      ---
-      & cell|Hello
-  & body
-    ---
-
--}
 
 pSimpleTable :: Scriba Node i -> Scriba Element (SimpleTable b i)
 pSimpleTable pInl = whileMatchTy "simpleTable" $ do
@@ -179,7 +154,6 @@ pHead pInl = one $ asNode $ whileMatchTy "head" $ allContentOf $ asNode
   pHeadCell = whileMatchTy "cell" $ do
     c <- allContentOf pInl
     pure $ HeadCell c
-
 
 pBody :: Scriba Node i -> Scriba [Node] [BodyRow i]
 pBody pInl = one $ asNode $ whileMatchTy "body" $ allContentOf $ asNode
