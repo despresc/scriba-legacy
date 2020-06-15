@@ -3,6 +3,7 @@
 {-# LANGUAGE EmptyCase #-}
 {-# LANGUAGE EmptyDataDeriving #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Text.Scriba.Decorate.Common where
 
@@ -14,7 +15,7 @@ import           Data.Text                      ( Text )
 import           GHC.Generics                   ( Generic )
 
 data Void1 a
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Read)
 
 absurd1 :: Void1 a -> b
 absurd1 = \case {}
@@ -160,6 +161,10 @@ data DecorateError
   = DecorateError Text
   | DecorateNil
   deriving (Eq, Ord, Show)
+
+prettyDecorateError :: DecorateError -> Text
+prettyDecorateError (DecorateError t) = t
+prettyDecorateError DecorateNil       = ""
 
 instance Semigroup DecorateError where
   x@DecorateError{} <> _ = x

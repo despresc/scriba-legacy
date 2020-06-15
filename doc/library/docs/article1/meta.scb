@@ -1,0 +1,23 @@
+& docName|test-article
+& scribaIncludeDir|src
+& titleInfo
+  ---
+  & nonSort|First
+  & title|test thing
+  & subTitle|here
+& nameInfo
+  ---
+  & name
+    & type @ personal
+    & role @ author
+    & authValue @ n2019-1
+    ---
+    & namePart {type@given} |Christian
+    & namePart {type@family}|Despres
+& originInfo
+  ---
+  & place
+    ---
+    & placeTerm|Kanata, Ontario
+  & publisher|Scriba Press
+  & dateIssued|2020

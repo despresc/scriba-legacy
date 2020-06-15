@@ -622,3 +622,10 @@ CSS has :lang selector, so we can have styles based on language
   title. This *may* be required for the `*Matter` sections, but for
   the others we could instead have an attribute that turns it on (via
   a class).
+
+- document type that's a wrapper around pdfs, for page images and
+  things (would provide a digital page to identifier mapping, more or
+  less), perhaps with bundling (multiple versions of a digitized
+  document in one place) and bibliographic subsetting (identifying
+  multiple things in the image and where they occur, for journal
+  articles and the like)

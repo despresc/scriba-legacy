@@ -29,6 +29,7 @@ library
                , roman-numerals
                , digits
                , aeson
+               , shake
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate
@@ -68,9 +69,17 @@ library
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
+    Text.Scriba.Package
     Text.Scriba.Render.Html
     Text.Scriba.Source.Common
     Text.Scriba.Source.Parse
+
+executable scriba-exe
+  import: base
+  main-is: Main.hs
+  hs-source-dirs: app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends: scriba
 
 test-suite scriba-test
   import: base

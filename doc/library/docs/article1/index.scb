@@ -1,0 +1,26 @@
+& scriba
+  & type|article
+
+{%
+
+This _should_ be an article using the configuration below (possibly
+without the & scriba block above, but won't be until the parsers are
+modified to allow it.
+
+# article
+  & title|Some {math|\int_0^\infty f(x)dx} title
+
+## section
+  & title|The section title
+
+Text here, with a {link@test-book#id2|link to other content}. The link
+anchor is here:
+{dmath {id|id1}`
+A = B
+`}
+
+%}
+
+# section
+
+Section content

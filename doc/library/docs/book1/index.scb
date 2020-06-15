@@ -1,0 +1,34 @@
+& scriba
+  & type|article
+
+{%
+
+This _should_ be an example of a book, but won't be until that
+document type is implemented.
+
+Old content that should be restored:
+------------------------------------
+
+# book
+
+## mainMatter
+
+### chapter
+  & title|The chapter title
+
+A little chapter preamble.
+
+#### section
+  & title| The section title
+
+Section content, with a {link@test-article#id1|link to other
+content}. The link anchor is here:
+{dmath {id|id2}`
+A = B
+`}
+%}
+
+# section
+  & title|The section title
+
+Section content

@@ -1,0 +1,23 @@
+& docName|test-book
+& scribaIncludeDir|src
+& titleInfo
+  ---
+  & nonSort|Other
+  & title|content
+  & subTitle|for this
+& nameInfo
+  ---
+  & name
+    & type @ personal
+    & role @ author
+    & authValue @ n2019-2
+    ---
+    & namePart {type@given} |Jan
+    & namePart {type@family}|Smit
+& originInfo
+  ---
+  & place
+    ---
+    & placeTerm|Amsterdam, Dutch Republic
+  & publisher|Elzevir
+  & dateIssued|1666

@@ -1,2 +1,6 @@
 .stack-work/
 *~
+
+# For library testing
+
+doc/library/_build/

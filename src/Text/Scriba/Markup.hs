@@ -20,6 +20,9 @@ module Text.Scriba.Markup
   , Inline(..)
   , NoteText(..)
   , Identifier(..)
+  , parseToNode
+  , nodeToGathered
+  , gatheredToUnfolded
   , parseArticle
   , prettyScribaError
   , decorateDoc
@@ -28,6 +31,13 @@ module Text.Scriba.Markup
   , StandaloneConfig(..)
   , Void1
   , absurd1
+  , GatherData(..)
+  , prettyDecorateError
+  , Node
+  , LinkDatum
+  , InlineControl
+  , UnfoldedDoc
+  , UnfoldedNotes
   )
 where
 
@@ -35,6 +45,7 @@ import           Text.Scriba.Decorate
 import           Text.Scriba.Element
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
+import           Text.Scriba.Source.Parse       ( parseDoc' )
 
 import           Data.Aeson                     ( ToJSON(..) )
 import qualified Data.Aeson                    as Aeson
@@ -264,7 +275,44 @@ pInlineCore =
 pInlineControl :: Scriba Element InlineControl
 pInlineControl = IcRef <$> pSourceRef <|> IcNoteMark <$> pSourceNoteMark
 
--- * Running parsers
+-- * Document compiler passes
+
+-- TODO: should make the first argument String
+parseToNode :: Text -> Text -> Either Text Node
+parseToNode f = fmap fromDoc . parseDoc' f
+
+-- TODO: error unification?
+nodeToGathered
+  :: Node
+  -> Either
+       DecorateError
+       ( Doc (Block Void1) (Inline Void) (Inline InlineControl)
+       , GatherData (NoteText (Block Void1) (Inline InlineControl))
+       )
+nodeToGathered n = do
+  d  <- runScriba' n
+  nd <- runDocNumbering d
+  td <- runDocTitling embedControl nd
+  runDocGathering td
+ where
+  runScriba' =
+    either (Left . DecorateError . prettyScribaError) (Right . snd) . runScriba
+      ( asNode
+      $ pDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline
+      )
+  embedControl = traverseInline (absurd :: Void -> Inline InlineControl)
+
+gatheredToUnfolded
+  :: Map Identifier LinkDatum
+  -> ( Doc (Block Void1) (Inline Void) (Inline InlineControl)
+     , Map Identifier (NoteText (Block Void1) (Inline InlineControl))
+     )
+  -> Either
+       DecorateError
+       ( Doc (Block Void1) (Inline Void) (Inline Void)
+       , Map Identifier (NoteText (Block Void1) (Inline Void))
+       )
+gatheredToUnfolded m d = runDocReferencing (getRefEnv' m) d
 
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
@@ -276,10 +324,19 @@ parseArticle
 parseArticle = fmap snd . runScriba
   (asNode $ pDoc pInlineCore (stripMarkup $ const []) (pBlock pInline) pInline)
 
+type UnfoldedDoc = Doc (Block Void1) (Inline Void) (Inline Void)
+type UnfoldedNotes = Map Identifier (NoteText (Block Void1) (Inline Void))
+
 -- * Decorating the document
 
 getRefEnv :: GatherData note -> RefData
 getRefEnv (GatherData _ _ d _) = RefData $ M.mapMaybe go d
+ where
+  go (LinkNumber t _ en) = Just (t, en)
+  go LinkBare{}          = Nothing
+
+getRefEnv' :: Map Identifier LinkDatum -> RefData
+getRefEnv' = RefData . M.mapMaybe go
  where
   go (LinkNumber t _ en) = Just (t, en)
   go LinkBare{}          = Nothing
