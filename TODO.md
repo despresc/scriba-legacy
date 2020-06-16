@@ -45,6 +45,17 @@
   functional (and probably create some kind of common `data
   IsNumbered`). Could pass in a `Bool` to the item parsers to act as a
   default.
+- Reform the structure in `Text.Scriba.Library` - perhaps a `linkage`
+  folder with all the linkage data in it, put the document compilation
+  stuff in a `_build/doc` folder instead of at the top level.
+- Spin out various components of the library compiler in
+  `Text.Scriba.Library` into their own functions, for clarity.
+- Add actual page rendering functionality to the library compiler,
+  somehow. Or only render the document itself, and leave that for
+  later.
+- Implement library "house styles" that can be invoked by the
+  documents (shared css)
+- Add library-wide math macros
 - Document `Intermediate/`
 - Document `Decorate/`, observing that linking _must_ come after titling. 
 - Document `Element/`

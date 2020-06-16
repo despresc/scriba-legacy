@@ -22,9 +22,7 @@ import qualified Data.Text                     as Text
 import qualified Data.Text.IO                  as Text
 import qualified Data.Text.Lazy.IO             as LText
 import           Development.Shake
-import           Development.Shake.Command
 import           Development.Shake.FilePath
-import           Development.Shake.Util
 import qualified Text.Blaze.Html.Renderer.Text as HT
 
 {-
@@ -129,12 +127,12 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
     docs <- getDirectoryDirs scribaSrcDir
     need $ do
       docName <- docs
-      t       <- ["linkage.json", "html" </> "index.html"]
+      t       <- ["linkage", "html" </> "index.html"]
       pure $ inBuildDir docName </> t
 
-  inBuildDir "*/linkage.json" %> \out -> do
+  inBuildDir "*/linkage" %> \out -> do
     let docName = getBuildDocName out
-    need [inBuildDir docName </> "intermediate.json"]
+    need [inBuildDir docName </> "intermediate"]
 
   inBuildDir "*/html/index.html" %> \out -> do
     let
@@ -145,12 +143,12 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
 --        renderStandaloneHtml ::  -> Doc (Block Void1) (Inline Void) (Inline Void) -> H
       renderStandaloneHtml notes d =
         writeStandalone (StandaloneConfig "") (notes, d)
-    need [docDir </> "unfolded-doc.json"]
-    (d, notes) <- readUnfoldedDoc $ docDir </> "unfolded-doc.json"
+    need [docDir </> "unfolded-doc"]
+    (d, notes) <- readUnfoldedDoc $ docDir </> "unfolded-doc"
     let t = renderStandaloneHtml (notes :: UnfoldedNotes) (d :: UnfoldedDoc)
     writeHtmlFile (docDir </> "html" </> "index.html") t
 
-  inBuildDir "*/unfolded-doc.json" %> \out -> do
+  inBuildDir "*/unfolded-doc" %> \out -> do
     let
       docName = getBuildDocName out
       docDir  = inBuildDir docName
@@ -163,20 +161,20 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
         liftIO $ LinkageInfo . read . Text.unpack <$> Text.readFile f
       readIntermediate f = liftIO $ read . Text.unpack <$> Text.readFile f
     otherReqs <- readFileLines $ docDir </> "doc-linkage-requirements"
-    let otherReqs' = [ inBuildDir t </> "linkage.json" | t <- otherReqs ]
-    need $ (docDir </> "linkage.json") : otherReqs'
-    linkInfo <- getLinkInfo (docDir </> "linkage.json") otherReqs'
-    i        <- readIntermediate $ docDir </> "intermediate.json"
-    writeUnfoldedDoc (docDir </> "unfolded-doc.json") linkInfo i
+    let otherReqs' = [ inBuildDir t </> "linkage" | t <- otherReqs ]
+    need $ (docDir </> "linkage") : otherReqs'
+    linkInfo <- getLinkInfo (docDir </> "linkage") otherReqs'
+    i        <- readIntermediate $ docDir </> "intermediate"
+    writeUnfoldedDoc (docDir </> "unfolded-doc") linkInfo i
 
   inBuildDir "*/doc-linkage-requirements" %> \out -> do
     let docName = getBuildDocName out
-    need [inBuildDir docName </> "intermediate.json"]
+    need [inBuildDir docName </> "intermediate"]
 
-  inBuildDir "*/intermediate.json" %> \out -> do
+  inBuildDir "*/intermediate" %> \out -> do
     let docName    = getBuildDocName out
         includeDir = inBuildDir docName </> "scribaIncludes"
-        mainname   = "main-syntax.json"
+        mainname   = "main-syntax"
         mainfile   = inBuildDir docName </> mainname
         readSyntaxFile :: FilePath -> Action Node
         readSyntaxFile f = liftIO $ do
@@ -194,15 +192,15 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
           Text.writeFile f t
     srcIncludes <- readSourceIncludes docName
     need
-      $ (inBuildDir docName </> "main-syntax.json")
+      $ (inBuildDir docName </> "main-syntax")
       : ((includeDir </>) <$> srcIncludes)
     mainfile'    <- (,) mainname <$> readSyntaxFile mainfile
     srcIncludes' <- forP srcIncludes
       $ \f -> (,) f <$> readSyntaxFile (includeDir </> f)
     let (intermediate, linkage, linkReqs) =
           renderIntermediate mainfile' srcIncludes'
-    writeIntermediate (inBuildDir docName </> "intermediate.json") intermediate
-    writeLinkage (inBuildDir docName </> "linkage.json") linkage
+    writeIntermediate (inBuildDir docName </> "intermediate") intermediate
+    writeLinkage (inBuildDir docName </> "linkage") linkage
     writeLinkReqs (inBuildDir docName </> "doc-linkage-requirements") linkReqs
 
   inBuildDir "*/src-include-list" %> \out -> do
@@ -214,7 +212,7 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
       $   ((inBuildDir docName </> "scribaIncludes") </>)
       <$> cs
 
-  inBuildDir "*/main-syntax.json" %> \out -> do
+  inBuildDir "*/main-syntax" %> \out -> do
     let docName  = getBuildDocName out
         mainName = scribaSrcDir </> docName </> "index.scb"
         readScribaSourceFile f = liftIO $ do
@@ -225,7 +223,7 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
           Text.writeFile f t
     need [mainName]
     src <- readScribaSourceFile mainName
-    writeScribaSyntaxFile (inBuildDir docName </> "main-syntax.json") src
+    writeScribaSyntaxFile (inBuildDir docName </> "main-syntax") src
 
  where
   buildDir     = "_build"
