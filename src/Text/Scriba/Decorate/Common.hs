@@ -31,6 +31,15 @@ newtype Identifier = Identifier
   { getIdentifier :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
 
+data RefTarget
+  = RefSelf Identifier
+  | RefQualified Identifier Identifier
+  deriving (Eq, Ord, Show, Read, Generic)
+
+refTargetPretty :: RefTarget -> Text
+refTargetPretty (RefSelf (Identifier i)                    ) = i
+refTargetPretty (RefQualified (Identifier i) (Identifier j)) = i <> "." <> j
+
 -- TODO: artifically increase the relatedness of things in filtering?
 -- We might want to say that list items (or other things) are
 -- additionally related to particular containers for the purposes of

@@ -91,9 +91,9 @@ gatheringBlockNoteText (NoteText i mn c) = do
 
 resolveNoteMark :: SourceNoteMark -> RefM NoteMark
 resolveNoteMark (SourceNoteMark i) = do
-  (_, en) <- lookupRefData $ prefixIdent "noteText-" i
-  case en of
-    ElemNumberAuto (NumberAuto _ _ n _) -> pure $ NoteMark i n
+  ld <- lookupRefData $ RefSelf $ prefixIdent "noteText-" i
+  case ld of
+    LinkNumber _ _ (ElemNumberAuto (NumberAuto _ _ n _)) -> pure $ NoteMark i n
     _ -> throwError
       $ DecorateError "internal logic error - note not automatically numbered"
 

@@ -26,6 +26,9 @@ import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -- Parse identifier content without whitespace
 -- TODO: some kind of position update fold would be nice here.
+-- TODO: We now separate out whitespace, so some of this processing
+-- isn't necessary.
+-- TODO: _really_ need well-formedness checking here.
 pIdent :: Scriba [Node] Identifier
 pIdent = do
   t <- T.concat <$> remaining simpleText

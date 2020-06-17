@@ -213,6 +213,7 @@ instance Numbering ContainerName
 instance Numbering UsedNumberConfig
 instance Numbering ElemNumber
 instance Numbering NumberAuto
+instance Numbering RefTarget
 instance Numbering (Void1 a) where
   numbering = absurd1
 
@@ -370,8 +371,7 @@ bracketNumbering' Nothing f = f Nothing
 
 bracketNumbering :: Maybe Text -> (Maybe ElemNumber -> NumberM a) -> NumberM a
 bracketNumbering mt = bracketNumbering' mt . go
-  where
-    go f = f . fmap ElemNumberAuto
+  where go f = f . fmap ElemNumberAuto
 
 {- TODO:
 

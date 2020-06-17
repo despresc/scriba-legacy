@@ -41,11 +41,12 @@ data GatherData note = GatherData
   { gatherCurrPage :: PageName
   , gatherAreNodes :: Set Text
   , gatherLinkData :: Map Identifier LinkDatum
+  , gatherReferencedDocs :: Set Identifier
   , gatherNoteText :: Map Identifier note
   } deriving (Eq, Ord, Show)
 
 initGatherData :: Set Text -> PageName -> GatherData note
-initGatherData an pn = GatherData pn an mempty mempty
+initGatherData an pn = GatherData pn an mempty mempty mempty
 
 addLinkDatum
   :: Identifier
@@ -56,7 +57,12 @@ addLinkDatum = insertUnique $ \(Identifier i) _ ->
   DecorateError $ "identifier <" <> i <> "> was defined twice in the document"
 
 addNoteText :: Identifier -> note -> GatherData note -> GatherData note
-addNoteText i n (GatherData p an l m) = GatherData p an l $ Map.insert i n m
+addNoteText i n (GatherData p an l rd m) =
+  GatherData p an l rd $ Map.insert i n m
+
+addReferencedDoc :: Identifier -> GatherData note -> GatherData note
+addReferencedDoc i gd =
+  gd { gatherReferencedDocs = Set.insert i $ gatherReferencedDocs gd }
 
 newtype GatherM note a = GatherM
   { unNumberM :: StateT (GatherData note) (Except DecorateError) a
@@ -111,6 +117,7 @@ instance Gathering note Int Int where
   gathering = pure
 instance Gathering note NumberAuto NumberAuto
 instance Gathering note ContainerName ContainerName
+instance Gathering note RefTarget RefTarget
 instance Gathering note UsedNumberConfig UsedNumberConfig where
   gathering = pure
 instance Gathering note Void a where
@@ -125,9 +132,9 @@ class HasNil a where
 
 tellLinkDatum :: Maybe Identifier -> (PageName -> LinkDatum) -> GatherM note ()
 tellLinkDatum (Just i) f = GatherM $ do
-  GatherData p an lds nt <- get
-  lds'                   <- liftEither $ addLinkDatum i (f p) lds
-  put $ GatherData p an lds' nt
+  GatherData p an lds rd nt <- get
+  lds'                      <- liftEither $ addLinkDatum i (f p) lds
+  put $ GatherData p an lds' rd nt
 tellLinkDatum Nothing _ = pure ()
 
 tellLinkNumbered
@@ -149,7 +156,7 @@ tellNoteText i = GatherM . modify . addNoteText i
 -- avoiding this sort of "runtime" failure.
 tellPageNode :: Text -> Maybe PageName -> GatherM note ()
 tellPageNode t mp = GatherM $ do
-  GatherData _ an lds nt <- get
+  GatherData _ an lds rd nt <- get
   if t `Set.member` an
     then maybe
       (  throwError
@@ -158,9 +165,12 @@ tellPageNode t mp = GatherM $ do
       <> t
       <> " is to be its own page, but was not given a plain page name"
       )
-      (\p' -> put (GatherData p' an lds nt))
+      (\p' -> put (GatherData p' an lds rd nt))
       mp
     else pure ()
+
+tellReferencedDoc :: Identifier -> GatherM note ()
+tellReferencedDoc = GatherM . modify . addReferencedDoc
 
 setCurrPage :: PageName -> GatherM note ()
 setCurrPage pn = GatherM $ modify $ \s -> s { gatherCurrPage = pn }

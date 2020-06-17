@@ -121,6 +121,30 @@ doc-linkage-requirements be present.
 
 -}
 
+{-
+TODO:
+Gathering and referencing:
+
+- All link targets should report the generated url fragment of their
+  page. In each document we get a map (Identifier -> LinkDatum).
+
+- All documents should report the pages that they define (by
+  fragment). Assuming we know the base path of the library, the page
+  url will be `<base-path>/<doc-name>/<page-name>`. I assume there's a
+  way to track that information in the build system via the shake
+  cache.
+
+- All references are of the form {link|#thing} or
+  {link|#thing.other}. The former does not require any other documents
+  be present. The latter requires that document <thing> be present (in
+  reality it should fail gracefully if <thing> doesn't exist, with
+  some kind of rendered placeholder describing the error).
+
+- from the referenced documents (and the document itself), we can
+  build a (Map RefTarget LinkDatum) that we can use to fill in the
+  document.
+-}
+
 buildLib :: IO ()
 buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
   action $ do

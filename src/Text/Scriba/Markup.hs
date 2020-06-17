@@ -330,16 +330,10 @@ type UnfoldedNotes = Map Identifier (NoteText (Block Void1) (Inline Void))
 -- * Decorating the document
 
 getRefEnv :: GatherData note -> RefData
-getRefEnv (GatherData _ _ d _) = RefData $ M.mapMaybe go d
- where
-  go (LinkNumber t _ en) = Just (t, en)
-  go LinkBare{}          = Nothing
+getRefEnv (GatherData _ _ d _ _) = RefData $ M.mapKeys RefSelf d
 
 getRefEnv' :: Map Identifier LinkDatum -> RefData
-getRefEnv' = RefData . M.mapMaybe go
- where
-  go (LinkNumber t _ en) = Just (t, en)
-  go LinkBare{}          = Nothing
+getRefEnv' = RefData . M.mapKeys RefSelf
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.

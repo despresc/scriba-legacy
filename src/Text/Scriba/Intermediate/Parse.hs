@@ -326,8 +326,17 @@ text = liftScriba $ \n -> case n of
   NodeElem (Element _ (Meta sp _ _ _) _) ->
     expectsGotAt ["text node"] sp "element"
 
+-- TODO: change this to return only NodeText, remove nodeText (or
+-- change it to return (SourcePos, Text).
 simpleText :: Scriba Node Text
 simpleText = snd <$> text
+
+-- TODO: error
+nodeText :: Scriba Node Text
+nodeText = liftScriba $ \n -> case n of
+  NodeText _ t -> pure (n, t)
+  NodeWhite sp _ -> expectsGotAt ["text"] sp "white space"
+  NodeElem (Element _ (Meta sp _ _ _) _) -> expectsGotAt ["text"] sp "element"
 
 -- TODO: no tab support yet. Should document.
 -- TODO: should document the blank line behaviour.

@@ -12,12 +12,29 @@ import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Text                      ( Text )
+import qualified Data.Text                     as Text
 import           GHC.Generics                   ( Generic )
 import qualified Text.Blaze.Html5              as Html
 import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
+-- TODO: move this to a common module once it's used elsewhere
+-- TODO: zero results in poor error
+-- TODO: factor out a "symbol" parser?
+-- TODO: this needs to be synchronized with the (currently poor)
+-- identifier parser
+pRefTarget :: Scriba [Node] RefTarget
+pRefTarget = do
+  consumeWhiteSpace
+  t <- one nodeText
+  consumeWhiteSpace
+  zero
+  case Text.splitOn "." t of
+    [x]    -> pure $ RefSelf $ Identifier x
+    [x, y] -> pure $ RefQualified (Identifier x) (Identifier y)
+    _      -> throwError $ Msg $ "Ill-formed identifier: " <> t
+
 newtype SourceRef = SourceRef
-  { sourceRefTarget :: Identifier
+  { sourceRefTarget :: RefTarget
   } deriving (Eq, Ord, Show, Read, Generic)
 
 instance Numbering SourceRef
@@ -31,7 +48,7 @@ instance Gathering note SourceRef SourceRef
 -- TODO: For multi-page standalone rendering, will I need to modify
 -- identifiers at all? Probably.
 data Ref = Ref
-  { refTarget :: Identifier
+  { refTarget :: RefTarget
   , refTargetPrefix :: Text
   , refNumber :: ElemNumber
   } deriving (Eq, Ord, Show, Read, Generic)
@@ -49,19 +66,28 @@ pSourceRef :: Scriba Element SourceRef
 pSourceRef = whileMatchTy "ref" $ do
   as <- meta $ args inspect
   case as of
-    [t] -> useState [t] $ SourceRef <$> pIdent
+    [t] -> useState [t] $ SourceRef <$> pRefTarget
     _   -> throwError $ Msg "ref takes exactly one identifier as an argument"
 
+-- TODO: error message
 resolveRef :: SourceRef -> RefM Ref
 resolveRef (SourceRef i) = do
-  (t, en) <- lookupRefData i
-  pure $ Ref i t en
+  ld <- lookupRefData i
+  case ld of
+    LinkNumber t _ en -> pure $ Ref i t en
+    _ ->
+      throwError
+        $  DecorateError
+        $  "identifier: <"
+        <> refTargetPretty i
+        <> "> was used in a reference, but does not have reference capabilities"
 
 -- TODO: wrap separator?
 -- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
+-- TODO: fix when page data reporting improves!
 instance RH.Render Ref where
-  render (Ref lab pref enum) =
+  render (Ref (RefSelf lab) pref enum) =
     pure
       $      Html.a
       Html.! HtmlA.class_ "ref"
@@ -76,3 +102,4 @@ instance RH.Render Ref where
         Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
       NumberSource num ->
         Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
+  render (Ref _ _ _) = mempty

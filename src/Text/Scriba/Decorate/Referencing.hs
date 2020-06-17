@@ -57,7 +57,7 @@ import           GHC.Generics
 -- Resolve references with accumulated numbering data. The Text is for
 -- the link prefix, if applicable.
 newtype RefData = RefData
-  { getRefData :: Map Identifier (Text, ElemNumber)
+  { getRefData :: Map RefTarget LinkDatum
   } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: may want this to time travel, eventually
@@ -69,7 +69,7 @@ runRefM :: RefM a -> RefData -> Either DecorateError a
 runRefM = go . runReaderT . getRefM where go f = runExcept . f
 
 -- TODO: when errors get better, add positional information.
-lookupRefData :: Identifier -> RefM (Text, ElemNumber)
+lookupRefData :: RefTarget -> RefM LinkDatum
 lookupRefData i = do
   mdat <- asks $ Map.lookup i . getRefData
   case mdat of
@@ -78,7 +78,7 @@ lookupRefData i = do
       throwError
         $  DecorateError
         $  "identifier <"
-        <> getIdentifier i
+        <> refTargetPretty i
         <> "> does not have defined numbering data, but was referenced"
 
 class GReferencing f g where
@@ -152,5 +152,6 @@ instance Referencing CounterName CounterName
 instance Referencing PageName PageName
 instance Referencing ElemNumber ElemNumber
 instance Referencing NumberAuto NumberAuto
+instance Referencing RefTarget RefTarget
 instance Referencing (Void1 a) b where
   referencing = absurd1
