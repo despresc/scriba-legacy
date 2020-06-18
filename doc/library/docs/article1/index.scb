@@ -21,6 +21,6 @@ A = B
 
 %}
 
-# section
+# section {n|1} {id|id1}
 
-Section content
+Section content with a {ref@book1.id2}.

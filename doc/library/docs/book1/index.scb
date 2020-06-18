@@ -28,7 +28,7 @@ A = B
 `}
 %}
 
-# section
+# section {n|2} {id|id2}
   & title|The section title
 
-Section content
+Section content with a {ref@article1.id1}.

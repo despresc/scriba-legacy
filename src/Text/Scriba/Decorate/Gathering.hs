@@ -169,8 +169,9 @@ tellPageNode t mp = GatherM $ do
       mp
     else pure ()
 
-tellReferencedDoc :: Identifier -> GatherM note ()
-tellReferencedDoc = GatherM . modify . addReferencedDoc
+tellReferencedDoc :: RefTarget -> GatherM note ()
+tellReferencedDoc (RefQualified i _) = GatherM $ modify $ addReferencedDoc i
+tellReferencedDoc _                  = pure ()
 
 setCurrPage :: PageName -> GatherM note ()
 setCurrPage pn = GatherM $ modify $ \s -> s { gatherCurrPage = pn }

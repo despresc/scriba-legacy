@@ -12,12 +12,15 @@ import           Text.Scriba.Markup             ( parseToNode
                                                 , LinkDatum
                                                 , StandaloneConfig(..)
                                                 , writeStandalone
+                                                , Identifier(..)
                                                 , UnfoldedDoc
                                                 , UnfoldedNotes
                                                 )
 
 import qualified Data.List                     as List
 import           Data.Map                       ( Map )
+import qualified Data.Map.Strict               as Map
+import qualified Data.Set                      as Set
 import qualified Data.Text                     as Text
 import qualified Data.Text.IO                  as Text
 import qualified Data.Text.Lazy.IO             as LText
@@ -72,7 +75,10 @@ import qualified Text.Blaze.Html.Renderer.Text as HT
 
 -}
 
-newtype LinkageInfo = LinkageInfo (Map Identifier LinkDatum)
+data LinkageInfo = LinkageInfo
+  { selfLinkage :: Map Identifier LinkDatum
+  , restLinkage :: Map Identifier (Map Identifier LinkDatum)
+  }
 
 {-
 - Require that the linkage and html information be built for each
@@ -164,7 +170,6 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
       docDir  = inBuildDir docName
       readUnfoldedDoc f = liftIO $ read . Text.unpack <$> Text.readFile f
       writeHtmlFile f = liftIO . LText.writeFile f . HT.renderHtml
---        renderStandaloneHtml ::  -> Doc (Block Void1) (Inline Void) (Inline Void) -> H
       renderStandaloneHtml notes d =
         writeStandalone (StandaloneConfig "") (notes, d)
     need [docDir </> "unfolded-doc"]
@@ -173,21 +178,24 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
     writeHtmlFile (docDir </> "html" </> "index.html") t
 
   inBuildDir "*/unfolded-doc" %> \out -> do
-    let
-      docName = getBuildDocName out
-      docDir  = inBuildDir docName
-      writeUnfoldedDoc f (LinkageInfo l) i = liftIO $ do
-        let i' =
-              either (error . Text.unpack . prettyDecorateError) id
-                $ gatheredToUnfolded l i
-        Text.writeFile f (Text.pack $ show i')
-      getLinkInfo f _ =
-        liftIO $ LinkageInfo . read . Text.unpack <$> Text.readFile f
-      readIntermediate f = liftIO $ read . Text.unpack <$> Text.readFile f
+    let docName = getBuildDocName out
+        docDir  = inBuildDir docName
+        writeUnfoldedDoc f (LinkageInfo self rest) i = liftIO $ do
+          let i' =
+                either (error . Text.unpack . prettyDecorateError) id
+                  $ gatheredToUnfolded self rest i
+          Text.writeFile f (Text.pack $ show i')
+        getLinkInfo f fs = do
+          self <- read . Text.unpack <$> liftIO (Text.readFile f)
+          rest <- forP fs $ \f' ->
+            (,) (Identifier $ Text.pack f') . read . Text.unpack <$> liftIO
+              (Text.readFile $ buildDir </> f' </> "linkage")
+          pure $ LinkageInfo self (Map.fromList rest)
+        readIntermediate f = liftIO $ read . Text.unpack <$> Text.readFile f
     otherReqs <- readFileLines $ docDir </> "doc-linkage-requirements"
     let otherReqs' = [ inBuildDir t </> "linkage" | t <- otherReqs ]
     need $ (docDir </> "linkage") : otherReqs'
-    linkInfo <- getLinkInfo (docDir </> "linkage") otherReqs'
+    linkInfo <- getLinkInfo (docDir </> "linkage") otherReqs
     i        <- readIntermediate $ docDir </> "intermediate"
     writeUnfoldedDoc (docDir </> "unfolded-doc") linkInfo i
 
@@ -207,12 +215,18 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
         renderIntermediate (_, n) _ =
           let (d, gd) = either (error . Text.unpack . prettyDecorateError) id
                 $ nodeToGathered n
-          in  ((d, gatherNoteText gd), gatherLinkData gd, [])
+          in  ( (d, gatherNoteText gd)
+              , gatherLinkData gd
+              , Set.toList $ gatherReferencedDocs gd
+              )
         writeIntermediate f d = liftIO $ do
           let t = Text.pack $ show d
           Text.writeFile f t
         writeLinkage f m = liftIO $ do
           let t = Text.pack $ show m
+          Text.writeFile f t
+        writeLinkReqs f m = liftIO $ do
+          let t = Text.unlines $ getIdentifier <$> m
           Text.writeFile f t
     srcIncludes <- readSourceIncludes docName
     need
@@ -256,4 +270,3 @@ buildLib = shakeArgs shakeOptions { shakeFiles = buildDir } $ do
   getBuildDocName f = splitDirectories f List.!! 1
   -- Dummy implementations
   readSourceIncludes f = readFileLines $ inBuildDir f </> "src-include-list"
-  writeLinkReqs f _ = writeFile' f ""

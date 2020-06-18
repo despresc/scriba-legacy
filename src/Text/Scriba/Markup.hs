@@ -302,8 +302,11 @@ nodeToGathered n = do
       )
   embedControl = traverseInline (absurd :: Void -> Inline InlineControl)
 
+-- TODO HERE: Need to modify Referencing to take the second map for
+-- link resolution.
 gatheredToUnfolded
   :: Map Identifier LinkDatum
+  -> Map Identifier (Map Identifier LinkDatum)
   -> ( Doc (Block Void1) (Inline Void) (Inline InlineControl)
      , Map Identifier (NoteText (Block Void1) (Inline InlineControl))
      )
@@ -312,7 +315,7 @@ gatheredToUnfolded
        ( Doc (Block Void1) (Inline Void) (Inline Void)
        , Map Identifier (NoteText (Block Void1) (Inline Void))
        )
-gatheredToUnfolded m d = runDocReferencing (getRefEnv' m) d
+gatheredToUnfolded m r d = runDocReferencing (RefData m r) d
 
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
@@ -328,12 +331,6 @@ type UnfoldedDoc = Doc (Block Void1) (Inline Void) (Inline Void)
 type UnfoldedNotes = Map Identifier (NoteText (Block Void1) (Inline Void))
 
 -- * Decorating the document
-
-getRefEnv :: GatherData note -> RefData
-getRefEnv (GatherData _ _ d _ _) = RefData $ M.mapKeys RefSelf d
-
-getRefEnv' :: Map Identifier LinkDatum -> RefData
-getRefEnv' = RefData . M.mapKeys RefSelf
 
 -- TODO: obviously have this be automatic. I suppose Inline is a
 -- monad.
@@ -390,7 +387,7 @@ decorating f d = do
              (d', GatherData (NoteText (Block Void1) (Inline InlineControl)))
       )
       td
-  let refEnv = getRefEnv gatherData
+  let refEnv = RefData (gatherLinkData gatherData) mempty
   notes <- runDocReferencing refEnv $ gatherNoteText gatherData
   d''   <- runDocReferencing refEnv d'
   pure (notes, d'')

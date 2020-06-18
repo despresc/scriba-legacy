@@ -11,6 +11,7 @@ import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad.Except           ( MonadError(..) )
+import           Data.Functor                   ( ($>) )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as Text
 import           GHC.Generics                   ( Generic )
@@ -39,7 +40,8 @@ newtype SourceRef = SourceRef
 
 instance Numbering SourceRef
 instance Titling i SourceRef
-instance Gathering note SourceRef SourceRef
+instance Gathering note SourceRef SourceRef where
+  gathering x@(SourceRef i) = tellReferencedDoc i $> x
 
 -- TODO: may need more renditional information here, from Numbering and
 -- Referencing, like relative position of the number and prefix.

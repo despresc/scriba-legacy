@@ -56,8 +56,9 @@ import           GHC.Generics
 
 -- Resolve references with accumulated numbering data. The Text is for
 -- the link prefix, if applicable.
-newtype RefData = RefData
-  { getRefData :: Map RefTarget LinkDatum
+data RefData = RefData
+  { selfRefData :: Map Identifier LinkDatum
+  , qualRefData :: Map Identifier (Map Identifier LinkDatum)
   } deriving (Eq, Ord, Show, Read, Generic)
 
 -- TODO: may want this to time travel, eventually
@@ -69,17 +70,38 @@ runRefM :: RefM a -> RefData -> Either DecorateError a
 runRefM = go . runReaderT . getRefM where go f = runExcept . f
 
 -- TODO: when errors get better, add positional information.
+-- TODO: duplication in the branches
 lookupRefData :: RefTarget -> RefM LinkDatum
-lookupRefData i = do
-  mdat <- asks $ Map.lookup i . getRefData
+lookupRefData (RefSelf i) = do
+  mdat <- asks $ Map.lookup i . selfRefData
   case mdat of
     Just dat -> pure dat
     Nothing ->
       throwError
         $  DecorateError
         $  "identifier <"
-        <> refTargetPretty i
+        <> getIdentifier i
         <> "> does not have defined numbering data, but was referenced"
+lookupRefData r@(RefQualified i j) = do
+  mmdat <- asks $ fmap (Map.lookup j) . Map.lookup i . qualRefData
+  case mmdat of
+    Just mdat -> case mdat of
+      Just dat -> pure dat
+      Nothing ->
+        throwError
+          $  DecorateError
+          $  "identifier <"
+          <> getIdentifier j
+          <> "> within document <"
+          <> getIdentifier i
+          <> "does not exist, but was referenced"
+    Nothing ->
+      throwError
+        $  DecorateError
+        $  "identifier <"
+        <> refTargetPretty r
+        <> "> was referenced, but the parent document does not exist"
+
 
 class GReferencing f g where
   greferencing :: f a -> RefM (g a)
