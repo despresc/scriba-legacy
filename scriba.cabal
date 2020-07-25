@@ -30,6 +30,7 @@ library
                , digits
                , aeson
                , shake
+               , unordered-containers
   exposed-modules:
     Text.Scriba.Counters
     Text.Scriba.Decorate
@@ -69,6 +70,8 @@ library
     Text.Scriba.Intermediate.Node
     Text.Scriba.Intermediate.Parse
     Text.Scriba.Markup
+    Text.Scriba.Markup.Parse
+    Text.Scriba.Markup.Surface
     Text.Scriba.Render.Html
     Text.Scriba.Source.Common
     Text.Scriba.Source.Parse

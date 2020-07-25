@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -6,17 +7,17 @@
 module Text.Scriba.Element.Ref where
 
 import           Text.Scriba.Decorate
-import           Text.Scriba.Element.Identifier
+-- import           Text.Scriba.Element.Identifier
 import           Text.Scriba.Intermediate
 import qualified Text.Scriba.Render.Html       as RH
 
 import           Control.Monad.Except           ( MonadError(..) )
-import           Data.Functor                   ( ($>) )
+-- import           Data.Functor                   ( ($>) )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as Text
 import           GHC.Generics                   ( Generic )
-import qualified Text.Blaze.Html5              as Html
-import qualified Text.Blaze.Html5.Attributes   as HtmlA
+-- import qualified Text.Blaze.Html5              as Html
+-- import qualified Text.Blaze.Html5.Attributes   as HtmlA
 
 -- TODO: move this to a common module once it's used elsewhere
 -- TODO: zero results in poor error
@@ -34,14 +35,22 @@ pRefTarget = do
     [x, y] -> pure $ RefQualified (Identifier x) (Identifier y)
     _      -> throwError $ Msg $ "Ill-formed identifier: " <> t
 
+-- TODO: need additional type change here. This is very bad. For now,
+-- this will always be a Left until Gathering, at which point they all
+-- become Right.
 newtype SourceRef = SourceRef
-  { sourceRefTarget :: RefTarget
+  { sourceRefTarget :: Either RefTarget LibUrl
   } deriving (Eq, Ord, Show, Read, Generic)
 
 instance Numbering SourceRef
 instance Titling i SourceRef
 instance Gathering note SourceRef SourceRef where
-  gathering x@(SourceRef i) = tellReferencedDoc i $> x
+  gathering (SourceRef (Left (RefSelf (Identifier p)))) = do
+    dn <- getDocUrl
+    let url = appendToUrl dn (LibUrlPart p)
+    tellReferencedDoc url
+    pure $ SourceRef $ Right url
+  gathering _ = undefined
 
 -- TODO: may need more renditional information here, from Numbering and
 -- Referencing, like relative position of the number and prefix.
@@ -49,8 +58,11 @@ instance Gathering note SourceRef SourceRef where
 
 -- TODO: For multi-page standalone rendering, will I need to modify
 -- identifiers at all? Probably.
+-- TODO: transition to new URL format for refTarget
 data Ref = Ref
-  { refTarget :: RefTarget
+  { refTarget :: LibUrl
+  , refLiveAt :: Text
+  , refPageName :: PageName
   , refTargetPrefix :: Text
   , refNumber :: ElemNumber
   } deriving (Eq, Ord, Show, Read, Generic)
@@ -68,28 +80,31 @@ pSourceRef :: Scriba Element SourceRef
 pSourceRef = whileMatchTy "ref" $ do
   as <- meta $ args inspect
   case as of
-    [t] -> useState [t] $ SourceRef <$> pRefTarget
+    [t] -> useState [t] $ SourceRef . Left <$> pRefTarget
     _   -> throwError $ Msg "ref takes exactly one identifier as an argument"
 
 -- TODO: error message
-resolveRef :: SourceRef -> RefM Ref
-resolveRef (SourceRef i) = do
-  ld <- lookupRefData i
+resolveRef :: (MonadError DecorateError m, MonadLibResolve m) => SourceRef -> m Ref
+resolveRef (SourceRef (Right i)) = do
+  ld <- resolveLinkage i
   case ld of
-    LinkNumber t _ en -> pure $ Ref i t en
+    LinkNumber t p en -> pure $ undefined Ref i p t en -- TODO: undefined
     _ ->
       throwError
         $  DecorateError
-        $  "identifier: <"
-        <> refTargetPretty i
+        $  "<"
+        <> renderLibUrl i
         <> "> was used in a reference, but does not have reference capabilities"
+resolveRef _ = undefined
 
 -- TODO: wrap separator?
 -- TODO: we're special-casing formula for now, so references to math
 -- work out. Later we'll want to configure mathjax's tagging.
 -- TODO: fix when page data reporting improves!
 instance RH.Render Ref where
-  render (Ref (RefSelf lab) pref enum) =
+  render = undefined
+{- TODO library : restore
+  render (Ref (RefSelf lab) pn pref enum) =
     pure
       $      Html.a
       Html.! HtmlA.class_ "ref"
@@ -104,4 +119,5 @@ instance RH.Render Ref where
         Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
       NumberSource num ->
         Html.span Html.! HtmlA.class_ "number" $ Html.toHtml num
-  render (Ref _ _ _) = mempty
+  render (Ref _ _ _ _) = mempty
+-}

@@ -216,6 +216,11 @@ instance Numbering NumberAuto
 instance Numbering RefTarget
 instance Numbering (Void1 a) where
   numbering = absurd1
+instance (Numbering a, Numbering b) => Numbering (Either a b)
+instance Numbering LibUrl
+instance Numbering LibDomain
+instance Numbering LibUrlPart
+instance Numbering PageName
 
 runNumberM :: NumberM a -> NumberState -> Either DecorateError a
 runNumberM = go . State.evalStateT . unNumberM where go f = runExcept . f

@@ -39,14 +39,17 @@ import           GHC.Generics
 
 data GatherData note = GatherData
   { gatherCurrPage :: PageName
+  , gatherLibUrl   :: LibUrl
+  , gatherDocName  :: LibUrlPart
   , gatherAreNodes :: Set Text
   , gatherLinkData :: Map Identifier LinkDatum
   , gatherReferencedDocs :: Set Identifier
   , gatherNoteText :: Map Identifier note
   } deriving (Eq, Ord, Show)
 
-initGatherData :: Set Text -> PageName -> GatherData note
-initGatherData an pn = GatherData pn an mempty mempty mempty
+initGatherData
+  :: LibUrl -> LibUrlPart -> Set Text -> PageName -> GatherData note
+initGatherData lu dn an pn = GatherData pn lu dn an mempty mempty mempty
 
 addLinkDatum
   :: Identifier
@@ -57,8 +60,8 @@ addLinkDatum = insertUnique $ \(Identifier i) _ ->
   DecorateError $ "identifier <" <> i <> "> was defined twice in the document"
 
 addNoteText :: Identifier -> note -> GatherData note -> GatherData note
-addNoteText i n (GatherData p an l rd m) =
-  GatherData p an l rd $ Map.insert i n m
+addNoteText i n (GatherData p lu dn an l rd m) =
+  GatherData p lu dn an l rd $ Map.insert i n m
 
 addReferencedDoc :: Identifier -> GatherData note -> GatherData note
 addReferencedDoc i gd =
@@ -70,11 +73,13 @@ newtype GatherM note a = GatherM
 
 runGatherM
   :: GatherM note a
+  -> LibUrl
+  -> LibUrlPart
   -> Set Text
   -> PageName
   -> Either DecorateError (a, GatherData note)
-runGatherM act an pn =
-  runExcept $ State.runStateT (unNumberM act) (initGatherData an pn)
+runGatherM act lu dn an pn =
+  runExcept $ State.runStateT (unNumberM act) (initGatherData lu dn an pn)
 
 class GGathering note f g where
   ggathering :: f a -> GatherM note (g a)
@@ -125,6 +130,10 @@ instance Gathering note Void a where
 instance Gathering note (Void1 a) b where
   gathering = absurd1
 instance Gathering note () ()
+instance Gathering note LibUrl LibUrl
+instance Gathering note LibUrlPart LibUrlPart
+instance Gathering note LibDomain LibDomain
+instance Gathering note PageName PageName
 
 -- TODO: should this be moved elsewhere?
 class HasNil a where
@@ -132,9 +141,9 @@ class HasNil a where
 
 tellLinkDatum :: Maybe Identifier -> (PageName -> LinkDatum) -> GatherM note ()
 tellLinkDatum (Just i) f = GatherM $ do
-  GatherData p an lds rd nt <- get
-  lds'                      <- liftEither $ addLinkDatum i (f p) lds
-  put $ GatherData p an lds' rd nt
+  GatherData p lu dn an lds rd nt <- get
+  lds'                            <- liftEither $ addLinkDatum i (f p) lds
+  put $ GatherData p lu dn an lds' rd nt
 tellLinkDatum Nothing _ = pure ()
 
 tellLinkNumbered
@@ -156,7 +165,7 @@ tellNoteText i = GatherM . modify . addNoteText i
 -- avoiding this sort of "runtime" failure.
 tellPageNode :: Text -> Maybe PageName -> GatherM note ()
 tellPageNode t mp = GatherM $ do
-  GatherData _ an lds rd nt <- get
+  GatherData _ lu dn an lds rd nt <- get
   if t `Set.member` an
     then maybe
       (  throwError
@@ -165,13 +174,32 @@ tellPageNode t mp = GatherM $ do
       <> t
       <> " is to be its own page, but was not given a plain page name"
       )
-      (\p' -> put (GatherData p' an lds rd nt))
+      (\p' -> put (GatherData p' lu dn an lds rd nt))
       mp
     else pure ()
 
-tellReferencedDoc :: RefTarget -> GatherM note ()
-tellReferencedDoc (RefQualified i _) = GatherM $ modify $ addReferencedDoc i
-tellReferencedDoc _                  = pure ()
+-- TODO: get rid of RefTarget, refactor, better error
+tellReferencedDoc :: LibUrl -> GatherM note ()
+tellReferencedDoc lu = GatherM $ do
+  dlu <- State.gets gatherLibUrl
+  dn  <- State.gets gatherDocName
+  case libUrlToRefTarget dlu dn lu of
+    Just rp -> tellReferencedDoc' rp
+    Nothing ->
+      throwError
+        $  DecorateError
+        $  "tellReferencedDoc: bad url <"
+        <> renderLibUrl lu
+        <> ">"
+ where
+  tellReferencedDoc' (RefQualified i _) = modify $ addReferencedDoc i
+  tellReferencedDoc' _                  = pure ()
 
 setCurrPage :: PageName -> GatherM note ()
 setCurrPage pn = GatherM $ modify $ \s -> s { gatherCurrPage = pn }
+
+getDocUrl :: GatherM note LibUrl
+getDocUrl = GatherM $ do
+  lu <- State.gets gatherLibUrl
+  dn <- State.gets gatherDocName
+  pure $ appendToUrl lu dn

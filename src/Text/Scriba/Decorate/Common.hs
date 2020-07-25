@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE EmptyCase #-}
 {-# LANGUAGE EmptyDataDeriving #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -11,7 +12,9 @@ import           Text.Scriba.Counters
 
 import           Data.Map.Strict                ( Map )
 import qualified Data.Map.Strict               as Map
+import           Data.String                    ( IsString )
 import           Data.Text                      ( Text )
+import qualified Data.Text                     as Text
 import           GHC.Generics                   ( Generic )
 
 data Void1 a
@@ -30,6 +33,57 @@ insertUnique f k v = Map.alterF go k
 newtype Identifier = Identifier
   { getIdentifier :: Text
   } deriving (Eq, Ord, Show, Read, Generic)
+
+newtype LibUrlPart = LibUrlPart Text
+  deriving (Eq, Ord, Show, Read, Generic, IsString)
+
+urlPartToIdentifier :: LibUrlPart -> Identifier
+urlPartToIdentifier (LibUrlPart t) = Identifier t
+
+renderLibUrlPart :: LibUrlPart -> Text
+renderLibUrlPart (LibUrlPart t) = t
+
+newtype LibDomain = LibDomain Text
+  deriving (Eq, Ord, Show, Read, Generic, IsString)
+
+renderLibDomain :: LibDomain -> Text
+renderLibDomain (LibDomain t) = t
+
+-- No support for queries or versions yet
+-- TODO: should the [LibUrlPart] be in reverse order?
+data LibUrl = LibUrl
+  { libUrlDomain :: Maybe LibDomain
+  , libUrlPath :: [LibUrlPart]
+  } deriving (Eq, Ord, Show, Read, Generic)
+
+appendToUrl :: LibUrl -> LibUrlPart -> LibUrl
+appendToUrl (LibUrl d p) part = LibUrl d (p <> [part])
+
+-- TODO: get rid of RefTarget entirely!
+libUrlToRefTarget :: LibUrl -> LibUrlPart -> LibUrl -> Maybe RefTarget
+libUrlToRefTarget u i u' = case u `prefixOfLibUrl` u' of
+  Just [p, q]
+    | p == i -> Just $ RefSelf (urlPartToIdentifier q)
+    | otherwise -> Just
+    $  RefQualified (urlPartToIdentifier p) (urlPartToIdentifier q)
+  _ -> Nothing
+
+renderLibUrl :: LibUrl -> Text
+renderLibUrl (LibUrl md ps) = "library:/"
+  <> Text.intercalate "/" (p <> (renderLibUrlPart <$> ps))
+ where
+  p = case md of
+    Nothing -> []
+    Just d  -> ["/" <> renderLibDomain d]
+
+-- Returns Just ps if the first is a prefix of the second
+prefixOfLibUrl :: LibUrl -> LibUrl -> Maybe [LibUrlPart]
+prefixOfLibUrl (LibUrl d p) (LibUrl d' p') | d == d'   = go p p'
+                                           | otherwise = Nothing
+ where
+  go (x : xs) (y : ys) | x == y = go xs ys
+  go [] ys                      = Just ys
+  go _  _                       = Nothing
 
 data RefTarget
   = RefSelf Identifier
@@ -126,7 +180,6 @@ newtype SectionConfig i = SectionConfig
 
 -- TODO: might need more configuration related to component placement.
 -- Perhaps also for whitespace?
--- TODO: I think a lot of these inline voids can be polymorphic, right?
 data TitleTemplate a = TitleTemplate
   { ttemplatePrefix :: Surround a
   , ttemplateNumber :: Surround a

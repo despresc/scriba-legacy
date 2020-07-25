@@ -101,6 +101,7 @@ runDocGathering
   => a
   -> Either DecorateError (b, GatherData note)
 runDocGathering a = runGatherM (gathering a)
+                               undefined undefined
                                (docArePageNodes d)
                                (docPageName d)
   where d = getDocAttrs a

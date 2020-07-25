@@ -89,13 +89,19 @@ gatheringBlockNoteText (NoteText i mn c) = do
   tellNoteText i $ NoteText i mn c'
   pure embedNil
 
-resolveNoteMark :: SourceNoteMark -> RefM NoteMark
+resolveNoteMark
+  :: (MonadError DecorateError m, MonadLibResolve m)
+  => SourceNoteMark
+  -> m NoteMark
+resolveNoteMark = undefined
+{- TODO library : restore
 resolveNoteMark (SourceNoteMark i) = do
   ld <- lookupRefData $ RefSelf $ prefixIdent "noteText-" i
   case ld of
     LinkNumber _ _ (ElemNumberAuto (NumberAuto _ _ n _)) -> pure $ NoteMark i n
     _ -> throwError
       $ DecorateError "internal logic error - note not automatically numbered"
+-}
 
 -- duplication with Ref.pSourceRef and pNoteText
 pSourceNoteMark :: Scriba Element SourceNoteMark

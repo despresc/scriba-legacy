@@ -8,7 +8,8 @@
 {-# LANGUAGE TypeOperators #-}
 
 module Text.Scriba.Decorate.Referencing
-  ( RefM(..)
+  ( MonadLibResolve(..)
+  , RefM(..)
   , RefData(..)
   , runRefM
   , Referencing(..)
@@ -54,10 +55,41 @@ import           Data.Void                      ( Void
                                                 )
 import           GHC.Generics
 
--- Resolve references with accumulated numbering data. The Text is for
--- the link prefix, if applicable.
+{-
+
+We recognize URLs of the form
+
+library://<library domain>/doc/<doc name>/<identifier>
+
+TODO: actually transition to this elsewhere.
+
+I can have library:/<doc-name>/<identifier>, right? for local stuff.
+
+-}
+
+class (MonadError DecorateError m, Monad m) => MonadLibResolve m where
+  getCurrentDocUrl :: m LibUrl
+  resolveLinkage :: LibUrl -> m LinkDatum
+
+instance MonadLibResolve RefM where
+  getCurrentDocUrl = undefined
+  resolveLinkage u = do
+    md <- asks refDataDomain
+    dn <- asks refDataDocName
+    case libUrlToRefTarget md dn u of
+      Just rp -> lookupRefData rp
+      Nothing ->
+        throwError
+          $  DecorateError
+          $  "library url <"
+          <> renderLibUrl u
+          <> "> could not be resolved"
+
+-- Resolve links with accumulated linking data
 data RefData = RefData
-  { selfRefData :: Map Identifier LinkDatum
+  { refDataDomain :: LibUrl
+  , refDataDocName :: LibUrlPart
+  , selfRefData :: Map Identifier LinkDatum
   , qualRefData :: Map Identifier (Map Identifier LinkDatum)
   } deriving (Eq, Ord, Show, Read, Generic)
 
@@ -104,7 +136,7 @@ lookupRefData r@(RefQualified i j) = do
 
 
 class GReferencing f g where
-  greferencing :: f a -> RefM (g a)
+  greferencing :: MonadLibResolve m => f a -> m (g a)
 
 instance GReferencing U1 U1 where
   greferencing = pure
@@ -123,10 +155,10 @@ instance Referencing a b => GReferencing (K1 j a) (K1 j b) where
   greferencing (K1 x) = K1 <$> referencing x
 
 class Referencing a b where
-  referencing :: a -> RefM b
+  referencing :: MonadLibResolve m => a -> m b
 
-  default referencing :: (Generic a, Generic b, GReferencing (Rep a) (Rep b))
-                      => a -> RefM b
+  default referencing :: (Generic a, Generic b, GReferencing (Rep a) (Rep b), MonadLibResolve m)
+                      => a -> m b
   referencing = fmap to . greferencing . from
 
 instance Referencing a b => Referencing [a] [b] where
@@ -177,3 +209,7 @@ instance Referencing NumberAuto NumberAuto
 instance Referencing RefTarget RefTarget
 instance Referencing (Void1 a) b where
   referencing = absurd1
+instance (Referencing a b, Referencing c d) => Referencing (Either a c) (Either b d)
+instance Referencing LibUrl LibUrl
+instance Referencing LibDomain LibDomain
+instance Referencing LibUrlPart LibUrlPart

@@ -106,6 +106,11 @@ instance Titling a NumberAuto
 instance Titling a RefTarget
 instance Titling b (Void1 a) where
   titling = absurd1
+instance (Titling i a, Titling i b) => Titling i (Either a b)
+instance Titling i LibUrl
+instance Titling i LibDomain
+instance Titling i LibUrlPart
+instance Titling i PageName
 
 data TitleTemplateStyle
   = FormalTemplate

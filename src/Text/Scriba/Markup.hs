@@ -315,7 +315,7 @@ gatheredToUnfolded
        ( Doc (Block Void1) (Inline Void) (Inline Void)
        , Map Identifier (NoteText (Block Void1) (Inline Void))
        )
-gatheredToUnfolded m r d = runDocReferencing (RefData m r) d
+gatheredToUnfolded m = runDocReferencing . RefData (LibUrl Nothing []) "" m
 
 -- TODO: need to have a more flexible top-level parser, recognizing
 -- multiple document types. Perhaps simply by making Doc a sum
@@ -387,7 +387,8 @@ decorating f d = do
              (d', GatherData (NoteText (Block Void1) (Inline InlineControl)))
       )
       td
-  let refEnv = RefData (gatherLinkData gatherData) mempty
+  let refEnv =
+        RefData (LibUrl Nothing []) "" (gatherLinkData gatherData) mempty
   notes <- runDocReferencing refEnv $ gatherNoteText gatherData
   d''   <- runDocReferencing refEnv d'
   pure (notes, d'')
