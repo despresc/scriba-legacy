@@ -20,6 +20,7 @@ import           Text.Scriba.Intermediate
 import           Control.Applicative            ( optional )
 import           Control.Monad.Except           ( MonadError(..) )
 import           Data.Bifunctor                 ( second )
+import           Data.Foldable                  ( asum )
 import qualified Data.HashMap.Strict           as HashMap
 import           Data.Maybe                     ( fromMaybe
                                                 , isNothing
@@ -37,7 +38,7 @@ import           Data.Void                      ( Void )
 
 - "type inference", at least in the simple case of omitting the type
   of elements whose parents have uniform content (the `item` in an
-  olist or ulist, for instance)
+  olist or ulist, for instance, or the `name` in nameInfo)
 
 - tight list (only inline content in the items) and loose list (block
   content in the items) distinction?
@@ -56,6 +57,13 @@ import           Data.Void                      ( Void )
 
 - still need to improve the pArticle errors (coming from pMatter), and
   the pSection errors.
+
+- think about section types. could relax the section ordering, and,
+  e.g., have data Section = Section | Dedication | Preface | Appendix
+  | ..., and have the *Matter portions of Article have this Section in
+  each component.
+
+- in pFrontMatter, use fromTyped?
 
 -}
 
@@ -195,18 +203,18 @@ pBiblioNames = allContentOf $ asNode pBiblioName
       "conference" -> pure ConferenceName
       "family"     -> pure FamilyName
       _            -> throwError $ Msg $ "unrecognized name type " <> t
-  pNamePart = do
+  pNameRole = attr "role" $ do
+    t <- I.content oneMixedSymbol
+    case t of
+      "family"        -> pure FamilyNamePart
+      "given"         -> pure GivenName
+      "date"          -> pure DateName
+      "termOfAddress" -> pure TermsOfAddress
+      t'              -> throwError $ Msg $ "unrecognized name role " <> t'
+  pNamePart = whileMatchTy "namePart" $ do
     univAttrs <- meta $ I.attrs pUnivAttrs
-    partType  <- ty $ do
-      t <- inspect
-      case t of
-        Just "family"        -> pure FamilyNamePart
-        Just "given"         -> pure GivenName
-        Just "date"          -> pure DateName
-        Just "termOfAddress" -> pure TermsOfAddress
-        Just t' -> throwError $ Msg $ "unrecognized name part " <> t'
-        Nothing              -> throwError $ Msg "untyped name part"
-    content <- Text.concat <$> allContentOf simpleText
+    partType  <- meta $ I.attrs pNameRole
+    content   <- Text.concat <$> allContentOf simpleText
     pure NamePart { .. }
   pBiblioName = whileMatchTy "name" $ do
     univAttrs <- meta $ I.attrs pUnivAttrs
@@ -233,7 +241,8 @@ pBiblioOrigin = do
     pure $ f univAttrs content
 
 pNumberingAttrs :: Scriba Attrs NumberingAttrs
-pNumberingAttrs = undefined
+pNumberingAttrs =
+  pure NumberingAttrs { elemCounterRel = mempty, counterRel = mempty }
 
 pTitlingAttrs :: Scriba Attrs TitlingAttrs
 pTitlingAttrs = pure TitlingAttrs
@@ -251,9 +260,8 @@ pArticle = I.content $ pExplicitMatter <|> pBare
     mainMatter <- remaining $ asNode pSection
     pure Article { .. }
 
--- Does not match the type at all, so can be used elsewhere
 pSection :: (FromMixed (b i), FromMixed i) => Scriba Element (Section b i)
-pSection = do
+pSection = whileMatchTy "section" $ do
   univAttrs <- meta $ I.attrs pUnivAttrs
   secAttrs  <- meta $ I.attrs pSecAttrs
   preamble  <- I.content manyMixed
@@ -261,7 +269,7 @@ pSection = do
   pure Section { .. }
 
 pSubsection :: (FromMixed (b i), FromMixed i) => Scriba Element (Subsection b i)
-pSubsection = do
+pSubsection = whileMatchTy "subsection" $ do
   univAttrs <- meta $ I.attrs pUnivAttrs
   secAttrs  <- meta $ I.attrs pSecAttrs
   content   <- I.content manyMixed
@@ -269,12 +277,23 @@ pSubsection = do
 
 pFrontMatter
   :: (FromMixed (b i), FromMixed i) => Scriba Element [FrontMatter b i]
-pFrontMatter = whileMatchTy "frontMatter" $ do
-  undefined
+pFrontMatter = whileMatchTy "frontMatter" $ allContentOf pFrontMatterComponent
+ where
+  pFront (t, f) = asNode $ whileMatchTy t $ do
+    u  <- meta $ I.attrs pUnivAttrs
+    sa <- meta $ I.attrs pSecAttrs
+    b  <- allMixedContent
+    pure $ f u sa b
+  pFrontMatterComponent =
+    asum
+      $   pFront
+      <$> [ ("foreword", Foreword)
+          , ("foreword", Dedication)
+          , ("foreword", Introduction)
+          ]
 
 pMainMatter :: (FromMixed (b i), FromMixed i) => Scriba Element [Section b i]
-pMainMatter = whileMatchTy "mainMatter" $ do
-  undefined
+pMainMatter = whileMatchTy "mainMatter" $ allContentOf $ asNode pSection
 
 pRawNum :: Scriba Element RawNum
 pRawNum = RawNum . Text.concat <$> allContentOf simpleText
