@@ -29,7 +29,7 @@ instance Referencing MathItem MathItem
 instance Titling i MathItem
 instance Gathering note MathItem MathItem where
   gathering x@(MathItem mi mn _ _) = do
-    tellLinkNumbered "mjx-eqn-" mi mn
+    tellLinkNumbered "mjx-eqn:" mi mn
     pure x
 
 -- TODO: may need more complex numbering behaviour here.

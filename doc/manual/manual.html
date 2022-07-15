@@ -92,7 +92,7 @@ is handled with MathJax. Be aware that amsmath-style environments like
 implements some of these environments as elements, so that they can
 interact with its built-in numbering and referencing
 capabilities. This means that we can refer to
-<a class="ref" href="#mjx-eqn-displayFormulaExample"><span class="prefix">eqn.</span> <span class="number">1.4.1</span></a> with <span class="inlineCode"><code>{ref@displayFormulaExample}</code></span>
+<a class="ref" href="#mjx-eqn:displayFormulaExample"><span class="prefix">eqn.</span> <span class="number">1.4.1</span></a> with <span class="inlineCode"><code>{ref@displayFormulaExample}</code></span>
 and have the reference be rendered properly.</p><p>The examples of formulas above were entered into the source like so:</p><div class="codeBlock"><pre><code>Inline formulas like {math`f(x, y) = x^{y+6}`}, and displayed formulas like
 {dmath {id|displayFormulaExample} `
   \mathbf{B}(P) = \frac{\mu_0}{4\pi}
@@ -118,7 +118,7 @@ math content. This element is inline.</p><p>An example of some gathered equation
 <span class="math display">\[\begin{gather*}2+2=4\tag{2.1.1}\\
 4+4=8\\
 8+8=16\tag{2.1.2}\label{thirdGathered}\end{gather*}\]</span>
-inside a paragraph, with a reference (<a class="ref" href="#mjx-eqn-thirdGathered"><span class="prefix">eqn.</span> <span class="number">2.1.2</span></a>) to one of them.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>formalBlock<span class="after"></span></span></span></h3><div class="sectionPreamble"><p>The <span class="inlineCode"><code>formalBlock</code></span> element represents a formal part of the
+inside a paragraph, with a reference (<a class="ref" href="#mjx-eqn:thirdGathered"><span class="prefix">eqn.</span> <span class="number">2.1.2</span></a>) to one of them.</p></div></section><section><h3><span class="title"><span class="number"><span class="before"></span>2.2<span class="after">.</span></span> <span class="titleBody"><span class="before"></span>formalBlock<span class="after"></span></span></span></h3><div class="sectionPreamble"><p>The <span class="inlineCode"><code>formalBlock</code></span> element represents a formal part of the
 document, with optional <span class="inlineCode"><code>title</code></span>, <span class="inlineCode"><code>conclusion</code></span>, and
 <span class="inlineCode"><code>type</code></span> attributes. It can contain block or inline content. It can
 be used to represent theorems, propositions, exercises, proofs, and
